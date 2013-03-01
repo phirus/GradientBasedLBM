@@ -1,8 +1,11 @@
 #include"binaryIO.h"
 
-void binary_output(const Lattice& l){
+void binary_output(const Lattice& l, string filename){
 
-  fstream file("data.bin",ios::out | ios::binary);
+    stringstream name;
+    name << filename;
+
+  fstream file(name.str().c_str(),ios::out | ios::binary);
   file.seekp(0);
 //  char* buffer = reinterpret_cast<char*> (&l);
 

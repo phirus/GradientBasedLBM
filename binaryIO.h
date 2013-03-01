@@ -5,7 +5,7 @@
 #include<iostream>
 #include"lattice.h"
 
-void binary_output(const Lattice& l);
+void binary_output(const Lattice& l, string filename = "data.bin");
 const Lattice binary_input();
 
 #endif
