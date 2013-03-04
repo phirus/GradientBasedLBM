@@ -1,13 +1,16 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocks_layout_file>
 	<ActiveTarget name="Debug" />
-	<File name="binaryIO.cpp" open="1" top="1" tabpos="2">
-		<Cursor position="157" topLine="0" />
+	<File name="binaryIO.cpp" open="0" top="0" tabpos="2">
+		<Cursor position="1056" topLine="15" />
 	</File>
-	<File name="binaryIO.h" open="1" top="0" tabpos="1">
-		<Cursor position="132" topLine="0" />
+	<File name="binaryIO.h" open="0" top="0" tabpos="1">
+		<Cursor position="246" topLine="0" />
 	</File>
-	<File name="lattice.cpp" open="1" top="0" tabpos="3">
+	<File name="lattice.cpp" open="0" top="0" tabpos="3">
 		<Cursor position="0" topLine="446" />
+	</File>
+	<File name="tests.h" open="0" top="0" tabpos="0">
+		<Cursor position="15523" topLine="596" />
 	</File>
 </CodeBlocks_layout_file>

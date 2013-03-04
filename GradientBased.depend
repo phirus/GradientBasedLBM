@@ -194,3 +194,68 @@
 1354184308 source:/home/prusch/GradientBased/vector.cpp
 	"vector.h"
 
+1362393393 source:/home/prusch/workspace/GradientBased/cell.cpp
+	"cell.h"
+
+1362393393 /home/prusch/workspace/GradientBased/cell.h
+	"paramset.h"
+	<string.h>
+
+1362393393 /home/prusch/workspace/GradientBased/paramset.h
+	"constants.h"
+	<string.h>
+
+1362393393 /home/prusch/workspace/GradientBased/constants.h
+	"matrix.h"
+	"definitions.h"
+	"vector.h"
+
+1362393393 /home/prusch/workspace/GradientBased/matrix.h
+	"definitions.h"
+
+1362393393 /home/prusch/workspace/GradientBased/definitions.h
+	<boost/array.hpp>
+	<boost/multi_array.hpp>
+	"vector.h"
+
+1362393393 /home/prusch/workspace/GradientBased/vector.h
+	<cmath>
+
+1362393393 source:/home/prusch/workspace/GradientBased/lattice.cpp
+	"lattice.h"
+
+1362393393 /home/prusch/workspace/GradientBased/lattice.h
+	<omp.h>
+	<fstream>
+	<string>
+	<iomanip>
+	"cell.h"
+
+1362393393 source:/home/prusch/workspace/GradientBased/main.cpp
+	<iostream>
+	<fstream>
+	"tests.h"
+
+1362401124 /home/prusch/workspace/GradientBased/tests.h
+	"gtest/gtest.h"
+	"lattice.h"
+	"vector.h"
+	"binaryIO.h"
+
+1362400921 /home/prusch/workspace/GradientBased/binaryIO.h
+	<fstream>
+	<iostream>
+	"lattice.h"
+
+1362393393 source:/home/prusch/workspace/GradientBased/matrix.cpp
+	"matrix.h"
+
+1362393393 source:/home/prusch/workspace/GradientBased/paramset.cpp
+	"paramset.h"
+
+1362393393 source:/home/prusch/workspace/GradientBased/vector.cpp
+	"vector.h"
+
+1362400921 source:/home/prusch/workspace/GradientBased/binaryIO.cpp
+	"binaryIO.h"
+

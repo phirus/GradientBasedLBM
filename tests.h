@@ -627,11 +627,11 @@ TEST(MRT,mass){
 
 TEST(BinaryIO,output){
     Lattice lattice(150,150);
-
     binary_output(lattice);
-    Lattice input = binary_input();
-
-    EXPECT_EQ(lattice,input);
+    Lattice vergleich;
+    EXPECT_FALSE(binary_input(vergleich,"existiertnicht.txt"));
+    EXPECT_TRUE(binary_input(vergleich));
+    EXPECT_EQ(lattice,vergleich);
 }
 
 
