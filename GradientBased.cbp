@@ -44,7 +44,6 @@
 		<Compiler>
 			<Add option="-Wall" />
 		</Compiler>
-		<Unit filename="array.h" />
 		<Unit filename="binaryIO.cpp" />
 		<Unit filename="binaryIO.h" />
 		<Unit filename="cell.cpp" />
