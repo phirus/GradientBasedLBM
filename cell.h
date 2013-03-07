@@ -1,8 +1,7 @@
 #ifndef CELL_H
 #define CELL_H
 
-#include"paramset.h" /// < contains basic vector operations
-#include<string.h>
+#include"constants.h"
 
 using namespace std;
 

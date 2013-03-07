@@ -4,9 +4,9 @@
 #include<omp.h>
 #include<fstream>
 #include<string>
-#include<iomanip>
 
 #include"cell.h"
+#include"paramset.h"
 
 /// custom typedef for the whole field of cells
 typedef boost::multi_array<Cell,2> field;

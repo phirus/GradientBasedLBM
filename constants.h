@@ -3,7 +3,6 @@
 
 #include"matrix.h"
 #include"definitions.h"
-#include"vector.h"
 
 /// contains constants
 

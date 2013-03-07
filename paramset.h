@@ -1,7 +1,7 @@
 #ifndef PARAMSET_H
 #define PARAMSET_H
 
-#include"constants.h"
+#include"definitions.h"
 #include<string.h>
 
 using namespace std;

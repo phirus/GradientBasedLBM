@@ -7,11 +7,32 @@
 	<File name="binaryIO.h" open="0" top="0" tabpos="1">
 		<Cursor position="246" topLine="0" />
 	</File>
+	<File name="cell.cpp" open="0" top="0" tabpos="0">
+		<Cursor position="1133" topLine="73" />
+	</File>
 	<File name="cell.h" open="0" top="0" tabpos="0">
-		<Cursor position="131" topLine="1" />
+		<Cursor position="52" topLine="0" />
+	</File>
+	<File name="constants.h" open="0" top="0" tabpos="0">
+		<Cursor position="84" topLine="0" />
+	</File>
+	<File name="definitions.h" open="0" top="0" tabpos="0">
+		<Cursor position="103" topLine="0" />
 	</File>
 	<File name="lattice.cpp" open="0" top="0" tabpos="3">
 		<Cursor position="0" topLine="446" />
+	</File>
+	<File name="lattice.h" open="0" top="0" tabpos="0">
+		<Cursor position="88" topLine="0" />
+	</File>
+	<File name="matrix.h" open="0" top="0" tabpos="0">
+		<Cursor position="35" topLine="0" />
+	</File>
+	<File name="paramset.cpp" open="0" top="0" tabpos="0">
+		<Cursor position="2675" topLine="80" />
+	</File>
+	<File name="paramset.h" open="0" top="0" tabpos="0">
+		<Cursor position="63" topLine="1" />
 	</File>
 	<File name="tests.h" open="0" top="0" tabpos="0">
 		<Cursor position="15523" topLine="596" />
