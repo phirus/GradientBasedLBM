@@ -20,10 +20,10 @@
 		<Cursor position="103" topLine="0" />
 	</File>
 	<File name="lattice.cpp" open="0" top="0" tabpos="3">
-		<Cursor position="0" topLine="446" />
+		<Cursor position="379" topLine="0" />
 	</File>
-	<File name="lattice.h" open="0" top="0" tabpos="0">
-		<Cursor position="88" topLine="0" />
+	<File name="lattice.h" open="0" top="0" tabpos="1">
+		<Cursor position="2255" topLine="30" />
 	</File>
 	<File name="matrix.h" open="0" top="0" tabpos="0">
 		<Cursor position="35" topLine="0" />

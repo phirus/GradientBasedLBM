@@ -60,7 +60,8 @@ public:
 
 private:
 
-    field data;         /// < conatins nearly all the data
+    field dataOld;         /// < conatins nearly all the data
+    field * data;
     int xsize, ysize;   /// < extent of the Lattice
     ParamSet param;     /// < set of parameters used during the simulation
 

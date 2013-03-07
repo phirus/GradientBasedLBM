@@ -1,6 +1,6 @@
 #include "lattice.h"
 
-Lattice::Lattice(int x_size, int y_size,double fzero_red, double fzero_blue):data(boost::extents[x_size][y_size]),param()
+Lattice::Lattice(int x_size, int y_size,double fzero_red, double fzero_blue):dataOld(boost::extents[x_size][y_size]),data(new field(boost::extents[x_size][y_size])),param()
 {
     xsize = x_size;
     ysize = y_size;
@@ -8,31 +8,32 @@ Lattice::Lattice(int x_size, int y_size,double fzero_red, double fzero_blue):dat
     {
         for (int y=0; y<ysize; y++)
         {
-            data[x][y] = Cell(fzero_red,fzero_blue);
+            dataOld[x][y] = Cell(fzero_red,fzero_blue);
+            (*data)[x][y] = Cell(fzero_red,fzero_blue);
         }
     }
 }
 
 const field Lattice::getData()const
 {
-    return data;
+    return dataOld;
 }
 
 void Lattice::setData(const field& ndata, int x, int y){
-    data.resize(boost::extents[x][y]);
-    data = ndata;
+    dataOld.resize(boost::extents[x][y]);
+    dataOld = ndata;
     xsize = x;
     ysize = y;
 }
 
 void Lattice::setCell(int x, int y, const Cell& ncell)
 {
-    if (y >= 0 && y < ysize && x >= 0 && x < xsize) data[x][y] = ncell;
+    if (y >= 0 && y < ysize && x >= 0 && x < xsize) dataOld[x][y] = ncell;
 }
 
 const Cell Lattice::getCell(int x, int y)const
 {
-    if (y >= 0 && y < ysize && x >= 0 && x < xsize) return data[x][y];
+    if (y >= 0 && y < ysize && x >= 0 && x < xsize) return dataOld[x][y];
     else return Cell(0);
 }
 
@@ -48,21 +49,21 @@ const ParamSet Lattice::getParams()const
 
 const FSet Lattice::getF(int x, int y)const
 {
-    return data[x][y].getF();
+    return dataOld[x][y].getF();
 }
 
 void Lattice::setF(int x, int y, int color, const array& nf)
 {
-    FSet f = data[x][y].getF();
+    FSet f = dataOld[x][y].getF();
     f[color] = nf;
-    data[x][y].setF(f);
+    dataOld[x][y].setF(f);
 }
 
 void Lattice::setF(int x, int y, int color, int pos, double value)
 {
-    FSet f = data[x][y].getF();
+    FSet f = dataOld[x][y].getF();
     f[color][pos] = value;
-    data[x][y].setF(f);
+    dataOld[x][y].setF(f);
 }
 
 void Lattice::streamAll(int threads)
@@ -79,7 +80,7 @@ void Lattice::streamAll(int threads)
             int x,y;
             linearIndex(index,x,y);
             const direction dir = directions(x,y);
-            Cell tmpCell = data[x][y];
+            Cell tmpCell = dataOld[x][y];
 
             if (tmpCell.getIsSolid() == false) streamAndBouncePull(tmpCell,dir);
 
@@ -88,7 +89,7 @@ void Lattice::streamAll(int threads)
             newData[x][y] = tmpCell;
         }
     }
-    data = newData;
+    dataOld = newData;
 }
 
 void Lattice::initialize()
@@ -97,20 +98,20 @@ void Lattice::initialize()
 
     for (int x=0; x<xsize; x++)
     {
-        data[x][0] = wall;
-        data[x][ysize-1] = wall;
+        dataOld[x][0] = wall;
+        dataOld[x][ysize-1] = wall;
     }
     for (int y=0; y<ysize; y++)
     {
-        data[0][y] = wall;
-        data[xsize-1][y] = wall;
+        dataOld[0][y] = wall;
+        dataOld[xsize-1][y] = wall;
     }
 
     for (int y=0; y<ysize; y++)
     {
         for (int x=0; x<xsize; x++)
         {
-            data[x][y].calcRho();
+            dataOld[x][y].calcRho();
         }
     }
 }
@@ -121,53 +122,53 @@ void Lattice::streamAndBouncePull(Cell& tCell, const direction& dir)const
     FSet ftmp;
     for (int color = 0; color<=1;color++)
     {
-        ftmp[color][0] = data[ dir[0].x ][ dir[0].y ].getF()[color][0];
+        ftmp[color][0] = dataOld[ dir[0].x ][ dir[0].y ].getF()[color][0];
 
-        if (data[ dir[5].x ][ dir[5].y ].getIsSolid() == false)
+        if (dataOld[ dir[5].x ][ dir[5].y ].getIsSolid() == false)
         {
-            ftmp[color][1] = data[ dir[5].x ][ dir[5].y ].getF()[color][1];    // if(neighbor not solid?) -> stream
+            ftmp[color][1] = dataOld[ dir[5].x ][ dir[5].y ].getF()[color][1];    // if(neighbor not solid?) -> stream
         }
         else ftmp[color][1] = f[color][5];                                                                                            // else -> bounce back
 
-        if (data[ dir[6].x ][ dir[6].y ].getIsSolid() == false)
+        if (dataOld[ dir[6].x ][ dir[6].y ].getIsSolid() == false)
         {
-            ftmp[color][2] = data[ dir[6].x ][ dir[6].y ].getF()[color][2];
+            ftmp[color][2] = dataOld[ dir[6].x ][ dir[6].y ].getF()[color][2];
         }
         else ftmp[color][2] = f[color][6];
 
-        if (data[ dir[7].x ][ dir[7].y ].getIsSolid() == false)
+        if (dataOld[ dir[7].x ][ dir[7].y ].getIsSolid() == false)
         {
-            ftmp[color][3] = data[ dir[7].x ][ dir[7].y ].getF()[color][3];
+            ftmp[color][3] = dataOld[ dir[7].x ][ dir[7].y ].getF()[color][3];
         }
         else ftmp[color][3] = f[color][7];
 
-        if (data[ dir[8].x ][ dir[8].y ].getIsSolid() == false)
+        if (dataOld[ dir[8].x ][ dir[8].y ].getIsSolid() == false)
         {
-            ftmp[color][4] = data[ dir[8].x ][ dir[8].y ].getF()[color][4];
+            ftmp[color][4] = dataOld[ dir[8].x ][ dir[8].y ].getF()[color][4];
         }
         else ftmp[color][4] = f[color][8];
 
-        if (data[ dir[1].x ][ dir[1].y ].getIsSolid() == false)
+        if (dataOld[ dir[1].x ][ dir[1].y ].getIsSolid() == false)
         {
-            ftmp[color][5] = data[ dir[1].x ][ dir[1].y ].getF()[color][5];
+            ftmp[color][5] = dataOld[ dir[1].x ][ dir[1].y ].getF()[color][5];
         }
         else ftmp[color][5] = f[color][1];
 
-        if (data[ dir[2].x ][ dir[2].y ].getIsSolid() == false)
+        if (dataOld[ dir[2].x ][ dir[2].y ].getIsSolid() == false)
         {
-            ftmp[color][6] = data[ dir[2].x ][ dir[2].y ].getF()[color][6];
+            ftmp[color][6] = dataOld[ dir[2].x ][ dir[2].y ].getF()[color][6];
         }
         else ftmp[color][6] = f[color][2];
 
-        if (data[ dir[3].x ][ dir[3].y ].getIsSolid() == false)
+        if (dataOld[ dir[3].x ][ dir[3].y ].getIsSolid() == false)
         {
-            ftmp[color][7] = data[ dir[3].x ][ dir[3].y ].getF()[color][7];
+            ftmp[color][7] = dataOld[ dir[3].x ][ dir[3].y ].getF()[color][7];
         }
         else ftmp[color][7] = f[color][3];
 
-        if (data[ dir[4].x ][ dir[4].y ].getIsSolid() == false)
+        if (dataOld[ dir[4].x ][ dir[4].y ].getIsSolid() == false)
         {
-            ftmp[color][8] = data[ dir[4].x ][ dir[4].y ].getF()[color][8];
+            ftmp[color][8] = dataOld[ dir[4].x ][ dir[4].y ].getF()[color][8];
         }
         else ftmp[color][8] = f[color][4];
     }
@@ -210,7 +211,7 @@ const Vector Lattice::getGradient(int x, int y)const
     const direction dir = directions(x,y);
     for (int q=0;q<13;q++)
     {
-        tmpDelta = xi[q] * data[ dir[q].x ][ dir[q].y ].getDeltaRho();
+        tmpDelta = xi[q] * dataOld[ dir[q].x ][ dir[q].y ].getDeltaRho();
         grad.x += e[q].x * tmpDelta;
         grad.y += e[q].y * tmpDelta;
     }
@@ -257,7 +258,7 @@ void Lattice::collideAll(int threads, bool gravity)
         {
             int x,y;
             linearIndex(index,x,y);
-            Cell tmpCell = data[x][y];
+            Cell tmpCell = dataOld[x][y];
             if (tmpCell.getIsSolid() == false)
             {
                 FSet  fTmp;
@@ -334,7 +335,7 @@ void Lattice::collideAll(int threads, bool gravity)
             newData[x][y] = tmpCell;
         }
     }
-    data = newData;
+    dataOld = newData;
 }
 
 void Lattice::balance(double& mass, double& momentum)
@@ -349,9 +350,9 @@ void Lattice::balance(double& mass, double& momentum)
     {
         for (int i=0; i<xsize; i++)
         {
-            data[i][j].calcRho();
-            rho = sum(data[i][j].getRho());
-            u = data[i][j].calcU();
+            dataOld[i][j].calcRho();
+            rho = sum(dataOld[i][j].getRho());
+            u = dataOld[i][j].calcU();
 
             mass += rho;
             momentum += rho * sqrt(u*u);
@@ -368,12 +369,12 @@ void Lattice::equilibriumIni()
     {
         for (int i=0; i<xsize; i++)
         {
-            tmp = data[i][j];
+            tmp = dataOld[i][j];
             tmp.calcRho();
             eqDis = eqDistro(tmp,param.getPhi());
             tmp.setF(eqDis);
             tmp.calcRho();
-            data[i][j] = tmp;
+            dataOld[i][j] = tmp;
         }
     }
 }
@@ -390,7 +391,7 @@ void Lattice::overallRho()
     {
         for (int i=0; i<xsize; i++)
         {
-            data[i][j].calcRho();
+            dataOld[i][j].calcRho();
         }
     }
 }
@@ -542,7 +543,7 @@ const bool Lattice::operator==(const Lattice& other)const
         {
             for (int y = 0; y<ysize;y++)
             {
-                if (!(data[x][y]==otherData[x][y]))
+                if (!(dataOld[x][y]==otherData[x][y]))
                 {
                     exit = false;
                     break;
