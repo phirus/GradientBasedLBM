@@ -22,6 +22,7 @@ class Lattice
 {
 public:
     Lattice(int x_size=10, int y_size=10,double fzero_red=1, double fzero_blue=1);
+    ~Lattice();
 
     void initialize(); /// < initialize the Lattice (set up walls and calculate rho)
     void balance(double& mass, double& momentum); /// < monitor overall mass and momentum
@@ -59,8 +60,6 @@ public:
 //    void collideGravity();
 
 private:
-
-    field dataOld;         /// < conatins nearly all the data
     field * data;
     int xsize, ysize;   /// < extent of the Lattice
     ParamSet param;     /// < set of parameters used during the simulation
