@@ -20,7 +20,7 @@ class Vector
     /// important functions
     inline const double abs()const{return sqrt(x*x+y*y);};   /// < absolute value
     inline const double sum()const{return x+y;};             /// < sum over all components
-    const double angle(Vector other)const;
+    const double angle(const Vector& other)const;
 };
 
 #endif
