@@ -378,7 +378,6 @@ void Lattice::equilibriumIni()
             tmp.calcRho();
             eqDis = eqDistro(tmp,param.getPhi());
             tmp.setF(eqDis);
-            tmp.calcRho();
             (*data)[i][j] = tmp;
         }
     }

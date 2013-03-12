@@ -33,11 +33,19 @@ void Cell::calcRho()
     // iterate
     if (isSolid == false)
     {
-        for (int i=0; i<9; i++)
-        {
-            rho[0] += f[0][i];
-            rho[1] += f[1][i];
+        boost::array<double,9>::iterator it;
+        for (it = f[0].begin() ; it != f[0].end(); it++){
+            rho[0] += *it;
         }
+
+        for (it = f[1].begin() ; it != f[1].end(); it++){
+            rho[1] += *it;
+        }
+//        for (int i=0; i<9; i++)
+//        {
+//            rho[0] += f[0][i];
+//            rho[1] += f[1][i];
+//        }
     }
 }
 
