@@ -1,10 +1,12 @@
 #include"paramset.h"
-ParamSet::ParamSet(double omR, double omB, double rhoR,double g, double alB, double d, double bet, double sig, double s2, double s3, double s5, double sound, double length,  double grav):omegaRed(omR),omegaBlue(omB),rhoRed(rhoR),gamma(g),alphaBlue(alB),delta(d),beta(bet), sigma(sig), c_s(sound), spacestep(length),g(grav)
+ParamSet::ParamSet(double omR, double omB, double rhoR, double gammaIni, double alB, double deltaIni, double betaIni, double sigmaIni, double c_sIni, double length):omegaRed(omR),omegaBlue(omB),rhoRed(rhoR),gamma(gammaIni),alphaBlue(alB),delta(deltaIni),beta(betaIni), sigma(sigmaIni), c_s(c_sIni), spacestep(length)
 {
-    relax.s_2 = s2;
-    relax.s_3 = s3;
-    relax.s_5 = s5;
-    g = 1;
+
+    relax.s_2 = 1;
+    relax.s_3 = 1;
+    relax.s_5 = 1.2;
+
+    gravity = 2;
     timestep = spacestep / c_s;
     calcInter();
     calcAlR();
@@ -92,8 +94,8 @@ const ColSet ParamSet::getAk(double omega)const
     return Ak;
 }
 
-const double ParamSet::getG()const{return g;}
-void ParamSet::setG(double grav){g = grav;}
+const double ParamSet::getG()const{return gravity;}
+void ParamSet::setG(double grav){gravity = grav;}
 
 void ParamSet::calcInter()
 {
@@ -130,7 +132,7 @@ const boost::array<double,13> ParamSet::getEverything()const{
     pinkie[9] = c_s;
     pinkie[10] = timestep;
     pinkie[11] = spacestep;
-    pinkie[12] = g;
+    pinkie[12] = gravity;
 
     return pinkie;
 }

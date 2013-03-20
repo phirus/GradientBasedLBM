@@ -3,6 +3,9 @@
 
 #include"definitions.h"
 #include<string.h>
+
+#include<iostream>
+
 using namespace std;
 
 /// structure for interpolation paramters
@@ -20,7 +23,7 @@ struct RelaxationPar
 class ParamSet
 {
 public:
-    ParamSet(double omR=1, double omB =1,double rhoR = 1, double gamma = 1000, double alB=0.2, double d=0.1, double bet=0.99, double sig = 1e-4, double s2 = 1, double s3 = 1, double s5 = 1.2, double sound = 1484, double length = 0.001, double grav = 0.001); /// < consructor
+    ParamSet(double omR=1, double omB =1,double rhoR = 1, double gammaIni = 1000, double alB=0.2, double deltaIni=0.1, double betaIni=0.99, double sigmaIni = 1e-4, double c_sIni = 1484, double length = 0.001); /// < consructor
 
     const FSet getPhi();     /// calculates phi, based on alpha_b and rho (density ratio)
     const double getOmega(double psi);    /// return omega, based on inter and the color field
@@ -62,7 +65,7 @@ private:
     double c_s ;   // speed of sound
     double timestep;
     double spacestep;
-    double g;                   /// < gravity
+    double gravity;                   /// < gravity
 
 
     void calcInter();           /// < calculate the interpolation paramters based on omega and delta

@@ -34,14 +34,14 @@
 	<File name="matrix.h" open="0" top="0" tabpos="0">
 		<Cursor position="35" topLine="0" />
 	</File>
-	<File name="paramset.cpp" open="0" top="0" tabpos="2">
-		<Cursor position="3266" topLine="124" />
+	<File name="paramset.cpp" open="1" top="1" tabpos="2">
+		<Cursor position="702" topLine="0" />
 	</File>
-	<File name="paramset.h" open="1" top="1" tabpos="1">
-		<Cursor position="1469" topLine="30" />
+	<File name="paramset.h" open="1" top="0" tabpos="1">
+		<Cursor position="378" topLine="2" />
 	</File>
-	<File name="tests.h" open="0" top="0" tabpos="0">
-		<Cursor position="5480" topLine="222" />
+	<File name="tests.h" open="1" top="0" tabpos="3">
+		<Cursor position="5491" topLine="222" />
 	</File>
 	<File name="vector.cpp" open="0" top="0" tabpos="0">
 		<Cursor position="112" topLine="0" />

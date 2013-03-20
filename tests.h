@@ -238,7 +238,7 @@ TEST(ParamSet,inter)
 
 TEST(ParamSet, equal){
     ParamSet one, two, three, four;
-    EXPECT_EQ(one,two);
+    EXPECT_TRUE(one == two);
     three.setBeta(0);
     EXPECT_FALSE(one == three);
     four.setRelaxation(1,1,1);
