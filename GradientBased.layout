@@ -19,10 +19,10 @@
 	<File name="definitions.h" open="0" top="0" tabpos="0">
 		<Cursor position="645" topLine="0" />
 	</File>
-	<File name="lattice.cpp" open="1" top="1" tabpos="2">
-		<Cursor position="9655" topLine="301" />
+	<File name="lattice.cpp" open="0" top="0" tabpos="1">
+		<Cursor position="8013" topLine="280" />
 	</File>
-	<File name="lattice.h" open="1" top="0" tabpos="1">
+	<File name="lattice.h" open="0" top="0" tabpos="1">
 		<Cursor position="2190" topLine="30" />
 	</File>
 	<File name="main.cpp" open="0" top="0" tabpos="0">
@@ -34,14 +34,14 @@
 	<File name="matrix.h" open="0" top="0" tabpos="0">
 		<Cursor position="35" topLine="0" />
 	</File>
-	<File name="paramset.cpp" open="0" top="0" tabpos="0">
-		<Cursor position="2675" topLine="80" />
+	<File name="paramset.cpp" open="0" top="0" tabpos="2">
+		<Cursor position="3266" topLine="124" />
 	</File>
-	<File name="paramset.h" open="0" top="0" tabpos="0">
-		<Cursor position="63" topLine="1" />
+	<File name="paramset.h" open="1" top="1" tabpos="1">
+		<Cursor position="1469" topLine="30" />
 	</File>
 	<File name="tests.h" open="0" top="0" tabpos="0">
-		<Cursor position="15523" topLine="596" />
+		<Cursor position="5480" topLine="222" />
 	</File>
 	<File name="vector.cpp" open="0" top="0" tabpos="0">
 		<Cursor position="112" topLine="0" />

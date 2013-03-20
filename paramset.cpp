@@ -1,9 +1,10 @@
 #include"paramset.h"
-ParamSet::ParamSet(double omR, double omB, double rhoR,double g, double alB, double d, double bet, double sig, double grav, double s2, double s3, double s5, double sound, double length):omegaRed(omR),omegaBlue(omB),rhoRed(rhoR),gamma(g),alphaBlue(alB),delta(d),beta(bet), sigma(sig), g(grav), c_s(sound), spacestep(length)
+ParamSet::ParamSet(double omR, double omB, double rhoR,double g, double alB, double d, double bet, double sig, double s2, double s3, double s5, double sound, double length,  double grav):omegaRed(omR),omegaBlue(omB),rhoRed(rhoR),gamma(g),alphaBlue(alB),delta(d),beta(bet), sigma(sig), c_s(sound), spacestep(length),g(grav)
 {
     relax.s_2 = s2;
     relax.s_3 = s3;
     relax.s_5 = s5;
+    g = 1;
     timestep = spacestep / c_s;
     calcInter();
     calcAlR();
@@ -115,7 +116,48 @@ void ParamSet::setRelaxation(double s_2, double s_3, double s_5)
 }
 const RelaxationPar ParamSet::getRelaxation()const{return relax;}
 
+const boost::array<double,13> ParamSet::getEverything()const{
+    boost::array<double,13> pinkie;
+    pinkie[0] = omegaRed;
+    pinkie[1] = omegaBlue;
+    pinkie[2] = rhoRed;
+    pinkie[3] = gamma;
+    pinkie[4] = alphaRed;
+    pinkie[5] = alphaBlue;
+    pinkie[6] = delta;
+    pinkie[7] = beta;
+    pinkie[8] = sigma;
+    pinkie[9] = c_s;
+    pinkie[10] = timestep;
+    pinkie[11] = spacestep;
+    pinkie[12] = g;
+
+    return pinkie;
+}
+
+
 const bool ParamSet::operator==(const ParamSet& other)const{
-    if (memcmp(this, &other,sizeof(ParamSet)) == 0) return true;
-    return false;
+    bool control = true;
+    {
+        boost::array<double,13> foo, bar;
+        foo = getEverything();
+        bar = other.getEverything();
+
+        if(foo != bar) control = false;
+    }
+    {
+        Interpol finter, binter;
+        finter = getInter();
+        binter = other.getInter();
+
+        if(finter.chi != binter.chi || finter.eta != binter.eta || finter.kappa != binter.kappa || finter.lambda != binter.lambda || finter.ny != binter.ny) control = false;
+    }
+    {
+        RelaxationPar frelax,brelax;
+        frelax = getRelaxation();
+        brelax = other.getRelaxation();
+
+        if(frelax.s_2 != brelax.s_2 || frelax.s_3 != brelax.s_3 || frelax.s_5 != brelax.s_5) control = false;
+    }
+    return control;
 }
