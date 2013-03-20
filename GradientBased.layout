@@ -13,8 +13,8 @@
 	<File name="cell.h" open="0" top="0" tabpos="0">
 		<Cursor position="328" topLine="0" />
 	</File>
-	<File name="constants.h" open="0" top="0" tabpos="0">
-		<Cursor position="84" topLine="0" />
+	<File name="constants.h" open="1" top="0" tabpos="4">
+		<Cursor position="189" topLine="0" />
 	</File>
 	<File name="definitions.h" open="0" top="0" tabpos="0">
 		<Cursor position="645" topLine="0" />
@@ -34,11 +34,11 @@
 	<File name="matrix.h" open="0" top="0" tabpos="0">
 		<Cursor position="35" topLine="0" />
 	</File>
-	<File name="paramset.cpp" open="1" top="1" tabpos="2">
-		<Cursor position="702" topLine="0" />
+	<File name="paramset.cpp" open="1" top="0" tabpos="2">
+		<Cursor position="438" topLine="0" />
 	</File>
-	<File name="paramset.h" open="1" top="0" tabpos="1">
-		<Cursor position="378" topLine="2" />
+	<File name="paramset.h" open="1" top="1" tabpos="1">
+		<Cursor position="1070" topLine="17" />
 	</File>
 	<File name="tests.h" open="1" top="0" tabpos="3">
 		<Cursor position="5491" topLine="222" />

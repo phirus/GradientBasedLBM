@@ -1,13 +1,13 @@
 #include"paramset.h"
 ParamSet::ParamSet(double omR, double omB, double rhoR, double gammaIni, double alB, double deltaIni, double betaIni, double sigmaIni, double c_sIni, double length):omegaRed(omR),omegaBlue(omB),rhoRed(rhoR),gamma(gammaIni),alphaBlue(alB),delta(deltaIni),beta(betaIni), sigma(sigmaIni), c_s(c_sIni), spacestep(length)
 {
-
     relax.s_2 = 1;
     relax.s_3 = 1;
     relax.s_5 = 1.2;
 
-    gravity = 2;
-    timestep = spacestep / c_s;
+    calcTimestep();
+    calcGravity();
+
     calcInter();
     calcAlR();
 }
@@ -94,8 +94,19 @@ const ColSet ParamSet::getAk(double omega)const
     return Ak;
 }
 
-const double ParamSet::getG()const{return gravity;}
-void ParamSet::setG(double grav){gravity = grav;}
+void ParamSet::setDeltaX(double dx)
+{
+    spacestep = dx;
+    calcTimestep();
+    calcGravity();
+}
+
+void ParamSet::setSoundSpeed(double sos)
+{
+    c_s = sos;
+    calcTimestep();
+    calcGravity();
+}
 
 void ParamSet::calcInter()
 {
@@ -109,6 +120,7 @@ void ParamSet::calcInter()
 void ParamSet::calcAlR(){
     alphaRed = 1- (1- alphaBlue)/gamma;
 }
+
 
 void ParamSet::setRelaxation(double s_2, double s_3, double s_5)
 {
