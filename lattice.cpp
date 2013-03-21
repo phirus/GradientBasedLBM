@@ -197,6 +197,25 @@ const FSet eqDistro(const Cell& tmp, const FSet& phi)
     return feq;
 }
 
+const FSet eqDistroGravity(const Cell& tmp, const FSet& phi, const Vector& force, double dt)
+{
+    FSet feq;
+    const ColSet rho_k = tmp.getRho();
+    const Vector u = tmp.calcU() + force *  (dt/(2* sum(rho_k))) ;
+    const double usqr = u*u;
+    double scal;
+    for (int i=0; i<9; i++)
+    {
+        scal = u*e[i];
+        for (int color = 0; color<=1; color++)
+        {
+            feq[color][i] = rho_k[color] * ( phi[color][i] + w[i] * ( 3 * scal + 4.5 * (scal*scal) - 1.5 * usqr));
+        }
+    }
+    return feq;
+}
+
+
 const array arrayDiff(const array &one, const array &two)
 {
     array a;

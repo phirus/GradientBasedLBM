@@ -13,6 +13,7 @@ typedef boost::multi_array<Cell,2> field;
 
 /// calculates the equilibrium distribution based of a cell
 const FSet eqDistro(const Cell& tmp, const FSet& phi);
+const FSet eqDistroGravity(const Cell& tmp, const FSet& phi, const Vector& force, double dt);
 
 /// computes a difference array (needed for MRT)
 const array arrayDiff(const array &one, const array &two);
