@@ -23,29 +23,30 @@ class ParamSet
 public:
     ParamSet(double omR=1, double omB =1,double rhoR = 1, double gammaIni = 1000, double alB=0.2, double deltaIni=0.1, double betaIni=0.99, double sigmaIni = 1e-4, double c_sIni = 1484, double length = 0.001); /// < consructor
 
-    const FSet getPhi();                    /// < calculates phi, based on alpha_b and rho (density ratio)
-    const double getOmega(double psi);      /// < return omega, based on inter and the color field
+    /// get-methods, including calculations if necessary
+    const FSet getPhi()const;                   /// < calculates phi, based on alpha_b and rho (density ratio)
+    const double getOmega(double psi)const;          /// < return omega, based on inter and the color field
+    const ColSet getAk(double omega)const;
+    const boost::array<double,13> getEverything()const;
 
-    /// access internal elements
+    const double getBeta()const{return beta;};
+    const double getG()const{return gravity;};
+    const double getRhoR()const{return rhoRed;};
+    const Interpol getInter()const{return inter;};
+    const RelaxationPar getRelaxation()const{return relax;};
+
+    /// set-methods, including calculations if necessary
     void setOmega(double omR, double omB, double d);
-    void setRatio(double rhoR, double ratio);
     void setAlpha(double alB);
-    void setBeta(double bet);
-    void setSigma(double sig);
+    void setRatio(double rhoR, double ratio);
     void setDeltaX(double dx);
     void setSoundSpeed(double sos);
-
-    const double getBeta()const;
-    const ColSet getAk(double omega)const;
-    const double getG()const{return gravity;};
-    void setG(double grav);
-    const double getRhoR()const{return rhoRed;};
-
     void setRelaxation(double s_2, double s_3, double s_5);
 
-    const boost::array<double,13> getEverything()const;
-    const RelaxationPar getRelaxation()const;
-    const Interpol getInter()const;
+    void setBeta(double bet){beta=bet;};
+    void setSigma(double sig){sigma=sig;};
+
+    /// overloaded == Operator
     const bool operator==(const ParamSet& other)const;
 
 private:
@@ -65,6 +66,7 @@ private:
 
     void calcInter();           /// < calculate the interpolation paramters based on omega and delta
     void calcAlR();
+
     inline void calcTimestep(){timestep = spacestep / (c_s * sqrt(3) );} ;
     inline void calcGravity(double g = 9.81){gravity = g * timestep * timestep / spacestep;};
 };

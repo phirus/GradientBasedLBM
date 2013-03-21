@@ -12,13 +12,7 @@ ParamSet::ParamSet(double omR, double omB, double rhoR, double gammaIni, double 
     calcAlR();
 }
 
-void ParamSet::setAlpha(double alB)
-{
-    alphaBlue = alB;
-    calcAlR();
-}
-
-const FSet ParamSet::getPhi()
+const FSet ParamSet::getPhi()const
 {
     FSet phi;
     phi.at(0).at(0) = alphaRed;
@@ -37,35 +31,7 @@ const FSet ParamSet::getPhi()
     return phi;
 }
 
-void ParamSet::setOmega(double omR, double omB, double d)
-{
-    omegaRed = omR;
-    omegaBlue = omB;
-    delta = d;
-    calcInter();
-}
-
-void ParamSet::setRatio(double rhoR, double ratio)
-{
-    rhoRed = rhoR;
-    gamma = ratio;
-    calcAlR();
-}
-
-void ParamSet::setBeta(double bet){
-    beta = bet;
-}
-
-void ParamSet::setSigma(double sig){
-    sigma = sig;
-}
-
-const Interpol ParamSet::getInter()const
-{
-    return inter;
-}
-
-const double ParamSet::getOmega(double psi)
+const double ParamSet::getOmega(double psi)const
 {
     if (psi > delta)
     {
@@ -85,50 +51,12 @@ const double ParamSet::getOmega(double psi)
     }
 }
 
-const double ParamSet::getBeta()const{return beta;}
-
 const ColSet ParamSet::getAk(double omega)const
 {
     double A = (9 * omega * sigma) / (2* rhoRed * (1+1/gamma) );
     ColSet Ak = {{A,A}};
     return Ak;
 }
-
-void ParamSet::setDeltaX(double dx)
-{
-    spacestep = dx;
-    calcTimestep();
-    calcGravity();
-}
-
-void ParamSet::setSoundSpeed(double sos)
-{
-    c_s = sos;
-    calcTimestep();
-    calcGravity();
-}
-
-void ParamSet::calcInter()
-{
-    inter.chi    = (2*omegaRed*omegaBlue)/( omegaRed + omegaBlue );
-    inter.eta    = 2*(omegaRed - inter.chi)/delta;
-    inter.kappa  = -inter.eta / ( 2*delta );
-    inter.lambda = 2*(inter.chi - omegaBlue)/delta;
-    inter.ny     = inter.lambda / ( 2*delta );
-}
-
-void ParamSet::calcAlR(){
-    alphaRed = 1- (1- alphaBlue)/gamma;
-}
-
-
-void ParamSet::setRelaxation(double s_2, double s_3, double s_5)
-{
-    relax.s_2 = s_2;
-    relax.s_3 = s_3;
-    relax.s_5 = s_5;
-}
-const RelaxationPar ParamSet::getRelaxation()const{return relax;}
 
 const boost::array<double,13> ParamSet::getEverything()const{
     boost::array<double,13> pinkie;
@@ -149,6 +77,47 @@ const boost::array<double,13> ParamSet::getEverything()const{
     return pinkie;
 }
 
+void ParamSet::setOmega(double omR, double omB, double d)
+{
+    omegaRed = omR;
+    omegaBlue = omB;
+    delta = d;
+    calcInter();
+}
+
+void ParamSet::setAlpha(double alB)
+{
+    alphaBlue = alB;
+    calcAlR();
+}
+
+void ParamSet::setRatio(double rhoR, double ratio)
+{
+    rhoRed = rhoR;
+    gamma = ratio;
+    calcAlR();
+}
+
+void ParamSet::setDeltaX(double dx)
+{
+    spacestep = dx;
+    calcTimestep();
+    calcGravity();
+}
+
+void ParamSet::setSoundSpeed(double sos)
+{
+    c_s = sos;
+    calcTimestep();
+    calcGravity();
+}
+
+void ParamSet::setRelaxation(double s_2, double s_3, double s_5)
+{
+    relax.s_2 = s_2;
+    relax.s_3 = s_3;
+    relax.s_5 = s_5;
+}
 
 const bool ParamSet::operator==(const ParamSet& other)const{
     bool control = true;
@@ -174,4 +143,17 @@ const bool ParamSet::operator==(const ParamSet& other)const{
         if(frelax.s_2 != brelax.s_2 || frelax.s_3 != brelax.s_3 || frelax.s_5 != brelax.s_5) control = false;
     }
     return control;
+}
+
+void ParamSet::calcInter()
+{
+    inter.chi    = (2*omegaRed*omegaBlue)/( omegaRed + omegaBlue );
+    inter.eta    = 2*(omegaRed - inter.chi)/delta;
+    inter.kappa  = -inter.eta / ( 2*delta );
+    inter.lambda = 2*(inter.chi - omegaBlue)/delta;
+    inter.ny     = inter.lambda / ( 2*delta );
+}
+
+void ParamSet::calcAlR(){
+    alphaRed = 1- (1- alphaBlue)/gamma;
 }
