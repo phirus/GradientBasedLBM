@@ -3,3 +3,4 @@ obj/
 *.save
 *.bin
 *.backup
+*.layout
