@@ -2,8 +2,6 @@
 #define LATTICE_H
 
 #include<omp.h>
-#include<fstream>
-#include<string>
 
 #include"cell.h"
 #include"paramset.h"
@@ -48,10 +46,6 @@ public:
 
     void streamAll(int threads = 0); /// < streaming step
     void collideAll(int threads = 0, bool gravity = false); /// < collision step
-
-    /// output
-    void techplotOutput(int iterNum, bool vebose = false)const;
-    void vtkOutput(int iterNum)const;
 
     /// overloaded == Operator
     const bool operator==(const Lattice& oher)const;
