@@ -372,7 +372,7 @@ void Lattice::streamAndBouncePull(Cell& tCell, const direction& dir)const
     tCell.setF(ftmp);
 }
 
-const FSet eqDistro(const Cell& tmp, const FSet& phi)
+const FSet eqDistro(const ColSet& rho_k, const Vector& u, const FSet& phi)
 {
     FSet feq;
     const double usqr = u*u;
