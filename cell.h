@@ -13,23 +13,25 @@ using namespace std;
 class Cell
 {
 public:
-    Cell(double fzero_red=1, double fzero_blue=1, bool solid = false); // constr
+    Cell(double fzero_red=1, double fzero_blue=1, bool solid = false); /// < construcor
     Cell(const array& finiRed,const array& finiBlue); // constr
 
+    /// set-methods
+    inline void setF(const FSet& newF){f = newF;};
+    inline void setIsSolid(bool tmp){isSolid = tmp;};
+
+    /// get-methods
+    inline const FSet getF()const{return f;};
+    inline const ColSet getRho()const{return rho;};
+    inline const bool getIsSolid()const{return isSolid;};
+
+    /// calculations
     void calcRho();             /// < calculates both densities
     const double calcPsi()const;     /// < calculates the color field based on the densities
-
     const Vector calcU()const;      /// < calculates the velocities based on the densities
+    inline const double getDeltaRho()const{return (rho[0]-rho[1]);}; /// < returns rho_red - rho_blue
 
-    const double getDeltaRho()const; /// < returns rho_red - rho_blue
-
-    ///  access the internal elements
-    const FSet getF()const;
-    void setF(const FSet& newF);
-    const ColSet getRho()const;
-    const bool getIsSolid()const;
-    void setIsSolid(bool tmp);
-
+    ///  overloaded == operator
     const bool operator==(const Cell& other)const;
 
 private:

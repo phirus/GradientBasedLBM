@@ -29,7 +29,6 @@ void Cell::calcRho()
     // initialize
     rho[0] = 0;
     rho[1] = 0;
-
     // iterate
     if (isSolid == false)
     {
@@ -41,11 +40,6 @@ void Cell::calcRho()
         for (it = f[1].begin() ; it != f[1].end(); it++){
             rho[1] += *it;
         }
-//        for (int i=0; i<9; i++)
-//        {
-//            rho[0] += f[0][i];
-//            rho[1] += f[1][i];
-//        }
     }
 }
 
@@ -74,35 +68,6 @@ const Vector Cell::calcU()const
         u.y /= rhoSum;
     }
     return u;
-}
-
-
-const FSet Cell::getF()const
-{
-    return f;
-}
-
-void Cell::setF(const FSet& newF){
-    f = newF;
-}
-
-const ColSet Cell::getRho()const
-{
-    return rho;
-}
-
-const double Cell::getDeltaRho()const
-{
-    return (rho[0]-rho[1]);
-}
-
-void Cell::setIsSolid(bool tmp)
-{
-    isSolid = tmp;
-}
-const bool Cell::getIsSolid()const
-{
-    return isSolid;
 }
 
 const bool Cell::operator==(const Cell& other)const {
