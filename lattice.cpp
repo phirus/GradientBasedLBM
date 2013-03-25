@@ -253,15 +253,8 @@ void Lattice::collideAll(int threads, bool gravity)
 
                     for (int color=0;color<=1; color++)
                     {
-//                            fTmp[color][q] =  fCell[color][q] - omega * ( fCell[color][q]-fEq[color][q] ) + A_k[color] * two_phase + forcingTerm;
-                        fTmp[color][q] =  fCell[color][q] - omega * Diff[color][q] + A_k[color] * two_phase + forcingTerm;
-//                        array transformed = TrafoMatrix * Diff[color];
-//                        transformed = S * transformed;
-//                        transformed = InvTtrafoMatrix * transformed;
-
-//                            fTmp[color][q] =  fCell[color][q] - transformed[q] + A_k[color] * two_phase + forcingTerm;
+                        fTmp[color][q] =  fCell[color][q] - omega * Diff[color][q] + A_k[color] * two_phase + forcingTerm * dt;
                         if (fTmp[color][q] < 0) fTmp[color][q] = 0;
-
                     }
                     if (rho_k[0] > 0 && rho_k[1] > 0 && rho > 0) recolor = beta * (rho_k[0] * rho_k[1])/(rho*rho) *  grad.angle(e[q])   * (rho_k[0] * phi.at(0).at(q) + rho_k[1] * phi.at(1).at(q));
                     else recolor = 0;
