@@ -84,7 +84,9 @@ void Lattice::equilibriumIni()
         {
             tmp = (*data)[i][j];
             tmp.calcRho();
-            eqDis = eqDistro(tmp,param.getPhi());
+            ColSet rho = tmp.getRho();
+            Vector u = tmp.calcU();
+            eqDis = eqDistro(rho,u,param.getPhi());
             tmp.setF(eqDis);
             (*data)[i][j] = tmp;
         }
@@ -197,7 +199,7 @@ void Lattice::collideAll(int threads, bool gravity)
     const int range = xsize * ysize;
     const double rhoRedFixed = param.getRhoR();
     const RelaxationPar relax = param.getRelaxation();
-    const Matrix STemplate(relax.s_2,relax.s_3,relax.s_5);
+    const double dt = param.getDeltaT();
 
 #pragma omp parallel
     {
@@ -207,35 +209,33 @@ void Lattice::collideAll(int threads, bool gravity)
             int x,y;
             linearIndex(index,x,y);
             Cell tmpCell = (*data)[x][y];
+
             if (tmpCell.getIsSolid() == false)
             {
                 FSet  fTmp;
-
                 FSet fCell = tmpCell.getF();
-
                 FSet Diff;
 
                 const ColSet rho_k = tmpCell.getRho();
                 const double rho = sum(rho_k);
 
-                const FSet fEq = eqDistro(tmpCell, phi);
+//                const Vector G(0 ,  g*(rhoRedFixed - rho));
+                const Vector G(0 , - rho * g);
+
+//                const Vector u = tmpCell.calcU();
+                const Vector u = tmpCell.calcU() + G *  (dt/(2* rho)) ;
+
+                const FSet fEq = eqDistro(rho_k, u, phi);
 
                 Diff[0] = arrayDiff(fCell[0],fEq[0]);
                 Diff[1] = arrayDiff(fCell[1],fEq[1]);
 
                 const double omega = param.getOmega(tmpCell.calcPsi());
-//                    Matrix S = STemplate;
-//                    S.addOmega(omega);
-                Matrix S(relax.s_2,relax.s_3,relax.s_5,true);
-
 
                 const ColSet A_k = param.getAk(omega);
 
                 const Vector grad = getGradient(x,y);
                 const double av = grad.abs();
-
-                const Vector G(0 , g*(rhoRedFixed - rho) ) ;
-                const Vector u = tmpCell.calcU();
 
                 double two_phase;
                 double scal;
@@ -502,12 +502,9 @@ void Lattice::vtkOutput(int iterNum)const
     VTKFile.close();
 }
 
-
-const FSet eqDistro(const Cell& tmp, const FSet& phi)
+const FSet eqDistro(const ColSet& rho_k, const Vector& u, const FSet& phi)
 {
     FSet feq;
-    const ColSet rho_k = tmp.getRho();
-    const Vector u = tmp.calcU();
     const double usqr = u*u;
     double scal;
     for (int i=0; i<9; i++)
@@ -520,25 +517,6 @@ const FSet eqDistro(const Cell& tmp, const FSet& phi)
     }
     return feq;
 }
-
-const FSet eqDistroGravity(const Cell& tmp, const FSet& phi, const Vector& force, double dt)
-{
-    FSet feq;
-    const ColSet rho_k = tmp.getRho();
-    const Vector u = tmp.calcU() + force *  (dt/(2* sum(rho_k))) ;
-    const double usqr = u*u;
-    double scal;
-    for (int i=0; i<9; i++)
-    {
-        scal = u*e[i];
-        for (int color = 0; color<=1; color++)
-        {
-            feq[color][i] = rho_k[color] * ( phi[color][i] + w[i] * ( 3 * scal + 4.5 * (scal*scal) - 1.5 * usqr));
-        }
-    }
-    return feq;
-}
-
 
 const array arrayDiff(const array &one, const array &two)
 {

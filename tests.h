@@ -593,7 +593,9 @@ TEST(MRT,trafo){
     const array f = {{1,2,3,4,5,6,7,8,9}};
     Cell testCell(f,f);
     testCell.calcRho();
-    FSet fEq  = eqDistro(testCell,phi);
+    ColSet rho = testCell.getRho();
+    Vector u = testCell.calcU();
+    FSet fEq  = eqDistro(rho,u,phi);
     FSet vergleich;
     vergleich[0] = arrayDiff(f, fEq[0]);
     vergleich[1] = arrayDiff(f, fEq[1]);
@@ -616,7 +618,9 @@ TEST(MRT,mass){
     const array f = {{1,2,3,4,5,6,7,8,9}};
     Cell testCell(f,f);
     testCell.calcRho();
-    FSet fEq  = eqDistro(testCell,phi);
+    ColSet rho = testCell.getRho();
+    Vector u = testCell.calcU();
+    FSet fEq  = eqDistro(rho,u,phi);
     array m = TrafoMatrix * f;
     array mEq = TrafoMatrix * fEq[0];
 
