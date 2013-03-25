@@ -1,7 +1,5 @@
 #include"vector.h"
 
-Vector::Vector(double xn, double yn):x(xn),y(yn){}
-
 const double Vector::angle(const Vector& other)const
 {
     double av1 = abs();

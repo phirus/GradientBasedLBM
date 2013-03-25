@@ -7,7 +7,7 @@ class Vector
 {
     public:
     double x,y;
-    Vector(double xn = 0, double yn = 0);
+    Vector(double xn = 0, double yn = 0):x(xn),y(yn){};
 
     /// overloaded operators
 

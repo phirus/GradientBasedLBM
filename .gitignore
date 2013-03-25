@@ -4,3 +4,4 @@ obj/
 *.bin
 *.backup
 *.layout
+*.depend
