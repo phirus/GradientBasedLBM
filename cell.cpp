@@ -29,17 +29,24 @@ void Cell::calcRho()
     // initialize
     rho[0] = 0;
     rho[1] = 0;
+    u.x = 0;
+    u.y = 0;
+
     // iterate
     if (isSolid == false)
     {
-        boost::array<double,9>::iterator it;
-        for (it = f[0].begin() ; it != f[0].end(); it++){
-            rho[0] += *it;
+        for (int i=0; i<9; i++)
+        {
+            rho[0] += f[0][i];
+            rho[1] += f[1][i];
+            u.x += ( f[0][i] + f[1][i] ) * e[i].x;
+            u.y += ( f[0][i] + f[1][i] ) * e[i].y;
         }
-
-        for (it = f[1].begin() ; it != f[1].end(); it++){
-            rho[1] += *it;
-        }
+        double rhoSum = rho[0] + rho[1];
+        if(rhoSum >0) {
+            u.x /= rhoSum;
+            u.y /= rhoSum;
+            }
     }
 }
 
@@ -48,26 +55,6 @@ const double Cell::calcPsi()const
     double rhoSum = sum(rho);
     if(rhoSum > 0) return (rho[0] - rho[1])/( rhoSum ); // < prevent division by 0
     else return 0;
-}
-
-const Vector Cell::calcU()const
-{
-    // initialize
-    double rhoSum = sum(rho);
-    Vector u(0,0);
-
-    // iterate
-    if (isSolid == false && rhoSum > 0) // < prevent division by 0
-    {
-        for (int i=0; i<9; i++)
-        {
-            u.x += ( f[0][i] + f[1][i] ) * e[i].x;
-            u.y += ( f[0][i] + f[1][i] ) * e[i].y;
-        }
-        u.x /= rhoSum;
-        u.y /= rhoSum;
-    }
-    return u;
 }
 
 const bool Cell::operator==(const Cell& other)const {

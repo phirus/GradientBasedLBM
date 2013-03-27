@@ -85,7 +85,7 @@ void Lattice::equilibriumIni()
             tmp = (*data)[i][j];
             tmp.calcRho();
             ColSet rho = tmp.getRho();
-            Vector u = tmp.calcU();
+            Vector u = tmp.getU();
             eqDis = eqDistro(rho,u,param.getPhi());
             tmp.setF(eqDis);
             (*data)[i][j] = tmp;
@@ -107,7 +107,7 @@ void Lattice::balance(double& mass, double& momentum)const
         {
             (*data)[i][j].calcRho();
             rho = sum((*data)[i][j].getRho());
-            u = (*data)[i][j].calcU();
+            u = (*data)[i][j].getU();
 
             mass += rho;
             momentum += rho * sqrt(u*u);
@@ -223,7 +223,7 @@ void Lattice::collideAll(int threads, bool gravity)
                 const Vector G(0 , - rho * g);
 
 //                const Vector u = tmpCell.calcU();
-                const Vector u = tmpCell.calcU() + G *  (dt/(2* rho)) ;
+                const Vector u = tmpCell.getU() + G *  (dt/(2* rho)) ;
 
                 const FSet fEq = eqDistro(rho_k, u, phi);
 
