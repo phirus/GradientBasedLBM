@@ -1,6 +1,6 @@
 #include "cell.h"
 
-Cell::Cell(double fzero_red, double fzero_blue, bool solid):isSolid(solid)
+Cell::Cell(double fzero_red, double fzero_blue, bool solid):u(0,0),isSolid(solid),delta(0)
 {
 //    isSolid = solid;
     f[0][0] = fzero_red;
@@ -43,6 +43,7 @@ void Cell::calcRho()
             u.y += ( f[0][i] + f[1][i] ) * e[i].y;
         }
         double rhoSum = rho[0] + rho[1];
+        delta = rho[0]-rho[1];
         if(rhoSum >0) {
             u.x /= rhoSum;
             u.y /= rhoSum;

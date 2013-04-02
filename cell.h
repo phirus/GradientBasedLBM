@@ -29,7 +29,7 @@ public:
     /// calculations
     void calcRho();             /// < calculates both densities, the velocity and delta rho
     const double calcPsi()const;     /// < calculates the color field based on the densities
-    inline const double getDeltaRho()const{return (rho[0]-rho[1]);}; /// < returns rho_red - rho_blue
+    inline const double getDeltaRho()const{return delta;}; /// < returns rho_red - rho_blue
 
     ///  overloaded == operator
     const bool operator==(const Cell& other)const;
@@ -39,6 +39,7 @@ private:
     ColSet rho;                    /// < rho_r = rho[0], rho_b = rho[1]
     Vector u;
     bool isSolid;               /// < used to mark solid cells
+    double delta;
 };
 
 #endif // CELL_H

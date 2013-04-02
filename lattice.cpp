@@ -197,7 +197,7 @@ void Lattice::collideAll(int threads, bool gravity)
     const FSet phi = param.getPhi();
     const double g = param.getG();
     const int range = xsize * ysize;
-    const double rhoRedFixed = param.getRhoR();
+//    const double rhoRedFixed = param.getRhoR();
     const RelaxationPar relax = param.getRelaxation();
     const double dt = param.getDeltaT();
 
