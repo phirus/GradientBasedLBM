@@ -103,8 +103,8 @@ void techplotOutput(Lattice& l, int iterNum, bool verbose)
             PsiFile << i << "\t" << j << "\t" << "0 \t" << tmp.calcPsi() ;
             if (verbose == true)
             {
-                Vector u = tmp.calcU();
-                PsiFile << "\t" << sum(tmp.getRho()) << "\t" << u.x << "\t" << u.y << "\t" << u.abs() ;
+                VeloSet u = tmp.calcU();
+                PsiFile << "\t" << sum(tmp.getRho()) << "\t" << u[0].x << "\t" << u[0].y << "\t" << u[0].abs() ;
             }
             PsiFile << endl;
         }
@@ -188,8 +188,8 @@ void vtkOutput(Lattice& l, int iterNum)
         {
             tmp = l.getCell(i,j);
             tmp.calcRho();
-            Vector u = tmp.calcU();
-            VTKFile << u.x << " " << u.y << " 0 ";
+            VeloSet u = tmp.calcU();
+            VTKFile << u[0].x << " " << u[0].y << " 0 ";
         }
     }
     VTKFile.close();

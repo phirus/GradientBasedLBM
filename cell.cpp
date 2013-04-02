@@ -50,24 +50,29 @@ const double Cell::calcPsi()const
     else return 0;
 }
 
-const Vector Cell::calcU()const
+const VeloSet Cell::calcU()const
 {
     // initialize
-    double rhoSum = sum(rho);
     Vector u(0,0);
+    Vector v(0,0);
 
     // iterate
-    if (isSolid == false && rhoSum > 0) // < prevent division by 0
+    if (isSolid == false && sum(rho) > 0) // < prevent division by 0
     {
         for (int i=0; i<9; i++)
         {
-            u.x += ( f[0][i] + f[1][i] ) * e[i].x;
-            u.y += ( f[0][i] + f[1][i] ) * e[i].y;
+            u.x += ( f[0][i]) * e[i].x;
+            u.y += ( f[0][i]) * e[i].y;
+            v.x += ( f[1][i] ) * e[i].x;
+            v.y += ( f[1][i] ) * e[i].y;
         }
-        u.x /= rhoSum;
-        u.y /= rhoSum;
+        u.x /= rho[0];
+        u.y /= rho[0];
+        v.x /= rho[1];
+        v.y /= rho[1];
     }
-    return u;
+    VeloSet out = {{u,v}};
+    return out;
 }
 
 const bool Cell::operator==(const Cell& other)const {

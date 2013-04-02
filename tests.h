@@ -124,7 +124,11 @@ TEST(Cell,Velo)
 
     Cell cell(fr,fb);
     cell.calcRho();
-    Vector u = cell.calcU();
+    ColSet rho = cell.getRho();
+    VeloSet v = cell.calcU();
+
+    Vector u = (v[0]*rho[0] + v[1]*rho[1]) * (1/sum(rho));
+
     usqr = u*u;
 
     EXPECT_DOUBLE_EQ(0.05,u.y);
@@ -509,8 +513,8 @@ TEST(Lattice,collideSingle)
     double rho,usqr;
     cell.calcRho();
     rho = sum(cell.getRho());
-    Vector u = cell.calcU();
-    usqr = u*u;
+    VeloSet u = cell.calcU();
+    usqr = u[0]*u[0];
 
     EXPECT_DOUBLE_EQ(2.0,rho);
     EXPECT_NEAR(0,usqr,1e-10);
@@ -594,7 +598,7 @@ TEST(MRT,trafo){
     Cell testCell(f,f);
     testCell.calcRho();
     ColSet rho = testCell.getRho();
-    Vector u = testCell.calcU();
+    VeloSet u = testCell.calcU();
     FSet fEq  = eqDistro(rho,u,phi);
     FSet vergleich;
     vergleich[0] = arrayDiff(f, fEq[0]);
@@ -619,7 +623,7 @@ TEST(MRT,mass){
     Cell testCell(f,f);
     testCell.calcRho();
     ColSet rho = testCell.getRho();
-    Vector u = testCell.calcU();
+    VeloSet u = testCell.calcU();
     FSet fEq  = eqDistro(rho,u,phi);
     array m = TrafoMatrix * f;
     array mEq = TrafoMatrix * fEq[0];

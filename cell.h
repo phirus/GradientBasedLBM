@@ -28,7 +28,7 @@ public:
     /// calculations
     void calcRho();             /// < calculates both densities
     const double calcPsi()const;     /// < calculates the color field based on the densities
-    const Vector calcU()const;      /// < calculates the velocities based on the densities
+    const VeloSet calcU()const;      /// < calculates the velocities based on the densities
     inline const double getDeltaRho()const{return (rho[0]-rho[1]);}; /// < returns rho_red - rho_blue
 
     ///  overloaded == operator
