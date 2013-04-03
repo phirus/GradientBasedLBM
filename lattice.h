@@ -1,8 +1,6 @@
 #ifndef LATTICE_H
 #define LATTICE_H
 
-#include<omp.h>
-
 #include"cell.h"
 #include"paramset.h"
 
