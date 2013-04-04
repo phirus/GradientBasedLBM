@@ -21,13 +21,18 @@ Cell::Cell(double fzero_red, double fzero_blue, bool solid):isSolid(solid),delta
 
 }
 // like a copy constructor for the bulk phase
-Cell::Cell(const array& finiRed, const array& finiBlue):isSolid(false)
+Cell::Cell(const array& finiRed, const array& finiBlue):isSolid(false),delta(0)
 {
     f.at(0) = finiRed;
     f.at(1) = finiBlue;
 
     rho[0] = 0;
     rho[1] = 0;
+
+    u[0].x = 0;
+    u[0].y = 0;
+    u[1].x = 0;
+    u[1].y = 0;
 }
 
 void Cell::calcRho()
@@ -53,14 +58,15 @@ void Cell::calcRho()
             u[1].x += ( f[1][i] ) * e[i].x;
             u[1].y += ( f[1][i] ) * e[i].y;
         }
-        double rhoSum = rho[0] + rho[1];
         delta = rho[0]-rho[1];
-        if(rhoSum >0) {
+        if(rho[0] >0) {
             u[0].x /= rho[0];
             u[0].y /= rho[0];
+        }
+        if(rho[1] >0) {
             u[1].x /= rho[1];
             u[1].y /= rho[1];
-            }
+        }
     }
 }
 

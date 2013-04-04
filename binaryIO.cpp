@@ -24,7 +24,6 @@ void binary_output(const Lattice& l, const string& filename){
             file.write(reinterpret_cast<char*> (&data[x][y]), sizeof(Cell));
         }
     }
-
     file.close();
 }
 
@@ -85,13 +84,15 @@ void techplotOutput(Lattice& l, int iterNum, bool verbose)
     if (verbose == true)
     {
         PsiFile << "\"rho\""<<endl;
-        PsiFile << "\"ux\""<<endl;
-        PsiFile << "\"uy\""<<endl;
+        PsiFile << "\"ux1\""<<endl;
+        PsiFile << "\"uy1\""<<endl;
+        PsiFile << "\"ux2\""<<endl;
+        PsiFile << "\"uy2\""<<endl;
         PsiFile << "\"u_abs\""<<endl;
     }
     PsiFile << "ZONE T=\" "<< iterNum << "\""<< endl;
     PsiFile << "I="<<xsize<<", J="<<ysize<<", K=1,F=POINT"<< endl;
-    if (verbose == true) PsiFile << "DT=(DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE)"<<endl;
+    if (verbose == true) PsiFile << "DT=(DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE)"<<endl;
     else PsiFile << "DT=(DOUBLE DOUBLE DOUBLE DOUBLE)"<<endl;
 
     for (int j=0; j<ysize; j++)
@@ -104,7 +105,9 @@ void techplotOutput(Lattice& l, int iterNum, bool verbose)
             if (verbose == true)
             {
                 VeloSet u = tmp.getU();
-                PsiFile << "\t" << sum(tmp.getRho()) << "\t" << u[0].x << "\t" << u[0].y << "\t" << u[0].abs() ;
+                ColSet rho = tmp.getRho();
+                Vector v = (u[0]*rho[0] + u[1]*rho[1]) * (1/sum(rho));
+                PsiFile << "\t" << sum(rho) << "\t" << u[0].x << "\t" << u[0].y << "\t" << u[1].x << "\t" << u[1].y << "\t" << v.abs() ;
             }
             PsiFile << endl;
         }
@@ -181,7 +184,7 @@ void vtkOutput(Lattice& l, int iterNum)
         }
     }
 
-    VTKFile << "\nVECTORS u DOUBLE"<<endl;
+    VTKFile << "\nVECTORS u1 DOUBLE"<<endl;
     for (int j = 0; j < ysize; j++)
     {
         for (int i = 0; i < xsize; i++)
@@ -191,6 +194,19 @@ void vtkOutput(Lattice& l, int iterNum)
 
             VeloSet u = tmp.getU();
             VTKFile << u[0].x << " " << u[0].y << " 0 ";
+        }
+    }
+
+    VTKFile << "\nVECTORS u2 DOUBLE"<<endl;
+    for (int j = 0; j < ysize; j++)
+    {
+        for (int i = 0; i < xsize; i++)
+        {
+            tmp = l.getCell(i,j);
+            tmp.calcRho();
+
+            VeloSet u = tmp.getU();
+            VTKFile << u[1].x << " " << u[1].y << " 0 ";
         }
     }
     VTKFile.close();
