@@ -85,7 +85,7 @@ void Lattice::equilibriumIni()
             tmp = (*data)[i][j];
             tmp.calcRho();
             ColSet rho = tmp.getRho();
-            VeloSet u = tmp.calcU();
+            VeloSet u = tmp.getU();
             eqDis = eqDistro(rho,u,param.getPhi());
             tmp.setF(eqDis);
             (*data)[i][j] = tmp;
@@ -107,7 +107,7 @@ void Lattice::balance(double& mass, double& momentum)const
         {
             (*data)[i][j].calcRho();
             rho = sum((*data)[i][j].getRho());
-            u = (*data)[i][j].calcU();
+            u = (*data)[i][j].getU();
 
             mass += rho;
             momentum += rho * sqrt(u[0]*u[0]);
@@ -197,7 +197,7 @@ void Lattice::collideAll(int threads, bool gravity)
     const FSet phi = param.getPhi();
     const double g = param.getG();
     const int range = xsize * ysize;
-    const double rhoRedFixed = param.getRhoR();
+//    const double rhoRedFixed = param.getRhoR();
     const RelaxationPar relax = param.getRelaxation();
     const double dt = param.getDeltaT();
 
@@ -223,7 +223,7 @@ void Lattice::collideAll(int threads, bool gravity)
                 const Vector G(0 , - rho * g);
 
 //                const Vector u = tmpCell.calcU();
-                const VeloSet u = tmpCell.calcU();// + G *  (dt/(2* rho)) ;
+                const VeloSet u = tmpCell.getU();// + G *  (dt/(2* rho)) ;
                 Vector v = u[0] + G *  (dt/(2* rho)) ;
 
                 const FSet fEq = eqDistro(rho_k, u, phi);

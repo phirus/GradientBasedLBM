@@ -1,6 +1,6 @@
 #include "cell.h"
 
-Cell::Cell(double fzero_red, double fzero_blue, bool solid):isSolid(solid)
+Cell::Cell(double fzero_red, double fzero_blue, bool solid):isSolid(solid),delta(0)
 {
 //    isSolid = solid;
     f[0][0] = fzero_red;
@@ -13,6 +13,12 @@ Cell::Cell(double fzero_red, double fzero_blue, bool solid):isSolid(solid)
     }
     rho[0] = 0;
     rho[1] = 0;
+
+    u[0].x = 0;
+    u[0].y = 0;
+    u[1].x = 0;
+    u[1].y = 0;
+
 }
 // like a copy constructor for the bulk phase
 Cell::Cell(const array& finiRed, const array& finiBlue):isSolid(false)
@@ -29,17 +35,32 @@ void Cell::calcRho()
     // initialize
     rho[0] = 0;
     rho[1] = 0;
+
+    u[0].x = 0;
+    u[0].y = 0;
+    u[1].x = 0;
+    u[1].y = 0;
+
     // iterate
     if (isSolid == false)
     {
-        boost::array<double,9>::iterator it;
-        for (it = f[0].begin() ; it != f[0].end(); it++){
-            rho[0] += *it;
+        for (int i=0; i<9; i++)
+        {
+            rho[0] += f[0][i];
+            rho[1] += f[1][i];
+            u[0].x += ( f[0][i]) * e[i].x;
+            u[0].y += ( f[0][i]) * e[i].y;
+            u[1].x += ( f[1][i] ) * e[i].x;
+            u[1].y += ( f[1][i] ) * e[i].y;
         }
-
-        for (it = f[1].begin() ; it != f[1].end(); it++){
-            rho[1] += *it;
-        }
+        double rhoSum = rho[0] + rho[1];
+        delta = rho[0]-rho[1];
+        if(rhoSum >0) {
+            u[0].x /= rho[0];
+            u[0].y /= rho[0];
+            u[1].x /= rho[1];
+            u[1].y /= rho[1];
+            }
     }
 }
 
@@ -48,31 +69,6 @@ const double Cell::calcPsi()const
     double rhoSum = sum(rho);
     if(rhoSum > 0) return (rho[0] - rho[1])/( rhoSum ); // < prevent division by 0
     else return 0;
-}
-
-const VeloSet Cell::calcU()const
-{
-    // initialize
-    Vector u(0,0);
-    Vector v(0,0);
-
-    // iterate
-    if (isSolid == false && sum(rho) > 0) // < prevent division by 0
-    {
-        for (int i=0; i<9; i++)
-        {
-            u.x += ( f[0][i]) * e[i].x;
-            u.y += ( f[0][i]) * e[i].y;
-            v.x += ( f[1][i] ) * e[i].x;
-            v.y += ( f[1][i] ) * e[i].y;
-        }
-        u.x /= rho[0];
-        u.y /= rho[0];
-        v.x /= rho[1];
-        v.y /= rho[1];
-    }
-    VeloSet out = {{u,v}};
-    return out;
 }
 
 const bool Cell::operator==(const Cell& other)const {
