@@ -14,22 +14,22 @@ LIB =
 LDFLAGS = 
 
 INC_DEBUG =  $(INC) -I/home/prusch/gtest-1.6.0/include
-CFLAGS_DEBUG =  $(CFLAGS) -Wall -g -fopenmp
+CFLAGS_DEBUG =  $(CFLAGS) -Wall -g 
 RESINC_DEBUG =  $(RESINC)
 RCFLAGS_DEBUG =  $(RCFLAGS)
 LIBDIR_DEBUG =  $(LIBDIR)
-LIB_DEBUG = $(LIB) /home/prusch/gtest-1.6.0/make/gtest_main.a -lgomp
+LIB_DEBUG = $(LIB) /home/prusch/gtest-1.6.0/make/gtest_main.a 
 LDFLAGS_DEBUG =  $(LDFLAGS) -lpthread
 OBJDIR_DEBUG = obj/Debug
 DEP_DEBUG = 
 OUT_DEBUG = bin/Debug/GradientBased
 
 INC_RELEASE =  $(INC) -I/home/prusch/gtest-1.6.0/include
-CFLAGS_RELEASE =  $(CFLAGS) -O3 -fopenmp
+CFLAGS_RELEASE =  $(CFLAGS) -O3 
 RESINC_RELEASE =  $(RESINC)
 RCFLAGS_RELEASE =  $(RCFLAGS)
 LIBDIR_RELEASE =  $(LIBDIR)
-LIB_RELEASE = $(LIB) /home/prusch/gtest-1.6.0/make/gtest_main.a -lgomp
+LIB_RELEASE = $(LIB) /home/prusch/gtest-1.6.0/make/gtest_main.a
 LDFLAGS_RELEASE =  $(LDFLAGS) -s -lpthread
 OBJDIR_RELEASE = obj/Release
 DEP_RELEASE = 
