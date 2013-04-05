@@ -197,7 +197,7 @@ void Lattice::collideAll(int threads, bool gravity)
     const FSet phi = param.getPhi();
     const double g = param.getG();
     const int range = xsize * ysize;
-//    const double rhoRedFixed = param.getRhoR();
+    const double rhoRedFixed = param.getRhoR();
     const RelaxationPar relax = param.getRelaxation();
     const double dt = param.getDeltaT();
 
@@ -219,12 +219,16 @@ void Lattice::collideAll(int threads, bool gravity)
                 const ColSet rho_k = tmpCell.getRho();
                 const double rho = sum(rho_k);
 
-//                const Vector G(0 ,  g*(rhoRedFixed - rho));
-                const Vector G(0 , - rho * g);
+                const Vector G(0 ,  g*(rhoRedFixed - rho));
+//                const Vector G(0 , - rho * g);
 
 //                const Vector u = tmpCell.calcU();
-                const VeloSet u = tmpCell.getU();// + G *  (dt/(2* rho)) ;
-                Vector v = u[0] + G *  (dt/(2* rho)) ;
+                VeloSet u = tmpCell.getU();// + G *  (dt/(2* rho)) ;
+
+                if(gravity == true){
+                u[0] = u[0] + G *  (dt/(2* rho)) ;
+                u[1] = u[1] + G *  (dt/(2* rho)) ;
+                }
 
                 const FSet fEq = eqDistro(rho_k, u, phi);
 
@@ -250,10 +254,10 @@ void Lattice::collideAll(int threads, bool gravity)
                     if (av > 0) two_phase = av/2 * (w[q] * ( scal*scal )/(av*av) - B[q]);
                     else two_phase = 0;
 
-                    if (gravity == true) forcingTerm = (1- 0.5*omega) * w[q] * (G * ( e[q] * (e[q] * u[0]) + e[q] - u[0] )) ;
-
                     for (int color=0;color<=1; color++)
                     {
+                        if (gravity == true) forcingTerm = (1- 0.5*omega) * w[q] * (G * ( e[q] * (e[q] * u[color]) + e[q] - u[color] )) ;
+
                         fTmp[color][q] =  fCell[color][q] - omega * Diff[color][q] + A_k[color] * two_phase + forcingTerm * dt;
                         if (fTmp[color][q] < 0) fTmp[color][q] = 0;
                     }
