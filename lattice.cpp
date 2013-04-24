@@ -49,7 +49,7 @@ const ColSet Lattice::getSize()const
     return pony;
 }
 
-void Lattice::initialize()
+void Lattice::closedBox()
 {
     const Cell wall(0,0,true);
 
@@ -72,6 +72,25 @@ void Lattice::initialize()
         }
     }
 }
+
+void Lattice::bottomWall()
+{
+    const Cell wall(0,0,true);
+
+    for (int x=0; x<xsize; x++)
+    {
+        (*data)[x][0] = wall;
+    }
+
+    for (int y=0; y<ysize; y++)
+    {
+        for (int x=0; x<xsize; x++)
+        {
+            (*data)[x][y].calcRho();
+        }
+    }
+}
+
 
 void Lattice::equilibriumIni()
 {

@@ -37,12 +37,16 @@ public:
     const FSet getF(int x, int y)const{return (*data)[x][y].getF();};          /// < get F
 
     /// calculations
-    void initialize(); /// < initialize the Lattice (set up walls and calculate rho)
     void equilibriumIni(); /// < replace all distribution functions with the equilibrium distribution
     void balance(double& mass, double& momentum)const; /// < monitor overall mass and momentum
     void overallRho();
     direction directions(int x, int y)const; /// < calculates positions of neighboring sites (periodical)
     const Vector getGradient(int x, int y)const; /// < calculates the color gradient on the position (y,x)
+
+    /// walls
+    void closedBox(); /// < initialize the Lattice (set up walls and calculate rho)
+    void bottomWall(); /// < initialize the Lattice (set up walls and calculate rho)
+
 
     void streamAll(int threads = 0); /// < streaming step
     void collideAll(int threads = 0, bool gravity = false); /// < collision step
