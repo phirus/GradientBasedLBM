@@ -65,7 +65,7 @@ const bool binary_input(Lattice& outL, const string& filename){
     return success;
 }
 
-void techplotOutput(Lattice& l, int iterNum, bool verbose)
+void techplotOutput(const Lattice& l, int iterNum, bool verbose)
 {
     ofstream PsiFile;
     Cell tmp;
@@ -112,7 +112,7 @@ void techplotOutput(Lattice& l, int iterNum, bool verbose)
     PsiFile.close();
 }
 
-void vtkOutput(Lattice& l, int iterNum)
+void vtkOutput(const Lattice& l, int iterNum)
 {
     ofstream VTKFile;
     Cell tmp;
