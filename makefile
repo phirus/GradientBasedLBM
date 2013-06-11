@@ -7,64 +7,58 @@ LD = g++
 WINDRES = windres
 
 INC = -I../../gtest-1.6.0/include
-CFLAGS =  -Wall
-RESINC = 
-LIBDIR = 
-LIB = 
-LDFLAGS = 
+CFLAGS =  -Wall -g
+LIB = ../../gtest-1.6.0/make/gtest_main.a
+LDFLAGS = -lpthread
 
-INC_DEBUG =  $(INC) 
-CFLAGS_DEBUG =  $(CFLAGS) -Wall -g 
-RESINC_DEBUG =  $(RESINC)
-RCFLAGS_DEBUG =  $(RCFLAGS)
-LIBDIR_DEBUG =  $(LIBDIR)
-LIB_DEBUG = $(LIB) ../../gtest-1.6.0/make/gtest_main.a 
-LDFLAGS_DEBUG =  $(LDFLAGS) -lpthread
-OBJDIR_DEBUG = obj/Debug
-DEP_DEBUG = 
-OUT_DEBUG = bin/Debug/GradientBased
+OBJ_DIR = obj/
+BIN_DIR = bin/
+OUTPUT = $(BIN_DIR)/GradientBased
 
-OBJ_DEBUG = $(OBJDIR_DEBUG)/binaryIO.o $(OBJDIR_DEBUG)/cell.o $(OBJDIR_DEBUG)/lattice.o $(OBJDIR_DEBUG)/main.o $(OBJDIR_DEBUG)/matrix.o $(OBJDIR_DEBUG)/paramset.o $(OBJDIR_DEBUG)/vector.o
+# creating OBJs
+
+OBJ_DEBUG = $(OBJ_DIR)/binaryIO.o $(OBJ_DIR)/cell.o $(OBJ_DIR)/lattice.o $(OBJ_DIR)/main.o $(OBJ_DIR)/matrix.o $(OBJ_DIR)/paramset.o $(OBJ_DIR)/vector.o
 
 
-all: debug 
-clean: cleandebug
+all: debug run
 
 before_debug: 
-	test -d bin/Debug || mkdir -p bin/Debug
-	test -d $(OBJDIR_DEBUG) || mkdir -p $(OBJDIR_DEBUG)
+	test -d $(BIN_DIR) || mkdir -p $(BIN_DIR)
+	test -d $(OBJ_DIR) || mkdir -p $(OBJ_DIR)
 
 after_debug: 
 
 debug: before_debug out_debug after_debug
 
-out_debug: before_debug $(OBJ_DEBUG) $(DEP_DEBUG)
-	$(LD) $(LIBDIR_DEBUG) -o $(OUT_DEBUG) $(OBJ_DEBUG)  $(LDFLAGS_DEBUG) $(LIB_DEBUG)
+out_debug: before_debug $(OBJ_DEBUG)
+	$(LD) -o $(OUTPUT) $(OBJ_DEBUG)  $(LDFLAGS) $(LIB)
 
-$(OBJDIR_DEBUG)/binaryIO.o: binaryIO.cpp
-	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c binaryIO.cpp -o $(OBJDIR_DEBUG)/binaryIO.o
+$(OBJ_DIR)/binaryIO.o: binaryIO.cpp
+	$(CXX) $(CFLAGS) $(INC) -c binaryIO.cpp -o $(OBJ_DIR)/binaryIO.o
 
-$(OBJDIR_DEBUG)/cell.o: cell.cpp
-	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c cell.cpp -o $(OBJDIR_DEBUG)/cell.o
+$(OBJ_DIR)/cell.o: cell.cpp
+	$(CXX) $(CFLAGS) $(INC) -c cell.cpp -o $(OBJ_DIR)/cell.o
 
-$(OBJDIR_DEBUG)/lattice.o: lattice.cpp
-	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c lattice.cpp -o $(OBJDIR_DEBUG)/lattice.o
+$(OBJ_DIR)/lattice.o: lattice.cpp
+	$(CXX) $(CFLAGS) $(INC) -c lattice.cpp -o $(OBJ_DIR)/lattice.o
 
-$(OBJDIR_DEBUG)/main.o: main.cpp
-	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c main.cpp -o $(OBJDIR_DEBUG)/main.o
+$(OBJ_DIR)/main.o: main.cpp
+	$(CXX) $(CFLAGS) $(INC) -c main.cpp -o $(OBJ_DIR)/main.o
 
-$(OBJDIR_DEBUG)/matrix.o: matrix.cpp
-	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c matrix.cpp -o $(OBJDIR_DEBUG)/matrix.o
+$(OBJ_DIR)/matrix.o: matrix.cpp
+	$(CXX) $(CFLAGS) $(INC) -c matrix.cpp -o $(OBJ_DIR)/matrix.o
 
-$(OBJDIR_DEBUG)/paramset.o: paramset.cpp
-	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c paramset.cpp -o $(OBJDIR_DEBUG)/paramset.o
+$(OBJ_DIR)/paramset.o: paramset.cpp
+	$(CXX) $(CFLAGS) $(INC) -c paramset.cpp -o $(OBJ_DIR)/paramset.o
 
-$(OBJDIR_DEBUG)/vector.o: vector.cpp
-	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c vector.cpp -o $(OBJDIR_DEBUG)/vector.o
+$(OBJ_DIR)/vector.o: vector.cpp
+	$(CXX) $(CFLAGS) $(INC) -c vector.cpp -o $(OBJ_DIR)/vector.o
 
-cleandebug: 
-	rm -f $(OBJ_DEBUG) $(OUT_DEBUG)
-	rm -rf bin/Debug
-	rm -rf $(OBJDIR_DEBUG)
+clean: 
+	rm -f $(OBJ_DEBUG) $(OUTPUT)
+	rm -rf $(BIN_DIR)
+	rm -rf $(OBJ_DIR)
+run: 
+	./$(OUTPUT)
 
-.PHONY: before_debug after_debug cleandebug
+.PHONY: before_debug after_debug clean
