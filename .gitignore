@@ -6,3 +6,4 @@ Documentation/
 *.backup
 *.layout
 *.depend
+*.cpb
