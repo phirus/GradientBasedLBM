@@ -6,12 +6,12 @@ AR = ar
 LD = g++
 WINDRES = windres
 
-INC = -I../../gtest-1.6.0/include
+INC = -I../../../gtest-1.6.0/include
 CFLAGS =  -Wall -g
-LIB = ../../gtest-1.6.0/make/gtest_main.a
+LIB = ../../../gtest-1.6.0/make/gtest_main.a
 LDFLAGS = -lpthread
 
-SRC = src
+SRC = ../src
 OBJ_DIR = obj
 BIN_DIR = bin
 OUTPUT = $(BIN_DIR)/GradientBased

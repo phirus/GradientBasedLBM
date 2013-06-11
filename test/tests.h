@@ -2,9 +2,9 @@
 #define TESTS_H
 
 #include"gtest/gtest.h"
-#include"src/lattice.h"
-#include"src/vector.h"
-#include"src/binaryIO.h"
+#include"../src/lattice.h"
+#include"../src/vector.h"
+#include"../src/binaryIO.h"
 
 using namespace std;
 
