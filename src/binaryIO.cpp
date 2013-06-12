@@ -210,6 +210,8 @@ void paramLogOut(const Lattice& l){
     paramLog << "xsize = " << xsize << " Cells " << endl;
     paramLog << "ysize = " << ysize << " Cells " << endl;
     paramLog << "dx = " << p.getDeltaX() << " / m " << endl;
+    paramLog << "dt = " << p.getDeltaT() << " / s" << endl;
+    paramLog << "c_s = " << p.getSoundspeed() << " / m s^-1" << endl;  
 
 
 
