@@ -194,3 +194,24 @@ void vtkOutput(const Lattice& l, int iterNum)
     }
     VTKFile.close();
 }
+
+void paramLogOut(const Lattice& l){
+    ofstream paramLog;
+    ColSet extent = l.getSize();
+    ParamSet p = l.getParams();
+    int xsize = static_cast<int> (extent[0]);
+    int ysize = static_cast<int> (extent[1]);
+
+    stringstream name;
+    name <<"paramLog";
+
+    paramLog.open( name.str().c_str() );
+    paramLog << "# used parameters" << endl;
+    paramLog << "xsize = " << xsize << " Cells " << endl;
+    paramLog << "ysize = " << ysize << " Cells " << endl;
+    paramLog << "dx = " << p.getDeltaX() << " / m " << endl;
+
+
+
+    paramLog.close();
+}

@@ -637,6 +637,9 @@ TEST(BinaryIO,output){
     EXPECT_TRUE(binary_input(vergleich));
     EXPECT_EQ(lattice,vergleich);
 }
-
+TEST(BinaryIO,paramLog){
+    Lattice lattice(100,100);    
+    EXPECT_NO_THROW(paramLogOut(lattice));
+}
 
 #endif
