@@ -3,13 +3,29 @@
 
 #include"../src/lattice.h"
 #include"../src/binaryIO.h"
+#include<boost/program_options.hpp>
 
 using namespace std;
+namespace po = boost::program_options;
 
-int main(){
+int main(int argc, char** argv){
 
     time_t start,end;
 	time(&start);
+
+	boost::program_options::options_description desc("Allowed options");
+	desc.add_options()
+        ("help,h", "produce help message")
+        ;
+    boost::program_options::variables_map vm;
+    boost::program_options::store(boost::program_options::parse_command_line(argc,argv,desc),vm);
+    boost::program_options::notify(vm);
+
+
+    if(vm.count("help")){
+        cout << desc << endl;
+        return 1;
+    }
 
     int ymax = 150;
     int xmax = 80;
@@ -90,14 +106,16 @@ int main(){
 //
 //cout<<"Initialisierung beendet\n\nSchwerkraft wird zugeschaltet\n"<<endl;
 ////
-int numSteps = 1e6 + 1;
-for (int i = 0; i< numSteps; i++){
-        meins.collideAll(4);
-        meins.streamAll(4);
-        if(i%1000 == 0) cout << i<<endl;
-        if(i%10000 == 0)  techplotOutput(meins,i,true);
-        if(i%10000 == 0) binary_output(meins);
-    }
+
+
+//int numSteps = 1e6 + 1;
+//for (int i = 0; i< numSteps; i++){
+//        meins.collideAll(4);
+//        meins.streamAll(4);
+//        if(i%1000 == 0) cout << i<<endl;
+//        if(i%10000 == 0)  techplotOutput(meins,i,true);
+//        if(i%10000 == 0) binary_output(meins);
+//    }
 
 
 

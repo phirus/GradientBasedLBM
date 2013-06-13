@@ -9,7 +9,8 @@ WINDRES = windres
 #INC = -I../../../gtest-1.6.0/include
 CFLAGS =  -Wall -O3
 #LIB = ../../../gtest-1.6.0/make/gtest_main.a
-#LDFLAGS = -lpthread
+LDFLAGS = -lboost_program_options
+#-lpthread
 
 SRC = ../src
 OBJ_DIR = obj
@@ -20,6 +21,8 @@ OUTPUT = $(BIN_DIR)/BubbleTest
 OBJ_DEBUG = $(OBJ_DIR)/binaryIO.o $(OBJ_DIR)/cell.o $(OBJ_DIR)/lattice.o $(OBJ_DIR)/main.o $(OBJ_DIR)/matrix.o $(OBJ_DIR)/paramset.o $(OBJ_DIR)/vector.o
 
 all: clean build
+
+Release: build
 
 before_debug: 
 	test -d $(BIN_DIR) || mkdir -p $(BIN_DIR)
