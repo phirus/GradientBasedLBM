@@ -35,6 +35,8 @@ public:
     const Interpol getInter()const{return inter;};
     const RelaxationPar getRelaxation()const{return relax;};
     const double getDeltaT()const{return timestep;};
+    const double getDeltaX()const{return spacestep;};
+    const double getSoundspeed()const{return c_s;};
 
     /// set-methods, including calculations if necessary
     void setOmega(double omR, double omB, double d);
