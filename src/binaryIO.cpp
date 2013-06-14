@@ -206,12 +206,23 @@ void paramLogOut(const Lattice& l){
     name <<"paramLog";
 
     paramLog.open( name.str().c_str() );
-    paramLog << "# used parameters" << endl;
-    paramLog << "xsize = " << xsize << " Cells " << endl;
-    paramLog << "ysize = " << ysize << " Cells " << endl;
-    paramLog << "dx = " << p.getDeltaX() << " / m " << endl;
+    paramLog << "# used setup parameters\n" << endl;
+    paramLog << "xsize = "      << xsize << " Cells " << endl;
+    paramLog << "ysize = "      << ysize << " Cells " << endl;
+    paramLog << "omega_red = "  << p.getOmegaRed() << " /-" << endl;
+    paramLog << "omega_blue = " << p.getOmegaBlue() << " /-" << endl;
+    paramLog << "rho_red = "    << p.getRhoR() << " / kg m^-3" << endl;
+    paramLog << "gamma = "      << p.getGamma() << " /-" << endl;
+    paramLog << "alpha_blue = " << p.getAlpha() << " /-" << endl;
+    paramLog << "delta = "      << p.getInterfaceThickness() << " /-" << endl;
+    paramLog << "beta = "       << p.getBeta() << " /-" << endl;
+    paramLog << "sigma = "      << p.getSigma() << " /?" << endl; //TODO get SI units of sigma
+    paramLog << "c_s = "        << p.getSoundspeed() << " / m s^-1" << endl; 
+    paramLog << "dx = "         << p.getDeltaX() << " / m " << endl;
+
+    paramLog << "\n# successive parameters" << endl;
     paramLog << "dt = " << p.getDeltaT() << " / s" << endl;
-    paramLog << "c_s = " << p.getSoundspeed() << " / m s^-1" << endl;  
+    paramLog << "g = " << p.getG() << " /?" << endl;
 
 
 

@@ -35,8 +35,16 @@ public:
     const Interpol getInter()const{return inter;};
     const RelaxationPar getRelaxation()const{return relax;};
     const double getDeltaT()const{return timestep;};
+
+    // needed only for output
     const double getDeltaX()const{return spacestep;};
     const double getSoundspeed()const{return c_s;};
+    const double getOmegaRed()const{return omegaRed;};
+    const double getOmegaBlue()const{return omegaBlue;};
+    const double getInterfaceThickness()const{return delta;};
+    const double getGamma()const{return gamma;};
+    const double getAlpha()const{return alphaBlue;};
+    const double getSigma()const{return sigma;};
 
     /// set-methods, including calculations if necessary
     void setOmega(double omR, double omB, double d);
