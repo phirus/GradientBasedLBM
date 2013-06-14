@@ -641,5 +641,8 @@ TEST(BinaryIO,paramLog){
     Lattice lattice(100,100);    
     EXPECT_NO_THROW(paramLogOut(lattice));
 }
+TEST(BinaryIO,paramConfIn){
+    EXPECT_DOUBLE_EQ(13.4, inputQuery("paramInputTest","test"));    
+}
 
 #endif

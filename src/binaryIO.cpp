@@ -31,12 +31,8 @@ void binary_output(const Lattice& l, const string& filename){
 const bool binary_input(Lattice& outL, const string& filename){
     bool success;
 
-    // setting up the file name
-    stringstream name;
-    name << filename;
-
     // setting up file
-    fstream file(name.str().c_str(),ios::in | ios::binary);
+    fstream file(filename.c_str(),ios::in | ios::binary);
     if(file.is_open()){
         success = true;
         file.seekg(0);
@@ -207,24 +203,46 @@ void paramLogOut(const Lattice& l){
 
     paramLog.open( name.str().c_str() );
     paramLog << "# used setup parameters\n" << endl;
-    paramLog << "xsize = "      << xsize << " Cells " << endl;
-    paramLog << "ysize = "      << ysize << " Cells " << endl;
-    paramLog << "omega_red = "  << p.getOmegaRed() << " /-" << endl;
+    paramLog << "xsize = "      << xsize            << " Cells " << endl;
+    paramLog << "ysize = "      << ysize            << " Cells " << endl;
+    paramLog << "omega_red = "  << p.getOmegaRed()  << " /-" << endl;
     paramLog << "omega_blue = " << p.getOmegaBlue() << " /-" << endl;
-    paramLog << "rho_red = "    << p.getRhoR() << " / kg m^-3" << endl;
-    paramLog << "gamma = "      << p.getGamma() << " /-" << endl;
-    paramLog << "alpha_blue = " << p.getAlpha() << " /-" << endl;
+    paramLog << "rho_red = "    << p.getRhoR()      << " / kg m^-3" << endl;
+    paramLog << "gamma = "      << p.getGamma()     << " /-" << endl;
+    paramLog << "alpha_blue = " << p.getAlpha()     << " /-" << endl;
     paramLog << "delta = "      << p.getInterfaceThickness() << " /-" << endl;
-    paramLog << "beta = "       << p.getBeta() << " /-" << endl;
-    paramLog << "sigma = "      << p.getSigma() << " /?" << endl; //TODO get SI units of sigma
-    paramLog << "c_s = "        << p.getSoundspeed() << " / m s^-1" << endl; 
-    paramLog << "dx = "         << p.getDeltaX() << " / m " << endl;
+    paramLog << "beta = "       << p.getBeta()      << " /-" << endl;
+    paramLog << "sigma = "      << p.getSigma()     << " /?" << endl; //TODO get SI units of sigma
+    paramLog << "c_s = "        << p.getSoundspeed()<< " / m s^-1" << endl; 
+    paramLog << "dx = "         << p.getDeltaX()    << " / m " << endl;
 
     paramLog << "\n# successive parameters" << endl;
-    paramLog << "dt = " << p.getDeltaT() << " / s" << endl;
-    paramLog << "g = " << p.getG() << " /?" << endl;
+    paramLog << "dt = "         << p.getDeltaT()    << " / s" << endl;
+    paramLog << "g = "          << p.getG()         << " /?" << endl;
 
 
 
     paramLog.close();
+}
+
+const double inputQuery(const string& filename, const string& query){
+    double value;
+    string lineString;
+    string word;
+    fstream file(filename.c_str(),ios::in);
+
+    while(file.good()){
+    getline(file,lineString);
+    if ( lineString.substr(0,1) != "#" ){
+        istringstream lineStream(lineString);
+        lineStream >> word;
+        if (word == query) {
+            lineStream >> word; // gets the "="
+            lineStream >> value;
+            break;
+            }         
+        }
+    }
+    file.close();
+    return value;
 }

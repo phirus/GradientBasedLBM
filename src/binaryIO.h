@@ -13,5 +13,7 @@ void vtkOutput(const Lattice& l, int iterNum);
 
 void paramLogOut(const Lattice& l);
 
+const double inputQuery(const string& filename, const string& query);
+
 #endif
 
