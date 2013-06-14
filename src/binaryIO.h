@@ -11,5 +11,7 @@ const bool binary_input(Lattice& outL, const string& filename = "data.bin");
 void techplotOutput(const Lattice& l, int iterNum, bool vebose = false);
 void vtkOutput(const Lattice& l, int iterNum);
 
+void paramLogOut(const Lattice& l);
+
 #endif
 
