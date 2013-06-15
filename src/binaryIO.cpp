@@ -248,3 +248,47 @@ const bool inputQuery(const string& filename, const string& query, double& value
     file.close();
     return success;
 }
+
+const ParamSet getFileParams(const string& filename){
+    vector<string> tags;
+    vector<double> val;
+    
+    tags.push_back("omega_red");
+    val.push_back(1);
+
+    tags.push_back("omega_blue");
+    val.push_back(1);
+    
+    tags.push_back("rho_red"); 
+    val.push_back(1);
+    
+    tags.push_back("gamma");
+    val.push_back(1000);
+    
+    tags.push_back("alpha_blue");
+    val.push_back(0.2);
+    
+    tags.push_back("delta");
+    val.push_back(0.1);
+    
+    tags.push_back("beta");
+    val.push_back(0.99);
+    
+    tags.push_back("sigma");
+    val.push_back(1e-4);
+    
+    tags.push_back("c_s");
+    val.push_back(1484);
+    
+    tags.push_back("dx"); 
+    val.push_back(0.001);
+
+    double tmp;
+    int imax = tags.size();
+    for(int i = 0; i<imax; i++){
+        if( inputQuery(filename,tags[i],tmp) == true ) val[i] = tmp;
+    }
+
+    ParamSet params(val[0],val[1],val[2],val[3],val[4],val[5],val[6],val[7],val[8],val[9]);
+    return params;
+}
