@@ -225,8 +225,9 @@ void paramLogOut(const Lattice& l){
     paramLog.close();
 }
 
-const double inputQuery(const string& filename, const string& query){
-    double value;
+const bool inputQuery(const string& filename, const string& query, double& value){
+    bool success = false;
+    value = 0;
     string lineString;
     string word;
     fstream file(filename.c_str(),ios::in);
@@ -239,10 +240,11 @@ const double inputQuery(const string& filename, const string& query){
         if (word == query) {
             lineStream >> word; // gets the "="
             lineStream >> value;
+            success = true;
             break;
             }         
         }
     }
     file.close();
-    return value;
+    return success;
 }

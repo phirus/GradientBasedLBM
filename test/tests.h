@@ -642,7 +642,12 @@ TEST(BinaryIO,paramLog){
     EXPECT_NO_THROW(paramLogOut(lattice));
 }
 TEST(BinaryIO,paramConfIn){
-    EXPECT_DOUBLE_EQ(13.4, inputQuery("paramInputTest","test"));    
+    double value;
+    EXPECT_FALSE( inputQuery("existiertnicht","test",value) );
+    EXPECT_FALSE(inputQuery("queryTest","noflag",value));
+    EXPECT_TRUE(inputQuery("queryTest","test",value));
+    EXPECT_DOUBLE_EQ(13.4, value); 
+
 }
 
 #endif
