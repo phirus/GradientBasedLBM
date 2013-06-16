@@ -641,12 +641,19 @@ TEST(BinaryIO,paramLog){
     Lattice lattice(100,100);    
     EXPECT_NO_THROW(paramLogOut(lattice));
 }
-TEST(BinaryIO,paramConfIn){
+TEST(BinaryIO,queryTest){
     double value;
     EXPECT_FALSE( inputQuery("existiertnicht","test",value) );
     EXPECT_FALSE(inputQuery("queryTest","noflag",value));
     EXPECT_TRUE(inputQuery("queryTest","test",value));
     EXPECT_DOUBLE_EQ(13.4, value); 
+
+}
+
+TEST(BinaryIO,paramConfIn){
+    ParamSet param(0.8, 1.4, 1.1, 1100);
+    ParamSet input = getFileParams("paramInputTest");
+    EXPECT_EQ(param, input);    
 
 }
 
