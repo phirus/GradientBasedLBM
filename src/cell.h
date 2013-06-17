@@ -24,11 +24,12 @@ public:
     inline const FSet getF()const{return f;};
     inline const ColSet getRho()const{return rho;};
     inline const bool getIsSolid()const{return isSolid;};
-    inline const Vector getU()const{return u;};
+    inline const VeloSet getU()const{return u;};
 
     /// calculations
     void calcRho();             /// < calculates both densities, the velocity and delta rho
     const double calcPsi()const;     /// < calculates the color field based on the densities
+
     inline const double getDeltaRho()const{return delta;}; /// < returns rho_red - rho_blue
 
     ///  overloaded == operator
@@ -37,7 +38,7 @@ public:
 private:
     FSet f;                     /// < set of two distributions
     ColSet rho;                    /// < rho_r = rho[0], rho_b = rho[1]
-    Vector u;
+    VeloSet u;
     bool isSolid;               /// < used to mark solid cells
     double delta;
 };

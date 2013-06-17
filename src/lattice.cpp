@@ -104,7 +104,7 @@ void Lattice::equilibriumIni()
             tmp = (*data)[i][j];
             tmp.calcRho();
             ColSet rho = tmp.getRho();
-            Vector u = tmp.getU();
+            VeloSet u = tmp.getU();
             eqDis = eqDistro(rho,u,param.getPhi());
             tmp.setF(eqDis);
             (*data)[i][j] = tmp;
@@ -114,7 +114,7 @@ void Lattice::equilibriumIni()
 
 void Lattice::balance(double& mass, double& momentum)const
 {
-    Vector u;
+    VeloSet u;
     double rho;
 
     mass = 0;
@@ -129,7 +129,7 @@ void Lattice::balance(double& mass, double& momentum)const
             u = (*data)[i][j].getU();
 
             mass += rho;
-            momentum += rho * sqrt(u*u);
+            momentum += rho * sqrt(u[0]*u[0]);
         }
     }
 }
@@ -210,7 +210,7 @@ void Lattice::collideAll(int threads, bool gravity)
     const FSet phi = param.getPhi();
     const double g = param.getG();
     const int range = xsize * ysize;
-//    const double rhoRedFixed = param.getRhoR();
+    const double rhoRedFixed = param.getRhoR();
     const RelaxationPar relax = param.getRelaxation();
     const double dt = param.getDeltaT();
 
@@ -230,11 +230,16 @@ void Lattice::collideAll(int threads, bool gravity)
                 const ColSet rho_k = tmpCell.getRho();
                 const double rho = sum(rho_k);
 
-//                const Vector G(0 ,  g*(rhoRedFixed - rho));
-                const Vector G(0 , - rho * g);
+                const Vector G(0 ,  g*(rhoRedFixed - rho));
+//                const Vector G(0 , - rho * g);
 
 //                const Vector u = tmpCell.calcU();
-                const Vector u = tmpCell.getU() + G *  (dt/(2* rho)) ;
+                VeloSet u = tmpCell.getU();// + G *  (dt/(2* rho)) ;
+
+                if(gravity == true){
+                u[0] = u[0] + G *  (dt/(2* rho)) ;
+                u[1] = u[1] + G *  (dt/(2* rho)) ;
+                }
 
                 const FSet fEq = eqDistro(rho_k, u, phi);
 
@@ -260,10 +265,10 @@ void Lattice::collideAll(int threads, bool gravity)
                     if (av > 0) two_phase = av/2 * (w[q] * ( scal*scal )/(av*av) - B[q]);
                     else two_phase = 0;
 
-                    if (gravity == true) forcingTerm = (1- 0.5*omega) * w[q] * (G * ( e[q] * (e[q] * u) + e[q] - u )) ;
-
                     for (int color=0;color<=1; color++)
                     {
+                        if (gravity == true) forcingTerm = (1- 0.5*omega) * w[q] * (G * ( e[q] * (e[q] * u[color]) + e[q] - u[color] )) ;
+
                         fTmp[color][q] =  fCell[color][q] - omega * Diff[color][q] + A_k[color] * two_phase + forcingTerm * dt;
                         if (fTmp[color][q] < 0) fTmp[color][q] = 0;
                     }
@@ -382,17 +387,16 @@ void Lattice::streamAndBouncePull(Cell& tCell, const direction& dir)const
     tCell.setF(ftmp);
 }
 
-const FSet eqDistro(const ColSet& rho_k, const Vector& u, const FSet& phi)
+const FSet eqDistro(const ColSet& rho_k, const VeloSet& u, const FSet& phi)
 {
     FSet feq;
-    const double usqr = u*u;
-    double scal;
+    const boost::array<double,2> usqr = {{u[0]*u[0],u[1]*u[1]}};
     for (int i=0; i<9; i++)
     {
-        scal = u*e[i];
+        const boost::array<double,2> scal = {{u[0]*e[i],u[1]*e[i]}};
         for (int color = 0; color<=1; color++)
         {
-            feq[color][i] = rho_k[color] * ( phi[color][i] + w[i] * ( 3 * scal + 4.5 * (scal*scal) - 1.5 * usqr));
+            feq[color][i] = rho_k[color] * ( phi[color][i] + w[i] * ( 3 * scal[color] + 4.5 * (scal[color]*scal[color]) - 1.5 * usqr[color]));
         }
     }
     return feq;
