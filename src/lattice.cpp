@@ -49,7 +49,7 @@ const ColSet Lattice::getSize()const
     return pony;
 }
 
-void Lattice::initialize()
+void Lattice::closedBox()
 {
     const Cell wall(0,0,true);
 
@@ -72,6 +72,25 @@ void Lattice::initialize()
         }
     }
 }
+
+void Lattice::bottomWall()
+{
+    const Cell wall(0,0,true);
+
+    for (int x=0; x<xsize; x++)
+    {
+        (*data)[x][0] = wall;
+    }
+
+    for (int y=0; y<ysize; y++)
+    {
+        for (int x=0; x<xsize; x++)
+        {
+            (*data)[x][y].calcRho();
+        }
+    }
+}
+
 
 void Lattice::equilibriumIni()
 {
@@ -164,11 +183,8 @@ void Lattice::streamAll(int threads)
 {
     field *newData = new field(boost::extents[xsize][ysize]);
 
-    omp_set_num_threads (threads);
     const int range = xsize * ysize;
-#pragma omp parallel
     {
-#pragma omp for
         for (int index = 0;  index < range; index++)
         {
             int x,y;
@@ -179,7 +195,6 @@ void Lattice::streamAll(int threads)
             if (tmpCell.getIsSolid() == false) streamAndBouncePull(tmpCell,dir);
 
             tmpCell.calcRho();
-#pragma omp critical(Zuweisung)
             (*newData)[x][y] = tmpCell;
         }
     }
@@ -189,8 +204,6 @@ void Lattice::streamAll(int threads)
 
 void Lattice::collideAll(int threads, bool gravity)
 {
-    omp_set_num_threads (threads);
-
     field *newData = new field(boost::extents[xsize][ysize]);
 
     const double beta = param.getBeta();
@@ -201,9 +214,7 @@ void Lattice::collideAll(int threads, bool gravity)
     const RelaxationPar relax = param.getRelaxation();
     const double dt = param.getDeltaT();
 
-#pragma omp parallel
     {
-#pragma omp for
         for (int index = 0;  index < range; index++)
         {
             int x,y;
@@ -277,7 +288,6 @@ void Lattice::collideAll(int threads, bool gravity)
                 }
                 tmpCell.setF(fTmp);
             }
-#pragma omp critical(Zuweisung2)
             (*newData)[x][y] = tmpCell;
         }
     }

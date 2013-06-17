@@ -2,9 +2,9 @@
 #define TESTS_H
 
 #include"gtest/gtest.h"
-#include"lattice.h"
-#include"vector.h"
-#include"binaryIO.h"
+#include"../src/lattice.h"
+#include"../src/vector.h"
+#include"../src/binaryIO.h"
 
 using namespace std;
 
@@ -355,7 +355,7 @@ TEST(Lattice,stream)
 TEST(Lattice,bounceSmall)
 {
     Lattice lattice(3,3,0,0);
-    lattice.initialize();
+    lattice.closedBox();
 
     array fcenter = {{0,1,1,1,1,1,1,1,1}};
     array fzero = {{0,0,0,0,0,0,0,0,0}};
@@ -390,7 +390,7 @@ TEST(Lattice,bounceSmall)
 TEST(Lattice,bounceClosed)
 {
     Lattice lattice(5,5,0,0);
-    lattice.initialize();
+    lattice.closedBox();
     lattice.setCell(2,2,Cell(0,0,true));
     Cell tmp = lattice.getCell(2,2);
     EXPECT_EQ(true,tmp.getIsSolid());
@@ -447,7 +447,7 @@ TEST(Lattice,bounceClosed)
 TEST(Lattice,bounceClosed2)
 {
     Lattice lattice(5,5,0,0);
-    lattice.initialize();
+    lattice.closedBox();
     array fcenter = {{0,1,1,1,1,1,1,1,1}};
     lattice.setF(2,2,0,fcenter);
     lattice.setF(2,2,1,fcenter);
@@ -481,7 +481,7 @@ TEST(Lattice,streamRho)
     Cell tmp;
 
     Lattice lattice(5,5,0,0);
-    lattice.initialize();
+    lattice.closedBox();
 
     array fcenter = {{0,1,1,1,1,1,1,1,1}};
     lattice.setF(2,2,0,fcenter);
@@ -506,7 +506,7 @@ TEST(Lattice,streamRho)
 TEST(Lattice,collideSingle)
 {
     Lattice lattice(5,5,1,1);
-    lattice.initialize();
+    lattice.closedBox();
 
     lattice.collideAll();
     Cell cell = lattice.getCell(2,2);
@@ -569,7 +569,7 @@ TEST(Lattice, Gradient)
 TEST(Lattice,collisionBalanceAll)
 {
     Lattice lattice(5,5,1,1);
-    lattice.initialize();
+    lattice.closedBox();
     double mass, momentum;
 
     lattice.balance(mass, momentum);

@@ -1,7 +1,10 @@
 bin/
 obj/
+Documentation/
 *.save
 *.bin
 *.backup
 *.layout
 *.depend
+*.cpb
+test/paramLog
