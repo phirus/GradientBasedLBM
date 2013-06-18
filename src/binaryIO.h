@@ -3,6 +3,8 @@
 
 #include<fstream>
 #include<iostream>
+#include<map>
+
 #include"lattice.h"
 
 void binary_output(const Lattice& l, const string& filename = "data.bin");
