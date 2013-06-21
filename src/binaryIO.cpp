@@ -218,7 +218,7 @@ void paramLogOut(const Lattice& l){
 
     paramLog << "\n# successive parameters" << endl;
     paramLog << "dt = "         << p.getDeltaT()    << " / s" << endl;
-    paramLog << "g = "          << p.getG()         << " /?" << endl;
+    paramLog << "dimLessG = "          << p.getG()         << " / -" << endl;
 
 
 
@@ -264,6 +264,7 @@ const ParamSet getFileParams(const string& filename){
         mm.insert(pair<string,double>("sigma",1e-4));
         mm.insert(pair<string,double>("c_s",1484));
         mm.insert(pair<string,double>("dx",0.001));
+        mm.insert(pair<string,double>("g",9.81));
 
 
         // cycling through the input file
@@ -272,6 +273,6 @@ const ParamSet getFileParams(const string& filename){
             if( inputQuery(filename,it->first,tmp) == true ) it->second = tmp;
         }
 
-    ParamSet params(mm.at("omega_red"),mm.at("omega_blue"),mm.at("rho_red"),mm.at("gamma"),mm.at("alpha_blue"),mm.at("delta"),mm.at("beta"),mm.at("sigma"),mm.at("c_s"),mm.at("dx"));
+    ParamSet params(mm.at("omega_red"),mm.at("omega_blue"),mm.at("rho_red"),mm.at("gamma"),mm.at("alpha_blue"),mm.at("delta"),mm.at("beta"),mm.at("sigma"),mm.at("c_s"),mm.at("dx"),mm.at("g"));
     return params;
 }

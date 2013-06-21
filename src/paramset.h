@@ -21,13 +21,13 @@ struct RelaxationPar
 class ParamSet
 {
 public:
-    ParamSet(double omR=1, double omB =1,double rhoR = 1, double gammaIni = 1000, double alB=0.2, double deltaIni=0.1, double betaIni=0.99, double sigmaIni = 1e-4, double c_sIni = 1484, double length = 0.001); /// < consructor
+    ParamSet(double omR=1, double omB =1,double rhoR = 1, double gammaIni = 1000, double alB=0.2, double deltaIni=0.1, double betaIni=0.99, double sigmaIni = 1e-4, double c_sIni = 1484, double length = 0.001, double g = 9.81); /// < consructor
 
     /// get-methods, including calculations if necessary
     const FSet getPhi()const;                   /// < calculates phi, based on alpha_b and rho (density ratio)
     const double getOmega(double psi)const;          /// < return omega, based on inter and the color field
     const ColSet getAk(double omega)const;
-    const boost::array<double,13> getEverything()const;
+    const boost::array<double,14> getEverything()const;
 
     const double getBeta()const{return beta;};
     const double getG()const{return gravity;};
@@ -50,8 +50,11 @@ public:
     void setOmega(double omR, double omB, double d);
     void setAlpha(double alB);
     void setRatio(double rhoR, double ratio);
+
     void setDeltaX(double dx);
     void setSoundSpeed(double sos);
+    void setOriginalG(double g);
+
     void setRelaxation(double s_2, double s_3, double s_5);
 
     void setBeta(double bet){beta=bet;};
@@ -73,13 +76,14 @@ private:
     double c_s ;                /// < speed of sound / m * s^-1
     double timestep;            /// < timestep /s
     double spacestep;           /// < spacestep /m
+    double original_g;           /// < gravity / m * s^-2
     double gravity;             /// < gravity /-
 
     void calcInter();           /// < calculate the interpolation paramters based on omega and delta
     void calcAlR();
 
     inline void calcTimestep(){timestep = spacestep / (c_s * sqrt(3) );} ;
-    inline void calcGravity(double g = 9.81){gravity = g * timestep * timestep / spacestep;};
+    inline void calcGravity(){gravity = original_g * timestep * timestep / spacestep;};
 };
 
 #endif

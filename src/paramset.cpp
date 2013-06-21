@@ -1,5 +1,5 @@
 #include"paramset.h"
-ParamSet::ParamSet(double omR, double omB, double rhoR, double gammaIni, double alB, double deltaIni, double betaIni, double sigmaIni, double c_sIni, double length):omegaRed(omR),omegaBlue(omB),rhoRed(rhoR),gamma(gammaIni),alphaBlue(alB),delta(deltaIni),beta(betaIni), sigma(sigmaIni), c_s(c_sIni), spacestep(length)
+ParamSet::ParamSet(double omR, double omB, double rhoR, double gammaIni, double alB, double deltaIni, double betaIni, double sigmaIni, double c_sIni, double length, double g):omegaRed(omR),omegaBlue(omB),rhoRed(rhoR),gamma(gammaIni),alphaBlue(alB),delta(deltaIni),beta(betaIni), sigma(sigmaIni), c_s(c_sIni), spacestep(length), original_g(g)
 {
     relax.s_2 = 1;
     relax.s_3 = 1;
@@ -58,8 +58,8 @@ const ColSet ParamSet::getAk(double omega)const
     return Ak;
 }
 
-const boost::array<double,13> ParamSet::getEverything()const{
-    boost::array<double,13> pinkie;
+const boost::array<double,14> ParamSet::getEverything()const{
+    boost::array<double,14> pinkie;
     pinkie[0] = omegaRed;
     pinkie[1] = omegaBlue;
     pinkie[2] = rhoRed;
@@ -72,7 +72,8 @@ const boost::array<double,13> ParamSet::getEverything()const{
     pinkie[9] = c_s;
     pinkie[10] = timestep;
     pinkie[11] = spacestep;
-    pinkie[12] = gravity;
+    pinkie[12] = original_g;
+    pinkie[13] = gravity;
 
     return pinkie;
 }
@@ -111,6 +112,11 @@ void ParamSet::setSoundSpeed(double sos)
     calcTimestep();
     calcGravity();
 }
+void ParamSet::setOriginalG(double g)
+{
+    original_g = g;
+    calcGravity();
+}
 
 void ParamSet::setRelaxation(double s_2, double s_3, double s_5)
 {
@@ -122,7 +128,7 @@ void ParamSet::setRelaxation(double s_2, double s_3, double s_5)
 const bool ParamSet::operator==(const ParamSet& other)const{
     bool control = true;
     {
-        boost::array<double,13> foo, bar;
+        boost::array<double,14> foo, bar;
         foo = getEverything();
         bar = other.getEverything();
 
