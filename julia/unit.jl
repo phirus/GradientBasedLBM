@@ -49,7 +49,7 @@ println("\nEotvos = ",Eo)
 
 # Pre-Output
 omega = 1/tau
-
+gamma = rho / (rho - delRho)
 
 # Output
 stream = open("parameterFile",true,true,true,true,false)
@@ -67,7 +67,16 @@ write(stream,"\nomega_blue = ")
 write(stream, string(omega))
 write(stream,"\nrho_red = ")
 write(stream, string(rho))
-
+write(stream,"\ngamma = ")
+write(stream, string(gamma))
+write(stream,"\nsigma = ")
+write(stream, string(sigma))
+write(stream,"\nc_s = ")
+write(stream, string(c_s))
+write(stream,"\ndx = ")
+write(stream, string(dx))
+write(stream,"\ng = ")
+write(stream, string(g))
 
 write(stream,"\n")
 close(stream)

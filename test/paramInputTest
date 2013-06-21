@@ -31,3 +31,6 @@ c_s = 1484
 
 # size of a spacial step / m, default [0.001]
 dx = 1e-3
+
+# gravitational constant / m s^-1 default [9.81]
+g = 9.81
