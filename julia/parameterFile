@@ -2,11 +2,34 @@
 # Reynolds = 23.094010767585026
 # Morton = 0.0017339059223371663
 # Eotvos = 9.80019
+
+# relaxations parameters, no unit, default [1]
 omega_red = 1.25
 omega_blue = 1.25
+
+# density of the denser phase / kg m^-3, default [1]
 rho_red = 1
+
+# density ratio, default [1000]
 gamma = 999.9999999999991
+
+# alpha, default [0.2] 
+alpha_blue = 0.2
+
+# delta, default [0.1] 
+delta = 0.1 
+
+# beta, default [0.99] 
+beta = 0.99
+
+# surface tension /?, default [1e-4]
 sigma = 0.0001
+
+# speed of sound / m s^-1, default [1484]
 c_s = 2.6634657872779224
+
+# size of a spacial step / m, default [0.001]
 dx = 0.00025
+
+# gravitational constant / m s^-1 default [9.81]
 g = 9.81
