@@ -17,5 +17,14 @@ function getOtherParams(x::Vector)
 	Mo = g * mu^4 * delRho/(rho^2 * sigma^3)
 	Eo = (g*delRho*diameter^2)/sigma
 
-	return dx, ut, c_s, dt, nu, mu, Re, Mo, Eo
+	return Re, Mo, Eo, dx, ut, c_s, dt, nu, mu
+end
+
+function targetF(x::Vector)
+	Re_t = 25
+	Eo_t = 20;
+	Mo_t = 1e-4
+	Re, Mo, Eo = getOtherParams(x)
+
+	return (Re_t - Re)^2 + (Eo_t - Eo)^2 + (Mo_t - Mo)^2
 end

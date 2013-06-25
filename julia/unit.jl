@@ -7,7 +7,7 @@ println("given parameters")
 g = 9.81
 println("\ng = ",g)
 
-rho = 1
+rho = 1.0
 println("\nrho = ",rho)
 
 delRho = 0.5
@@ -26,7 +26,10 @@ println("\ntau = ",tau)
 println("\n\n##################")
 println("resulting parameters")
 
-dx, ut, c_s, dt, nu, mu, Re, Mo, Eo = getOtherParams([g,rho,delRho,diameter,sigma,tau])
+Re, Mo, Eo, dx, ut, c_s, dt, nu, mu = getOtherParams([g,rho,delRho,diameter,sigma,tau])
+
+zwischen = targetF([g,rho,delRho,diameter,sigma,tau])
+show(zwischen)
 
 println("\dx = ",dx)
 println("\nterminal rise velocity = ",ut)
