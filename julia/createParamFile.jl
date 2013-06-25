@@ -49,4 +49,4 @@ function createPFile(Re, Mo, Eo, tau, rho, delRho, sigma, c_s, dx, g)
 	close(stream)
 end
 
-println("createParamFile wurde geladen \n")
+println("createParamFile wurde geladen")
