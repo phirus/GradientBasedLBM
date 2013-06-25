@@ -1,4 +1,6 @@
 require("createParamFile.jl")
+require("functions.jl")
+
 
 println("given parameters")
 
@@ -23,28 +25,15 @@ println("\ntau = ",tau)
 
 println("\n\n##################")
 println("resulting parameters")
-dx = diameter/40
+
+dx, ut, c_s, dt, nu, mu, Re, Mo, Eo = getOtherParams([g,rho,delRho,diameter,sigma,tau])
+
 println("\dx = ",dx)
-
-ut = sqrt(2.14*sigma /(rho*diameter) + 0.505 *g * diameter)
 println("\nterminal rise velocity = ",ut)
-
-c_s = 10*ut;
 println("\nspeed of sound = ",c_s)
-
-dt = dx / (sqrt(3)*c_s)
 println("\ntimestep = ",dt)
-
-nu = c_s^2 * dt *(tau - 0.5)
 println("\nnu = ",nu)
-mu = rho * nu;
 println("\nmu = ",mu)
-
-Re = rho * diameter * ut / mu
-Mo = g * mu^4 * delRho/(rho^2 * sigma^3)
-Eo = (g*delRho*diameter^2)/sigma
-
-
 println("\nReynolds = ",Re)
 println("\nMorton = ",Mo)
 println("\nEotvos = ",Eo)
