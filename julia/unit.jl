@@ -16,16 +16,19 @@ sigma = 1e-4
 println("\nsigma = ",sigma)
 
 
-res = optimize(targetF, [g, diameter, sigma])
+res = optimize(targetF, [g, diameter, sigma], method = :bfgs, iterations = 10000)
 show(res)
 
+x = transform(res.minimum)
 
-println("\n\n##################")
-println("resulting parameters")
+g = 		x[1]
+diameter = 	x[2]
+sigma = 	x[3]
 
 Re, Mo, Eo, dx, ut, c_s, dt, nu, mu, rho, delRho, tau = getOtherParams(g,diameter,sigma)
 
-zwischen = targetF([g,diameter,sigma])
+println("\n\n##################")
+println("resulting parameters")
 
 println("\dx = ",dx)
 println("\nterminal rise velocity = ",ut)
