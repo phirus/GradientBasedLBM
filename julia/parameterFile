@@ -1,7 +1,7 @@
 # Parameterset yielding
-# Reynolds = 23.094010767585033
-# Morton = 1.887335920303446e-6
-# Eotvos = 0.10629261492420866
+# Reynolds = 23.09401076758503
+# Morton = 0.0053505638733371995
+# Eotvos = 10.059532161487304
 
 # relaxations parameters, no unit, default [1]
 omega_red = 1.25
@@ -23,13 +23,13 @@ delta = 0.1
 beta = 0.99
 
 # surface tension /?, default [1e-4]
-sigma = 0.9721586324217503
+sigma = 10000.0
 
 # speed of sound / m s^-1, default [1484]
-c_s = 28.482647789954484
+c_s = 366.88387195429664
 
 # size of a spacial step / m, default [0.001]
-dx = 0.006732683695792522
+dx = 2.2845064035900733
 
 # gravitational constant / m s^-1 default [9.81]
-g = 2.8495338345164796
+g = 24.09367439774855
