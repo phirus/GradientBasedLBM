@@ -1,11 +1,11 @@
 # Parameterset yielding
-# Reynolds = 23.09401076758503
-# Morton = 0.0053505638733371995
-# Eotvos = 10.059532161487304
+# Reynolds = 50.0
+# Morton = 0.00010714268768686206
+# Eotvos = 7.338877996396114
 
 # relaxations parameters, no unit, default [1]
-omega_red = 1.25
-omega_blue = 1.25
+omega_red = 1.566013584898136
+omega_blue = 1.566013584898136
 
 # density of the denser phase / kg m^-3, default [1]
 rho_red = 1.0
@@ -23,13 +23,13 @@ delta = 0.1
 beta = 0.99
 
 # surface tension /?, default [1e-4]
-sigma = 10000.0
+sigma = 0.41660069725275356
 
 # speed of sound / m s^-1, default [1484]
-c_s = 366.88387195429664
+c_s = 23.563719929292546
 
 # size of a spacial step / m, default [0.001]
-dx = 2.2845064035900733
+dx = 0.01791755472883283
 
 # gravitational constant / m s^-1 default [9.81]
-g = 24.09367439774855
+g = 11.9042542530537

@@ -7,21 +7,19 @@ require("functions.jl")
 println("given parameters")
 
 g = 10.0
-diameter = 1.0
-sigma = 10000.0
-# delRho = 0.5
+sigma = 1e-4
+diameter = 0.1
 
-
-res = optimize(targetF, [g, diameter, sigma], method = :nelder_mead, iterations = 10000)
+res = optimize(targetF, [g, sigma, diameter], method = :nelder_mead, iterations = 10000)
 show(res)
 
 x = transform(res.minimum)
 
 g = 		x[1]
-diameter = 	x[2]
-#sigma = 	1e-4 * x[3]
+sigma = 	x[2]
+diameter = 	x[3]
 
-Re, Mo, Eo, dx, ut, c_s, dt, nu, mu, rho, delRho, tau = getOtherParams(g,diameter, sigma)
+Re, Mo, Eo, dx, ut, c_s, dt, nu, mu, rho, delRho, tau = getOtherParams(g, sigma, diameter)
 
 println("\n\n##################")
 println("resulting parameters")
@@ -35,6 +33,11 @@ println("\nmu = ",mu)
 println("\nrho = ",rho)
 println("\ndelta rho = ",delRho)
 println("\ntau = ",tau)
+
+println("\ng = ",g)
+println("\ndiameter = ",diameter)
+println("\nsigma = ",sigma)
+
 println("\nReynolds = ",Re)
 println("\nMorton = ",Mo)
 println("\nEotvos = ",Eo)

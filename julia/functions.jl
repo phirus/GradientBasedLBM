@@ -1,8 +1,24 @@
-function getOtherParams(g,diameter,sigma)
-	#sigma = 1e-4
+function getTargetReynolds()
+	Re = 50
+end
+
+
+function getTargetEotvos()
+	Eo = 10
+end
+
+function getTargetMorton()
+	Mo = 1e-4
+end
+
+function getTau(Reynolds)
+	tau = (4*sqrt(3)/Reynolds) + 0.5
+end
+
+function getOtherParams(g, sigma, diameter)
 	rho = 		1.0
 	delRho = 	0.5
-	tau = 		0.8
+	tau = 	getTau(getTargetReynolds())
 
 	dx = diameter/40
 
@@ -16,7 +32,9 @@ function getOtherParams(g,diameter,sigma)
 	dt = dx / (sqrt(3)*c_s)
 	nu = c_s^2 * dt *(tau - 0.5)
 	mu = rho * nu;
-	Re = rho * diameter * ut / mu
+
+	Re = 4*sqrt(3)/(tau - 0.5)
+	# Re = rho * diameter * ut / mu
 	Mo = g * mu^4 * delRho/(rho^2 * sigma^3)
 	Eo = (g*delRho*diameter^2)/sigma
 
@@ -26,24 +44,24 @@ end
 function transform(x::Vector)
 	x[1] = abs(x[1])
 	x[2] = abs(x[2])
-#	x[3] = 1e-4 * abs(x[3])
+	x[3] = abs(x[3])
 	return x
 end
 
 function targetF(x::Vector)
-	Re_t = 50.0
-	Eo_t = 10.0
-	# Mo_t = 1e-1
+	Eo_t = getTargetEotvos()
+	Mo_t = getTargetMorton()
 
 	x = transform(x)
 
 	g = 		x[1]
-	diameter = 	x[2]
-	sigma = 	x[3]
-
-	Re, Mo, Eo = getOtherParams(g,diameter,sigma)
+	sigma = 	x[2]
+	diameter = 	x[3]
 	
-	return (Re_t - Re)^2 + (Eo_t - Eo)^2 
+
+	Re, Mo, Eo = getOtherParams(g, sigma, diameter)
+	
+	return  ((Eo_t - Eo)/Eo_t)^2 + ((Mo_t - Mo)/Mo_t)^2 
 end
 
 println("functions.jl wurde geladen")
