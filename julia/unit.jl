@@ -10,14 +10,14 @@ g = 10.0
 sigma = 1e-4
 diameter = 0.1
 
-res = optimize(targetF, [g, sigma, diameter], method = :nelder_mead, iterations = 10000)
-show(res)
+# res = optimize(targetF, [g, sigma, diameter], method = :nelder_mead, iterations = 10000)
+# show(res)
 
-x = transform(res.minimum)
+# x = transform(res.minimum)
 
-g = 		x[1]
-sigma = 	x[2]
-diameter = 	x[3]
+# g = 		x[1]
+# sigma = 	x[2]
+# diameter = 	x[3]
 
 Re, Mo, Eo, dx, ut, c_s, dt, nu, mu, rho, delRho, tau = getOtherParams(g, sigma, diameter)
 
