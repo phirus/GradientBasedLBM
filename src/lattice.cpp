@@ -213,6 +213,7 @@ void Lattice::collideAll(int threads, bool gravity)
 //    const double rhoRedFixed = param.getRhoR();
     const RelaxationPar relax = param.getRelaxation();
     const double dt = param.getDeltaT();
+    const double speedlimit = param.getSpeedLimit();
 
     {
         for (int index = 0;  index < range; index++)
@@ -235,6 +236,8 @@ void Lattice::collideAll(int threads, bool gravity)
 
 //                const Vector u = tmpCell.calcU();
                 const Vector u = tmpCell.getU() + G *  (dt/(2* rho)) ;
+                if ( u.abs() > speedlimit) throw("maximum velocity reached");
+
 
                 const FSet fEq = eqDistro(rho_k, u, phi);
 
