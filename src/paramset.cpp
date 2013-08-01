@@ -58,8 +58,8 @@ const ColSet ParamSet::getAk(double omega)const
     return Ak;
 }
 
-const boost::array<double,14> ParamSet::getEverything()const{
-    boost::array<double,14> pinkie;
+const boost::array<double,15> ParamSet::getEverything()const{
+    boost::array<double,15> pinkie;
     pinkie[0] = omegaRed;
     pinkie[1] = omegaBlue;
     pinkie[2] = rhoRed;
@@ -74,6 +74,7 @@ const boost::array<double,14> ParamSet::getEverything()const{
     pinkie[11] = spacestep;
     pinkie[12] = original_g;
     pinkie[13] = gravity;
+    pinkie[14] = speedlimit;
 
     return pinkie;
 }
@@ -128,7 +129,7 @@ void ParamSet::setRelaxation(double s_2, double s_3, double s_5)
 const bool ParamSet::operator==(const ParamSet& other)const{
     bool control = true;
     {
-        boost::array<double,14> foo, bar;
+        boost::array<double,15> foo, bar;
         foo = getEverything();
         bar = other.getEverything();
 

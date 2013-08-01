@@ -27,7 +27,7 @@ public:
     const FSet getPhi()const;                   /// < calculates phi, based on alpha_b and rho (density ratio)
     const double getOmega(double psi)const;          /// < return omega, based on inter and the color field
     const ColSet getAk(double omega)const;
-    const boost::array<double,14> getEverything()const;
+    const boost::array<double,15> getEverything()const;
 
     const double getBeta()const{return beta;};
     const double getG()const{return gravity;};
