@@ -163,3 +163,8 @@ void ParamSet::calcInter()
 void ParamSet::calcAlR(){
     alphaRed = 1- (1- alphaBlue)/gamma;
 }
+
+void ParamSet::calcTimestep(){
+    speedlimit = c_s * sqrt(3);  
+    timestep = spacestep / ( speedlimit );
+}

@@ -45,6 +45,7 @@ public:
     const double getGamma()const{return gamma;};
     const double getAlpha()const{return alphaBlue;};
     const double getSigma()const{return sigma;};
+    const double getSpeedLimit()const{return speedlimit;};
 
     /// set-methods, including calculations if necessary
     void setOmega(double omR, double omB, double d);
@@ -79,10 +80,12 @@ private:
     double original_g;           /// < gravity / m * s^-2
     double gravity;             /// < gravity /-
 
+    double speedlimit;          /// < maximum allowed velocity
+
     void calcInter();           /// < calculate the interpolation paramters based on omega and delta
     void calcAlR();
+    void calcTimestep(); 
 
-    inline void calcTimestep(){timestep = spacestep / (c_s * sqrt(3) );} ;
     inline void calcGravity(){gravity = original_g * timestep * timestep / spacestep;};
 };
 
