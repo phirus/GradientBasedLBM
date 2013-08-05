@@ -65,28 +65,31 @@ public:
     const bool operator==(const ParamSet& other)const;
 
 private:
-    double omegaRed, omegaBlue; /// < relaxation parameters for both colors
-    double rhoRed, gamma;       /// < liquid density and density ratio
-    double alphaRed, alphaBlue; /// < alpha_b, relevant for equilibrium distribution
+    // given
+        // fixed
     double delta;               /// < thickness of boundary layer, relevant for equilibrium distribution
     double beta;                /// < beta, relevant for recoloring operator
-    double sigma;               /// < surface tension
-    Interpol inter;             /// < interpolation parameters for finding omega, relevant for equilibrium distribution
-    RelaxationPar relax;
-
-    double c_s ;                /// < speed of sound / m * s^-1
-    double timestep;            /// < timestep /s
     double spacestep;           /// < spacestep /m
+    double rhoRed, gamma;       /// < liquid density and density ratio
+    double alphaRed, alphaBlue; /// < alpha_b, relevant for equilibrium distribution
     double original_g;           /// < gravity / m * s^-2
+    double sigma;               /// < surface tension
+
+        // changeable    
+    double c_s ;                /// < speed of sound / m * s^-1
+        
+    // deduced
+    RelaxationPar relax;
+    double omegaRed, omegaBlue; /// < relaxation parameters for both colors
+    Interpol inter;             /// < interpolation parameters for finding omega, relevant for equilibrium distribution
+    double timestep;            /// < timestep /s
     double gravity;             /// < gravity /-
-
     double speedlimit;          /// < maximum allowed velocity
-    
 
+    // methods
     void calcInter();           /// < calculate the interpolation paramters based on omega and delta
     void calcAlR();
     void calcTimestep(); 
-
     inline void calcGravity(){gravity = original_g * timestep * timestep / spacestep;};
 };
 
