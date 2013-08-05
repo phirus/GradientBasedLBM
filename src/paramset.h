@@ -81,6 +81,7 @@ private:
     double gravity;             /// < gravity /-
 
     double speedlimit;          /// < maximum allowed velocity
+    
 
     void calcInter();           /// < calculate the interpolation paramters based on omega and delta
     void calcAlR();

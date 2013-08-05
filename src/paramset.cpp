@@ -166,6 +166,7 @@ void ParamSet::calcAlR(){
 }
 
 void ParamSet::calcTimestep(){
-    speedlimit = c_s * sqrt(3);  
-    timestep = spacestep / ( speedlimit );
+    speedlimit = c_s * sqrt(3);                 // calculates lattice sound speed
+    timestep = spacestep / ( speedlimit );      // timestep
+    speedlimit *= 0.1;                          // maximum velocity based on a maximum Mach-number 10
 }
