@@ -7,7 +7,7 @@
 using namespace std;
 
 
-/// collection of all parameters used during the simulation
+/// preprocesses the physical properties to LB properties that are then stored in a ParamSet
 class Preprocess
 {
 public: 
@@ -21,16 +21,38 @@ public:
 	const double getMorton()const{return Morton;};
 	const double getEotvos()const{return Eotvos;};
 	const double getResolution()const{return resolution;};
+	const double getDiameter()const{return diameter;};
 
 	// set methods
+	void setReynolds(double val){Reynolds = val;};
+	void setMorton(double val){Morton = val;};
+	void setEotvos(double val){Eotvos = val;};
+	void setG(double val){g = val;};
+	void setSigma(double val){sigma = val;};
+	void setDiameter(double val);
+	void setResolution(double val);
+
+
+
+
+
 
 	// calculations
 	const double getTau()const;
+	void calcSpacestep(){spacestep = diameter / resolution};
+
 
 private:
 	double Reynolds ; 
 	double Morton;
 	double Eotvos;
+	double g;          /// < gravity / m * s^-2
+	double sigma;      /// < surface tension
+	double timestep;   /// < timestep /s
+	double spacestep;  /// < spacestep /m
+	double diameter;   /// < bubble diameter /m
+
+//	double speedlimit;          /// < maximum allowed velocity
 	double resolution; // width of bubble in cells
 
 };

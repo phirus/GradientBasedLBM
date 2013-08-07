@@ -11,3 +11,12 @@ const double Preprocess::getTau()const{
 
 	return tau;
 }
+void Preprocess::setDiameter(double val){
+	diameter = val;
+	calcspacestep();
+}
+
+void Preprocess::setResolution(double val){
+	resolution = val;
+	calcspacestep();
+}
