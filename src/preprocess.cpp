@@ -13,10 +13,16 @@ const double Preprocess::getTau()const{
 }
 void Preprocess::setDiameter(double val){
 	diameter = val;
-	calcspacestep();
+	calcSpacestep();
 }
 
 void Preprocess::setResolution(double val){
 	resolution = val;
-	calcspacestep();
+	calcSpacestep();
+}
+
+void Preprocess::calcTimestep(){
+    speedlimit = c_s * sqrt(3);             // calculates lattice sound speed
+    timestep = spacestep / speedlimit;      // timestep
+    speedlimit /= Mach_max;                 // maximum velocity based on the maximum Mach-number
 }
