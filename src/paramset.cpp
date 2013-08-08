@@ -1,12 +1,9 @@
 #include"paramset.h"
-ParamSet::ParamSet(double omR, double omB, double rhoR, double gammaIni, double alB, double deltaIni, double betaIni, double sigmaIni, double c_sIni, double length, double g):omegaRed(omR),omegaBlue(omB),rhoRed(rhoR),gamma(gammaIni),alphaBlue(alB),delta(deltaIni),beta(betaIni), sigma(sigmaIni), c_s(c_sIni), spacestep(length), original_g(g)
+ParamSet::ParamSet(double omR, double omB, double rhoR, double gammaIni, double alB, double deltaIni, double betaIni, double sigmaIni, double g, double c_limit, double t_step):omegaRed(omR),omegaBlue(omB),rhoRed(rhoR),gamma(gammaIni),alphaBlue(alB),delta(deltaIni),beta(betaIni), sigma(sigmaIni), gravity(g), speedlimit(c_limit), timestep(t_step)
 {
     relax.s_2 = 1;
     relax.s_3 = 1;
     relax.s_5 = 1.2;
-
-    calcTimestep();
-    calcGravity();
 
     calcInter();
     calcAlR();
@@ -58,8 +55,8 @@ const ColSet ParamSet::getAk(double omega)const
     return Ak;
 }
 
-const boost::array<double,15> ParamSet::getEverything()const{
-    boost::array<double,15> pinkie;
+const boost::array<double,12> ParamSet::getEverything()const{
+    boost::array<double,12> pinkie;
     pinkie[0] = omegaRed;
     pinkie[1] = omegaBlue;
     pinkie[2] = rhoRed;
@@ -69,12 +66,10 @@ const boost::array<double,15> ParamSet::getEverything()const{
     pinkie[6] = delta;
     pinkie[7] = beta;
     pinkie[8] = sigma;
-    pinkie[9] = c_s;
-    pinkie[10] = timestep;
-    pinkie[11] = spacestep;
-    pinkie[12] = original_g;
-    pinkie[13] = gravity;
-    pinkie[14] = speedlimit;
+    pinkie[9] = gravity;
+    pinkie[10] = speedlimit;
+    pinkie[11] = timestep;
+    
 
     return pinkie;
 }
@@ -100,24 +95,6 @@ void ParamSet::setRatio(double rhoR, double ratio)
     calcAlR();
 }
 
-void ParamSet::setDeltaX(double dx)
-{
-    spacestep = dx;
-    calcTimestep();
-    calcGravity();
-}
-
-void ParamSet::setSoundSpeed(double sos)
-{
-    c_s = sos;
-    calcTimestep();
-    calcGravity();
-}
-void ParamSet::setOriginalG(double g)
-{
-    original_g = g;
-    calcGravity();
-}
 
 void ParamSet::setRelaxation(double s_2, double s_3, double s_5)
 {
@@ -129,7 +106,7 @@ void ParamSet::setRelaxation(double s_2, double s_3, double s_5)
 const bool ParamSet::operator==(const ParamSet& other)const{
     bool control = true;
     {
-        boost::array<double,15> foo, bar;
+        boost::array<double,12> foo, bar;
         foo = getEverything();
         bar = other.getEverything();
 
@@ -163,10 +140,4 @@ void ParamSet::calcInter()
 
 void ParamSet::calcAlR(){
     alphaRed = 1- (1- alphaBlue)/gamma;
-}
-
-void ParamSet::calcTimestep(){
-    speedlimit = c_s * sqrt(3);                 // calculates lattice sound speed
-    timestep = spacestep / ( speedlimit );      // timestep
-    speedlimit *= 0.1;                          // maximum velocity based on a maximum Mach-number 10
 }

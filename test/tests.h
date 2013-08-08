@@ -637,10 +637,10 @@ TEST(BinaryIO,output){
     EXPECT_TRUE(binary_input(vergleich));
     EXPECT_EQ(lattice,vergleich);
 }
-TEST(BinaryIO,paramLog){
-    Lattice lattice(100,100);    
-    EXPECT_NO_THROW(paramLogOut(lattice));
-}
+// TEST(BinaryIO,paramLog){
+//     Lattice lattice(100,100);    
+//     EXPECT_NO_THROW(paramLogOut(lattice));
+// }
 TEST(BinaryIO,queryTest){
     double value;
     EXPECT_FALSE( inputQuery("existiertnicht","test",value) );
@@ -650,11 +650,11 @@ TEST(BinaryIO,queryTest){
 
 }
 
-TEST(BinaryIO,paramConfIn){
-    ParamSet param(0.8, 1.4, 1.1, 1100);
-    ParamSet input = getFileParams("paramInputTest");
-    EXPECT_EQ(param, input);    
+// TEST(BinaryIO,paramConfIn){
+//     ParamSet param(0.8, 1.4, 1.1, 1100);
+//     ParamSet input = getFileParams("paramInputTest");
+//     EXPECT_EQ(param, input);    
 
-}
+// }
 
 #endif
