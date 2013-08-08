@@ -43,7 +43,7 @@ public:
     const double getGamma()const{return gamma;};
     const double getAlpha()const{return alphaBlue;};
     const double getSigma()const{return sigma;};
-    const double getSpeedLimit()const{return speedlimit;};
+    const double getSpeedlimit()const{return speedlimit;};
 
     /// set-methods, including calculations if necessary
     void setOmega(double omR, double omB, double d);

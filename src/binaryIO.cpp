@@ -191,39 +191,34 @@ void vtkOutput(const Lattice& l, int iterNum)
     VTKFile.close();
 }
 
-// void paramLogOut(const Lattice& l){
-//     ofstream paramLog;
-//     ColSet extent = l.getSize();
-//     ParamSet p = l.getParams();
-//     int xsize = static_cast<int> (extent[0]);
-//     int ysize = static_cast<int> (extent[1]);
+void paramLogOut(const Lattice& l){
+    ofstream paramLog;
+    ColSet extent = l.getSize();
+    ParamSet p = l.getParams();
+    int xsize = static_cast<int> (extent[0]);
+    int ysize = static_cast<int> (extent[1]);
 
-//     stringstream name;
-//     name <<"paramLog";
+    stringstream name;
+    name <<"paramLog";
 
-//     paramLog.open( name.str().c_str() );
-//     paramLog << "# used setup parameters\n" << endl;
-//     paramLog << "xsize = "      << xsize            << " Cells " << endl;
-//     paramLog << "ysize = "      << ysize            << " Cells " << endl;
-//     paramLog << "omega_red = "  << p.getOmegaRed()  << " /-" << endl;
-//     paramLog << "omega_blue = " << p.getOmegaBlue() << " /-" << endl;
-//     paramLog << "rho_red = "    << p.getRhoR()      << " / kg m^-3" << endl;
-//     paramLog << "gamma = "      << p.getGamma()     << " /-" << endl;
-//     paramLog << "alpha_blue = " << p.getAlpha()     << " /-" << endl;
-//     paramLog << "delta = "      << p.getInterfaceThickness() << " /-" << endl;
-//     paramLog << "beta = "       << p.getBeta()      << " /-" << endl;
-//     paramLog << "sigma = "      << p.getSigma()     << " /?" << endl; //TODO get SI units of sigma
-//     paramLog << "c_s = "        << p.getSoundspeed()<< " / m s^-1" << endl; 
-//     paramLog << "dx = "         << p.getDeltaX()    << " / m " << endl;
+    paramLog.open( name.str().c_str() );
+    paramLog << "# used setup parameters\n" << endl;
+    paramLog << "xsize = "      << xsize            << " Cells " << endl;
+    paramLog << "ysize = "      << ysize            << " Cells " << endl;
+    paramLog << "omega_red = "  << p.getOmegaRed()  << " /-" << endl;
+    paramLog << "omega_blue = " << p.getOmegaBlue() << " /-" << endl;
+    paramLog << "rho_red = "    << p.getRhoR()      << " / kg m^-3" << endl;
+    paramLog << "gamma = "      << p.getGamma()     << " /-" << endl;
+    paramLog << "alpha_blue = " << p.getAlpha()     << " /-" << endl;
+    paramLog << "delta = "      << p.getInterfaceThickness() << " /-" << endl;
+    paramLog << "beta = "       << p.getBeta()      << " /-" << endl;
+    paramLog << "sigma = "      << p.getSigma()     << " /?" << endl; //TODO get SI units of sigma
+    paramLog << "speedlimit = "        << p.getSpeedlimit()<< " / m s^-1" << endl; 
+    paramLog << "dt = "         << p.getDeltaT()    << " / m " << endl;
+    paramLog << "gravity = "          << p.getG()         << " / -" << endl;
 
-//     paramLog << "\n# successive parameters" << endl;
-//     paramLog << "dt = "         << p.getDeltaT()    << " / s" << endl;
-//     paramLog << "dimLessG = "          << p.getG()         << " / -" << endl;
-
-
-
-//     paramLog.close();
-// }
+    paramLog.close();
+}
 
 const bool inputQuery(const string& filename, const string& query, double& value){
     bool success = false;

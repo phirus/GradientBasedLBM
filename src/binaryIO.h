@@ -13,7 +13,7 @@ const bool binary_input(Lattice& outL, const string& filename = "data.bin");
 void techplotOutput(const Lattice& l, int iterNum, bool vebose = false);
 void vtkOutput(const Lattice& l, int iterNum);
 
-// void paramLogOut(const Lattice& l);
+void paramLogOut(const Lattice& l);
 
 const bool inputQuery(const string& filename, const string& query, double& value);
 
