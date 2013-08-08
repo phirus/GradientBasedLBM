@@ -36,30 +36,41 @@ public:
 
 
 
-
-	// calculations
-	const double getTau()const;
-	void calcSpacestep(){spacestep = diameter / resolution;};
-
-	void calcSoundspeed();		// < calculates the speed of sound based on a rough approximation
-	void calcTimestep();
-
-
-
 private:
+	// given
 	double Reynolds ; 
 	double Morton;
 	double Eotvos;
 	double g;          /// < gravity / m * s^-2
 	double sigma;      /// < surface tension
-    double c_s;        /// < speed of sound / m * s^-1
-    double speedlimit;          /// < maximum allowed velocity
+    double diameter;   /// < bubble diameter /m
+  	double resolution; // width of bubble in cells
+  	double rho_b, rho_r;
+
+    // deduced
+    double tau;
+    double speedlimit; /// < maximum allowed velocity
 	double timestep;   /// < timestep /s
 	double spacestep;  /// < spacestep /m
-	double diameter;   /// < bubble diameter /m
+	
+	double nu;
 
-//	double speedlimit;          /// < maximum allowed velocity
-	double resolution; // width of bubble in cells
+	double c_s;        /// < speed of sound / m * s^-1
+
+	// methods
+	// calculations
+	inline void calcTau(){tau = (resolution / Mach_max   * sqrt(3) / Reynolds ) + 0.5;};
+	inline void calcSpacestep(){spacestep = diameter / resolution;};
+	inline void calcSpeedlimit(){speedlimit = Mach_max * sqrt(3) * c_s ;};
+	inline void calcTimestep(){timestep = spacestep / (sqrt(3) * c_s);};
+	inline void calcNu(){nu = c_s * c_s * timestep * (tau - 0.5);};
+
+	void calcSoundspeed();		// < calculates the speed of sound based on a rough approximation
+
+
+
+
+
 
 };
 
