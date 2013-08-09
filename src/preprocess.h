@@ -32,6 +32,12 @@ public:
 	void setDiameter(double val);
 	void setResolution(double val);
 
+	// unit conversions
+	inline const double convertG()const{return g * timestep * timestep / spacestep;};		///  m/s^2 -> -
+	inline const double convertSigma()const{return sigma * timestep * timestep / (rho_0 * spacestep * spacestep * spacestep) ;};  /// kg/s^2 -> -
+
+	inline const double convertRhoR()const{return rho_r/rho_0;};
+	inline const double convertRhoB()const{return rho_b/rho_0;};
 
 
 
@@ -46,6 +52,7 @@ private:
     double diameter;   /// < bubble diameter /m
   	double resolution; // width of bubble in cells
   	double rho_b, rho_r;
+  	double rho_0; /// reference density
 
     // deduced
     double tau;
