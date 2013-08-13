@@ -650,11 +650,11 @@ TEST(BinaryIO,queryTest){
 
 }
 
-// TEST(BinaryIO,paramConfIn){
-//     ParamSet param(0.8, 1.4, 1.1, 1100);
-//     ParamSet input = getFileParams("paramInputTest");
-//     EXPECT_EQ(param, input);    
+TEST(BinaryIO,paramConfIn){
+    ParamSet param(0.8, 1.4, 1.1, 1100);
+    ParamSet input = getFileParams("paramInputTest");
+    EXPECT_EQ(param, input);    
 
-// }
+}
 
 #endif

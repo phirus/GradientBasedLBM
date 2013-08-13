@@ -69,10 +69,8 @@ private:
     double tau;
     double speedlimit; /// < maximum allowed velocity
 	double timestep;   /// < timestep /s
-	double spacestep;  /// < spacestep /m
-	
+	double spacestep;  /// < spacestep /m	
 	double nu;
-
 	double c_s;        /// < speed of sound / m * s^-1
 
 	// methods
