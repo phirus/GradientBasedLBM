@@ -17,18 +17,29 @@ public:
 
 
 	// get methods
-	const double getReynolds()const{return Reynolds;};
-	const double getMorton()const{return Morton;};
-	const double getEotvos()const{return Eotvos;};
-	const double getResolution()const{return resolution;};
-	const double getDiameter()const{return diameter;};
+	inline const double getReynolds()const{return Reynolds;};
+	inline const double getMorton()const{return Morton;};
+	inline const double getEotvos()const{return Eotvos;};
+	inline const double getResolution()const{return resolution;};
+	inline const double getDiameter()const{return diameter;};
+	inline const double getGPhys()const{return g;};
+	inline const double getSigma()const{return sigma;};
+	inline const double getRho0()const{return rho_0;};
 
+	inline const double getTau()const {return tau;};
+	inline const double getSpeedlimit()const{return speedlimit;};
+	inline const double getTimestep()const{return timestep;};
+	inline const double getSpacestep()const{return spacestep;};
+	inline const double getNu()const{return nu;};
+	inline const double getSoundspeed()const{return c_s;};
+	
 	// set methods
-	void setReynolds(double val){Reynolds = val;};
-	void setMorton(double val){Morton = val;};
-	void setEotvos(double val){Eotvos = val;};
-	void setG(double val){g = val;};
-	void setSigma(double val){sigma = val;};
+	inline void setReynolds(double val){Reynolds = val;};
+	inline void setMorton(double val){Morton = val;};
+	inline void setEotvos(double val){Eotvos = val;};
+	inline void setG(double val){g = val;};
+	inline void setSigma(double val){sigma = val;};
+
 	void setDiameter(double val);
 	void setResolution(double val);
 
@@ -73,11 +84,6 @@ private:
 	inline void calcNu(){nu = c_s * c_s * timestep * (tau - 0.5);};
 
 	void calcSoundspeed();		// < calculates the speed of sound based on a rough approximation
-
-
-
-
-
 
 };
 
