@@ -27,8 +27,8 @@ const boost::array<Vector,13> e = {{e0,e1,e2,e3,e4,e5,e6,e7,e8,e9,e10,e11,e12}};
 const Matrix TrafoMatrix(true);
 const Matrix InvTtrafoMatrix(false);
 
-/// willkürliche Festlegung
-const double Mach_max = 0.1; // maximal erlaubte Mach-Zahl
+/// arbitrary  definition
+const double MACH_MAX = 0.1; // maximal erlaubte Mach-Zahl
 
 
 #endif
