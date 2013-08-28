@@ -17,18 +17,15 @@ public:
 
 
 	// get methods
-	inline const double getReynolds()const{return Reynolds;};
+	inline const double getReynoldsMax()const{return ReynoldsMax;};
 	inline const double getMorton()const{return Morton;};
 	inline const double getEotvos()const{return Eotvos;};
 	inline const double getResolution()const{return resolution;};
 	inline const double getRhoL()const{return rho_l;};
 	inline const double getRho0()const{return rho_0;};
 	inline const double getGamma()const{return gamma;};
-
 	inline const double getDiameter()const{return diameter;};
-	inline const double getGPhys()const{return g;};
-	inline const double getSigma()const{return sigma;};
-	
+
 	inline const double getTau()const {return tau;};
 	inline const double getSpeedlimit()const{return speedlimit;};
 	inline const double getTimestep()const{return timestep;};
@@ -37,17 +34,20 @@ public:
 	inline const double getSoundspeed()const{return c_s;};
 	inline const double getDelRho()const{return delRho;};
 	
+	inline const double getGPhys()const{return g;};
+	inline const double getSigma()const{return sigma;};
+
+
 	// set methods
-	inline void setReynolds(double val){Reynolds = val;};
-	inline void setMorton(double val){Morton = val;};
-	inline void setEotvos(double val){Eotvos = val;};
+	void setReynoldsMax(double val){ReynoldsMax = val;};
+	void setMorton(double val){Morton = val;};
+	void setEotvos(double val){Eotvos = val;};
 	void setResolution(double val);
-
-
-	inline void setG(double val){g = val;};
-
+	void setRhoL(double val);
+	void setRho0(double val);
+	void setGamma(double val);
 	void setDiameter(double val);
-	
+
 
 	// calculations
 	const double estimateVelocity()const;
@@ -64,14 +64,14 @@ public:
 
 private:
 	// given
-	double Reynolds ; 
-	double Morton;
-	double Eotvos;
-	double resolution; // width of bubble in cells
-	double rho_l ;
-  	double rho_0; /// reference density
-  	double gamma; 	/// < density ratio
-  	double diameter;   /// < bubble diameter /m
+	double ReynoldsMax ; 	/// < maximum Reynolds-Number
+	double Morton;			/// < Morton-Number
+	double Eotvos;			/// < Eotvos-Number
+	double resolution; 		/// < width of bubble in cells
+	double rho_l ;			/// < liquid density
+  	double rho_0; 			/// < reference density
+  	double gamma; 			/// < density ratio
+  	double diameter;   		/// < bubble diameter /m
 
     // deduced
     double tau;
@@ -89,16 +89,18 @@ private:
 
 	// methods
 	// calculations
-	inline void calcTau(){tau = (resolution / MACH_MAX   * sqrt(3) / Reynolds ) + 0.5;};
+	inline void calcTau(){tau = (resolution / MACH_MAX   * sqrt(3) / ReynoldsMax ) + 0.5;};
 	inline void calcSoundspeed(){c_s = MACH_MAX * estimateVelocity();};
 	inline void calcSpeedlimit(){speedlimit = MACH_MAX * sqrt(3) * c_s ;};
-
 	inline void calcSpacestep(){spacestep = diameter / resolution;};
 	inline void calcTimestep(){timestep = spacestep / (sqrt(3) * c_s);};
-
 	inline void calcNu(){nu = c_s * c_s * timestep * (tau - 0.5);};
 	inline void calcDelRho(){delRho = rho_l * (1 - 1/gamma);};
+
+	inline void calcSigma(){sigma = g * delRho *diameter*diameter / Eotvos;};
+	inline void calcG(){g = Morton * pow(rho_l,2) * pow(sigma,3) / (delRho * pow((nu * rho_l),4));};
 	
+	void deduceAll();
 
 };
 
