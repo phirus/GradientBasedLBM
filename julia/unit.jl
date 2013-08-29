@@ -2,10 +2,9 @@ using Optim
 
 require("createParamFile.jl")
 require("functions.jl")
-println("given parameters")
+require("constants.jl")
 
-
-
+# start values
 g = 10.0
 sigma = 1e-4
 gamma = 2
@@ -19,7 +18,7 @@ g = 		x[1]
 sigma = 	x[2]
 gamma = 	x[3]
 
-Re, Mo, Eo, dx, ut, c_s, dt, nu, mu, rho, delRho, tau, diameter = getOtherParams(g, sigma, gamma)
+Mo, Eo, dx, ut, c_s, dt, nu, mu, delRho, tau = getOtherParams(g, sigma, gamma)
 
 println("\n\n##################")
 println("resulting parameters")
@@ -30,16 +29,16 @@ println("\nspeed of sound = ",c_s)
 println("\ntimestep = ",dt)
 println("\nnu = ",nu)
 println("\nmu = ",mu)
-println("\nrho = ",rho)
+println("\nrho = ",RHO_L)
 println("\ndelta rho = ",delRho)
 println("\ntau = ",tau)
-println("\ndiameter = ",diameter)
+println("\ndiameter = ",DIAMETER)
 
 println("\ng = ",g)
 println("\nsigma = ",sigma)
 
-println("\nReynolds = ",Re)
+println("\nReynolds = ",REYNOLDS_MAX_INI)
 println("\nMorton = ",Mo)
 println("\nEotvos = ",Eo)
 
-createPFile(Re, Mo, Eo, tau, rho, delRho, sigma, c_s, dx, g)
+createPFile(REYNOLDS_MAX_INI, Mo, Eo, tau, RHO_L, delRho, sigma, c_s, dx, g)
