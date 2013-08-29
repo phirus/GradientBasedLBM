@@ -41,4 +41,4 @@ println("\nReynolds = ",REYNOLDS_MAX_INI)
 println("\nMorton = ",Mo)
 println("\nEotvos = ",Eo)
 
-createPFile(REYNOLDS_MAX_INI, Mo, Eo, tau, RHO_L, delRho, sigma, c_s, dx, g)
+createPFile(Mo, Eo, c_s, gamma, sigma, g)

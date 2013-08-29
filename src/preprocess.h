@@ -49,10 +49,6 @@ public:
 	void setDiameter(double val);
 
 
-	// calculations
-	const double estimateVelocity()const;
-
-
 	// unit conversions
 	inline const double convertG()const{return g * timestep * timestep / spacestep;};		///  m/s^2 -> -
 	inline const double convertSigma()const{return sigma * timestep * timestep / (rho_0 * spacestep * spacestep * spacestep) ;};  /// kg/s^2 -> -
@@ -72,34 +68,29 @@ private:
   	double rho_0; 			/// < reference density
   	double gamma; 			/// < density ratio
   	double diameter;   		/// < bubble diameter /m
+	double c_s; 	       	/// < speed of sound / m * s^-1
+	double sigma;   	   	/// < surface tension
+	double g;          		/// < gravity / m * s^-2	
+
 
     // deduced
     double tau;
     double speedlimit; /// < maximum allowed velocity
-	double timestep;   /// < timestep /s
 	double spacestep;  /// < spacestep /m	
-	double nu;
-	double c_s;        /// < speed of sound / m * s^-1
-	double rho_g;
+	double timestep;   /// < timestep /s
 	double delRho;     /// < density difference / kg * m^-3
-
-	double sigma;      /// < surface tension
-	double g;          /// < gravity / m * s^-2	
-	
+	double rho_g;
+	double nu;
 
 	// methods
 	// calculations
 	inline void calcTau(){tau = (resolution / MACH_MAX   * sqrt(3) / ReynoldsMax ) + 0.5;};
-	inline void calcSoundspeed(){c_s = MACH_MAX * estimateVelocity();};
 	inline void calcSpeedlimit(){speedlimit = MACH_MAX * sqrt(3) * c_s ;};
 	inline void calcSpacestep(){spacestep = diameter / resolution;};
 	inline void calcTimestep(){timestep = spacestep / (sqrt(3) * c_s);};
 	inline void calcNu(){nu = c_s * c_s * timestep * (tau - 0.5);};
 	inline void calcDelRho(){delRho = rho_l * (1 - 1/gamma);};
 
-	inline void calcSigma(){sigma = g * delRho *diameter*diameter / Eotvos;};
-	inline void calcG(){g = Morton * pow(rho_l,2) * pow(sigma,3) / (delRho * pow((nu * rho_l),4));};
-	
 	void deduceAll();
 
 };

@@ -7,8 +7,4 @@ global const DIAMETER = 0.1
 global const RESOLUTION = 40
 global const MACH_MAX = 0.1
 
-
-
-
-
 println("Parameter wurden geladen")
