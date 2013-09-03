@@ -657,4 +657,27 @@ TEST(BinaryIO,paramConfIn){
 
 }
 
+TEST(Preprocess,constr){
+    Preprocess newProcess;
+
+    // test the given parameters (default values)
+    EXPECT_DOUBLE_EQ(50,newProcess.getReynoldsMax());
+    EXPECT_DOUBLE_EQ(1e-3,newProcess.getMorton());
+    EXPECT_DOUBLE_EQ(20,newProcess.getEotvos());
+    EXPECT_DOUBLE_EQ(40,newProcess.getResolution());
+    EXPECT_DOUBLE_EQ(1000,newProcess.getRhoL());
+    EXPECT_DOUBLE_EQ(5,newProcess.getGamma());
+    EXPECT_DOUBLE_EQ(0.1,newProcess.getDiameter());
+
+    // test the deduced parameters
+    EXPECT_DOUBLE_EQ(0.6385640646055102,newProcess.getTau());
+    EXPECT_DOUBLE_EQ(sqrt(3),newProcess.getSpeedlimit());
+    EXPECT_DOUBLE_EQ(0.0025,newProcess.getSpacestep());
+    EXPECT_DOUBLE_EQ(0.00014433756729740645,newProcess.getTimestep());
+    EXPECT_DOUBLE_EQ(0.002,newProcess.getNu());
+    EXPECT_DOUBLE_EQ(800,newProcess.getDelRho());
+}
+
+
+
 #endif

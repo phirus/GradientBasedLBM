@@ -12,9 +12,7 @@ class Preprocess
 {
 public: 
 	// constr
-	Preprocess(double Re, double Mo, double Eo, double res, double rl, double gam, double dia, double soundspeed, double sig, double grav);
-
-
+	Preprocess(double Re = 50, double Mo = 1e-3, double Eo = 20, double res = 40, double rl= 1000, double gam = 5, double dia = 0.1, double soundspeed = 10, double sig= 1e-4, double grav = 10);
 
 	// get methods
 	inline const double getReynoldsMax()const{return ReynoldsMax;};
@@ -24,19 +22,17 @@ public:
 	inline const double getRhoL()const{return rho_l;};
 	inline const double getGamma()const{return gamma;};
 	inline const double getDiameter()const{return diameter;};
-
-	inline const double getTau()const {return tau;};
-	inline const double getSpeedlimit()const{return speedlimit;};
-	inline const double getTimestep()const{return timestep;};
-	inline const double getSpacestep()const{return spacestep;};
-	inline const double getNu()const{return nu;};
 	inline const double getSoundspeed()const{return c_s;};
-	inline const double getDelRho()const{return delRho;};
-	
 	inline const double getGPhys()const{return g;};
 	inline const double getSigma()const{return sigma;};
 
-
+	inline const double getTau()const {return tau;};
+	inline const double getSpeedlimit()const{return speedlimit;};
+	inline const double getSpacestep()const{return spacestep;};
+	inline const double getTimestep()const{return timestep;};
+	inline const double getNu()const{return nu;};
+	inline const double getDelRho()const{return delRho;};
+	
 	// set methods
 	void setReynoldsMax(double val){ReynoldsMax = val;};
 
@@ -72,7 +68,7 @@ private:
 
 	// methods
 	// calculations
-	inline void calcTau(){tau = (resolution / MACH_MAX   * sqrt(3) / ReynoldsMax ) + 0.5;};
+	inline void calcTau(){tau = (resolution * MACH_MAX   * sqrt(3) / ReynoldsMax ) + 0.5;};
 	inline void calcSpeedlimit(){speedlimit = MACH_MAX * sqrt(3) * c_s ;};
 	inline void calcSpacestep(){spacestep = diameter / resolution;};
 	inline void calcTimestep(){timestep = spacestep / (sqrt(3) * c_s);};
