@@ -1,5 +1,16 @@
 #include"paramset.h"
-ParamSet::ParamSet(double omR, double omB, double rhoR, double gammaIni, double alB, double deltaIni, double betaIni, double sigmaIni, double g, double c_limit, double t_step):omegaRed(omR),omegaBlue(omB),rhoRed(rhoR),gamma(gammaIni),alphaBlue(alB),delta(deltaIni),beta(betaIni), sigma(sigmaIni), gravity(g), speedlimit(c_limit), timestep(t_step)
+ParamSet::ParamSet(double omR, double omB, double rhoR, double gammaIni, double alB, double deltaIni, double betaIni, double sigmaIni, double g, double c_limit, double t_step):
+omegaRed(omR),
+omegaBlue(omB),
+rhoRed(rhoR),
+gamma(gammaIni),
+alphaBlue(alB),
+delta(deltaIni),
+beta(betaIni), 
+sigma(sigmaIni), 
+gravity(g), 
+speedlimit(c_limit), 
+timestep(t_step)
 {
     relax.s_2 = 1;
     relax.s_3 = 1;
@@ -117,7 +128,11 @@ const bool ParamSet::operator==(const ParamSet& other)const{
         finter = getInter();
         binter = other.getInter();
 
-        if(finter.chi != binter.chi || finter.eta != binter.eta || finter.kappa != binter.kappa || finter.lambda != binter.lambda || finter.ny != binter.ny) control = false;
+        if(finter.chi != binter.chi ) control = false;
+        if(finter.eta != binter.eta ) control = false;
+        if(finter.kappa != binter.kappa ) control = false;
+        if(finter.lambda != binter.lambda ) control = false;
+        if(finter.ny != binter.ny) control = false;
     }
     {
         RelaxationPar frelax,brelax;
