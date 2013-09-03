@@ -12,7 +12,7 @@ class Preprocess
 {
 public: 
 	// constr
-	Preprocess(double Re, double Mo, double Eo);
+	Preprocess(double Re, double Mo, double Eo, double res, double rl, double gam, double dia, double soundspeed, double sig, double grav);
 
 
 
@@ -22,7 +22,6 @@ public:
 	inline const double getEotvos()const{return Eotvos;};
 	inline const double getResolution()const{return resolution;};
 	inline const double getRhoL()const{return rho_l;};
-	inline const double getRho0()const{return rho_0;};
 	inline const double getGamma()const{return gamma;};
 	inline const double getDiameter()const{return diameter;};
 
@@ -40,24 +39,14 @@ public:
 
 	// set methods
 	void setReynoldsMax(double val){ReynoldsMax = val;};
-	void setMorton(double val){Morton = val;};
-	void setEotvos(double val){Eotvos = val;};
-	void setResolution(double val);
-	void setRhoL(double val);
-	void setRho0(double val);
-	void setGamma(double val);
-	void setDiameter(double val);
-
 
 	// unit conversions
 	inline const double convertG()const{return g * timestep * timestep / spacestep;};		///  m/s^2 -> -
-	inline const double convertSigma()const{return sigma * timestep * timestep / (rho_0 * spacestep * spacestep * spacestep) ;};  /// kg/s^2 -> -
+	inline const double convertSigma()const{return sigma * timestep * timestep / (rho_l * spacestep * spacestep * spacestep) ;};  /// kg/s^2 -> -
 
-	inline const double convertRhoL()const{return rho_l/rho_0;};
-	inline const double convertRhoG()const{return rho_g/rho_0;};
+	inline const double convertRhoL()const{return rho_l/rho_l;};
+	inline const double convertRhoG()const{return rho_g/rho_l;};
 	
-
-
 private:
 	// given
 	double ReynoldsMax ; 	/// < maximum Reynolds-Number
@@ -65,7 +54,6 @@ private:
 	double Eotvos;			/// < Eotvos-Number
 	double resolution; 		/// < width of bubble in cells
 	double rho_l ;			/// < liquid density
-  	double rho_0; 			/// < reference density
   	double gamma; 			/// < density ratio
   	double diameter;   		/// < bubble diameter /m
 	double c_s; 	       	/// < speed of sound / m * s^-1
