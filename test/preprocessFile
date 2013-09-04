@@ -1,16 +1,16 @@
 # Parameterset yielding
- Reynolds = 50
- Morton = 0.0010000000000000009
- Eotvos = 20.000000000000004
+ Reynolds = 75
+ Morton = 0.0015
+ Eotvos = 25
 
 # resolution / Cells per Bubble diameter, default [40]
-resolution = 40
+resolution = 45
 
 # density of the denser phase / kg m^-3, default [1000]
-rho_l = 1.0
+rho_l = 1200.0
 
 # density ratio, default [5]
-gamma = 2.8574133541772375
+gamma = 2.75
 
 # bubble diameter / m, default [0.1]
 diameter = 0.1

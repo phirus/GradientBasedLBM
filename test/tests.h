@@ -677,7 +677,19 @@ TEST(Preprocess,constr){
     EXPECT_DOUBLE_EQ(0.002,newProcess.getNu());
     EXPECT_DOUBLE_EQ(800,newProcess.getDelRho());
 }
+TEST(Preprocess,FileInput){
+    Preprocess newProcess = getFilePreprocess("preprocessFile");
 
+    // test the given parameters (default values)
+    EXPECT_DOUBLE_EQ(75,newProcess.getReynoldsMax());
+    EXPECT_DOUBLE_EQ(0.0015,newProcess.getMorton());
+    EXPECT_DOUBLE_EQ(25,newProcess.getEotvos());
+    EXPECT_DOUBLE_EQ(45,newProcess.getResolution());
+    EXPECT_DOUBLE_EQ(1200,newProcess.getRhoL());
+    EXPECT_DOUBLE_EQ(2.75,newProcess.getGamma());
+    EXPECT_DOUBLE_EQ(0.1,newProcess.getDiameter());
+
+}
 
 
 #endif

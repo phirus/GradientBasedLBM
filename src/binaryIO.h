@@ -19,6 +19,7 @@ void paramLogOut(const Lattice& l);
 const bool inputQuery(const string& filename, const string& query, double& value);
 
 const ParamSet getFileParams(const string& filename);
+const Preprocess getFilePreprocess(const string& filename);
 
 #endif
 

@@ -271,3 +271,30 @@ const ParamSet getFileParams(const string& filename){
     ParamSet params(mm.at("omega_red"),mm.at("omega_blue"),mm.at("rho_red"),mm.at("gamma"),mm.at("alpha_blue"),mm.at("delta"),mm.at("beta"),mm.at("sigma"),mm.at("g"), mm.at("speedlimit"),mm.at("timestep"));
     return params;
 }
+
+const Preprocess getFilePreprocess(const string& filename){
+    vector<string> tags;
+    vector<double> val;
+    // initialzing strings and fallback values
+    map<string,double> mm;
+        mm.insert(pair<string,double>("Reynolds",50));
+        mm.insert(pair<string,double>("Morton",1e-3));
+        mm.insert(pair<string,double>("Eotvos",20));
+        mm.insert(pair<string,double>("resolution",40));
+        mm.insert(pair<string,double>("rho_l",1000));
+        mm.insert(pair<string,double>("gamma",5));
+        mm.insert(pair<string,double>("diameter",0.1));
+        mm.insert(pair<string,double>("c_s",10));
+        mm.insert(pair<string,double>("sigma",1e-4));
+        mm.insert(pair<string,double>("g",10));
+
+
+        // cycling through the input file
+        double tmp;
+        for(map<string,double>::iterator it = mm.begin(); it != mm.end(); it++){            
+            if( inputQuery(filename,it->first,tmp) == true ) it->second = tmp;
+        }
+
+    Preprocess prepro(mm.at("Reynolds"),mm.at("Morton"),mm.at("Eotvos"),mm.at("resolution"),mm.at("rho_l"),mm.at("gamma"),mm.at("diameter"),mm.at("c_s"),mm.at("sigma"), mm.at("g"));
+    return prepro;
+}
