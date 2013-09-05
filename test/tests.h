@@ -696,6 +696,6 @@ TEST(Preprocess,FileInput){
     EXPECT_DOUBLE_EQ(7.177827488211825,newProcess.getSoundspeed());
     EXPECT_DOUBLE_EQ(0.00291447961305505,newProcess.getSigma());
     EXPECT_DOUBLE_EQ(8.967172490810192,newProcess.getGPhys());
-}
+ }
 
 #endif
