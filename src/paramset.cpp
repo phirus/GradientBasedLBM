@@ -1,5 +1,5 @@
 #include"paramset.h"
-ParamSet::ParamSet(double omR, double omB, double rhoR, double gammaIni, double alB, double deltaIni, double betaIni, double sigmaIni, double g, double c_limit, double t_step):
+ParamSet::ParamSet(double omR, double omB, double rhoR ,double gammaIni, double sigmaIni, double g, double c_limit, double t_step, double alB, double deltaIni, double betaIni):
 omegaRed(omR),
 omegaBlue(omB),
 rhoRed(rhoR),
