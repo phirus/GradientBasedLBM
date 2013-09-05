@@ -21,3 +21,11 @@ void Preprocess::deduceAll(){
 	calcNu();
 	calcDelRho();
 }
+
+// const ParamSet Preprocess::getParamSet()const{
+// 	double omega = 1/tau;
+// 	doúble rho_r = 1;  // normalized
+
+
+
+// }

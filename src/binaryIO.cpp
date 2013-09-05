@@ -268,7 +268,7 @@ const ParamSet getFileParams(const string& filename){
             if( inputQuery(filename,it->first,tmp) == true ) it->second = tmp;
         }
 
-    ParamSet params(mm.at("omega_red"),mm.at("omega_blue"),mm.at("rho_red"),mm.at("gamma"),mm.at("alpha_blue"),mm.at("delta"),mm.at("beta"),mm.at("sigma"),mm.at("g"), mm.at("speedlimit"),mm.at("timestep"));
+    ParamSet params(mm.at("omega_red"),mm.at("omega_blue"),mm.at("rho_red"),mm.at("gamma"),mm.at("sigma"),mm.at("g"), mm.at("speedlimit"),mm.at("timestep"),mm.at("alpha_blue"),mm.at("delta"),mm.at("beta"));
     return params;
 }
 

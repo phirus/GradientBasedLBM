@@ -42,6 +42,9 @@ public:
 
 	inline const double convertRhoL()const{return rho_l/rho_l;};
 	inline const double convertRhoG()const{return rho_g/rho_l;};
+
+	// get the parameter set
+	const ParamSet getParamSet()const;
 	
 private:
 	// given
