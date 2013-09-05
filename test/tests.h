@@ -668,6 +668,9 @@ TEST(Preprocess,constr){
     EXPECT_DOUBLE_EQ(1000,newProcess.getRhoL());
     EXPECT_DOUBLE_EQ(5,newProcess.getGamma());
     EXPECT_DOUBLE_EQ(0.1,newProcess.getDiameter());
+    EXPECT_DOUBLE_EQ(10,newProcess.getSoundspeed());
+    EXPECT_DOUBLE_EQ(1e-4,newProcess.getSigma());
+    EXPECT_DOUBLE_EQ(10,newProcess.getGPhys());
 
     // test the deduced parameters
     EXPECT_DOUBLE_EQ(0.6385640646055102,newProcess.getTau());
@@ -689,6 +692,9 @@ TEST(Preprocess,FileInput){
     EXPECT_DOUBLE_EQ(2.75,newProcess.getGamma());
     EXPECT_DOUBLE_EQ(0.1,newProcess.getDiameter());
 
+    EXPECT_DOUBLE_EQ(7.177827488211825,newProcess.getSoundspeed());
+    EXPECT_DOUBLE_EQ(0.00291447961305505,newProcess.getSigma());
+    EXPECT_DOUBLE_EQ(8.967172490810192,newProcess.getGPhys());
 }
 
 
