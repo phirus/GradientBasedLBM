@@ -45,19 +45,22 @@ public:
 
 	// get the parameter set
 	const ParamSet getParamSet()const;
+
+	// refine timestep
+	void refine(double factor = 1.1); // standard factor: 10%
 	
 private:
 	// given
 	double ReynoldsMax ; 	/// < maximum Reynolds-Number
-	double Morton;			/// < Morton-Number
-	double Eotvos;			/// < Eotvos-Number
-	double resolution; 		/// < width of bubble in cells
-	double rho_l ;			/// < liquid density
-  	double gamma; 			/// < density ratio
-  	double diameter;   		/// < bubble diameter /m
+	const double Morton;			/// < Morton-Number
+	const double Eotvos;			/// < Eotvos-Number
+	const double resolution; 		/// < width of bubble in cells
+	const double rho_l ;			/// < liquid density
+  	const double gamma; 			/// < density ratio
+  	const double diameter;   		/// < bubble diameter /m
 	double c_s; 	       	/// < speed of sound / m * s^-1
-	double sigma;   	   	/// < surface tension
-	double g;          		/// < gravity / m * s^-2	
+	const double sigma;   	   	/// < surface tension
+	const double g;          		/// < gravity / m * s^-2	
 
 
     // deduced
