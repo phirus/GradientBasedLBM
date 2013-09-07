@@ -18,7 +18,7 @@ BIN_DIR = bin
 OUTPUT = $(BIN_DIR)/BubbleTest
 
 # creating OBJs
-OBJ_DEBUG = $(OBJ_DIR)/binaryIO.o $(OBJ_DIR)/cell.o $(OBJ_DIR)/lattice.o $(OBJ_DIR)/main.o $(OBJ_DIR)/matrix.o $(OBJ_DIR)/paramset.o $(OBJ_DIR)/preprocess.o $(OBJ_DIR)/vector.o
+OBJ_DEBUG = $(OBJ_DIR)/binaryIO.o $(OBJ_DIR)/cell.o $(OBJ_DIR)/lattice.o $(OBJ_DIR)/main.o $(OBJ_DIR)/matrix.o $(OBJ_DIR)/paramset.o $(OBJ_DIR)/preprocess.o $(OBJ_DIR)/timetrack.o $(OBJ_DIR)/vector.o
 
 all: clean build
 
@@ -55,6 +55,9 @@ $(OBJ_DIR)/paramset.o: $(SRC)/paramset.cpp
 
 $(OBJ_DIR)/preprocess.o: $(SRC)/preprocess.cpp
 	$(CXX) $(CFLAGS) $(INC) -c $(SRC)/preprocess.cpp -o $(OBJ_DIR)/preprocess.o
+
+$(OBJ_DIR)/timetrack.o: $(SRC)/timetrack.cpp
+	$(CXX) $(CFLAGS) $(INC) -c $(SRC)/timetrack.cpp -o $(OBJ_DIR)/timetrack.o
 
 $(OBJ_DIR)/vector.o: $(SRC)/vector.cpp
 	$(CXX) $(CFLAGS) $(INC) -c $(SRC)/vector.cpp -o $(OBJ_DIR)/vector.o
