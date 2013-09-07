@@ -7,10 +7,13 @@ dtIni(iniTime)
 ,refinelist(1,0)
 {}
 
-double Timetrack::getTime()const{
-	double time(0);	
-	for(unsigned int i = 0; i< refinelist.size(); i++){
-		time += refinelist[i] * pow(factor,i);
+const double Timetrack::getTime()const{
+	double time = 0;
+	int j = 0;	
+	for(unsigned int i = 1; i<refinelist.size() ; i++){
+		time += refinelist[i] * dtIni * pow(factor,i-1);
+		j += refinelist[i];
 	}
+	time += (count - j) * dtIni * pow(factor,refinelist.size()-1);
 	return time;
 }

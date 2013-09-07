@@ -12,8 +12,8 @@ class Timetrack
 public: 
 	Timetrack(double iniTime = 1e-3, double fac = 1.1);
 	inline void timestep(){count++;};
-	inline void refine(){refinelist.push_back(count);};
-	double getTime()const;
+	inline void refine(){refinelist.push_back(count-refinelist.back());};
+	const double getTime()const;
 
 private:
 	const double dtIni;
