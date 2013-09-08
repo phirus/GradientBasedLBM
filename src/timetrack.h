@@ -6,7 +6,7 @@
 
 using namespace std;
 
-/// preprocesses the physical properties to LB properties that are then stored in a ParamSet
+/// tracks the physical time throughout the simulation
 class Timetrack
 {
 public: 
@@ -15,11 +15,16 @@ public:
 	inline void refine(){refinelist.push_back(count-refinelist.back());};
 	const double getTime()const;
 
+	// get methods
+	const double getDTini()const{return dtIni;};
+	const double getFactor()const{return factor;};
+	const int getCount()const{return count;};
+	const vector<int> getList()const{return refinelist;};
+
 private:
 	const double dtIni;
 	const double factor;
 	int count;
 	vector<int> refinelist;
 };
-
 #endif

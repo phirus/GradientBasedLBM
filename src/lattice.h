@@ -27,12 +27,14 @@ public:
     void setF(int x, int y, int color, const array& nf);
     void setF(int x, int y, int color, int index, double value);
     void setParams(const ParamSet& newParam){param = newParam;}; /// < set a new parameter set
+    // void setTimetrack(Timetrack newTime){timetrack = newTime;};
 
     /// get-methods
     const ColSet getSize()const; /// < get the extend of the Lattice
     const field getData()const{return *data;}; /// < get the data field
     const Cell getCell(int x, int y)const{return (*data)[x][y];};  /// < get a Cell
     const ParamSet getParams()const{return param;}; /// < get the paramter set
+    const Timetrack getTimetrack()const{return timetrack;};
     const FSet getF(int x, int y)const{return (*data)[x][y].getF();};          /// < get F
 
     /// calculations
@@ -49,6 +51,7 @@ public:
 
     void streamAll(int threads = 0); /// < streaming step
     void collideAll(int threads = 0, bool gravity = false); /// < collision step
+    void timestep(){timetrack.timestep();};
 
     /// overloaded == Operator
     const bool operator==(const Lattice& oher)const;
@@ -57,6 +60,7 @@ private:
     field * data;
     int xsize, ysize;   /// < extent of the Lattice
     ParamSet param;     /// < set of parameters used during the simulation
+    Timetrack timetrack; 
 
     inline void linearIndex(int index, int& x, int& y)const;
     void streamAndBouncePull(Cell& tCell, const direction& dir)const; /// < internal streaming mechanism with bounce back
