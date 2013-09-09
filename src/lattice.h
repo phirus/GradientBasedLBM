@@ -27,7 +27,7 @@ public:
     void setF(int x, int y, int color, const array& nf);
     void setF(int x, int y, int color, int index, double value);
     void setParams(const ParamSet& newParam){param = newParam;}; /// < set a new parameter set
-    // void setTimetrack(Timetrack newTime){timetrack = newTime;};
+    void setTimetrack(Timetrack newTime){timetrack = newTime;};
 
     /// get-methods
     const ColSet getSize()const; /// < get the extend of the Lattice

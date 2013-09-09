@@ -22,8 +22,8 @@ public:
 	const vector<int> getList()const{return refinelist;};
 
 private:
-	const double dtIni;
-	const double factor;
+	double dtIni;		//   not constant, so the standard copy contr. works
+	double factor;		//   not constant, so the standard copy contr. works
 	int count;
 	vector<int> refinelist;
 };
