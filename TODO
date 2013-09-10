@@ -1,2 +1,2 @@
-- restart files schreiben -> Binaries nutzen, Preprocess und timetrack hinzufügen
-- restart files nutzen
+- restart files lesen
+- restart files nutzen im Hauptprogramm

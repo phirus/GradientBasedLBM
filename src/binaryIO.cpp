@@ -61,6 +61,53 @@ const bool binary_input(Lattice& outL, const string& filename){
     return success;
 }
 
+void restart_file(const Lattice& l, Preprocess p, const string& filename){
+
+    // setting up the file name
+    stringstream name;
+    name << filename;
+
+    // setting up file
+    fstream file(name.str().c_str(),ios::out | ios::binary);
+    file.seekp(0);
+
+    // start to write
+    ColSet extent = l.getSize();
+    file.write(reinterpret_cast<char*> (&extent), sizeof extent);
+
+    ParamSet param = l.getParams();
+    file.write(reinterpret_cast<char*> (&param), sizeof param);
+
+    // write the velocity distributions
+    field data = l.getData();
+    for (int x = 0; x<extent[0];x++){
+        for (int y = 0; y<extent[1];y++){
+            file.write(reinterpret_cast<char*> (&data[x][y]), sizeof(Cell));
+        }
+    }
+
+    // write Timetrack
+    Timetrack time = l.getTimetrack();
+    int count = time.getCount();
+    file.write(reinterpret_cast<char*> (&count), sizeof count);
+    double factor = time.getFactor();
+    file.write(reinterpret_cast<char*> (&factor), sizeof factor);
+    double dtini = time.getDTini();
+    file.write(reinterpret_cast<char*> (&dtini), sizeof dtini);
+
+    vector<int> refinelist = time.getList();
+    unsigned int vsize = refinelist.size();
+    file.write(reinterpret_cast<char*> (&vsize), sizeof vsize);
+    for(unsigned int i = 0; i< vsize; i++){
+        file.write(reinterpret_cast<char*> (&refinelist[i]), sizeof(int));
+    }
+
+    // write the preprocess
+    file.write(reinterpret_cast<char*> (&p), sizeof p);
+
+    file.close();
+}
+
 void techplotOutput(const Lattice& l, int iterNum, bool verbose)
 {
     ofstream PsiFile;

@@ -21,6 +21,12 @@ public:
 	const int getCount()const{return count;};
 	const vector<int> getList()const{return refinelist;};
 
+	// set methods
+	void setDTini(double iniTime){dtIni = iniTime;};
+	void setFactor(double fac){factor = fac;};
+	void setCount(int c){count = c;};
+	void setVector(const vector<int>& vec){refinelist = vec;};
+
 private:
 	double dtIni;		//   not constant, so the standard copy contr. works
 	double factor;		//   not constant, so the standard copy contr. works
