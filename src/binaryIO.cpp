@@ -108,6 +108,85 @@ void restart_file(const Lattice& l, Preprocess p, const string& filename){
     file.close();
 }
 
+const bool restart_read(Lattice& l, Preprocess p, const string& filename = "restart.bin")
+{
+    bool success;
+
+    // setting up file
+    fstream file(filename.c_str(),ios::in | ios::binary);
+    if(file.is_open()){
+        success = true;
+        file.seekg(0);
+
+        // start to read
+        ColSet extent;
+        file.read((char*) &extent, sizeof extent);
+
+        ParamSet param;
+        file.read((char*) &param, sizeof param);
+
+        Cell tmpCell;
+        field data(boost::extents[extent[0]][extent[1]]);
+        for(int x = 0; x<extent[0];x++){
+            for(int y=0;y<extent[1];y++){
+                file.read((char*) &tmpCell, sizeof(Cell));
+                data[x][y] = tmpCell;
+            }
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+        file.close();
+        outL.setParams(param);
+        outL.setData(data, extent[0], extent[1]);
+    }
+    else success = false;
+
+    return success;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 void techplotOutput(const Lattice& l, int iterNum, bool verbose)
 {
     ofstream PsiFile;

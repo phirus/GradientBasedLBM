@@ -54,7 +54,7 @@ public:
     void timestep(){timetrack.timestep();};
 
     /// overloaded == Operator
-    const bool operator==(const Lattice& oher)const;
+    const bool operator==(const Lattice& other)const;
 
 private:
     field * data;
