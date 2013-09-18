@@ -17,3 +17,14 @@ const double Timetrack::getTime()const{
 	time += (count - j) * dtIni * pow(factor,refinelist.size()-1);
 	return time;
 }
+
+const bool Timetrack::operator==(const Timetrack& other)const
+{
+    bool exit = true;
+    if(dtIni != other.getDTini()) exit = false;
+    if(factor != other.getFactor()) exit = false;
+    if(count != other.getCount()) exit = false;
+    if(refinelist != other.getList()) exit = false;
+
+    return exit;
+}

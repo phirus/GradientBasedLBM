@@ -657,6 +657,18 @@ TEST(BinaryIO,paramConfIn){
     EXPECT_EQ(param, input);    
 }
 
+TEST(BinaryIO,restart){
+    Lattice lattice(150,150);
+    Preprocess newProcess = getFilePreprocess("preprocessFile");
+    restart_file(lattice, newProcess);
+    
+    Lattice vergleichL;
+    Preprocess vergleichP;
+     EXPECT_TRUE(restart_read(vergleichL,vergleichP));
+     EXPECT_EQ(lattice, vergleichL);
+     EXPECT_EQ(newProcess, vergleichP);
+}
+
 TEST(Preprocess,constr){
     Preprocess newProcess;
 

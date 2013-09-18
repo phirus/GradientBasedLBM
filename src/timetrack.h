@@ -15,17 +15,21 @@ public:
 	inline void refine(){refinelist.push_back(count-refinelist.back());};
 	const double getTime()const;
 
-	// get methods
+	/// get methods
 	const double getDTini()const{return dtIni;};
 	const double getFactor()const{return factor;};
 	const int getCount()const{return count;};
 	const vector<int> getList()const{return refinelist;};
 
-	// set methods
+	/// set methods
 	void setDTini(double iniTime){dtIni = iniTime;};
 	void setFactor(double fac){factor = fac;};
 	void setCount(int c){count = c;};
 	void setVector(const vector<int>& vec){refinelist = vec;};
+
+	/// overloaded operators
+	const bool operator==(const Timetrack& other)const;
+
 
 private:
 	double dtIni;		//   not constant, so the standard copy contr. works

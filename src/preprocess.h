@@ -23,9 +23,9 @@ public:
 	inline const double getGamma()const{return gamma;};
 	inline const double getDiameter()const{return diameter;};
 	inline const double getSoundspeed()const{return c_s;};
-	inline const double getGPhys()const{return g;};
 	inline const double getSigma()const{return sigma;};
-
+	inline const double getGPhys()const{return g;};
+	
 	inline const double getTau()const {return tau;};
 	inline const double getSpeedlimit()const{return speedlimit;};
 	inline const double getSpacestep()const{return spacestep;};
@@ -49,18 +49,21 @@ public:
 	// refine timestep
 	void refine(double factor = 1.1); // standard factor: 10%
 	
+	/// overloaded operators
+	const bool operator==(const Preprocess& other)const;
+
 private:
 	// given
 	double ReynoldsMax ; 	/// < maximum Reynolds-Number
-	const double Morton;			/// < Morton-Number
-	const double Eotvos;			/// < Eotvos-Number
-	const double resolution; 		/// < width of bubble in cells
-	const double rho_l ;			/// < liquid density
-  	const double gamma; 			/// < density ratio
-  	const double diameter;   		/// < bubble diameter /m
+	double Morton;			/// < Morton-Number
+	double Eotvos;			/// < Eotvos-Number
+	double resolution; 		/// < width of bubble in cells
+	double rho_l ;			/// < liquid density
+  	double gamma; 			/// < density ratio
+  	double diameter;   		/// < bubble diameter /m
 	double c_s; 	       	/// < speed of sound / m * s^-1
-	const double sigma;   	   	/// < surface tension
-	const double g;          		/// < gravity / m * s^-2	
+	double sigma;   	   	/// < surface tension
+	double g;          		/// < gravity / m * s^-2	
 
 
     // deduced

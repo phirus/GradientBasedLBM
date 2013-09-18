@@ -61,7 +61,7 @@ const bool binary_input(Lattice& outL, const string& filename){
     return success;
 }
 
-void restart_file(const Lattice& l, Preprocess p, const string& filename){
+void restart_file(const Lattice& l, const Preprocess& p, const string& filename){
 
     // setting up the file name
     stringstream name;
@@ -89,26 +89,46 @@ void restart_file(const Lattice& l, Preprocess p, const string& filename){
     // write Timetrack
     Timetrack time = l.getTimetrack();
     int count = time.getCount();
-    file.write(reinterpret_cast<char*> (&count), sizeof count);
     double factor = time.getFactor();
-    file.write(reinterpret_cast<char*> (&factor), sizeof factor);
     double dtini = time.getDTini();
-    file.write(reinterpret_cast<char*> (&dtini), sizeof dtini);
-
     vector<int> refinelist = time.getList();
     unsigned int vsize = refinelist.size();
+
+    file.write(reinterpret_cast<char*> (&count), sizeof count);
+    file.write(reinterpret_cast<char*> (&factor), sizeof factor);
+    file.write(reinterpret_cast<char*> (&dtini), sizeof dtini);
     file.write(reinterpret_cast<char*> (&vsize), sizeof vsize);
     for(unsigned int i = 0; i< vsize; i++){
         file.write(reinterpret_cast<char*> (&refinelist[i]), sizeof(int));
     }
 
-    // write the preprocess
-    file.write(reinterpret_cast<char*> (&p), sizeof p);
+    double ReynoldsMax = p.getReynoldsMax();    
+    double Morton = p.getMorton();
+    double Eotvos = p.getEotvos();
+    double resolution = p.getResolution();
+    double rho_l = p.getRhoL();
+    double gamma = p.getGamma();
+    double diameter = p.getDiameter();
+    double c_s = p.getSoundspeed();
+    double sigma = p.getSigma();
+    double g = p.getGPhys(); 
+
+    file.write(reinterpret_cast<char*> (&ReynoldsMax), sizeof(double));
+    file.write(reinterpret_cast<char*> (&Morton), sizeof(double));
+    file.write(reinterpret_cast<char*> (&Eotvos), sizeof(double));
+    file.write(reinterpret_cast<char*> (&resolution), sizeof(double));
+    file.write(reinterpret_cast<char*> (&rho_l), sizeof(double));
+    file.write(reinterpret_cast<char*> (&gamma), sizeof(double));
+    file.write(reinterpret_cast<char*> (&diameter), sizeof(double));
+    file.write(reinterpret_cast<char*> (&c_s), sizeof(double));
+
+    file.write(reinterpret_cast<char*> (&sigma), sizeof(double));
+    file.write(reinterpret_cast<char*> (&g), sizeof(double));
 
     file.close();
 }
 
-const bool restart_read(Lattice& l, Preprocess p, const string& filename = "restart.bin")
+const bool restart_read(Lattice& outL, Preprocess& p, const string& filename)
 {
     bool success;
 
@@ -134,58 +154,58 @@ const bool restart_read(Lattice& l, Preprocess p, const string& filename = "rest
             }
         }
 
+        Timetrack time;
+
+        int count;
+        file.read((char*) &count, sizeof count);
+        time.setCount(count);
+        
+        double factor;
+        file.read((char*) &factor, sizeof factor);
+        time.setFactor(factor);
+        
+        double dtini;
+        file.read((char*) &dtini, sizeof dtini);
+        time.setDTini(dtini);
+
+        unsigned int vsize;
+        file.read((char*) &vsize, sizeof vsize);
+        
+        vector<int> refinelist(vsize);
+        for(unsigned int i = 0; i< vsize; i++){
+            int tmp = refinelist[i];
+            file.read((char*) &tmp, sizeof(int));
+            }
+        time.setVector(refinelist);
 
 
+        double ReynoldsMax, Morton, Eotvos;
+        double resolution, rho_l, gamma;
+        double diameter, c_s, sigma,  g; 
 
+        file.read((char*) &ReynoldsMax, sizeof(double));
+        file.read((char*) &Morton, sizeof(double));
+        file.read((char*) &Eotvos, sizeof(double));
+        file.read((char*) &resolution, sizeof(double));
+        file.read((char*) &rho_l, sizeof(double));
+        file.read((char*) &gamma, sizeof(double));
+        file.read((char*) &diameter, sizeof(double));
+        file.read((char*) &c_s, sizeof(double));
+        file.read((char*) &sigma, sizeof(double));
+        file.read((char*) &g, sizeof(double));
 
-
-
-
-
-
-
-
-
-
-
+        Preprocess prepro(ReynoldsMax, Morton, Eotvos, resolution, rho_l, gamma, diameter, c_s, sigma, g);
         
         file.close();
         outL.setParams(param);
         outL.setData(data, extent[0], extent[1]);
+        outL.setTimetrack(time);
+        p = prepro;
     }
     else success = false;
 
     return success;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 void techplotOutput(const Lattice& l, int iterNum, bool verbose)
 {
