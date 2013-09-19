@@ -94,6 +94,9 @@ void restart_file(const Lattice& l, const Preprocess& p, const string& filename)
     vector<int> refinelist = time.getList();
     unsigned int vsize = refinelist.size();
 
+    int maxCount = time.getMaxCount();
+    double maxTime = time.getMaxTime();
+
     file.write(reinterpret_cast<char*> (&count), sizeof count);
     file.write(reinterpret_cast<char*> (&factor), sizeof factor);
     file.write(reinterpret_cast<char*> (&dtini), sizeof dtini);
@@ -101,6 +104,8 @@ void restart_file(const Lattice& l, const Preprocess& p, const string& filename)
     for(unsigned int i = 0; i< vsize; i++){
         file.write(reinterpret_cast<char*> (&refinelist[i]), sizeof(int));
     }
+    file.write(reinterpret_cast<char*> (&maxCount), sizeof maxCount);
+    file.write(reinterpret_cast<char*> (&maxTime), sizeof maxTime);
 
     double ReynoldsMax = p.getReynoldsMax();    
     double Morton = p.getMorton();
@@ -177,6 +182,13 @@ const bool restart_read(Lattice& outL, Preprocess& p, const string& filename)
             file.read((char*) &tmp, sizeof(int));
             }
         time.setVector(refinelist);
+
+        int maxCount;
+        file.read((char*) &maxCount, sizeof maxCount);
+        time.setMaxCount(maxCount);
+        double maxTime;
+        file.read((char*) &maxTime, sizeof maxTime);
+        time.setMaxTime(maxTime);
 
 
         double ReynoldsMax, Morton, Eotvos;

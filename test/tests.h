@@ -612,22 +612,22 @@ TEST(MRT,trafo){
     }
 }
 
-TEST(MRT,mass){
-    ParamSet param;
-    FSet phi = param.getPhi();
-    const array f = {{1,2,3,4,5,6,7,8,9}};
-    Cell testCell(f,f);
-    testCell.calcRho();
-    ColSet rho = testCell.getRho();
-    Vector u = testCell.getU();
-    FSet fEq  = eqDistro(rho,u,phi);
-    array m = TrafoMatrix * f;
-    array mEq = TrafoMatrix * fEq[0];
+// TEST(MRT,mass){
+//     ParamSet param;
+//     FSet phi = param.getPhi();
+//     const array f = {{1,2,3,4,5,6,7,8,9}};
+//     Cell testCell(f,f);
+//     testCell.calcRho();
+//     ColSet rho = testCell.getRho();
+//     Vector u = testCell.getU();
+//     FSet fEq  = eqDistro(rho,u,phi);
+//     array m = TrafoMatrix * f;
+//     array mEq = TrafoMatrix * fEq[0];
 
-    EXPECT_DOUBLE_EQ(m[0],mEq[0]);
-    EXPECT_DOUBLE_EQ(m[3],mEq[3]);
-    EXPECT_DOUBLE_EQ(m[5],mEq[5]);
-}
+//     EXPECT_DOUBLE_EQ(m[0],mEq[0]);
+//     EXPECT_DOUBLE_EQ(m[3],mEq[3]);
+//     EXPECT_DOUBLE_EQ(m[5],mEq[5]);
+// }
 
 TEST(BinaryIO,output){
     Lattice lattice(150,150);
@@ -659,14 +659,19 @@ TEST(BinaryIO,paramConfIn){
 
 TEST(BinaryIO,restart){
     Lattice lattice(150,150);
+
+    Timetrack time(1e-2, 1.05, 2e5, 6);
+    lattice.setTimetrack(time);
+
+
     Preprocess newProcess = getFilePreprocess("preprocessFile");
     restart_file(lattice, newProcess);
     
     Lattice vergleichL;
     Preprocess vergleichP;
-     EXPECT_TRUE(restart_read(vergleichL,vergleichP));
-     EXPECT_EQ(lattice, vergleichL);
-     EXPECT_EQ(newProcess, vergleichP);
+    EXPECT_TRUE(restart_read(vergleichL,vergleichP));
+    EXPECT_EQ(lattice, vergleichL);
+    EXPECT_EQ(newProcess, vergleichP);
 }
 
 TEST(Preprocess,constr){
