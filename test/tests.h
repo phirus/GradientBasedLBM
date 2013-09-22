@@ -661,8 +661,14 @@ TEST(BinaryIO,restart){
     Lattice lattice(150,150);
 
     Timetrack time(1e-2, 1.05, 2e5, 6);
-    lattice.setTimetrack(time);
+    time.timestep();
+    time.timestep();
+    time.timestep();
+    time.refine();
+    time.timestep();
+    time.timestep();
 
+    lattice.setTimetrack(time);
 
     Preprocess newProcess = getFilePreprocess("preprocessFile");
     restart_file(lattice, newProcess);
@@ -670,7 +676,9 @@ TEST(BinaryIO,restart){
     Lattice vergleichL;
     Preprocess vergleichP;
     EXPECT_TRUE(restart_read(vergleichL,vergleichP));
-    EXPECT_EQ(lattice, vergleichL);
+    // EXPECT_EQ(lattice, vergleichL);
+    Timetrack timeL = vergleichL.getTimetrack();
+    EXPECT_EQ(timeL,time);
     EXPECT_EQ(newProcess, vergleichP);
 }
 
