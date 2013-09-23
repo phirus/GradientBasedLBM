@@ -102,7 +102,8 @@ void restart_file(const Lattice& l, const Preprocess& p, const string& filename)
     file.write(reinterpret_cast<char*> (&dtini), sizeof dtini);
     file.write(reinterpret_cast<char*> (&vsize), sizeof vsize);
     for(unsigned int i = 0; i< vsize; i++){
-        file.write(reinterpret_cast<char*> (&refinelist[i]), sizeof(int));
+        int tmp = refinelist[i];
+        file.write(reinterpret_cast<char*> (&tmp), sizeof(int));
     }
     file.write(reinterpret_cast<char*> (&maxCount), sizeof maxCount);
     file.write(reinterpret_cast<char*> (&maxTime), sizeof maxTime);
@@ -178,8 +179,9 @@ const bool restart_read(Lattice& outL, Preprocess& p, const string& filename)
         
         vector<int> refinelist(vsize);
         for(unsigned int i = 0; i< vsize; i++){
-            int tmp = refinelist[i];
+            int tmp;
             file.read((char*) &tmp, sizeof(int));
+            refinelist[i] = tmp; 
             }
         time.setVector(refinelist);
 

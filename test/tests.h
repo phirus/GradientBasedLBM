@@ -676,9 +676,7 @@ TEST(BinaryIO,restart){
     Lattice vergleichL;
     Preprocess vergleichP;
     EXPECT_TRUE(restart_read(vergleichL,vergleichP));
-    // EXPECT_EQ(lattice, vergleichL);
-    Timetrack timeL = vergleichL.getTimetrack();
-    EXPECT_EQ(timeL,time);
+    EXPECT_EQ(lattice, vergleichL);
     EXPECT_EQ(newProcess, vergleichP);
 }
 
