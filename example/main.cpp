@@ -41,10 +41,17 @@ int main(int argc, char** argv){
 
     meins.setParams(params);
 
+    // set the timetracker
+    Timetrack timetrack;
+    timetrack.setDTini(prepro.getTimestep());
+    timetrack.setMaxCount(1e5);
+    timetrack.setMaxTime(5);
 
+    meins. setTimetrack(timetrack);
+
+    // get densities
     double rho_liquid = prepro.convertRhoL();
     double rho_gas = prepro.convertRhoG();
-    // double ratio = rho_liquid / rho_gas;
 
     Cell air(0,rho_gas,false);
     Cell liquid(rho_liquid,0,false);
