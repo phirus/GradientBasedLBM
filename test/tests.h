@@ -585,6 +585,21 @@ TEST(Lattice,collisionBalanceAll)
     EXPECT_NEAR(0,momentum,1e-10);
 }
 
+TEST(Lattice, copy_constr){
+    Lattice lSmall(5,5);
+    Lattice lBig(100,20);
+    Lattice tmp(lBig);
+    // // tmp = lBig;
+    EXPECT_EQ(lBig,tmp);
+}
+
+TEST(Lattice, assign){ 
+    Lattice lBig(100,20);
+    Lattice tmp;
+    tmp = lBig;
+    EXPECT_EQ(lBig,tmp);
+}
+
 TEST(MRT,trafo){
     /// testet ob die Differenz im Geschw.-Raum gleich der Rücktransformierten Differenz im moment-Raum ist
     ParamSet param;
