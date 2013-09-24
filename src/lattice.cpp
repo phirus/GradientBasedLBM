@@ -1,9 +1,11 @@
 #include "lattice.h"
 
-Lattice::Lattice(int x_size, int y_size,double fzero_red, double fzero_blue):data(new field(boost::extents[x_size][y_size])),param()
+Lattice::Lattice(int x_size, int y_size,double fzero_red, double fzero_blue):
+xsize(x_size)
+,ysize(y_size)
+,data(new field(boost::extents[xsize][ysize]))
+,param()
 {
-    xsize = x_size;
-    ysize = y_size;
     for (int x = 0; x<xsize; x++)
     {
         for (int y=0; y<ysize; y++)
@@ -12,9 +14,29 @@ Lattice::Lattice(int x_size, int y_size,double fzero_red, double fzero_blue):dat
         }
     }
 }
+
+Lattice::Lattice(const Lattice& other):
+xsize(other.getSize()[0])
+,ysize(other.getSize()[1])
+,data(new field(boost::extents[xsize][ysize]))
+,param(other.getParams())
+{
+    (*data) = other.getData();
+    timetrack = other.getTimetrack();
+}
+
+
 Lattice::~Lattice(){
     delete data;
     data = NULL;
+}
+
+Lattice& Lattice::operator=(const Lattice& other){
+    this->setData(other.getData(), other.getSize()[0], other.getSize()[1]);
+    this->setParams(other.getParams());
+    this->setTimetrack(other.getTimetrack());
+
+    return *this;
 }
 
 void Lattice::setData(const field& ndata, int x, int y){
