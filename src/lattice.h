@@ -48,11 +48,14 @@ public:
     void closedBox(); /// < initialize the Lattice (set up walls and calculate rho)
     void bottomWall(); /// < initialize the Lattice (set up walls and calculate rho)
 
-
+    /// LB steps
     void streamAll(int threads = 0); /// < streaming step
     void collideAll(int threads = 0, bool gravity = false); /// < collision step
+
+    /// timetrack related
     inline void timestep(){timetrack.timestep();};
-    inline const bool proceed()const{return timetrack().proceed();};
+    inline const bool proceed()const{return timetrack.proceed();};
+    inline const int getCount()const{return timetrack.getCount();};
 
     /// overloaded == Operator
     const bool operator==(const Lattice& other)const;

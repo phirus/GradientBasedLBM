@@ -74,29 +74,27 @@ int main(int argc, char** argv){
     meins.bottomWall();
     meins.equilibriumIni();
 
+    // Bildung der Grenzschicht bevor Schwerkraft zugeschaltet wird
 
-//    for (int i = 1; i< 501; i++){
-//        meins.collideAll(1,false);
-//        meins.streamAll(1);
-//        if(i%50 == 0) cout << i<<endl;
-////        if(i%1000 == 0)  meins.techplotOutput(i,true);
-//    }
+   for (int i = 1; i< 501; i++){
+       meins.collideAll(1,false);
+       meins.streamAll(1);
+       if(i%100 == 0) cout << i<<endl;
+//        if(i%1000 == 0)  meins.techplotOutput(i,true);
+   }
+cout<<"Initialisierung beendet\n\nSchwerkraft wird zugeschaltet\n"<<endl;
 //
-//cout<<"Initialisierung beendet\n\nSchwerkraft wird zugeschaltet\n"<<endl;
-////
 
 
-//int numSteps = 1e6 + 1;
-//for (int i = 0; i< numSteps; i++){
-//        meins.collideAll(4);
-//        meins.streamAll(4);
-//        if(i%1000 == 0) cout << i<<endl;
-//        if(i%10000 == 0)  techplotOutput(meins,i,true);
-//        if(i%10000 == 0) binary_output(meins);
-//    }
-
-
-
+while (meins.proceed() == true){
+        meins.collideAll(1);
+        meins.streamAll(1);
+        meins.timestep();
+        int i = meins.getCount();
+        if(i%1000 == 0) cout << i<<endl;
+        if(i%10000 == 0)  techplotOutput(meins,i,true);
+        if(i%10000 == 0) restart_file(meins, prepro);
+    }
 
     time(&end);
     cout<<"\nBerechnung beendet nach "<< difftime(end,start) <<" Sekunden"<<endl;
