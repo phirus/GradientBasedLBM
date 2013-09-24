@@ -10,12 +10,15 @@ namespace po = boost::program_options;
 
 int main(int argc, char** argv){
 
+    int numOfCPUs = 1;
+
     time_t start,end;
 	time(&start);
 
 	boost::program_options::options_description desc("Allowed options");
 	desc.add_options()
         ("help,h", "produce help message")
+        ("cpu,c", boost::program_options::value<int> (), "takes the number of CPUs")
         ;
     boost::program_options::variables_map vm;
     boost::program_options::store(boost::program_options::parse_command_line(argc,argv,desc),vm);
@@ -25,6 +28,11 @@ int main(int argc, char** argv){
     if(vm.count("help")){
         cout << desc << endl;
         return 1;
+    }
+
+    if(vm.count("cpu")){
+        numOfCPUs = vm["cpu"].as<int>();
+        cout << "number of CPUs set to "<< numOfCPUs;
     }
 
     int ymax = 150;
@@ -87,8 +95,8 @@ cout<<"Initialisierung beendet\n\nSchwerkraft wird zugeschaltet\n"<<endl;
 
 
 while (meins.proceed() == true){
-        meins.collideAll(1);
-        meins.streamAll(1);
+        meins.collideAll(numOfCPUs);
+        meins.streamAll(numOfCPUs);
         meins.timestep();
         int i = meins.getCount();
         if(i%1000 == 0) cout << i<<endl;
