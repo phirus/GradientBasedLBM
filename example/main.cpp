@@ -8,45 +8,73 @@
 using namespace std;
 namespace po = boost::program_options;
 
+void initialSetUp(Lattice& meins, Preprocess& prepro, int xmax, int ymax);
+
 int main(int argc, char** argv){
 
-    int numOfCPUs = 1;
-
-    time_t start,end;
-	time(&start);
-
-	boost::program_options::options_description desc("Allowed options");
+    boost::program_options::options_description desc("Allowed options");
 	desc.add_options()
         ("help,h", "produce help message")
         ("cpu,c", boost::program_options::value<int> (), "takes the number of CPUs")
+        ("restart,r", boost::program_options::value<string> (), "specify restart file")
         ;
     boost::program_options::variables_map vm;
     boost::program_options::store(boost::program_options::parse_command_line(argc,argv,desc),vm);
     boost::program_options::notify(vm);
-
 
     if(vm.count("help")){
         cout << desc << endl;
         return 1;
     }
 
+    int numOfCPUs = 1;
+    Preprocess prepro = getFilePreprocess("preprocessFile");
+    int ymax = 150;
+    int xmax = 80;
+    // create a Lattice
+    Lattice meins(xmax,ymax);
+
+    // initialSetUp(meins, prepro, xmax, ymax);
+
     if(vm.count("cpu")){
         numOfCPUs = vm["cpu"].as<int>();
         cout << "number of CPUs set to "<< numOfCPUs;
     }
 
-    int ymax = 150;
-    int xmax = 80;
+    if (vm.count("restart")) {
+        cout << "Restart file is: " << vm["restart"].as<string>() << ".\n" << endl ;
+        Lattice tmpL;
+        Preprocess tmpP;
+        bool tmpB = restart_read(tmpL, tmpP, vm["restart"].as<string>());
+        if (tmpB == true){
+            meins = tmpL;
+            prepro = tmpP;
+        }
+    }
 
-    // create a Lattice
+    time_t start,end;
+    time(&start);
 
-    Lattice meins(xmax,ymax);
+    // while (meins.proceed() == true){
+    //     meins.collideAll(numOfCPUs);
+    //     meins.streamAll(numOfCPUs);
+    //     meins.timestep();
+    //     int i = meins.getCount();
+    //     if(i%1000 == 0) cout << i<<endl;
+    //     if(i%10000 == 0)  techplotOutput(meins,i,true);
+    //     if(i%10000 == 0) restart_file(meins, prepro);
+    // }
 
-    // ste the parameters
+    time(&end);
+    cout<<"\nBerechnung beendet nach "<< difftime(end,start) <<" Sekunden"<<endl;
 
-    Preprocess prepro = getFilePreprocess("preprocessFile");
+    return 0;
+}
+
+
+void initialSetUp(Lattice& meins, Preprocess& prepro, int xmax, int ymax){
+    // set the parameters    
     ParamSet params = prepro.getParamSet();
-
     meins.setParams(params);
 
     // set the timetracker
@@ -54,7 +82,6 @@ int main(int argc, char** argv){
     timetrack.setDTini(prepro.getTimestep());
     timetrack.setMaxCount(1e5);
     timetrack.setMaxTime(5);
-
     meins. setTimetrack(timetrack);
 
     // get densities
@@ -67,7 +94,6 @@ int main(int argc, char** argv){
 
     // setup geometry (bubble at the bottom, x-centered)
     int R1 = prepro.getResolution()/2;
-
     int xm1 = xmax/2;
     int ym1 = 2*R1;
 
@@ -88,24 +114,8 @@ int main(int argc, char** argv){
        meins.collideAll(1,false);
        meins.streamAll(1);
        if(i%100 == 0) cout << i<<endl;
-//        if(i%1000 == 0)  meins.techplotOutput(i,true);
    }
 cout<<"Initialisierung beendet\n\nSchwerkraft wird zugeschaltet\n"<<endl;
 //
 
-
-while (meins.proceed() == true){
-        meins.collideAll(numOfCPUs);
-        meins.streamAll(numOfCPUs);
-        meins.timestep();
-        int i = meins.getCount();
-        if(i%1000 == 0) cout << i<<endl;
-        if(i%10000 == 0)  techplotOutput(meins,i,true);
-        if(i%10000 == 0) restart_file(meins, prepro);
-    }
-
-    time(&end);
-    cout<<"\nBerechnung beendet nach "<< difftime(end,start) <<" Sekunden"<<endl;
-
-    return 0;
 }
