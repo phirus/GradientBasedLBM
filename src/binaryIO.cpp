@@ -61,6 +61,166 @@ const bool binary_input(Lattice& outL, const string& filename){
     return success;
 }
 
+void restart_file(const Lattice& l, const Preprocess& p, const string& filename){
+
+    // setting up the file name
+    stringstream name;
+    name << filename;
+
+    // setting up file
+    fstream file(name.str().c_str(),ios::out | ios::binary);
+    file.seekp(0);
+
+    // start to write
+    ColSet extent = l.getSize();
+    file.write(reinterpret_cast<char*> (&extent), sizeof extent);
+
+    ParamSet param = l.getParams();
+    file.write(reinterpret_cast<char*> (&param), sizeof param);
+
+    // write the velocity distributions
+    field data = l.getData();
+    for (int x = 0; x<extent[0];x++){
+        for (int y = 0; y<extent[1];y++){
+            file.write(reinterpret_cast<char*> (&data[x][y]), sizeof(Cell));
+        }
+    }
+
+    // write Timetrack
+    Timetrack time = l.getTimetrack();
+    int count = time.getCount();
+    double factor = time.getFactor();
+    double dtini = time.getDTini();
+    vector<int> refinelist = time.getList();
+    unsigned int vsize = refinelist.size();
+
+    int maxCount = time.getMaxCount();
+    double maxTime = time.getMaxTime();
+
+    file.write(reinterpret_cast<char*> (&count), sizeof count);
+    file.write(reinterpret_cast<char*> (&factor), sizeof factor);
+    file.write(reinterpret_cast<char*> (&dtini), sizeof dtini);
+    file.write(reinterpret_cast<char*> (&vsize), sizeof vsize);
+    for(unsigned int i = 0; i< vsize; i++){
+        int tmp = refinelist[i];
+        file.write(reinterpret_cast<char*> (&tmp), sizeof(int));
+    }
+    file.write(reinterpret_cast<char*> (&maxCount), sizeof maxCount);
+    file.write(reinterpret_cast<char*> (&maxTime), sizeof maxTime);
+
+    double ReynoldsMax = p.getReynoldsMax();    
+    double Morton = p.getMorton();
+    double Eotvos = p.getEotvos();
+    double resolution = p.getResolution();
+    double rho_l = p.getRhoL();
+    double gamma = p.getGamma();
+    double diameter = p.getDiameter();
+    double c_s = p.getSoundspeed();
+    double sigma = p.getSigma();
+    double g = p.getGPhys(); 
+
+    file.write(reinterpret_cast<char*> (&ReynoldsMax), sizeof(double));
+    file.write(reinterpret_cast<char*> (&Morton), sizeof(double));
+    file.write(reinterpret_cast<char*> (&Eotvos), sizeof(double));
+    file.write(reinterpret_cast<char*> (&resolution), sizeof(double));
+    file.write(reinterpret_cast<char*> (&rho_l), sizeof(double));
+    file.write(reinterpret_cast<char*> (&gamma), sizeof(double));
+    file.write(reinterpret_cast<char*> (&diameter), sizeof(double));
+    file.write(reinterpret_cast<char*> (&c_s), sizeof(double));
+
+    file.write(reinterpret_cast<char*> (&sigma), sizeof(double));
+    file.write(reinterpret_cast<char*> (&g), sizeof(double));
+
+    file.close();
+}
+
+const bool restart_read(Lattice& outL, Preprocess& p, const string& filename)
+{
+    bool success;
+
+    // setting up file
+    fstream file(filename.c_str(),ios::in | ios::binary);
+    if(file.is_open()){
+        success = true;
+        file.seekg(0);
+
+        // start to read
+        ColSet extent;
+        file.read((char*) &extent, sizeof extent);
+
+        ParamSet param;
+        file.read((char*) &param, sizeof param);
+
+        Cell tmpCell;
+        field data(boost::extents[extent[0]][extent[1]]);
+        for(int x = 0; x<extent[0];x++){
+            for(int y=0;y<extent[1];y++){
+                file.read((char*) &tmpCell, sizeof(Cell));
+                data[x][y] = tmpCell;
+            }
+        }
+
+        Timetrack time;
+
+        int count;
+        file.read((char*) &count, sizeof count);
+        time.setCount(count);
+        
+        double factor;
+        file.read((char*) &factor, sizeof factor);
+        time.setFactor(factor);
+        
+        double dtini;
+        file.read((char*) &dtini, sizeof dtini);
+        time.setDTini(dtini);
+
+        unsigned int vsize;
+        file.read((char*) &vsize, sizeof vsize);
+        
+        vector<int> refinelist(vsize);
+        for(unsigned int i = 0; i< vsize; i++){
+            int tmp;
+            file.read((char*) &tmp, sizeof(int));
+            refinelist[i] = tmp; 
+            }
+        time.setVector(refinelist);
+
+        int maxCount;
+        file.read((char*) &maxCount, sizeof maxCount);
+        time.setMaxCount(maxCount);
+        double maxTime;
+        file.read((char*) &maxTime, sizeof maxTime);
+        time.setMaxTime(maxTime);
+
+
+        double ReynoldsMax, Morton, Eotvos;
+        double resolution, rho_l, gamma;
+        double diameter, c_s, sigma,  g; 
+
+        file.read((char*) &ReynoldsMax, sizeof(double));
+        file.read((char*) &Morton, sizeof(double));
+        file.read((char*) &Eotvos, sizeof(double));
+        file.read((char*) &resolution, sizeof(double));
+        file.read((char*) &rho_l, sizeof(double));
+        file.read((char*) &gamma, sizeof(double));
+        file.read((char*) &diameter, sizeof(double));
+        file.read((char*) &c_s, sizeof(double));
+        file.read((char*) &sigma, sizeof(double));
+        file.read((char*) &g, sizeof(double));
+
+        Preprocess prepro(ReynoldsMax, Morton, Eotvos, resolution, rho_l, gamma, diameter, c_s, sigma, g);
+        
+        file.close();
+        outL.setParams(param);
+        outL.setData(data, extent[0], extent[1]);
+        outL.setTimetrack(time);
+        p = prepro;
+    }
+    else success = false;
+
+    return success;
+}
+
 void techplotOutput(const Lattice& l, int iterNum, bool verbose)
 {
     ofstream PsiFile;

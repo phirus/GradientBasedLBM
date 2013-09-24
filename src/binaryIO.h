@@ -11,6 +11,9 @@
 void binary_output(const Lattice& l, const string& filename = "data.bin");
 const bool binary_input(Lattice& outL, const string& filename = "data.bin");
 
+void restart_file(const Lattice& l, const Preprocess& p, const string& filename = "restart.bin");
+const bool restart_read(Lattice& outL, Preprocess& p, const string& filename = "restart.bin");
+
 void techplotOutput(const Lattice& l, int iterNum, bool vebose = false);
 void vtkOutput(const Lattice& l, int iterNum);
 

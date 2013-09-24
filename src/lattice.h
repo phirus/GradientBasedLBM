@@ -27,7 +27,7 @@ public:
     void setF(int x, int y, int color, const array& nf);
     void setF(int x, int y, int color, int index, double value);
     void setParams(const ParamSet& newParam){param = newParam;}; /// < set a new parameter set
-    void setTimetrack(Timetrack newTime){timetrack = newTime;};
+    void setTimetrack(const Timetrack& newTime){timetrack = newTime;};
 
     /// get-methods
     const ColSet getSize()const; /// < get the extend of the Lattice
@@ -48,13 +48,17 @@ public:
     void closedBox(); /// < initialize the Lattice (set up walls and calculate rho)
     void bottomWall(); /// < initialize the Lattice (set up walls and calculate rho)
 
-
+    /// LB steps
     void streamAll(int threads = 0); /// < streaming step
     void collideAll(int threads = 0, bool gravity = false); /// < collision step
-    void timestep(){timetrack.timestep();};
+
+    /// timetrack related
+    inline void timestep(){timetrack.timestep();};
+    inline const bool proceed()const{return timetrack.proceed();};
+    inline const int getCount()const{return timetrack.getCount();};
 
     /// overloaded == Operator
-    const bool operator==(const Lattice& oher)const;
+    const bool operator==(const Lattice& other)const;
 
 private:
     field * data;

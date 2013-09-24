@@ -319,6 +319,7 @@ const bool Lattice::operator==(const Lattice& other)const
         }
     }
     else exit = false;
+    if(!(timetrack == other.getTimetrack())) exit = false;
 
     return exit;
 }

@@ -29,3 +29,27 @@ void Preprocess::refine(double factor){
 
 	deduceAll();		// deduces all new parameters
 }
+
+const bool Preprocess::operator==(const Preprocess& other)const
+{
+    bool exit = true;
+    if(ReynoldsMax != other.getReynoldsMax()) exit = false;
+    if(Morton != other.getMorton()) exit = false;
+    if(Eotvos != other.getEotvos()) exit = false;
+    if(resolution != other.getResolution()) exit = false;
+    if(rho_l != other.getRhoL()) exit = false;
+    if(gamma != other.getGamma()) exit = false;
+    if(diameter != other.getDiameter()) exit = false;
+    if(c_s != other.getSoundspeed()) exit = false;
+    if(sigma != other.getSigma()) exit = false;
+    if(g != other.getGPhys()) exit = false;
+
+    if(tau != other.getTau()) exit = false;
+    if(speedlimit != other.getSpeedlimit()) exit = false;
+    if(spacestep != other.getSpacestep()) exit = false;
+    if(timestep != other.getTimestep()) exit = false;   
+    if(delRho != other.getDelRho()) exit = false;
+    if(nu != other.getNu()) exit = false;
+    
+    return exit;
+}
