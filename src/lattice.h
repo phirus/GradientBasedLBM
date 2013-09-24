@@ -51,7 +51,8 @@ public:
 
     void streamAll(int threads = 0); /// < streaming step
     void collideAll(int threads = 0, bool gravity = false); /// < collision step
-    void timestep(){timetrack.timestep();};
+    inline void timestep(){timetrack.timestep();};
+    inline const bool proceed()const{return timetrack().proceed();};
 
     /// overloaded == Operator
     const bool operator==(const Lattice& other)const;

@@ -33,7 +33,7 @@ const bool Timetrack::operator==(const Timetrack& other)const
     return exit;
 }
 
-const bool Timetrack::goOn()const
+const bool Timetrack::proceed()const
 {
 	bool getGoing = true;
 	if(count > terminal_count) getGoing = false;

@@ -14,7 +14,7 @@ public:
 	inline void timestep(){count++;};
 	inline void refine(){refinelist.push_back(count-refinelist.back());};
 	const double getTime()const;
-	const bool goOn()const;
+	const bool proceed()const;
 
 	/// get methods
 	inline const double getDTini()const{return dtIni;};
