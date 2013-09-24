@@ -31,6 +31,14 @@ Lattice::~Lattice(){
     data = NULL;
 }
 
+Lattice& Lattice::operator=(const Lattice& other){
+    this->setData(other.getData(), other.getSize()[0], other.getSize()[1]);
+    this->setParams(other.getParams());
+    this->setTimetrack(other.getTimetrack());
+
+    return *this;
+}
+
 void Lattice::setData(const field& ndata, int x, int y){
     data->resize(boost::extents[x][y]);
     *data = ndata;

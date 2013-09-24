@@ -21,6 +21,8 @@ public:
     Lattice(int x_size=10, int y_size=10,double fzero_red=1, double fzero_blue=1);
     Lattice(const Lattice& other);
     ~Lattice();
+    Lattice& operator=(const Lattice& other);
+    const bool operator==(const Lattice& other)const;
 
     /// set-methods
     void setData(const field& ndata, int x, int y); /// < set the data field (and size)
@@ -57,9 +59,6 @@ public:
     inline void timestep(){timetrack.timestep();};
     inline const bool proceed()const{return timetrack.proceed();};
     inline const int getCount()const{return timetrack.getCount();};
-
-    /// overloaded == Operator
-    const bool operator==(const Lattice& other)const;
 
 private:
     int xsize, ysize;   /// < extent of the Lattice
