@@ -68,13 +68,10 @@ private:
     // drive through
     double speedlimit;          /// < maximum allowed velocity
     double timestep;            /// < LB timestep
-
-
         
     // deduced
     RelaxationPar relax;
     Interpol inter;             /// < interpolation parameters for finding omega, relevant for equilibrium distribution
-
 
     // methods
     void calcInter();           /// < calculate the interpolation paramters based on omega and delta

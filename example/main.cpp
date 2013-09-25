@@ -16,6 +16,7 @@ int main(int argc, char** argv){
 	desc.add_options()
         ("help,h", "produce help message")
         ("cpu,c", boost::program_options::value<int> (), "takes the number of CPUs")
+        ("preprocess,p", boost::program_options::value<string> (), "specify preprocess parameter file")
         ("restart,r", boost::program_options::value<string> (), "specify restart file")
         ;
     boost::program_options::variables_map vm;
@@ -39,6 +40,11 @@ int main(int argc, char** argv){
     if(vm.count("cpu")){
         numOfCPUs = vm["cpu"].as<int>();
         cout << "number of CPUs set to "<< numOfCPUs;
+    }
+
+    if (vm.count("preprocess")) {
+        cout << "preprocess file is: " << vm["preprocess"].as<string>() << ".\n" << endl ;
+        prepro = getFilePreprocess(vm["preprocess"].as<string>());
     }
 
     if (vm.count("restart")) {
