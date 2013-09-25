@@ -1,1 +1,4 @@
-- restart files nutzen im Hauptprogramm
+- preprocess files im Hauptprogramm nutzen
+- refine exceptions im Hauptprogramm abfangen
+- assign Operatoren reviewen
+- MRT sauber implementieren -> forcing term MRT kompatibel
