@@ -30,23 +30,18 @@ int main(int argc, char** argv){
 
     int numOfCPUs = 1;
     Preprocess prepro = getFilePreprocess("preprocessFile");
-    int ymax = 150;
-    int xmax = 80;
-    // create a Lattice
-    Lattice meins(xmax,ymax);
-
-    // initialSetUp(meins, prepro, xmax, ymax);
-
-    if(vm.count("cpu")){
-        numOfCPUs = vm["cpu"].as<int>();
-        cout << "number of CPUs set to "<< numOfCPUs;
-    }
 
     if (vm.count("preprocess")) {
         cout << "preprocess file is: " << vm["preprocess"].as<string>() << ".\n" << endl ;
         prepro = getFilePreprocess(vm["preprocess"].as<string>());
     }
-
+   
+    int ymax = 150;
+    int xmax = 80;
+    // create a Lattice
+    Lattice meins(xmax,ymax);
+    initialSetUp(meins, prepro, xmax, ymax);
+       
     if (vm.count("restart")) {
         cout << "Restart file is: " << vm["restart"].as<string>() << ".\n" << endl ;
         Lattice tmpL;
@@ -58,18 +53,35 @@ int main(int argc, char** argv){
         }
     }
 
+    if(vm.count("cpu")){
+        numOfCPUs = vm["cpu"].as<int>();
+        cout << "number of CPUs set to "<< numOfCPUs;
+    }
+
     time_t start,end;
     time(&start);
 
-    // while (meins.proceed() == true){
-    //     meins.collideAll(numOfCPUs);
-    //     meins.streamAll(numOfCPUs);
-    //     meins.timestep();
-    //     int i = meins.getCount();
-    //     if(i%1000 == 0) cout << i<<endl;
-    //     if(i%10000 == 0)  techplotOutput(meins,i,true);
-    //     if(i%10000 == 0) restart_file(meins, prepro);
-    // }
+    while (meins.proceed() == true){
+        try{
+            meins.collideAll(numOfCPUs);
+            meins.streamAll(numOfCPUs);
+            meins.timestep();
+            int i = meins.getCount();
+            if(i%1000 == 0) cout << i<<endl;
+            if(i%10000 == 0)  techplotOutput(meins,i,true);
+            if(i%10000 == 0) restart_file(meins, prepro);
+        }
+        catch(string s)
+        {
+            prepro.refine();
+            const ParamSet params = prepro.getParamSet();
+            meins.setParams(params);
+            meins.refine_timetrack();
+            cout << s << endl;
+            cout<<"\nGitter verfeinert bei i = " << meins.getCount() << endl;
+        }
+        
+    }
 
     time(&end);
     cout<<"\nBerechnung beendet nach "<< difftime(end,start) <<" Sekunden"<<endl;
@@ -80,7 +92,7 @@ int main(int argc, char** argv){
 
 void initialSetUp(Lattice& meins, Preprocess& prepro, int xmax, int ymax){
     // set the parameters    
-    ParamSet params = prepro.getParamSet();
+    const ParamSet params = prepro.getParamSet();
     meins.setParams(params);
 
     // set the timetracker
@@ -91,17 +103,17 @@ void initialSetUp(Lattice& meins, Preprocess& prepro, int xmax, int ymax){
     meins. setTimetrack(timetrack);
 
     // get densities
-    double rho_liquid = prepro.convertRhoL();
-    double rho_gas = prepro.convertRhoG();
+    const double rho_liquid = prepro.convertRhoL();
+    const double rho_gas = prepro.convertRhoG();
 
-    Cell air(0,rho_gas,false);
-    Cell liquid(rho_liquid,0,false);
-    Cell wall(0,0,true);
+    const Cell air(0,rho_gas,false);
+    const Cell liquid(rho_liquid,0,false);
+    const Cell wall(0,0,true);
 
     // setup geometry (bubble at the bottom, x-centered)
-    int R1 = prepro.getResolution()/2;
-    int xm1 = xmax/2;
-    int ym1 = 2*R1;
+    const int R1 = prepro.getResolution()/2;
+    const int xm1 = xmax/2;
+    const int ym1 = 2*R1;
 
     for(int j=0; j< ymax; j++)
     {

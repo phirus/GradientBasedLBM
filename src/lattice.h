@@ -57,6 +57,7 @@ public:
 
     /// timetrack related
     inline void timestep(){timetrack.timestep();};
+    inline void refine_timetrack(){timetrack.refine();};
     inline const bool proceed()const{return timetrack.proceed();};
     inline const int getCount()const{return timetrack.getCount();};
 
