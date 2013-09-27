@@ -37,9 +37,21 @@ function createPFile(Mo, Eo, c_s, gamma, sigma, g)
 	write(stream,"\nsigma = ")
 	write(stream, string(sigma))
 
-	write(stream, "\n\n# gravitational constant / m s^-1 default [10]")
+	write(stream, "\n\n# gravitational constant / m s^-1, default [10]")
 	write(stream,"\ng = ")
 	write(stream, string(g))
+
+	write(stream, "\n\n# refine factor, default [1.1]")
+	write(stream,"\nfactor = ")
+	write(stream, string(REFINE_FACTOR))
+
+	write(stream, "\n\n# maximum number of time steps, default [1e5]")
+	write(stream,"\nmax_steps = ")
+	write(stream, string(MAX_ITER))
+
+	write(stream, "\n\n# maximum simulation time / s, default [5]")
+	write(stream,"\nmax_time = ")
+	write(stream, string(MAX_TIME))
 
 	write(stream,"\n")
 	close(stream)
