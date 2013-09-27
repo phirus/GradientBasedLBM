@@ -778,5 +778,15 @@ TEST(timetrack,basic){
     EXPECT_DOUBLE_EQ(4.415, track.getTime());
 }
 
+TEST(timetrack,FileInput){
+    Preprocess newProcess = getFilePreprocess("preprocessFile");
+    Timetrack newTimetrack = getFileTimetrack("preprocessFile", newProcess);
+     // test the given parameters 
+    EXPECT_DOUBLE_EQ(newProcess.getTimestep(),newTimetrack.getDTini());
+    EXPECT_DOUBLE_EQ(1.15,newTimetrack.getFactor());
+    EXPECT_DOUBLE_EQ(4e5,newTimetrack.getMaxCount());
+    EXPECT_DOUBLE_EQ(10,newTimetrack.getMaxTime());
+}
+
 
 #endif

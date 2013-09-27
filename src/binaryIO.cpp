@@ -458,3 +458,23 @@ const Preprocess getFilePreprocess(const string& filename){
     Preprocess prepro(mm.at("Reynolds"),mm.at("Morton"),mm.at("Eotvos"),mm.at("resolution"),mm.at("rho_l"),mm.at("gamma"),mm.at("diameter"),mm.at("c_s"),mm.at("sigma"), mm.at("g"));
     return prepro;
 }
+
+const Timetrack getFileTimetrack(const string& filename, const Preprocess& prepro){
+    vector<string> tags;
+    vector<double> val;
+    // initialzing strings and fallback values
+    map<string,double> mm;
+    mm.insert(pair<string,double>("factor",1.1));
+    mm.insert(pair<string,double>("max_steps",1e5));
+    mm.insert(pair<string,double>("max_time",5));
+
+    // cycling through the input file
+    double tmp;
+    for(map<string,double>::iterator it = mm.begin(); it != mm.end(); it++){            
+        if( inputQuery(filename,it->first,tmp) == true ) it->second = tmp;
+    }
+
+    Timetrack time(prepro.getTimestep(), mm.at("factor"), mm.at("max_steps"), mm.at("max_time"));
+ 
+    return time;
+}

@@ -1,28 +1,28 @@
 # Parameterset yielding
- Reynolds = 50
- Morton = 0.001
- Eotvos = 20.0
+ Reynolds = 75
+ Morton = 0.0015
+ Eotvos = 25.00000000000001
 
 # resolution / Cells per Bubble diameter, default [40]
-resolution = 40
+resolution = 45
 
 # density of the denser phase / kg m^-3, default [1000]
-rho_l = 1.0
+rho_l = 1200
 
 # density ratio, default [5]
-gamma = 2.8574133541772397
+gamma = 1.4382757947749016
 
 # bubble diameter / m, default [0.1]
 diameter = 0.1
 
 # speed of sound / m s^-1, default [10]
-c_s = 7.531918170481871
+c_s = 8.695609524883722
 
 # surface tension /?, default [1e-4]
-sigma = 0.003209121611400225
+sigma = 2.0824910962289196
 
 # gravitational constant / m s^-1, default [10]
-g = 9.873717045235345
+g = 14.23759390514329
 
 # refine factor, default [1.1]
 factor = 1.1
