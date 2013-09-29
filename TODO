@@ -1,4 +1,3 @@
-- Timetrack aus Lattice entfernen
--> restart file anpassen
+- Timetrack aus Lattice entfernen (done)
 -> main.cpp anpassen
 - MRT sauber implementieren -> forcing term MRT kompatibel

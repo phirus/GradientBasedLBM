@@ -22,7 +22,6 @@ xsize(other.getSize()[0])
 ,param(other.getParams())
 {
     (*data) = other.getData();
-    timetrack = other.getTimetrack();
 }
 
 
@@ -34,7 +33,6 @@ Lattice::~Lattice(){
 Lattice& Lattice::operator=(const Lattice& other){
     this->setData(other.getData(), other.getSize()[0], other.getSize()[1]);
     this->setParams(other.getParams());
-    this->setTimetrack(other.getTimetrack());
 
     return *this;
 }
@@ -341,8 +339,7 @@ const bool Lattice::operator==(const Lattice& other)const
         }
     }
     else exit = false;
-    if(!(timetrack == other.getTimetrack())) exit = false;
-
+   
     return exit;
 }
 

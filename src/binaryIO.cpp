@@ -212,7 +212,6 @@ const bool restart_read(Lattice& outL, Preprocess& p, Timetrack& t, const string
         file.close();
         outL.setParams(param);
         outL.setData(data, extent[0], extent[1]);
-        outL.setTimetrack(time);
         t = time;
         p = prepro;
     }

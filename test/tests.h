@@ -683,8 +683,6 @@ TEST(BinaryIO,restart){
     time.timestep();
     time.timestep();
 
-    lattice.setTimetrack(time);
-
     Preprocess newProcess = getFilePreprocess("preprocessFile");
     restart_file(lattice, newProcess,time);
     
