@@ -686,13 +686,15 @@ TEST(BinaryIO,restart){
     lattice.setTimetrack(time);
 
     Preprocess newProcess = getFilePreprocess("preprocessFile");
-    restart_file(lattice, newProcess);
+    restart_file(lattice, newProcess,time);
     
     Lattice vergleichL;
     Preprocess vergleichP;
-    EXPECT_TRUE(restart_read(vergleichL,vergleichP));
+    Timetrack vergleichT;
+    EXPECT_TRUE(restart_read(vergleichL,vergleichP,vergleichT));
     EXPECT_EQ(lattice, vergleichL);
     EXPECT_EQ(newProcess, vergleichP);
+    EXPECT_EQ(time, vergleichT);
 }
 
 TEST(Preprocess,constr){

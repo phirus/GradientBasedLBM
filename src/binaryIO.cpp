@@ -61,7 +61,7 @@ const bool binary_input(Lattice& outL, const string& filename){
     return success;
 }
 
-void restart_file(const Lattice& l, const Preprocess& p, const string& filename){
+void restart_file(const Lattice& l, const Preprocess& p, const Timetrack time, const string& filename){
 
     // setting up the file name
     stringstream name;
@@ -87,7 +87,6 @@ void restart_file(const Lattice& l, const Preprocess& p, const string& filename)
     }
 
     // write Timetrack
-    Timetrack time = l.getTimetrack();
     int count = time.getCount();
     double factor = time.getFactor();
     double dtini = time.getDTini();
@@ -134,7 +133,7 @@ void restart_file(const Lattice& l, const Preprocess& p, const string& filename)
     file.close();
 }
 
-const bool restart_read(Lattice& outL, Preprocess& p, const string& filename)
+const bool restart_read(Lattice& outL, Preprocess& p, Timetrack& t, const string& filename)
 {
     bool success;
 
@@ -214,6 +213,7 @@ const bool restart_read(Lattice& outL, Preprocess& p, const string& filename)
         outL.setParams(param);
         outL.setData(data, extent[0], extent[1]);
         outL.setTimetrack(time);
+        t = time;
         p = prepro;
     }
     else success = false;
