@@ -1,0 +1,21 @@
+cd ../julia
+count=0
+codelines=`cat *.jl | wc -l`
+count=$((count+codelines))
+echo $count "lines of julia code"
+
+cd ../src
+count=0
+headers=`cat *.h | wc -l`
+codelines=`cat *.cpp | wc -l`
+count=$((count+headers+codelines))
+echo $count "lines of C++ source code"
+
+cd ../test
+count=0
+headers=`cat *.h | wc -l`
+codelines=`cat *.cpp | wc -l`
+count=$((count+headers+codelines))
+echo $count "lines of test code"
+
+cd ../aux

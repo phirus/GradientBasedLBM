@@ -8,3 +8,4 @@ Documentation/
 *.depend
 *.cpb
 test/paramLog
+*.sublime-workspace

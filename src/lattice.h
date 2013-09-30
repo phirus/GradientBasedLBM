@@ -3,6 +3,7 @@
 
 #include"cell.h"
 #include"paramset.h"
+#include"timetrack.h"
 
 /// custom typedef for the whole field of cells
 typedef boost::multi_array<Cell,2> field;
@@ -18,7 +19,10 @@ class Lattice
 {
 public:
     Lattice(int x_size=10, int y_size=10,double fzero_red=1, double fzero_blue=1);
+    Lattice(const Lattice& other);
     ~Lattice();
+    Lattice& operator=(const Lattice& other);
+    const bool operator==(const Lattice& other)const;
 
     /// set-methods
     void setData(const field& ndata, int x, int y); /// < set the data field (and size)
@@ -45,16 +49,13 @@ public:
     void closedBox(); /// < initialize the Lattice (set up walls and calculate rho)
     void bottomWall(); /// < initialize the Lattice (set up walls and calculate rho)
 
-
+    /// LB steps
     void streamAll(int threads = 0); /// < streaming step
     void collideAll(int threads = 0, bool gravity = false); /// < collision step
 
-    /// overloaded == Operator
-    const bool operator==(const Lattice& oher)const;
-
 private:
-    field * data;
     int xsize, ysize;   /// < extent of the Lattice
+    field * data;    
     ParamSet param;     /// < set of parameters used during the simulation
 
     inline void linearIndex(int index, int& x, int& y)const;

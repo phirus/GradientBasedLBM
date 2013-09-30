@@ -28,6 +28,7 @@ TEST(Cell,constructorRed1)
     EXPECT_EQ(f,cell1.getF()[0]);
     EXPECT_EQ(f,cell2.getF()[0]);
 }
+
 TEST(Cell,constructorBlue1)
 {
     array f = {{1,0,0,0,0,0,0,0,0}};
@@ -39,6 +40,7 @@ TEST(Cell,constructorBlue1)
     EXPECT_EQ(f,cell1.getF()[1]);
     EXPECT_EQ(f,cell2.getF()[1]);
 }
+
 TEST(Cell,constructorRed2)
 {
     array f = {{0,0,0,0,0,0,0,0,0}};
@@ -50,6 +52,7 @@ TEST(Cell,constructorRed2)
     EXPECT_EQ(f,cell1.getF()[0]);
     EXPECT_EQ(f,cell2.getF()[0]);
 }
+
 TEST(Cell,constructorBlue2)
 {
     array f = {{0,0,0,0,0,0,0,0,0}};
@@ -61,6 +64,7 @@ TEST(Cell,constructorBlue2)
     EXPECT_EQ(f,cell1.getF()[1]);
     EXPECT_EQ(f,cell2.getF()[1]);
 }
+
 TEST(Cell,constructorSolid)
 {
     Cell cell(0,0,true);
@@ -180,7 +184,6 @@ TEST(Matrix,relaxation_without_omega){
     {
         EXPECT_DOUBLE_EQ(vergleich[i]/3,test[i])<<"i = "<<i ;
     }
-
 }
 
 TEST(Matrix,relaxation_linewise){
@@ -208,7 +211,6 @@ TEST(Matrix,relaxation_omega){
     {
         EXPECT_DOUBLE_EQ(vergleich[i]/3,test[i])<<"i = "<<i ;
     }
-
 }
 
 TEST(ParamSet,Phi)
@@ -258,8 +260,6 @@ TEST(Vector,scalar){
     EXPECT_DOUBLE_EQ(11, v2*v1);
 }
 
-
-
 TEST(Vector,angle){
     Vector g(1,1);
 
@@ -278,7 +278,6 @@ TEST(Vector,angle){
     EXPECT_DOUBLE_EQ(0,g1.angle(e[0]));
 }
 
-
 TEST(Constants,BReis)
 {
     Lattice lattice;
@@ -287,6 +286,7 @@ TEST(Constants,BReis)
     EXPECT_DOUBLE_EQ(2,B[1]*27);
     EXPECT_DOUBLE_EQ(5,B[2]*108);
 }
+
 TEST(Constants,W)
 {
     Lattice lattice;
@@ -441,7 +441,6 @@ TEST(Lattice,bounceClosed)
     EXPECT_EQ(f4,lattice.getF(1,3)[1]);
     EXPECT_EQ(f3,lattice.getF(2,3)[1]);
     EXPECT_EQ(f2,lattice.getF(3,3)[1]);
-
 }
 
 TEST(Lattice,bounceClosed2)
@@ -476,6 +475,7 @@ TEST(Lattice,periodic)
     EXPECT_EQ(fcenter,lattice.getF(2,2)[0]);
     EXPECT_EQ(fcenter,lattice.getF(2,2)[1]);
 }
+
 TEST(Lattice,streamRho)
 {
     Cell tmp;
@@ -501,7 +501,6 @@ TEST(Lattice,streamRho)
     tmp = lattice.getCell(3,2);
     EXPECT_EQ(1,tmp.getRho()[1]);
 }
-
 
 TEST(Lattice,collideSingle)
 {
@@ -590,6 +589,21 @@ TEST(Lattice,collisionBalanceAll)
     EXPECT_NEAR(0,momentum,1e-10);
 }
 
+TEST(Lattice, copy_constr){
+    Lattice lSmall(5,5);
+    Lattice lBig(100,20);
+    Lattice tmp(lBig);
+    // // tmp = lBig;
+    EXPECT_EQ(lBig,tmp);
+}
+
+TEST(Lattice, assign){ 
+    Lattice lBig(100,20);
+    Lattice tmp;
+    tmp = lBig;
+    EXPECT_EQ(lBig,tmp);
+}
+
 TEST(MRT,trafo){
     /// testet ob die Differenz im Geschw.-Raum gleich der Rücktransformierten Differenz im moment-Raum ist
     ParamSet param;
@@ -616,23 +630,38 @@ TEST(MRT,trafo){
         EXPECT_NEAR(vergleich[1][i],transformed[1][i],1e-10) ;
     }
 }
-TEST(MRT,mass){
-    ParamSet param;
-    FSet phi = param.getPhi();
-    const array f = {{1,2,3,4,5,6,7,8,9}};
-    Cell testCell(f,f);
-    testCell.calcRho();
-    ColSet rho = testCell.getRho();
-    VeloSet u = testCell.getU();
 
-    FSet fEq  = eqDistro(rho,u,phi);
-    array m = TrafoMatrix * f;
-    array mEq = TrafoMatrix * fEq[0];
 
-    EXPECT_DOUBLE_EQ(m[0],mEq[0]);
-    EXPECT_DOUBLE_EQ(m[3],mEq[3]);
-    EXPECT_DOUBLE_EQ(m[5],mEq[5]);
-}
+// TEST(MRT,mass){
+//     ParamSet param;
+//     FSet phi = param.getPhi();
+//     const array f = {{1,2,3,4,5,6,7,8,9}};
+//     Cell testCell(f,f);
+//     testCell.calcRho();
+//     ColSet rho = testCell.getRho();
+//     VeloSet u = testCell.getU();
+
+//     FSet fEq  = eqDistro(rho,u,phi);
+//     array m = TrafoMatrix * f;
+//     array mEq = TrafoMatrix * fEq[0];
+
+
+// TEST(MRT,mass){
+//     ParamSet param;
+//     FSet phi = param.getPhi();
+//     const array f = {{1,2,3,4,5,6,7,8,9}};
+//     Cell testCell(f,f);
+//     testCell.calcRho();
+//     ColSet rho = testCell.getRho();
+//     Vector u = testCell.getU();
+//     FSet fEq  = eqDistro(rho,u,phi);
+//     array m = TrafoMatrix * f;
+//     array mEq = TrafoMatrix * fEq[0];
+
+//     EXPECT_DOUBLE_EQ(m[0],mEq[0]);
+//     EXPECT_DOUBLE_EQ(m[3],mEq[3]);
+//     EXPECT_DOUBLE_EQ(m[5],mEq[5]);
+// }
 
 TEST(BinaryIO,output){
     Lattice lattice(150,150);
@@ -642,24 +671,141 @@ TEST(BinaryIO,output){
     EXPECT_TRUE(binary_input(vergleich));
     EXPECT_EQ(lattice,vergleich);
 }
+
 TEST(BinaryIO,paramLog){
-    Lattice lattice(100,100);    
-    EXPECT_NO_THROW(paramLogOut(lattice));
+     Lattice lattice(100,100);    
+     EXPECT_NO_THROW(paramLogOut(lattice));
 }
+
 TEST(BinaryIO,queryTest){
     double value;
     EXPECT_FALSE( inputQuery("existiertnicht","test",value) );
     EXPECT_FALSE(inputQuery("queryTest","noflag",value));
     EXPECT_TRUE(inputQuery("queryTest","test",value));
     EXPECT_DOUBLE_EQ(13.4, value); 
-
 }
 
 TEST(BinaryIO,paramConfIn){
     ParamSet param(0.8, 1.4, 1.1, 1100);
     ParamSet input = getFileParams("paramInputTest");
     EXPECT_EQ(param, input);    
-
 }
+
+TEST(BinaryIO,restart){
+    Lattice lattice(150,150);
+
+    Timetrack time(1e-2, 1.05, 2e5, 6);
+    time.timestep();
+    time.timestep();
+    time.timestep();
+    time.refine();
+    time.timestep();
+    time.timestep();
+
+    Preprocess newProcess = getFilePreprocess("preprocessFile");
+    restart_file(lattice, newProcess,time);
+    
+    Lattice vergleichL;
+    Preprocess vergleichP;
+    Timetrack vergleichT;
+    EXPECT_TRUE(restart_read(vergleichL,vergleichP,vergleichT));
+    EXPECT_EQ(lattice, vergleichL);
+    EXPECT_EQ(newProcess, vergleichP);
+    EXPECT_EQ(time, vergleichT);
+}
+
+TEST(Preprocess,constr){
+    Preprocess newProcess;
+
+    // test the given parameters (default values)
+    EXPECT_DOUBLE_EQ(50,newProcess.getReynoldsMax());
+    EXPECT_DOUBLE_EQ(1e-3,newProcess.getMorton());
+    EXPECT_DOUBLE_EQ(20,newProcess.getEotvos());
+    EXPECT_DOUBLE_EQ(40,newProcess.getResolution());
+    EXPECT_DOUBLE_EQ(1000,newProcess.getRhoL());
+    EXPECT_DOUBLE_EQ(5,newProcess.getGamma());
+    EXPECT_DOUBLE_EQ(0.1,newProcess.getDiameter());
+    EXPECT_DOUBLE_EQ(10,newProcess.getSoundspeed());
+    EXPECT_DOUBLE_EQ(1e-4,newProcess.getSigma());
+    EXPECT_DOUBLE_EQ(10,newProcess.getGPhys());
+
+    // test the deduced parameters
+    EXPECT_DOUBLE_EQ(0.6385640646055102,newProcess.getTau());
+    EXPECT_DOUBLE_EQ(sqrt(3),newProcess.getSpeedlimit());
+    EXPECT_DOUBLE_EQ(0.0025,newProcess.getSpacestep());
+    EXPECT_DOUBLE_EQ(0.00014433756729740645,newProcess.getTimestep());
+    EXPECT_DOUBLE_EQ(0.002,newProcess.getNu());
+    EXPECT_DOUBLE_EQ(800,newProcess.getDelRho());
+}
+
+TEST(Preprocess,FileInput){
+    Preprocess newProcess = getFilePreprocess("preprocessFile");
+
+    // test the given parameters (default values)
+    EXPECT_DOUBLE_EQ(75,newProcess.getReynoldsMax());
+    EXPECT_DOUBLE_EQ(0.0015,newProcess.getMorton());
+    EXPECT_DOUBLE_EQ(25,newProcess.getEotvos());
+    EXPECT_DOUBLE_EQ(45,newProcess.getResolution());
+    EXPECT_DOUBLE_EQ(1200,newProcess.getRhoL());
+    EXPECT_DOUBLE_EQ(2.75,newProcess.getGamma());
+    EXPECT_DOUBLE_EQ(0.1,newProcess.getDiameter());
+
+    EXPECT_DOUBLE_EQ(7.177827488211825,newProcess.getSoundspeed());
+    EXPECT_DOUBLE_EQ(0.00291447961305505,newProcess.getSigma());
+    EXPECT_DOUBLE_EQ(8.967172490810192,newProcess.getGPhys());
+ }
+
+TEST(Preprocess,refine){
+    Preprocess newProcess;
+    const double Reynolds = newProcess.getReynoldsMax();
+    const double c_s = newProcess.getSoundspeed();         
+    const double tau_r = newProcess.getTau()-0.5;
+    const double speedlimit = newProcess.getSpeedlimit();     
+    const double spacestep = newProcess.getSpacestep();  
+    const double timestep = newProcess.getTimestep();   
+    const double delRho = newProcess.getDelRho();     
+    const double nu = newProcess.getNu();
+
+    newProcess.refine();
+
+    EXPECT_DOUBLE_EQ(Reynolds*1.1, newProcess.getReynoldsMax());
+    EXPECT_DOUBLE_EQ(c_s*1.1, newProcess.getSoundspeed());
+    EXPECT_DOUBLE_EQ(tau_r/1.1 ,newProcess.getTau()-0.5);
+    EXPECT_DOUBLE_EQ(timestep / 1.1, newProcess.getTimestep());
+    EXPECT_DOUBLE_EQ(speedlimit*1.1, newProcess.getSpeedlimit());
+    EXPECT_DOUBLE_EQ(spacestep,newProcess.getSpacestep());
+    EXPECT_DOUBLE_EQ(delRho, newProcess.getDelRho());
+    EXPECT_DOUBLE_EQ(nu,newProcess.getNu());
+}
+
+TEST(timetrack,basic){
+    Timetrack track(0.5,1.1);
+    EXPECT_DOUBLE_EQ(0, track.getTime());
+    track.timestep();
+    track.timestep();
+    track.timestep();
+    EXPECT_DOUBLE_EQ(1.5, track.getTime());
+    track.refine();
+    EXPECT_DOUBLE_EQ(1.5, track.getTime());
+    track.timestep();
+    track.timestep();
+    EXPECT_DOUBLE_EQ(2.6, track.getTime());
+    track.refine();
+    track.timestep();
+    track.timestep();
+    track.timestep();
+    EXPECT_DOUBLE_EQ(4.415, track.getTime());
+}
+
+TEST(timetrack,FileInput){
+    Preprocess newProcess = getFilePreprocess("preprocessFile");
+    Timetrack newTimetrack = getFileTimetrack(newProcess, "preprocessFile");
+     // test the given parameters 
+    EXPECT_DOUBLE_EQ(newProcess.getTimestep(),newTimetrack.getDTini());
+    EXPECT_DOUBLE_EQ(1.15,newTimetrack.getFactor());
+    EXPECT_DOUBLE_EQ(4e5,newTimetrack.getMaxCount());
+    EXPECT_DOUBLE_EQ(10,newTimetrack.getMaxTime());
+}
+
 
 #endif

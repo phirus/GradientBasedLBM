@@ -26,8 +26,12 @@ beta = 0.99
 # surface tension /?, default [1e-4]
 sigma = 1e-4
 
-# speed of sound / m s^-1, default [1484]
-c_s = 1484
+# gravitational constant / m s^-1 default [9.81]
+g = 9.81
 
-# size of a spacial step / m, default [0.001]
-dx = 1e-3
+# speedlimit / m s^-1, default [1]
+speedlimit = 1
+
+# size of a timestep / s, default [0.001]
+timestep = 1e-3
+

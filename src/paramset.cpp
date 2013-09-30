@@ -1,12 +1,20 @@
 #include"paramset.h"
-ParamSet::ParamSet(double omR, double omB, double rhoR, double gammaIni, double alB, double deltaIni, double betaIni, double sigmaIni, double c_sIni, double length):omegaRed(omR),omegaBlue(omB),rhoRed(rhoR),gamma(gammaIni),alphaBlue(alB),delta(deltaIni),beta(betaIni), sigma(sigmaIni), c_s(c_sIni), spacestep(length)
+ParamSet::ParamSet(double omR, double omB, double rhoR ,double gammaIni, double sigmaIni, double g, double c_limit, double t_step, double alB, double deltaIni, double betaIni):
+omegaRed(omR),
+omegaBlue(omB),
+rhoRed(rhoR),
+gamma(gammaIni),
+alphaBlue(alB),
+delta(deltaIni),
+beta(betaIni), 
+sigma(sigmaIni), 
+gravity(g), 
+speedlimit(c_limit), 
+timestep(t_step)
 {
     relax.s_2 = 1;
     relax.s_3 = 1;
     relax.s_5 = 1.2;
-
-    calcTimestep();
-    calcGravity();
 
     calcInter();
     calcAlR();
@@ -58,8 +66,8 @@ const ColSet ParamSet::getAk(double omega)const
     return Ak;
 }
 
-const boost::array<double,13> ParamSet::getEverything()const{
-    boost::array<double,13> pinkie;
+const boost::array<double,12> ParamSet::getEverything()const{
+    boost::array<double,12> pinkie;
     pinkie[0] = omegaRed;
     pinkie[1] = omegaBlue;
     pinkie[2] = rhoRed;
@@ -69,10 +77,10 @@ const boost::array<double,13> ParamSet::getEverything()const{
     pinkie[6] = delta;
     pinkie[7] = beta;
     pinkie[8] = sigma;
-    pinkie[9] = c_s;
-    pinkie[10] = timestep;
-    pinkie[11] = spacestep;
-    pinkie[12] = gravity;
+    pinkie[9] = gravity;
+    pinkie[10] = speedlimit;
+    pinkie[11] = timestep;
+    
 
     return pinkie;
 }
@@ -98,19 +106,6 @@ void ParamSet::setRatio(double rhoR, double ratio)
     calcAlR();
 }
 
-void ParamSet::setDeltaX(double dx)
-{
-    spacestep = dx;
-    calcTimestep();
-    calcGravity();
-}
-
-void ParamSet::setSoundSpeed(double sos)
-{
-    c_s = sos;
-    calcTimestep();
-    calcGravity();
-}
 
 void ParamSet::setRelaxation(double s_2, double s_3, double s_5)
 {
@@ -122,7 +117,7 @@ void ParamSet::setRelaxation(double s_2, double s_3, double s_5)
 const bool ParamSet::operator==(const ParamSet& other)const{
     bool control = true;
     {
-        boost::array<double,13> foo, bar;
+        boost::array<double,12> foo, bar;
         foo = getEverything();
         bar = other.getEverything();
 
@@ -133,7 +128,11 @@ const bool ParamSet::operator==(const ParamSet& other)const{
         finter = getInter();
         binter = other.getInter();
 
-        if(finter.chi != binter.chi || finter.eta != binter.eta || finter.kappa != binter.kappa || finter.lambda != binter.lambda || finter.ny != binter.ny) control = false;
+        if(finter.chi != binter.chi ) control = false;
+        if(finter.eta != binter.eta ) control = false;
+        if(finter.kappa != binter.kappa ) control = false;
+        if(finter.lambda != binter.lambda ) control = false;
+        if(finter.ny != binter.ny) control = false;
     }
     {
         RelaxationPar frelax,brelax;

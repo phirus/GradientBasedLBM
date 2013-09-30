@@ -1,9 +1,11 @@
 #include "lattice.h"
 
-Lattice::Lattice(int x_size, int y_size,double fzero_red, double fzero_blue):data(new field(boost::extents[x_size][y_size])),param()
+Lattice::Lattice(int x_size, int y_size,double fzero_red, double fzero_blue):
+xsize(x_size)
+,ysize(y_size)
+,data(new field(boost::extents[xsize][ysize]))
+,param()
 {
-    xsize = x_size;
-    ysize = y_size;
     for (int x = 0; x<xsize; x++)
     {
         for (int y=0; y<ysize; y++)
@@ -12,9 +14,27 @@ Lattice::Lattice(int x_size, int y_size,double fzero_red, double fzero_blue):dat
         }
     }
 }
+
+Lattice::Lattice(const Lattice& other):
+xsize(other.getSize()[0])
+,ysize(other.getSize()[1])
+,data(new field(boost::extents[xsize][ysize]))
+,param(other.getParams())
+{
+    (*data) = other.getData();
+}
+
+
 Lattice::~Lattice(){
     delete data;
     data = NULL;
+}
+
+Lattice& Lattice::operator=(const Lattice& other){
+    this->setData(other.getData(), other.getSize()[0], other.getSize()[1]);
+    this->setParams(other.getParams());
+
+    return *this;
 }
 
 void Lattice::setData(const field& ndata, int x, int y){
@@ -208,11 +228,15 @@ void Lattice::collideAll(int threads, bool gravity)
 
     const double beta = param.getBeta();
     const FSet phi = param.getPhi();
-    const double g = param.getG();
     const int range = xsize * ysize;
     const double rhoRedFixed = param.getRhoR();
     const RelaxationPar relax = param.getRelaxation();
     const double dt = param.getDeltaT();
+    const double speedlimit = param.getSpeedlimit();
+
+    double g;
+    if(gravity == true) g = param.getG();
+    else  g = 0;
 
     {
         for (int index = 0;  index < range; index++)
@@ -233,13 +257,15 @@ void Lattice::collideAll(int threads, bool gravity)
                 const Vector G(0 ,  g*(rhoRedFixed - rho));
 //                const Vector G(0 , - rho * g);
 
-//                const Vector u = tmpCell.calcU();
                 VeloSet u = tmpCell.getU();// + G *  (dt/(2* rho)) ;
 
                 if(gravity == true){
                 u[0] = u[0] + G *  (dt/(2* rho)) ;
                 u[1] = u[1] + G *  (dt/(2* rho)) ;
                 }
+
+                if ( u[0].abs() > speedlimit) throw("maximum velocity reached");
+                if ( u[1].abs() > speedlimit) throw("maximum velocity reached");
 
                 const FSet fEq = eqDistro(rho_k, u, phi);
 
@@ -318,7 +344,7 @@ const bool Lattice::operator==(const Lattice& other)const
         }
     }
     else exit = false;
-
+   
     return exit;
 }
 
