@@ -780,7 +780,7 @@ TEST(timetrack,basic){
 
 TEST(timetrack,FileInput){
     Preprocess newProcess = getFilePreprocess("preprocessFile");
-    Timetrack newTimetrack = getFileTimetrack("preprocessFile", newProcess);
+    Timetrack newTimetrack = getFileTimetrack(newProcess, "preprocessFile");
      // test the given parameters 
     EXPECT_DOUBLE_EQ(newProcess.getTimestep(),newTimetrack.getDTini());
     EXPECT_DOUBLE_EQ(1.15,newTimetrack.getFactor());

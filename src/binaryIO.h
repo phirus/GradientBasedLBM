@@ -23,7 +23,7 @@ const bool inputQuery(const string& filename, const string& query, double& value
 
 const ParamSet getFileParams(const string& filename);
 const Preprocess getFilePreprocess(const string& filename);
-const Timetrack getFileTimetrack(const string& filename, const Preprocess& prepro);
+const Timetrack getFileTimetrack(const Preprocess& prepro, const string& filename);
 
 #endif
 

@@ -30,10 +30,12 @@ int main(int argc, char** argv){
 
     int numOfCPUs = 1;
     Preprocess prepro = getFilePreprocess("preprocessFile");
+    Timetrack timetrack = getFileTimetrack(prepro, "preprocessFile");    
 
     if (vm.count("preprocess")) {
         cout << "preprocess file is: " << vm["preprocess"].as<string>() << ".\n" << endl ;
         prepro = getFilePreprocess(vm["preprocess"].as<string>());
+        Timetrack timetrack = getFileTimetrack(prepro, vm["preprocess"].as<string>());
     }
    
     int ymax = 150;
@@ -46,10 +48,16 @@ int main(int argc, char** argv){
         cout << "Restart file is: " << vm["restart"].as<string>() << ".\n" << endl ;
         Lattice tmpL;
         Preprocess tmpP;
-        bool tmpB = restart_read(tmpL, tmpP, vm["restart"].as<string>());
+        Timetrack tmpT;
+        bool tmpB = restart_read(tmpL, tmpP, tmpT, vm["restart"].as<string>());
         if (tmpB == true){
             meins = tmpL;
             prepro = tmpP;
+            timetrack = tmpT;
+        }
+        else {
+            cout << "failed to read input file" << endl;
+            return 1;
         }
     }
 
@@ -61,24 +69,24 @@ int main(int argc, char** argv){
     time_t start,end;
     time(&start);
 
-    while (meins.proceed() == true){
+    while (timetrack.proceed() == true){
         try{
             meins.collideAll(numOfCPUs);
             meins.streamAll(numOfCPUs);
-            meins.timestep();
-            int i = meins.getCount();
+            timetrack.timestep();
+            int i = timetrack.getCount();
             if(i%1000 == 0) cout << i<<endl;
             if(i%10000 == 0)  techplotOutput(meins,i,true);
-            if(i%10000 == 0) restart_file(meins, prepro);
+            if(i%10000 == 0) restart_file(meins, prepro, timetrack);
         }
         catch(string s)
         {
             prepro.refine();
             const ParamSet params = prepro.getParamSet();
             meins.setParams(params);
-            meins.refine_timetrack();
+            timetrack.refine();
             cout << s << endl;
-            cout<<"\nGitter verfeinert bei i = " << meins.getCount() << endl;
+            cout<<"\nGitter verfeinert bei i = " << timetrack.getCount() << endl;
         }
         
     }
@@ -94,13 +102,6 @@ void initialSetUp(Lattice& meins, Preprocess& prepro, int xmax, int ymax){
     // set the parameters    
     const ParamSet params = prepro.getParamSet();
     meins.setParams(params);
-
-    // set the timetracker
-    Timetrack timetrack;
-    timetrack.setDTini(prepro.getTimestep());
-    timetrack.setMaxCount(1e5);
-    timetrack.setMaxTime(5);
-    meins. setTimetrack(timetrack);
 
     // get densities
     const double rho_liquid = prepro.convertRhoL();

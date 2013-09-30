@@ -458,7 +458,7 @@ const Preprocess getFilePreprocess(const string& filename){
     return prepro;
 }
 
-const Timetrack getFileTimetrack(const string& filename, const Preprocess& prepro){
+const Timetrack getFileTimetrack(const Preprocess& prepro, const string& filename){
     vector<string> tags;
     vector<double> val;
     // initialzing strings and fallback values
