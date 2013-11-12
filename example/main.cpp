@@ -63,7 +63,7 @@ int main(int argc, char** argv){
 
     if(vm.count("cpu")){
         numOfCPUs = vm["cpu"].as<int>();
-        cout << "number of CPUs set to "<< numOfCPUs;
+        cout << "number of CPUs set to "<< numOfCPUs << endl;
     }
 
     time_t start,end;
