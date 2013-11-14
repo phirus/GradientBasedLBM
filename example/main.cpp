@@ -30,12 +30,12 @@ int main(int argc, char** argv){
 
     int numOfCPUs = 1;
     Preprocess prepro = getFilePreprocess("preprocessFile");
-    Timetrack timetrack = getFileTimetrack(prepro, "preprocessFile");    
+    Timetrack timetrack = getFileTimetrack(prepro, "preprocessFile");
 
     if (vm.count("preprocess")) {
         cout << "preprocess file is: " << vm["preprocess"].as<string>() << ".\n" << endl ;
         prepro = getFilePreprocess(vm["preprocess"].as<string>());
-        Timetrack timetrack = getFileTimetrack(prepro, vm["preprocess"].as<string>());
+        timetrack = getFileTimetrack(prepro, vm["preprocess"].as<string>());
     }
    
     int ymax = 150;
