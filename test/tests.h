@@ -675,7 +675,7 @@ TEST(BinaryIO,paramConfIn){
 TEST(BinaryIO,restart){
     Lattice lattice(150,150);
 
-    Timetrack time(1e-2, 1.05, 2e5, 6);
+    Timetrack time(1e-2, 1.05, 2e5, 6,100,1000);
     time.timestep();
     time.timestep();
     time.timestep();
@@ -786,6 +786,9 @@ TEST(timetrack,FileInput){
     EXPECT_DOUBLE_EQ(1.15,newTimetrack.getFactor());
     EXPECT_DOUBLE_EQ(4e5,newTimetrack.getMaxCount());
     EXPECT_DOUBLE_EQ(10,newTimetrack.getMaxTime());
+
+    EXPECT_DOUBLE_EQ(100,newTimetrack.getTechPlotInt());
+    EXPECT_DOUBLE_EQ(1000,newTimetrack.getRestartInt());
 }
 
 

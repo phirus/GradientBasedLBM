@@ -1,12 +1,14 @@
 #include"timetrack.h"
 
-Timetrack::Timetrack(double iniTime, double fac, int t_c, double t_t):
+Timetrack::Timetrack(double iniTime, double fac, int t_c, double t_t, int tech, int rest):
 dtIni(iniTime)
 ,factor(fac)
 ,count(0)
 ,refinelist(1,0)
 ,terminal_count(t_c)
 ,terminal_time(t_t)
+,techplot_interval(tech)
+,restart_interval(rest)
 {}
 
 const double Timetrack::getTime()const{
@@ -29,6 +31,8 @@ const bool Timetrack::operator==(const Timetrack& other)const
     if(refinelist != other.getList()) exit = false;
     if(terminal_count != other.getMaxCount()) exit = false;
     if(terminal_time != other.getMaxTime()) exit = false;
+    if(techplot_interval != other.getTechPlotInt()) exit = false;
+    if(restart_interval != other.getRestartInt()) exit = false;
 
     return exit;
 }

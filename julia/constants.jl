@@ -14,4 +14,8 @@ global const REFINE_FACTOR = 1.1
 global const MAX_ITER = 1e5
 global const MAX_TIME = 5
 
+# output settings
+global const TECH_PLOT = 100
+global const RESTART = 1000
+
 println("Parameter wurden geladen")

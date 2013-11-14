@@ -69,6 +69,9 @@ int main(int argc, char** argv){
     time_t start,end;
     time(&start);
 
+    int techPlotInterval = timetrack.getTechPlotInt();
+    int restartInterval = timetrack.getRestartInt();
+
     while (timetrack.proceed() == true){
         try{
             meins.collideAll(numOfCPUs);
@@ -76,8 +79,8 @@ int main(int argc, char** argv){
             timetrack.timestep();
             int i = timetrack.getCount();
             if(i%1000 == 0) cout << i<<endl;
-            if(i%10000 == 0)  techplotOutput(meins,i,true);
-            if(i%10000 == 0) restart_file(meins, prepro, timetrack);
+            if(i%techPlotInterval == 0)  techplotOutput(meins,i,true);
+            if(i%restartInterval == 0) restart_file(meins, prepro, timetrack);
         }
         catch(string s)
         {

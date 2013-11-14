@@ -1,7 +1,7 @@
 # Parameterset yielding
  Reynolds = 75
- Morton = 0.0015
- Eotvos = 25.00000000000001
+ Morton = 0.0014999999999999983
+ Eotvos = 25.0
 
 # resolution / Cells per Bubble diameter, default [40]
 resolution = 45
@@ -10,19 +10,19 @@ resolution = 45
 rho_l = 1200
 
 # density ratio, default [5]
-gamma = 1.4382757947749016
+gamma = 1.4382757947749019
 
 # bubble diameter / m, default [0.1]
 diameter = 0.1
 
 # speed of sound / m s^-1, default [10]
-c_s = 8.695609524883722
+c_s = 6.791929020758404
 
 # surface tension /?, default [1e-4]
-sigma = 2.0824910962289196
+sigma = 1.2704845011207977
 
 # gravitational constant / m s^-1, default [10]
-g = 14.23759390514329
+g = 8.68605989360161
 
 # refine factor, default [1.1]
 factor = 1.1
@@ -32,3 +32,7 @@ max_steps = 100000.0
 
 # maximum simulation time / s, default [5]
 max_time = 5
+
+# output Settings
+techplot_interval = 100
+restart_interval = 1000
