@@ -43,6 +43,7 @@ int main(int argc, char** argv){
     // create a Lattice
     Lattice meins(xmax,ymax);
     initialSetUp(meins, prepro, xmax, ymax);
+    techplotOutput(meins,0,true);
        
     if (vm.count("restart")) {
         cout << "Restart file is: " << vm["restart"].as<string>() << ".\n" << endl ;

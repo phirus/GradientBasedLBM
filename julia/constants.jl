@@ -4,7 +4,7 @@ global const MORTON = 0.0015
 global const EOTVOS = 25
 
 # several parameters
-global const RHO_L = 1200
+global const RHO_L = 1000
 global const DIAMETER = 0.1
 global const RESOLUTION = 45
 global const MACH_MAX = 0.1
