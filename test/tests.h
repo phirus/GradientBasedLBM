@@ -586,10 +586,8 @@ TEST(Lattice,collisionBalanceAll)
 }
 
 TEST(Lattice, copy_constr){
-    Lattice lSmall(5,5);
     Lattice lBig(100,20);
     Lattice tmp(lBig);
-    // // tmp = lBig;
     EXPECT_EQ(lBig,tmp);
 }
 
@@ -730,10 +728,9 @@ TEST(Preprocess,FileInput){
     EXPECT_DOUBLE_EQ(1200,newProcess.getRhoL());
     EXPECT_DOUBLE_EQ(2.75,newProcess.getGamma());
     EXPECT_DOUBLE_EQ(0.1,newProcess.getDiameter());
-
     EXPECT_DOUBLE_EQ(7.177827488211825,newProcess.getSoundspeed());
     EXPECT_DOUBLE_EQ(0.00291447961305505,newProcess.getSigma());
-    EXPECT_DOUBLE_EQ(8.967172490810192,newProcess.getGPhys());
+    EXPECT_DOUBLE_EQ(8.967172490810192,newProcess.getGPhys());   
  }
 
 TEST(Preprocess,refine){
@@ -758,6 +755,26 @@ TEST(Preprocess,refine){
     EXPECT_DOUBLE_EQ(delRho, newProcess.getDelRho());
     EXPECT_DOUBLE_EQ(nu,newProcess.getNu());
 }
+
+TEST(Preprocess,ParameterCheck){
+    Preprocess newProcess = getFilePreprocess("realParameters");
+    ParamSet params = newProcess.getParamSet();
+
+    // test the given parameters (default values)
+    EXPECT_DOUBLE_EQ(75,newProcess.getReynoldsMax());
+    EXPECT_NEAR(0.01,newProcess.getMorton(),1e-10);
+    EXPECT_DOUBLE_EQ(10,newProcess.getEotvos());
+
+    EXPECT_DOUBLE_EQ(1.6558400984359005, params.getOmegaRed());
+    EXPECT_DOUBLE_EQ(1.6558400984359005, params.getOmegaBlue());
+    EXPECT_DOUBLE_EQ(1,params.getRhoR());
+    EXPECT_DOUBLE_EQ(1.0295861249616975,params.getGamma());
+    EXPECT_DOUBLE_EQ(0.2,params.getAlpha());
+    EXPECT_DOUBLE_EQ(0.1,params.getInterfaceThickness());
+    EXPECT_DOUBLE_EQ(0.99,params.getBeta());
+    EXPECT_DOUBLE_EQ(0.00084327404271156506,params.getSigma());
+    EXPECT_DOUBLE_EQ(0.00014491665424627533,params.getG());
+     }
 
 TEST(timetrack,basic){
     Timetrack track(0.5,1.1);
