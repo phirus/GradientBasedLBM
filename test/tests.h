@@ -169,43 +169,31 @@ TEST(Matrix,backtrafo){
     }
 }
 
-TEST(Matrix,relaxation_without_omega){
+TEST(Matrix,multiply){
     const Matrix S(1,10,100);
     const array f = {{1,2,3,4,5,6,7,8,9}};
-    const array vergleich = {{ -48, -382, 194, 18, -206, 418, -206, 18, 194}};
+    // const array vergleich = {{ -48, -382, 194, 18, -206, 418, -206, 18, 194}};
+    const array vergleich = {{ 0, 2, 30, 0, 500, 0, 700, 8, 9}};
 
     array test = S*f;
 
     for(int i = 0; i<9;i++)
     {
-        EXPECT_DOUBLE_EQ(vergleich[i]/3,test[i])<<"i = "<<i ;
+        EXPECT_DOUBLE_EQ(vergleich[i],test[i])<<"i = "<<i ;
     }
 }
 
-TEST(Matrix,relaxation_linewise){
+TEST(Matrix,multiply_linewise){
     const Matrix S(1,10,100);
     const array f = {{1,2,3,4,5,6,7,8,9}};
-    const array vergleich = {{ -48, -382, 194, 18, -206, 418, -206, 18, 194}};
+    // const array vergleich = {{ -48, -382, 194, 18, -206, 418, -206, 18, 194}};
+    const array vergleich = {{ 0, 2, 30, 0, 500, 0, 700, 8, 9}};
     array test;
 
     for(int i = 0; i<9;i++)
     {
         test[i] = S.linewise(f,i);
-        EXPECT_DOUBLE_EQ(vergleich[i]/3,test[i])<<"i = "<<i ;
-    }
-}
-
-TEST(Matrix,relaxation_omega){
-    Matrix S(1,10,20);
-    S.addOmega(5);
-    const array f = {{1,2,3,4,5,6,7,8,9}};
-    const array vergleich = {{ -48, -77, 19, 33, -31, 83, -61, 33, 49}};
-
-    array test = S*f;
-
-    for(int i = 0; i<9;i++)
-    {
-        EXPECT_DOUBLE_EQ(vergleich[i]/3,test[i])<<"i = "<<i ;
+        EXPECT_DOUBLE_EQ(vergleich[i],test[i])<<"i = "<<i ;
     }
 }
 
@@ -625,22 +613,22 @@ TEST(MRT,trafo){
     }
 }
 
-// TEST(MRT,mass){
-//     ParamSet param;
-//     FSet phi = param.getPhi();
-//     const array f = {{1,2,3,4,5,6,7,8,9}};
-//     Cell testCell(f,f);
-//     testCell.calcRho();
-//     ColSet rho = testCell.getRho();
-//     Vector u = testCell.getU();
-//     FSet fEq  = eqDistro(rho,u,phi);
-//     array m = TrafoMatrix * f;
-//     array mEq = TrafoMatrix * fEq[0];
+TEST(MRT,mass){
+    ParamSet param;
+    FSet phi = param.getPhi();
+    const array f = {{1,2,3,4,5,6,7,8,9}};
+    Cell testCell(f,f);
+    testCell.calcRho();
+    ColSet rho = testCell.getRho();
+    Vector u = testCell.getU();
+    FSet fEq  = eqDistro(rho,u,phi);
+    array m = TrafoMatrix * f;
+    array mEq = TrafoMatrix * fEq[0];
 
-//     EXPECT_DOUBLE_EQ(m[0],mEq[0]);
-//     EXPECT_DOUBLE_EQ(m[3],mEq[3]);
-//     EXPECT_DOUBLE_EQ(m[5],mEq[5]);
-// }
+    EXPECT_DOUBLE_EQ(m[0],mEq[0]);
+    EXPECT_DOUBLE_EQ(m[3],mEq[3]);
+    EXPECT_DOUBLE_EQ(m[5],mEq[5]);
+}
 
 TEST(BinaryIO,output){
     Lattice lattice(150,150);

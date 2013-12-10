@@ -12,10 +12,9 @@ class Matrix
 {
     public:
     Matrix(bool standard = true);
-    Matrix(double s_2, double s_3, double s_5, bool momentum = false);
+    Matrix(double s_2, double s_3, double s_5);
     const array operator*(const array &other) const;
     const double linewise(const array &oher, int line) const;
-    void addOmega(double omega);
 
     private:
     boost::multi_array<double,2> matrix;
