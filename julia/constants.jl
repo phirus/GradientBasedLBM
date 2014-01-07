@@ -18,4 +18,7 @@ global const MAX_TIME = 5
 global const TECH_PLOT = 100
 global const RESTART = 1000
 
+# bulk viscosity
+global const MU_RATIO = 2
+
 println("Parameter wurden geladen")

@@ -20,6 +20,9 @@ gamma = 	x[3]
 
 Mo, Eo, dx, ut, c_s, dt, nu, mu, delRho, tau = getOtherParams(g, sigma, gamma)
 
+xi = nu * MU_RATIO
+s_2 = 1/(xi/(c_s^2 * dt) + 1/2)
+
 println("\n\n##################")
 println("resulting parameters")
 
@@ -32,6 +35,7 @@ println("\nmu = ",mu)
 println("\nrho = ",RHO_L)
 println("\ndelta rho = ",delRho)
 println("\ntau = ",tau)
+println("\ns_2 = ",s_2)
 println("\ndiameter = ",DIAMETER)
 
 println("\ng = ",g)
