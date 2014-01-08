@@ -28,6 +28,7 @@ public:
 	inline const double getGPhys()const{return g;};
 	
 	inline const double getTau()const {return tau;};
+	inline const double getS2()const {return s_2;};
 	inline const double getSpeedlimit()const{return speedlimit;};
 	inline const double getSpacestep()const{return spacestep;};
 	inline const double getTimestep()const{return timestep;};
@@ -71,6 +72,7 @@ private:
 
     // deduced
     double tau;
+    double s_2;
     double speedlimit; /// < maximum allowed velocity
 	double spacestep;  /// < spacestep /m	
 	double timestep;   /// < timestep /s
@@ -86,6 +88,7 @@ private:
 	inline void calcTimestep(){timestep = spacestep / (sqrt(3) * c_s);};
 	inline void calcNu(){nu = c_s * c_s * timestep * (tau - 0.5);};
 	inline void calcDelRho(){delRho = rho_l * (1 - 1/gamma);};
+	inline void calcS2(){s_2 = 1/( (nu*mu_ratio) / (c_s*c_s * timestep) + 1/2);};
 
 	void deduceAll();
 

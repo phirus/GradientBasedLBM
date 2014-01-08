@@ -14,6 +14,7 @@ void Preprocess::deduceAll(){
 	calcSpacestep();
 	calcTimestep();
 	calcNu();
+    calcS2();
 	calcDelRho();
 }
 
@@ -47,6 +48,7 @@ const bool Preprocess::operator==(const Preprocess& other)const
     if(g != other.getGPhys()) exit = false;
 
     if(tau != other.getTau()) exit = false;
+    if(s_2 != other.getS2()) exit = false;
     if(speedlimit != other.getSpeedlimit()) exit = false;
     if(spacestep != other.getSpacestep()) exit = false;
     if(timestep != other.getTimestep()) exit = false;   
