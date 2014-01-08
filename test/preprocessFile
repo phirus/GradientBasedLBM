@@ -24,6 +24,9 @@ sigma = 0.00291447961305505
 # gravitational constant / m s^-1, default [10]
 g = 8.967172490810192
 
+# bulk viscosity ratio mu'/mu  , default [2]
+mu_ratio = 2
+
 # refine factor, default [1.1]
 factor = 1.15
 
