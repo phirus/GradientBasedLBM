@@ -41,6 +41,10 @@ function createPFile(Mo, Eo, c_s, gamma, sigma, g)
 	write(stream,"\ng = ")
 	write(stream, string(g))
 
+	write(stream, "\n\n# bulk viscosity ratio mu'/mu  , default [2]")
+	write(stream,"\nmu_ratio = ")
+	write(stream, string(MU_RATIO))
+
 	write(stream, "\n\n# refine factor, default [1.1]")
 	write(stream,"\nfactor = ")
 	write(stream, string(REFINE_FACTOR))
