@@ -118,6 +118,7 @@ void restart_file(const Lattice& l, const Preprocess& p, const Timetrack time, c
     double rho_l = p.getRhoL();
     double gamma = p.getGamma();
     double diameter = p.getDiameter();
+    double mu_ratio = p.getMuRatio();
     double c_s = p.getSoundspeed();
     double sigma = p.getSigma();
     double g = p.getGPhys(); 
@@ -129,6 +130,7 @@ void restart_file(const Lattice& l, const Preprocess& p, const Timetrack time, c
     file.write(reinterpret_cast<char*> (&rho_l), sizeof(double));
     file.write(reinterpret_cast<char*> (&gamma), sizeof(double));
     file.write(reinterpret_cast<char*> (&diameter), sizeof(double));
+    file.write(reinterpret_cast<char*> (&mu_ratio), sizeof(double));    
     file.write(reinterpret_cast<char*> (&c_s), sizeof(double));
 
     file.write(reinterpret_cast<char*> (&sigma), sizeof(double));
@@ -206,7 +208,7 @@ const bool restart_read(Lattice& outL, Preprocess& p, Timetrack& t, const string
 
         double ReynoldsMax, Morton, Eotvos;
         double resolution, rho_l, gamma;
-        double diameter, c_s, sigma,  g; 
+        double diameter, mu_ratio, c_s, sigma,  g; 
 
         file.read((char*) &ReynoldsMax, sizeof(double));
         file.read((char*) &Morton, sizeof(double));
@@ -215,11 +217,12 @@ const bool restart_read(Lattice& outL, Preprocess& p, Timetrack& t, const string
         file.read((char*) &rho_l, sizeof(double));
         file.read((char*) &gamma, sizeof(double));
         file.read((char*) &diameter, sizeof(double));
+        file.read((char*) &mu_ratio, sizeof(double));
         file.read((char*) &c_s, sizeof(double));
         file.read((char*) &sigma, sizeof(double));
         file.read((char*) &g, sizeof(double));
 
-        Preprocess prepro(ReynoldsMax, Morton, Eotvos, resolution, rho_l, gamma, diameter, c_s, sigma, g);
+        Preprocess prepro(ReynoldsMax, Morton, Eotvos, resolution, rho_l, gamma, diameter, mu_ratio, c_s, sigma, g);
         
         file.close();
         outL.setParams(param);
@@ -458,6 +461,7 @@ const Preprocess getFilePreprocess(const string& filename){
         mm.insert(pair<string,double>("c_s",10));
         mm.insert(pair<string,double>("sigma",1e-4));
         mm.insert(pair<string,double>("g",10));
+        mm.insert(pair<string,double>("mu_ratio",2));
 
 
         // cycling through the input file
@@ -466,7 +470,7 @@ const Preprocess getFilePreprocess(const string& filename){
             if( inputQuery(filename,it->first,tmp) == true ) it->second = tmp;
         }
 
-    Preprocess prepro(mm.at("Reynolds"),mm.at("Morton"),mm.at("Eotvos"),mm.at("resolution"),mm.at("rho_l"),mm.at("gamma"),mm.at("diameter"),mm.at("c_s"),mm.at("sigma"), mm.at("g"));
+    Preprocess prepro(mm.at("Reynolds"),mm.at("Morton"),mm.at("Eotvos"),mm.at("resolution"),mm.at("rho_l"),mm.at("gamma"),mm.at("diameter"),mm.at("mu_ratio"),mm.at("c_s"),mm.at("sigma"), mm.at("g"));
     return prepro;
 }
 

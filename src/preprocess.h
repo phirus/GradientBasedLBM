@@ -12,7 +12,7 @@ class Preprocess
 {
 public: 
 	// constr
-	Preprocess(double Re = 50, double Mo = 1e-3, double Eo = 20, double res = 40, double rl= 1000, double gam = 5, double dia = 0.1, double soundspeed = 10, double sig= 1e-4, double grav = 10);
+	Preprocess(double Re = 50, double Mo = 1e-3, double Eo = 20, double res = 40, double rl= 1000, double gam = 5, double dia = 0.1, double mu_rate = 2, double soundspeed = 10, double sig= 1e-4, double grav = 10);
 
 	// get methods
 	inline const double getReynoldsMax()const{return ReynoldsMax;};
@@ -22,6 +22,7 @@ public:
 	inline const double getRhoL()const{return rho_l;};
 	inline const double getGamma()const{return gamma;};
 	inline const double getDiameter()const{return diameter;};
+	inline const double getMuRatio()const{return mu_ratio;};
 	inline const double getSoundspeed()const{return c_s;};
 	inline const double getSigma()const{return sigma;};
 	inline const double getGPhys()const{return g;};
@@ -61,10 +62,12 @@ private:
 	double rho_l ;			/// < liquid density
   	double gamma; 			/// < density ratio
   	double diameter;   		/// < bubble diameter /m
+  	double mu_ratio;		/// ratio of second to first viscosity mu'/mu
 	
 	double c_s; 	       	/// < speed of sound / m * s^-1
 	double sigma;   	   	/// < surface tension
 	double g;          		/// < gravity / m * s^-2	
+
 
     // deduced
     double tau;

@@ -1,8 +1,9 @@
 #include"preprocess.h"
-Preprocess::Preprocess(double Re, double Mo, double Eo, double res, double rl, double gam, double dia, double soundspeed, double sig, double grav):
+Preprocess::Preprocess(double Re, double Mo, double Eo, double res, double rl, double gam, double dia,double mu_rate, double soundspeed, double sig, double grav):
 ReynoldsMax(Re), Morton(Mo), Eotvos(Eo),
 resolution(res), rho_l(rl), gamma(gam), 
-diameter(dia), c_s(soundspeed), sigma(sig), g(grav)
+diameter(dia), mu_ratio(mu_rate), 
+c_s(soundspeed), sigma(sig), g(grav)
 {
     deduceAll();
 }
@@ -40,6 +41,7 @@ const bool Preprocess::operator==(const Preprocess& other)const
     if(rho_l != other.getRhoL()) exit = false;
     if(gamma != other.getGamma()) exit = false;
     if(diameter != other.getDiameter()) exit = false;
+    if(mu_ratio != other.getMuRatio()) exit = false;
     if(c_s != other.getSoundspeed()) exit = false;
     if(sigma != other.getSigma()) exit = false;
     if(g != other.getGPhys()) exit = false;
