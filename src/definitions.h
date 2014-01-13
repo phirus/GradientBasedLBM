@@ -14,4 +14,9 @@ typedef boost::array<double,2> ColSet;         /// < simple 2d vector, y = vec[0
 /// sums up all elements
 inline const double sum(const ColSet& vector){return vector[0] + vector[1] ;};
 
+struct RelaxationPar
+{
+    double s_2,s_3,s_5;
+};
+
 #endif

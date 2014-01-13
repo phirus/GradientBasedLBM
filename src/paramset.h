@@ -12,11 +12,6 @@ struct Interpol
     double chi, eta, kappa, lambda, ny;
 };
 
-struct RelaxationPar
-{
-    double s_2,s_3,s_5;
-};
-
 /// collection of all parameters used during the simulation
 class ParamSet
 {
