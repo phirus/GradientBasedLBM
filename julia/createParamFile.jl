@@ -45,6 +45,14 @@ function createPFile(Mo, Eo, c_s, gamma, sigma, g)
 	write(stream,"\nmu_ratio = ")
 	write(stream, string(MU_RATIO))
 
+	write(stream, "\n\n# s_3 , default [1]")
+	write(stream,"\ns_3 = ")
+	write(stream, string(S_3))
+
+	write(stream, "\n\n# s_5 , default [1]")
+	write(stream,"\ns_5 = ")
+	write(stream, string(S_5))
+
 	write(stream, "\n\n# refine factor, default [1.1]")
 	write(stream,"\nfactor = ")
 	write(stream, string(REFINE_FACTOR))

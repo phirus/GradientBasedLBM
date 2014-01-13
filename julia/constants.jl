@@ -18,7 +18,12 @@ global const MAX_TIME = 5
 global const TECH_PLOT = 100
 global const RESTART = 1000
 
-# bulk viscosity
+# Parameters for relaxation matrix
+# bulk viscosity -> s_2
 global const MU_RATIO = 2
+# s_3 + s_5
+global const S_3 = 1
+global const S_5 = 1
+
 
 println("Parameter wurden geladen")
