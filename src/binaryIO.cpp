@@ -423,33 +423,6 @@ const bool inputQuery(const string& filename, const string& query, double& value
     return success;
 }
 
-// const ParamSet getFileParams(const string& filename){
-//     vector<string> tags;
-//     vector<double> val;
-//     // initialzing strings and fallback values
-//     map<string,double> mm;
-//         mm.insert(pair<string,double>("omega_red",1));
-//         mm.insert(pair<string,double>("omega_blue",1));
-//         mm.insert(pair<string,double>("rho_red",1));
-//         mm.insert(pair<string,double>("gamma",1000));
-//         mm.insert(pair<string,double>("alpha_blue",0.2));
-//         mm.insert(pair<string,double>("delta",0.1));
-//         mm.insert(pair<string,double>("beta",0.99));
-//         mm.insert(pair<string,double>("sigma",1e-4));
-//         mm.insert(pair<string,double>("speedlimit",1));
-//         mm.insert(pair<string,double>("timestep",0.001));
-//         mm.insert(pair<string,double>("g",9.81));
-
-//         // cycling through the input file
-//         double tmp;
-//         for(map<string,double>::iterator it = mm.begin(); it != mm.end(); it++){            
-//             if( inputQuery(filename,it->first,tmp) == true ) it->second = tmp;
-//         }
-
-//     ParamSet params(mm.at("omega_red"),mm.at("omega_blue"),mm.at("rho_red"),mm.at("gamma"),mm.at("sigma"),mm.at("g"), mm.at("speedlimit"),mm.at("timestep"),mm.at("alpha_blue"),mm.at("delta"),mm.at("beta"));
-//     return params;
-// }
-
 const Preprocess getFilePreprocess(const string& filename){
     vector<string> tags;
     vector<double> val;

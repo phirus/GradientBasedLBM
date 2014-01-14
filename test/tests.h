@@ -652,12 +652,6 @@ TEST(BinaryIO,queryTest){
     EXPECT_DOUBLE_EQ(13.4, value); 
 }
 
-// TEST(BinaryIO,paramConfIn){
-//     ParamSet param(0.8, 1.4, 1.1, 1100);
-//     ParamSet input = getFileParams("paramInputTest");
-//     EXPECT_EQ(param, input);    
-// }
-
 TEST(BinaryIO,restart){
     Lattice lattice(150,150);
 
