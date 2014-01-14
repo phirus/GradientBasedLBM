@@ -17,6 +17,14 @@ inline const double sum(const ColSet& vector){return vector[0] + vector[1] ;};
 struct RelaxationPar
 {
     double s_2,s_3,s_5;
+    RelaxationPar(double s2=1, double s3=1, double s5=1):s_2(s2),s_3(s3),s_5(s5){};
 };
+
+/// structure for interpolation paramters
+struct Interpol
+{
+    double chi, eta, kappa, lambda, ny;
+};
+
 
 #endif

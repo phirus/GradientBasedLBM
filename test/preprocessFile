@@ -27,6 +27,12 @@ g = 8.967172490810192
 # bulk viscosity ratio mu'/mu  , default [2]
 mu_ratio = 2
 
+# s_3 , default [1]
+s_3 = 1
+
+# s_5 , default [1]
+s_5 = 1
+
 # refine factor, default [1.1]
 factor = 1.15
 

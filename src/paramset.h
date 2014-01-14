@@ -6,11 +6,6 @@
 
 using namespace std;
 
-/// structure for interpolation paramters
-struct Interpol
-{
-    double chi, eta, kappa, lambda, ny;
-};
 
 /// collection of all parameters used during the simulation
 class ParamSet

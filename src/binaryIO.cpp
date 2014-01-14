@@ -122,6 +122,8 @@ void restart_file(const Lattice& l, const Preprocess& p, const Timetrack time, c
     double c_s = p.getSoundspeed();
     double sigma = p.getSigma();
     double g = p.getGPhys(); 
+    double s_3 = p.getS_3();
+    double s_5 = p.getS_5();
 
     file.write(reinterpret_cast<char*> (&ReynoldsMax), sizeof(double));
     file.write(reinterpret_cast<char*> (&Morton), sizeof(double));
@@ -132,9 +134,10 @@ void restart_file(const Lattice& l, const Preprocess& p, const Timetrack time, c
     file.write(reinterpret_cast<char*> (&diameter), sizeof(double));
     file.write(reinterpret_cast<char*> (&mu_ratio), sizeof(double));    
     file.write(reinterpret_cast<char*> (&c_s), sizeof(double));
-
     file.write(reinterpret_cast<char*> (&sigma), sizeof(double));
     file.write(reinterpret_cast<char*> (&g), sizeof(double));
+    file.write(reinterpret_cast<char*> (&s_3), sizeof(double));
+    file.write(reinterpret_cast<char*> (&s_5), sizeof(double));
 
     file.close();
 }
@@ -208,7 +211,7 @@ const bool restart_read(Lattice& outL, Preprocess& p, Timetrack& t, const string
 
         double ReynoldsMax, Morton, Eotvos;
         double resolution, rho_l, gamma;
-        double diameter, mu_ratio, c_s, sigma,  g; 
+        double diameter, mu_ratio, c_s, sigma,  g, s_3, s_5; 
 
         file.read((char*) &ReynoldsMax, sizeof(double));
         file.read((char*) &Morton, sizeof(double));
@@ -221,8 +224,10 @@ const bool restart_read(Lattice& outL, Preprocess& p, Timetrack& t, const string
         file.read((char*) &c_s, sizeof(double));
         file.read((char*) &sigma, sizeof(double));
         file.read((char*) &g, sizeof(double));
+        file.read((char*) &s_3, sizeof(double));
+        file.read((char*) &s_5, sizeof(double));
 
-        Preprocess prepro(ReynoldsMax, Morton, Eotvos, resolution, rho_l, gamma, diameter, mu_ratio, c_s, sigma, g);
+        Preprocess prepro(ReynoldsMax, Morton, Eotvos, resolution, rho_l, gamma, diameter, mu_ratio, c_s, sigma, g, s_3, s_5);
         
         file.close();
         outL.setParams(param);
@@ -435,7 +440,6 @@ const ParamSet getFileParams(const string& filename){
         mm.insert(pair<string,double>("timestep",0.001));
         mm.insert(pair<string,double>("g",9.81));
 
-
         // cycling through the input file
         double tmp;
         for(map<string,double>::iterator it = mm.begin(); it != mm.end(); it++){            
@@ -462,7 +466,8 @@ const Preprocess getFilePreprocess(const string& filename){
         mm.insert(pair<string,double>("sigma",1e-4));
         mm.insert(pair<string,double>("g",10));
         mm.insert(pair<string,double>("mu_ratio",2));
-
+        mm.insert(pair<string,double>("s_3",1));
+        mm.insert(pair<string,double>("s_5",1));
 
         // cycling through the input file
         double tmp;
@@ -470,7 +475,7 @@ const Preprocess getFilePreprocess(const string& filename){
             if( inputQuery(filename,it->first,tmp) == true ) it->second = tmp;
         }
 
-    Preprocess prepro(mm.at("Reynolds"),mm.at("Morton"),mm.at("Eotvos"),mm.at("resolution"),mm.at("rho_l"),mm.at("gamma"),mm.at("diameter"),mm.at("mu_ratio"),mm.at("c_s"),mm.at("sigma"), mm.at("g"));
+    Preprocess prepro(mm.at("Reynolds"),mm.at("Morton"),mm.at("Eotvos"),mm.at("resolution"),mm.at("rho_l"),mm.at("gamma"),mm.at("diameter"),mm.at("mu_ratio"),mm.at("c_s"),mm.at("sigma"), mm.at("g"), mm.at("s_3"), mm.at("s_5"));
     return prepro;
 }
 

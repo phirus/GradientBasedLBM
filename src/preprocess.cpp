@@ -1,9 +1,10 @@
 #include"preprocess.h"
-Preprocess::Preprocess(double Re, double Mo, double Eo, double res, double rl, double gam, double dia,double mu_rate, double soundspeed, double sig, double grav):
+Preprocess::Preprocess(double Re, double Mo, double Eo, double res, double rl, double gam, double dia,double mu_rate, double soundspeed, double sig, double grav, double s_three, double s_five):
 ReynoldsMax(Re), Morton(Mo), Eotvos(Eo),
 resolution(res), rho_l(rl), gamma(gam), 
 diameter(dia), mu_ratio(mu_rate), 
-c_s(soundspeed), sigma(sig), g(grav)
+c_s(soundspeed), sigma(sig), g(grav),
+s_3(s_three), s_5(s_five)
 {
     deduceAll();
 }
