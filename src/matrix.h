@@ -12,7 +12,10 @@ class Matrix
 {
     public:
     Matrix(bool standard = true);
-    Matrix(double s_2, double s_3, double s_5);
+    Matrix(RelaxationPar relax, double omega = 1);
+
+    void resetOmega(double omega);
+
     const array operator*(const array &other) const;
     const double linewise(const array &oher, int line) const;
 

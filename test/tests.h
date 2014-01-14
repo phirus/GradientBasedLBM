@@ -170,7 +170,7 @@ TEST(Matrix,backtrafo){
 }
 
 TEST(Matrix,multiply){
-    const Matrix S(1,10,100);
+    const Matrix S(RelaxationPar(1,10,100));
     const array f = {{1,2,3,4,5,6,7,8,9}};
     // const array vergleich = {{ -48, -382, 194, 18, -206, 418, -206, 18, 194}};
     const array vergleich = {{ 0, 2, 30, 0, 500, 0, 700, 8, 9}};
@@ -184,7 +184,7 @@ TEST(Matrix,multiply){
 }
 
 TEST(Matrix,multiply_linewise){
-    const Matrix S(1,10,100);
+    const Matrix S(RelaxationPar(1,10,100));
     const array f = {{1,2,3,4,5,6,7,8,9}};
     // const array vergleich = {{ -48, -382, 194, 18, -206, 418, -206, 18, 194}};
     const array vergleich = {{ 0, 2, 30, 0, 500, 0, 700, 8, 9}};

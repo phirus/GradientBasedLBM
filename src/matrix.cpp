@@ -191,7 +191,7 @@ Matrix::Matrix(bool standard):matrix(boost::extents[9][9])
 
 }
 
-Matrix::Matrix(double s_2, double s_3, double s_5):matrix(boost::extents[9][9])
+Matrix::Matrix(RelaxationPar relax, double omega):matrix(boost::extents[9][9])
 {
     for(int i = 0;i<9;i++){
         for(int j=0;j<9;j++){
@@ -199,14 +199,19 @@ Matrix::Matrix(double s_2, double s_3, double s_5):matrix(boost::extents[9][9])
         }
     }
     matrix[0][0] = 0;
-    matrix[1][1] = s_2;
-    matrix[2][2] = s_3;
+    matrix[1][1] = relax.s_2;
+    matrix[2][2] = relax.s_3;
     matrix[3][3] = 0;
-    matrix[4][4] = s_5;
+    matrix[4][4] = relax.s_5;
     matrix[5][5] = 0;
-    matrix[6][6] = s_5;
-    matrix[7][7] = 1;
-    matrix[8][8] = 1;
+    matrix[6][6] = relax.s_5;
+    matrix[7][7] = omega;
+    matrix[8][8] = omega;
+}
+
+void Matrix::resetOmega(double omega){
+    matrix[7][7] = omega;
+    matrix[8][8] = omega;
 }
 
 const array Matrix::operator*(const array &other)const {
