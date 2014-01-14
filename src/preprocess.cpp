@@ -20,9 +20,10 @@ void Preprocess::deduceAll(){
 }
 
 const ParamSet Preprocess::getParamSet()const{
-	double omega = 1/tau;
-	double rho_r = 1;  // normalized
-	ParamSet param(omega, omega, rho_r, gamma, convertSigma(), convertG(), speedlimit, timestep);
+	const double omega = 1/tau;
+	const double rho_r = 1;  // normalized
+    const RelaxationPar relax(s_2,s_3,s_3);
+	ParamSet param(omega, omega, rho_r, gamma, convertSigma(), convertG(), speedlimit, timestep, relax);
 	return param;
 }
 
@@ -47,6 +48,9 @@ const bool Preprocess::operator==(const Preprocess& other)const
     if(c_s != other.getSoundspeed()) exit = false;
     if(sigma != other.getSigma()) exit = false;
     if(g != other.getGPhys()) exit = false;
+    if(s_3 != other.getS_3()) exit = false;
+    if(s_5 != other.getS_5()) exit = false;
+
 
     if(tau != other.getTau()) exit = false;
     if(s_2 != other.getS2()) exit = false;

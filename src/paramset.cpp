@@ -1,5 +1,5 @@
 #include"paramset.h"
-ParamSet::ParamSet(double omR, double omB, double rhoR ,double gammaIni, double sigmaIni, double g, double c_limit, double t_step, double alB, double deltaIni, double betaIni):
+ParamSet::ParamSet(double omR, double omB, double rhoR ,double gammaIni, double sigmaIni, double g, double c_limit, double t_step, RelaxationPar rel, double alB, double deltaIni, double betaIni):
 omegaRed(omR),
 omegaBlue(omB),
 rhoRed(rhoR),
@@ -10,12 +10,9 @@ beta(betaIni),
 sigma(sigmaIni), 
 gravity(g), 
 speedlimit(c_limit), 
-timestep(t_step)
+timestep(t_step),
+relax(rel)
 {
-    relax.s_2 = 1;
-    relax.s_3 = 1;
-    relax.s_5 = 1.2;
-
     calcInter();
     calcAlR();
 }
