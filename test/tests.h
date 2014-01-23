@@ -214,6 +214,13 @@ TEST(Matrix,identity){
     EXPECT_EQ(f, test);
 }
 
+TEST(Matrix,plus_times){
+    const Matrix Identity = Matrix(true);
+    
+    EXPECT_EQ(Identity+Identity, Identity*2);
+    EXPECT_EQ(TrafoMatrix+TrafoMatrix+TrafoMatrix, TrafoMatrix*3);
+}
+
 TEST(ParamSet,Phi)
 {
     ParamSet param;

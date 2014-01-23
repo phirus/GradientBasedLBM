@@ -23,6 +23,11 @@ class Matrix
         const array operator*(const array &other) const;
         const double linewise(const array &oher, int line) const;
 
+        const Matrix operator*(double other)const;
+
+        // addition
+        const Matrix operator+(const Matrix &other)const;
+
         // is equal?
         const bool operator==(const Matrix &other)const; 
 

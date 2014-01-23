@@ -72,6 +72,29 @@ const double Matrix::linewise(const array &other, int line)const{
     return sum;
 }
 
+const Matrix Matrix::operator*(double other)const{
+    boost::multi_array<double,2> m(boost::extents[9][9]);
+
+    for(int i = 0;i<9;i++){
+        for(int j=0;j<9;j++){
+            m[i][j] = matrix[i][j] * other;
+        }
+    }
+    return Matrix(m);
+}
+
+const Matrix Matrix::operator+(const Matrix &other)const{
+    boost::multi_array<double,2> m(boost::extents[9][9]); 
+    boost::multi_array<double,2> mother = other.getData();
+
+    for(int i = 0;i<9;i++){
+        for(int j=0;j<9;j++){
+            m[i][j] = matrix[i][j] + mother[i][j];
+        }
+    }
+    return Matrix(m);
+}
+
 const bool Matrix::operator==(const Matrix &other)const{
     boost::multi_array<double,2> mother = other.getData();
     bool equal = false;
