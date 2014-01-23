@@ -1,5 +1,23 @@
 #include"matrix.h"
 
+Matrix::Matrix(bool identity):matrix(boost::extents[9][9])
+{
+    if (identity == true) {
+        for(int i = 0;i<9;i++){
+            for(int j=0;j<9;j++){
+                matrix[i][j] = (i == j) ? 1 : 0;
+            }
+        }
+    }
+    else {
+        for(int i = 0;i<9;i++){
+            for(int j=0;j<9;j++){
+                matrix[i][j] = 0;
+            }
+        }
+    }
+}
+
 Matrix::Matrix(boost::multi_array<double,2> m):matrix(boost::extents[9][9])
 {
     for(int i = 0;i<9;i++){
@@ -8,7 +26,6 @@ Matrix::Matrix(boost::multi_array<double,2> m):matrix(boost::extents[9][9])
         }
     }
 }
-
 
 
 Matrix::Matrix(RelaxationPar relax, double omega):matrix(boost::extents[9][9])

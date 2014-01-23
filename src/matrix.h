@@ -11,17 +11,17 @@
 class Matrix
 {
     public:
-    Matrix(boost::multi_array<double,2> m);
-    Matrix(RelaxationPar relax, double omega = 1);
+        Matrix(bool identity = false);
+        Matrix(boost::multi_array<double,2> m);
+        Matrix(RelaxationPar relax, double omega = 1);
 
-    void resetOmega(double omega);
+        void resetOmega(double omega);
 
-    const array operator*(const array &other) const;
-    const double linewise(const array &oher, int line) const;
+        const array operator*(const array &other) const;
+        const double linewise(const array &oher, int line) const;
 
     private:
-    boost::multi_array<double,2> matrix;
-
+        boost::multi_array<double,2> matrix;
 };
 
 #endif
