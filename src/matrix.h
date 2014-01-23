@@ -11,7 +11,7 @@
 class Matrix
 {
     public:
-    Matrix(bool standard = true);
+    Matrix(boost::multi_array<double,2> m);
     Matrix(RelaxationPar relax, double omega = 1);
 
     void resetOmega(double omega);
