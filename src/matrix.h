@@ -12,13 +12,19 @@ class Matrix
 {
     public:
         Matrix(bool identity = false);
-        Matrix(boost::multi_array<double,2> m);
+        Matrix(const boost::multi_array<double,2> &m);
         Matrix(RelaxationPar relax, double omega = 1);
-
         void resetOmega(double omega);
 
+        // get
+        inline const boost::multi_array<double,2> getData()const{return matrix;};
+
+        // multiplication
         const array operator*(const array &other) const;
         const double linewise(const array &oher, int line) const;
+
+        // is equal?
+        const bool operator==(const Matrix &other)const; 
 
     private:
         boost::multi_array<double,2> matrix;

@@ -197,6 +197,23 @@ TEST(Matrix,multiply_linewise){
     }
 }
 
+TEST(Matrix,identity){
+    const array f = {{1,2,3,4,5,6,7,8,9}};
+    const array f0 = {{0,0,0,0,0,0,0,0,0}};
+
+    const Matrix Identity = Matrix(true);
+    const Matrix Zeros = Matrix();
+    array test;
+
+    EXPECT_EQ(f, Identity * f);
+    EXPECT_EQ(f0, Zeros * f);
+    for(int i = 0; i<9;i++)
+    {
+        test[i] = Identity.linewise(f,i);
+    }
+    EXPECT_EQ(f, test);
+}
+
 TEST(ParamSet,Phi)
 {
     ParamSet param;

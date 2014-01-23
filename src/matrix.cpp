@@ -18,7 +18,7 @@ Matrix::Matrix(bool identity):matrix(boost::extents[9][9])
     }
 }
 
-Matrix::Matrix(boost::multi_array<double,2> m):matrix(boost::extents[9][9])
+Matrix::Matrix(const boost::multi_array<double,2> &m):matrix(boost::extents[9][9])
 {
     for(int i = 0;i<9;i++){
         for(int j=0;j<9;j++){
@@ -70,4 +70,12 @@ const double Matrix::linewise(const array &other, int line)const{
         sum += other[j] * matrix[line][j];
     }
     return sum;
+}
+
+const bool Matrix::operator==(const Matrix &other)const{
+    boost::multi_array<double,2> mother = other.getData();
+    bool equal = false;
+    if (matrix == mother) equal = true;
+
+    return equal;
 }
