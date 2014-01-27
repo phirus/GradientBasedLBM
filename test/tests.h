@@ -219,6 +219,7 @@ TEST(Matrix,plus_times){
     
     EXPECT_EQ(Identity+Identity, Identity*2);
     EXPECT_EQ(TrafoMatrix+TrafoMatrix+TrafoMatrix, TrafoMatrix*3);
+     EXPECT_EQ(TrafoMatrix+TrafoMatrix, (TrafoMatrix*3)-TrafoMatrix);
 }
 
 TEST(ParamSet,Phi)

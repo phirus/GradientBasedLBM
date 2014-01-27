@@ -29,6 +29,7 @@ class Matrix
 
         // addition
         const Matrix operator+(const Matrix &other)const;
+        const Matrix operator-(const Matrix &other)const;
 
         // is equal?
         const bool operator==(const Matrix &other)const; 
