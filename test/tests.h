@@ -299,9 +299,9 @@ TEST(Constants,W)
 {
     Lattice lattice;
 
-    EXPECT_DOUBLE_EQ(4,w.at(0)*9);
-    EXPECT_DOUBLE_EQ(1,w.at(1)*9);
-    EXPECT_DOUBLE_EQ(1,w.at(2)*36);
+    EXPECT_DOUBLE_EQ(4,WEIGHTS.at(0)*9);
+    EXPECT_DOUBLE_EQ(1,WEIGHTS.at(1)*9);
+    EXPECT_DOUBLE_EQ(1,WEIGHTS.at(2)*36);
 }
 
 TEST(Constants,Xi)

@@ -292,10 +292,10 @@ void Lattice::collideAll(int threads, bool gravity)
                 for (int q=0; q<9; q++)
                 {
                     scal = grad*e[q];
-                    if (av > 0) two_phase = av/2 * (w[q] * ( scal*scal )/(av*av) - B[q]);
+                    if (av > 0) two_phase = av/2 * (WEIGHTS[q] * ( scal*scal )/(av*av) - B[q]);
                     else two_phase = 0;
 
-                    if (gravity == true) forcingTerm = (1- 0.5*omega) * w[q] * (G * ( e[q] * (e[q] * u) + e[q] - u )) ;
+                    if (gravity == true) forcingTerm = (1- 0.5*omega) * WEIGHTS[q] * (G * ( e[q] * (e[q] * u) + e[q] - u )) ;
 
                     for (int color=0;color<=1; color++)
                     {
@@ -428,7 +428,7 @@ const DistributionSetType eqDistro(const ColSet& rho_k, const Vector& u, const D
         scal = u*e[i];
         for (int color = 0; color<=1; color++)
         {
-            feq[color][i] = rho_k[color] * ( phi[color][i] + w[i] * ( 3 * scal + 4.5 * (scal*scal) - 1.5 * usqr));
+            feq[color][i] = rho_k[color] * ( phi[color][i] + WEIGHTS[i] * ( 3 * scal + 4.5 * (scal*scal) - 1.5 * usqr));
         }
     }
     return feq;
