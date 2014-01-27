@@ -28,7 +28,7 @@ Matrix::Matrix(const boost::multi_array<double,2> &m):matrix(boost::extents[9][9
 }
 
 
-Matrix::Matrix(RelaxationPar relax, double omega):matrix(boost::extents[9][9])
+Matrix::Matrix(const RelaxationPar &relax, double omega):matrix(boost::extents[9][9])
 {
     for(int i = 0;i<9;i++){
         for(int j=0;j<9;j++){
@@ -44,6 +44,11 @@ Matrix::Matrix(RelaxationPar relax, double omega):matrix(boost::extents[9][9])
     matrix[6][6] = relax.s_5;
     matrix[7][7] = omega;
     matrix[8][8] = omega;
+}
+
+Matrix::Matrix(const Matrix &other):matrix(boost::extents[9][9])
+{
+    matrix = other.getData();
 }
 
 void Matrix::resetOmega(double omega){

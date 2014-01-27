@@ -13,7 +13,9 @@ class Matrix
     public:
         Matrix(bool identity = false);
         Matrix(const boost::multi_array<double,2> &m);
-        Matrix(RelaxationPar relax, double omega = 1);
+        Matrix(const RelaxationPar &relax, double omega = 1);
+        Matrix(const Matrix &other);
+
         void resetOmega(double omega);
 
         // get
