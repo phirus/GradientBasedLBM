@@ -4,7 +4,7 @@
 #include"gtest/gtest.h"
 #include"../src/Lattice.h"
 #include"../src/Vector.h"
-#include"../src/binaryIO.h"
+#include"../src/BinaryIO.h"
 
 using namespace std;
 

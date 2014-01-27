@@ -1,4 +1,4 @@
-#include"binaryIO.h"
+#include"BinaryIO.h"
 
 void binary_output(const Lattice& l, const string& filename){
 

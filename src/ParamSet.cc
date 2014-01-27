@@ -1,4 +1,5 @@
-#include"paramset.h"
+#include"ParamSet.h"
+
 ParamSet::ParamSet(double omR, double omB, double rhoR ,double gammaIni, double sigmaIni, double g, double c_limit, double t_step, RelaxationPar rel, double alB, double deltaIni, double betaIni):
 omegaRed(omR),
 omegaBlue(omB),

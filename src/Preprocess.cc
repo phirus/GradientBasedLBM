@@ -1,4 +1,5 @@
-#include"preprocess.h"
+#include"Preprocess.h"
+
 Preprocess::Preprocess(double Re, double Mo, double Eo, double res, double rl, double gam, double dia,double mu_rate, double soundspeed, double sig, double grav, double s_three, double s_five):
 ReynoldsMax(Re), Morton(Mo), Eotvos(Eo),
 resolution(res), rho_l(rl), gamma(gam), 

@@ -6,7 +6,7 @@
 #include<map>
 
 #include"Lattice.h"
-#include"preprocess.h"
+#include"Preprocess.h"
 
 void binary_output(const Lattice& l, const string& filename = "data.bin");
 const bool binary_input(Lattice& outL, const string& filename = "data.bin");

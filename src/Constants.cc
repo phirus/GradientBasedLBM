@@ -1,4 +1,4 @@
-#include "constants.h"
+#include "Constants.h"
 
 const boost::multi_array<double,2> defineTrafoMatrix(){
     boost::multi_array<double,2> matrix(boost::extents[9][9]);

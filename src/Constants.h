@@ -1,8 +1,8 @@
 #ifndef CONSTANTS_H
 #define CONSTANTS_H
 
-#include"matrix.h"
-#include"definitions.h"
+#include"Matrix.h"
+#include"Definitions.h"
 
 /// contains constants
 

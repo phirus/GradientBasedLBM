@@ -6,7 +6,7 @@
 #ifndef CELL_H
 #define CELL_H
 
-#include"constants.h"
+#include"Constants.h"
 using namespace std;
 
 class Cell

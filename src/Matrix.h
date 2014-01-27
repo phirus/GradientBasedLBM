@@ -1,7 +1,7 @@
 #ifndef MATRIX_H
 #define MATRIX_H
 
-#include"definitions.h"
+#include"Definitions.h"
 
 // Git Test
 

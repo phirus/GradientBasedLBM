@@ -1,4 +1,4 @@
-#include"timetrack.h"
+#include"Timetrack.h"
 
 Timetrack::Timetrack(double iniTime, double fac, int t_c, double t_t, int tech, int rest):
 dtIni(iniTime)

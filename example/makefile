@@ -18,7 +18,7 @@ BIN_DIR = bin
 OUTPUT = $(BIN_DIR)/BubbleTest
 
 # creating OBJs
-OBJ_DEBUG = $(OBJ_DIR)/binaryIO.o $(OBJ_DIR)/constants.o $(OBJ_DIR)/Cell.o $(OBJ_DIR)/Lattice.o $(OBJ_DIR)/main.o $(OBJ_DIR)/matrix.o $(OBJ_DIR)/paramset.o $(OBJ_DIR)/preprocess.o $(OBJ_DIR)/timetrack.o $(OBJ_DIR)/Vector.o
+OBJ_DEBUG = $(OBJ_DIR)/BinaryIO.o $(OBJ_DIR)/Constants.o $(OBJ_DIR)/Cell.o $(OBJ_DIR)/Lattice.o $(OBJ_DIR)/main.o $(OBJ_DIR)/Matrix.o $(OBJ_DIR)/ParamSet.o $(OBJ_DIR)/Preprocess.o $(OBJ_DIR)/Timetrack.o $(OBJ_DIR)/Vector.o
 
 all: clean build
 
@@ -35,11 +35,11 @@ build: before_debug out_debug after_debug
 out_debug: before_debug $(OBJ_DEBUG)
 	$(LD) -o $(OUTPUT) $(OBJ_DEBUG)  $(LDFLAGS) $(LIB)
 
-$(OBJ_DIR)/binaryIO.o: $(SRC)/binaryIO.cpp
-	$(CXX) $(CFLAGS) $(INC) -c $(SRC)/binaryIO.cpp -o $(OBJ_DIR)/binaryIO.o
+$(OBJ_DIR)/BinaryIO.o: $(SRC)/BinaryIO.cc
+	$(CXX) $(CFLAGS) $(INC) -c $(SRC)/BinaryIO.cc -o $(OBJ_DIR)/BinaryIO.o
 
-$(OBJ_DIR)/constants.o: $(SRC)/constants.cpp
-	$(CXX) $(CFLAGS) $(INC) -c $(SRC)/constants.cpp -o $(OBJ_DIR)/constants.o
+$(OBJ_DIR)/Constants.o: $(SRC)/Constants.cc
+	$(CXX) $(CFLAGS) $(INC) -c $(SRC)/Constants.cc -o $(OBJ_DIR)/Constants.o
 
 $(OBJ_DIR)/Cell.o: $(SRC)/Cell.cc
 	$(CXX) $(CFLAGS) $(INC) -c $(SRC)/Cell.cc -o $(OBJ_DIR)/Cell.o
@@ -47,20 +47,20 @@ $(OBJ_DIR)/Cell.o: $(SRC)/Cell.cc
 $(OBJ_DIR)/Lattice.o: $(SRC)/Lattice.cc
 	$(CXX) $(CFLAGS) $(INC) -c $(SRC)/Lattice.cc -o $(OBJ_DIR)/Lattice.o
 
-$(OBJ_DIR)/main.o: main.cpp
-	$(CXX) $(CFLAGS) $(INC) -c main.cpp -o $(OBJ_DIR)/main.o
+$(OBJ_DIR)/main.o: main.cc
+	$(CXX) $(CFLAGS) $(INC) -c main.cc -o $(OBJ_DIR)/main.o
 
-$(OBJ_DIR)/matrix.o: $(SRC)/matrix.cpp
-	$(CXX) $(CFLAGS) $(INC) -c $(SRC)/matrix.cpp -o $(OBJ_DIR)/matrix.o
+$(OBJ_DIR)/Matrix.o: $(SRC)/Matrix.cc
+	$(CXX) $(CFLAGS) $(INC) -c $(SRC)/Matrix.cc -o $(OBJ_DIR)/Matrix.o
 
-$(OBJ_DIR)/paramset.o: $(SRC)/paramset.cpp
-	$(CXX) $(CFLAGS) $(INC) -c $(SRC)/paramset.cpp -o $(OBJ_DIR)/paramset.o
+$(OBJ_DIR)/ParamSet.o: $(SRC)/ParamSet.cc
+	$(CXX) $(CFLAGS) $(INC) -c $(SRC)/ParamSet.cc -o $(OBJ_DIR)/ParamSet.o
 
-$(OBJ_DIR)/preprocess.o: $(SRC)/preprocess.cpp
-	$(CXX) $(CFLAGS) $(INC) -c $(SRC)/preprocess.cpp -o $(OBJ_DIR)/preprocess.o
+$(OBJ_DIR)/Preprocess.o: $(SRC)/Preprocess.cc
+	$(CXX) $(CFLAGS) $(INC) -c $(SRC)/Preprocess.cc -o $(OBJ_DIR)/Preprocess.o
 
-$(OBJ_DIR)/timetrack.o: $(SRC)/timetrack.cpp
-	$(CXX) $(CFLAGS) $(INC) -c $(SRC)/timetrack.cpp -o $(OBJ_DIR)/timetrack.o
+$(OBJ_DIR)/Timetrack.o: $(SRC)/Timetrack.cc
+	$(CXX) $(CFLAGS) $(INC) -c $(SRC)/Timetrack.cc -o $(OBJ_DIR)/Timetrack.o
 
 $(OBJ_DIR)/Vector.o: $(SRC)/Vector.cc
 	$(CXX) $(CFLAGS) $(INC) -c $(SRC)/Vector.cc -o $(OBJ_DIR)/Vector.o

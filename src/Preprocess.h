@@ -1,8 +1,8 @@
 #ifndef PREPROCESS_H
 #define PREPROCESS_H
 
-#include"paramset.h"
-#include"constants.h"
+#include"ParamSet.h"
+#include"Constants.h"
 
 using namespace std;
 

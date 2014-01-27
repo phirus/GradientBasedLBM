@@ -1,8 +1,8 @@
 #include <iostream>
 #include<ctime>
 
-#include"../src/lattice.h"
-#include"../src/binaryIO.h"
+#include"../src/Lattice.h"
+#include"../src/BinaryIO.h"
 #include<boost/program_options.hpp>
 
 using namespace std;

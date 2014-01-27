@@ -1,4 +1,4 @@
-#include"matrix.h"
+#include"Matrix.h"
 
 Matrix::Matrix(bool identity):matrix(boost::extents[9][9])
 {
