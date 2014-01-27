@@ -39,8 +39,8 @@ void Cell::calcRho()
         {
             rho[0] += f[0][i];
             rho[1] += f[1][i];
-            u.x += ( f[0][i] + f[1][i] ) * e[i].x;
-            u.y += ( f[0][i] + f[1][i] ) * e[i].y;
+            u.x += ( f[0][i] + f[1][i] ) * DIRECTION[i].x;
+            u.y += ( f[0][i] + f[1][i] ) * DIRECTION[i].y;
         }
         double rhoSum = rho[0] + rho[1];
         delta = rho[0]-rho[1];

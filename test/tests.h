@@ -152,7 +152,7 @@ TEST(Matrix,trafo){
     const array verteilung = {{1,2,3,4,5,6,7,8,9}};
     const array vergleich = {{45,24,-12,-4,8,-12,0,-4,-4}};
 
-    array trafo = TrafoMatrix * verteilung;
+    array trafo = TRAFO_MATRIX * verteilung;
 
     EXPECT_EQ(vergleich, trafo);
 }
@@ -161,7 +161,7 @@ TEST(Matrix,backtrafo){
     const array vergleich = {{1,2,3,4,5,6,7,8,9}};
     const array verteilung = {{45,24,-12,-4,8,-12,0,-4,-4}};
 
-    array backtrafo = InvTtrafoMatrix * verteilung;
+    array backtrafo = INV_TRAFO_MATRIX * verteilung;
 
     for(int i = 0; i<9;i++)
     {
@@ -218,7 +218,7 @@ TEST(Matrix,plus_times){
     const Matrix Identity = Matrix(true);
     
     EXPECT_EQ(Identity+Identity, Identity*2);
-    EXPECT_EQ(TrafoMatrix+TrafoMatrix+TrafoMatrix, TrafoMatrix*3);
+    EXPECT_EQ(TRAFO_MATRIX+TRAFO_MATRIX+TRAFO_MATRIX, TRAFO_MATRIX*3);
 }
 
 TEST(ParamSet,Phi)
@@ -271,19 +271,19 @@ TEST(Vector,scalar){
 TEST(Vector,angle){
     Vector g(1,1);
 
-    EXPECT_DOUBLE_EQ(0, g.Angle(e[0]));
-    EXPECT_DOUBLE_EQ(cos(PI/4), g.Angle(e[1]));
-    EXPECT_DOUBLE_EQ(1, g.Angle(e[2]));
-    EXPECT_DOUBLE_EQ(cos(PI/4), g.Angle(e[3]));
-    EXPECT_DOUBLE_EQ(0, g.Angle(e[4]));
-    EXPECT_DOUBLE_EQ(-cos(PI/4), g.Angle(e[5]));
-    EXPECT_DOUBLE_EQ(-1, g.Angle(e[6]));
-    EXPECT_DOUBLE_EQ(-cos(PI/4), g.Angle(e[7]));
-    EXPECT_DOUBLE_EQ(0, g.Angle(e[8]));
+    EXPECT_DOUBLE_EQ(0, g.Angle(DIRECTION[0]));
+    EXPECT_DOUBLE_EQ(cos(PI/4), g.Angle(DIRECTION[1]));
+    EXPECT_DOUBLE_EQ(1, g.Angle(DIRECTION[2]));
+    EXPECT_DOUBLE_EQ(cos(PI/4), g.Angle(DIRECTION[3]));
+    EXPECT_DOUBLE_EQ(0, g.Angle(DIRECTION[4]));
+    EXPECT_DOUBLE_EQ(-cos(PI/4), g.Angle(DIRECTION[5]));
+    EXPECT_DOUBLE_EQ(-1, g.Angle(DIRECTION[6]));
+    EXPECT_DOUBLE_EQ(-cos(PI/4), g.Angle(DIRECTION[7]));
+    EXPECT_DOUBLE_EQ(0, g.Angle(DIRECTION[8]));
 
     Vector g1(1e-10, -1e-10), g2(1e-6, -1e-6);
     EXPECT_DOUBLE_EQ(1,g1.Angle(g2));
-    EXPECT_DOUBLE_EQ(0,g1.Angle(e[0]));
+    EXPECT_DOUBLE_EQ(0,g1.Angle(DIRECTION[0]));
 }
 
 TEST(Constants,BReis)
@@ -623,13 +623,13 @@ TEST(MRT,trafo){
     DistributionSetType vergleich;
     vergleich[0] = arrayDiff(f, fEq[0]);
     vergleich[1] = arrayDiff(f, fEq[1]);
-    array m = TrafoMatrix * f;
+    array m = TRAFO_MATRIX * f;
     DistributionSetType mEq;
-    mEq[0] = TrafoMatrix * fEq[0];
-    mEq[1] = TrafoMatrix * fEq[1];
+    mEq[0] = TRAFO_MATRIX * fEq[0];
+    mEq[1] = TRAFO_MATRIX * fEq[1];
     DistributionSetType transformed;
-    transformed[0] = InvTtrafoMatrix * arrayDiff(m,mEq[0]);
-    transformed[1] = InvTtrafoMatrix * arrayDiff(m,mEq[1]);
+    transformed[0] = INV_TRAFO_MATRIX * arrayDiff(m,mEq[0]);
+    transformed[1] = INV_TRAFO_MATRIX * arrayDiff(m,mEq[1]);
     for(int i = 0; i<9;i++)
     {
         EXPECT_NEAR(vergleich[0][i],transformed[0][i],1e-10) ;
@@ -646,8 +646,8 @@ TEST(MRT,mass){
     ColSet rho = testCell.getRho();
     Vector u = testCell.getU();
     DistributionSetType fEq  = eqDistro(rho,u,phi);
-    array m = TrafoMatrix * f;
-    array mEq = TrafoMatrix * fEq[0];
+    array m = TRAFO_MATRIX * f;
+    array mEq = TRAFO_MATRIX * fEq[0];
 
     EXPECT_DOUBLE_EQ(m[0],mEq[0]);
     EXPECT_DOUBLE_EQ(m[3],mEq[3]);

@@ -171,12 +171,12 @@ direction Lattice::directions(int x, int y)const
     int tmp;
     for (int q=0; q<13; q++)
     {
-        tmp = x + e[q].x;
+        tmp = x + DIRECTION[q].x;
         if (tmp<0) tmp += xsize;
         if (tmp>= xsize) tmp -= xsize;
         dir[q].x = tmp;
 
-        tmp = y + e[q].y;
+        tmp = y + DIRECTION[q].y;
         if (tmp<0) tmp += ysize;
         if (tmp>= ysize) tmp -= ysize;
         dir[q].y = tmp;
@@ -193,8 +193,8 @@ const Vector Lattice::getGradient(int x, int y)const
     for (int q=0;q<13;q++)
     {
         tmpDelta = GRAD_WEIGHTS[q] * (*data)[ dir[q].x ][ dir[q].y ].getDeltaRho();
-        grad.x += e[q].x * tmpDelta;
-        grad.y += e[q].y * tmpDelta;
+        grad.x += DIRECTION[q].x * tmpDelta;
+        grad.y += DIRECTION[q].y * tmpDelta;
     }
     return grad;
 }
@@ -291,18 +291,18 @@ void Lattice::collideAll(int threads, bool gravity)
 
                 for (int q=0; q<9; q++)
                 {
-                    scal = grad*e[q];
+                    scal = grad*DIRECTION[q];
                     if (av > 0) two_phase = av/2 * (WEIGHTS[q] * ( scal*scal )/(av*av) - B[q]);
                     else two_phase = 0;
 
-                    if (gravity == true) forcingTerm = (1- 0.5*omega) * WEIGHTS[q] * (G * ( e[q] * (e[q] * u) + e[q] - u )) ;
+                    if (gravity == true) forcingTerm = (1- 0.5*omega) * WEIGHTS[q] * (G * ( DIRECTION[q] * (DIRECTION[q] * u) + DIRECTION[q] - u )) ;
 
                     for (int color=0;color<=1; color++)
                     {
                         fTmp[color][q] =  fCell[color][q] - omega * Diff[color][q] + A_k[color] * two_phase + forcingTerm * dt;
                         if (fTmp[color][q] < 0) fTmp[color][q] = 0;
                     }
-                    if (rho_k[0] > 0 && rho_k[1] > 0 && rho > 0) recolor = beta * (rho_k[0] * rho_k[1])/(rho*rho) *  grad.Angle(e[q])   * (rho_k[0] * phi.at(0).at(q) + rho_k[1] * phi.at(1).at(q));
+                    if (rho_k[0] > 0 && rho_k[1] > 0 && rho > 0) recolor = beta * (rho_k[0] * rho_k[1])/(rho*rho) *  grad.Angle(DIRECTION[q])   * (rho_k[0] * phi.at(0).at(q) + rho_k[1] * phi.at(1).at(q));
                     else recolor = 0;
 
                     fges = fTmp[0][q]+fTmp[1][q];
@@ -425,7 +425,7 @@ const DistributionSetType eqDistro(const ColSet& rho_k, const Vector& u, const D
     double scal;
     for (int i=0; i<9; i++)
     {
-        scal = u*e[i];
+        scal = u * DIRECTION[i];
         for (int color = 0; color<=1; color++)
         {
             feq[color][i] = rho_k[color] * ( phi[color][i] + WEIGHTS[i] * ( 3 * scal + 4.5 * (scal*scal) - 1.5 * usqr));
