@@ -279,7 +279,7 @@ void techplotOutput(const Lattice& l, int iterNum, bool verbose)
             if (verbose == true)
             {
                 Vector u = tmp.getU();
-                PsiFile << "\t" << sum(tmp.getRho()) << "\t" << u.x << "\t" << u.y << "\t" << u.abs() ;
+                PsiFile << "\t" << sum(tmp.getRho()) << "\t" << u.x << "\t" << u.y << "\t" << u.Abs() ;
             }
             PsiFile << endl;
         }

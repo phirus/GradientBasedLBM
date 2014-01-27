@@ -268,7 +268,7 @@ void Lattice::collideAll(int threads, bool gravity)
 
                 const Vector u = tmpCell.getU()  + G *  (dt/(2* rho)) ;
 
-                if ( u.abs() > speedlimit) throw("maximum velocity reached");
+                if ( u.Abs() > speedlimit) throw("maximum velocity reached");
 
 
                 const FSet fEq = eqDistro(rho_k, u, phi);
@@ -281,7 +281,7 @@ void Lattice::collideAll(int threads, bool gravity)
                 const ColSet A_k = param.getAk(omega);
 
                 const Vector grad = getGradient(x,y);
-                const double av = grad.abs();
+                const double av = grad.Abs();
 
                 double two_phase;
                 double scal;
@@ -302,7 +302,7 @@ void Lattice::collideAll(int threads, bool gravity)
                         fTmp[color][q] =  fCell[color][q] - omega * Diff[color][q] + A_k[color] * two_phase + forcingTerm * dt;
                         if (fTmp[color][q] < 0) fTmp[color][q] = 0;
                     }
-                    if (rho_k[0] > 0 && rho_k[1] > 0 && rho > 0) recolor = beta * (rho_k[0] * rho_k[1])/(rho*rho) *  grad.angle(e[q])   * (rho_k[0] * phi.at(0).at(q) + rho_k[1] * phi.at(1).at(q));
+                    if (rho_k[0] > 0 && rho_k[1] > 0 && rho > 0) recolor = beta * (rho_k[0] * rho_k[1])/(rho*rho) *  grad.Angle(e[q])   * (rho_k[0] * phi.at(0).at(q) + rho_k[1] * phi.at(1).at(q));
                     else recolor = 0;
 
                     fges = fTmp[0][q]+fTmp[1][q];

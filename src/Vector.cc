@@ -1,9 +1,9 @@
 #include"Vector.h"
 
-const double Vector::angle(const Vector& other)const
+const double Vector::Angle(const Vector& other)const
 {
-    double av1 = abs();
-    double av2 = other.abs();
-    if(av1 == 0 || av2 == 0) return 0; // prevent division by 0
+    double av1 = Abs();
+    double av2 = other.Abs();
+    if(0 == av1 || 0 == av2) return 0; // prevent division by 0
     else return (*this * other) / (av1*av2);
 }

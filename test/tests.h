@@ -271,19 +271,19 @@ TEST(Vector,scalar){
 TEST(Vector,angle){
     Vector g(1,1);
 
-    EXPECT_DOUBLE_EQ(0, g.angle(e[0]));
-    EXPECT_DOUBLE_EQ(cos(PI/4), g.angle(e[1]));
-    EXPECT_DOUBLE_EQ(1, g.angle(e[2]));
-    EXPECT_DOUBLE_EQ(cos(PI/4), g.angle(e[3]));
-    EXPECT_DOUBLE_EQ(0, g.angle(e[4]));
-    EXPECT_DOUBLE_EQ(-cos(PI/4), g.angle(e[5]));
-    EXPECT_DOUBLE_EQ(-1, g.angle(e[6]));
-    EXPECT_DOUBLE_EQ(-cos(PI/4), g.angle(e[7]));
-    EXPECT_DOUBLE_EQ(0, g.angle(e[8]));
+    EXPECT_DOUBLE_EQ(0, g.Angle(e[0]));
+    EXPECT_DOUBLE_EQ(cos(PI/4), g.Angle(e[1]));
+    EXPECT_DOUBLE_EQ(1, g.Angle(e[2]));
+    EXPECT_DOUBLE_EQ(cos(PI/4), g.Angle(e[3]));
+    EXPECT_DOUBLE_EQ(0, g.Angle(e[4]));
+    EXPECT_DOUBLE_EQ(-cos(PI/4), g.Angle(e[5]));
+    EXPECT_DOUBLE_EQ(-1, g.Angle(e[6]));
+    EXPECT_DOUBLE_EQ(-cos(PI/4), g.Angle(e[7]));
+    EXPECT_DOUBLE_EQ(0, g.Angle(e[8]));
 
     Vector g1(1e-10, -1e-10), g2(1e-6, -1e-6);
-    EXPECT_DOUBLE_EQ(1,g1.angle(g2));
-    EXPECT_DOUBLE_EQ(0,g1.angle(e[0]));
+    EXPECT_DOUBLE_EQ(1,g1.Angle(g2));
+    EXPECT_DOUBLE_EQ(0,g1.Angle(e[0]));
 }
 
 TEST(Constants,BReis)
@@ -565,7 +565,7 @@ TEST(Lattice, Gradient)
 
     }
     Vector grad = lattice.getGradient(2,2);
-    double abs = grad.abs();
+    double abs = grad.Abs();
     grad.x /= abs;
     grad.y /= abs;
 
