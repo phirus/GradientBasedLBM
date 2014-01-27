@@ -2,7 +2,7 @@
 #define TESTS_H
 
 #include"gtest/gtest.h"
-#include"../src/lattice.h"
+#include"../src/Lattice.h"
 #include"../src/Vector.h"
 #include"../src/binaryIO.h"
 

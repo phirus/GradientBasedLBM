@@ -1,4 +1,4 @@
-#include "lattice.h"
+#include "Lattice.h"
 
 Lattice::Lattice(int x_size, int y_size,double fzero_red, double fzero_blue):
 xsize(x_size)

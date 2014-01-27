@@ -5,7 +5,7 @@
 #include<iostream>
 #include<map>
 
-#include"lattice.h"
+#include"Lattice.h"
 #include"preprocess.h"
 
 void binary_output(const Lattice& l, const string& filename = "data.bin");
