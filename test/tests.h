@@ -307,10 +307,10 @@ TEST(Constants,W)
 TEST(Constants,Xi)
 {
     Lattice lattice;
-    EXPECT_DOUBLE_EQ(0,xi.at(0));
-    EXPECT_DOUBLE_EQ(32,xi.at(1)*120);
-    EXPECT_DOUBLE_EQ(12,xi.at(2)*120);
-    EXPECT_DOUBLE_EQ(1,xi.at(9)*120);
+    EXPECT_DOUBLE_EQ(0,GRAD_WEIGHTS.at(0));
+    EXPECT_DOUBLE_EQ(32,GRAD_WEIGHTS.at(1)*120);
+    EXPECT_DOUBLE_EQ(12,GRAD_WEIGHTS.at(2)*120);
+    EXPECT_DOUBLE_EQ(1,GRAD_WEIGHTS.at(9)*120);
 }
 
 TEST(Lattice,constructor)

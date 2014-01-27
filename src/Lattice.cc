@@ -192,7 +192,7 @@ const Vector Lattice::getGradient(int x, int y)const
     const direction dir = directions(x,y);
     for (int q=0;q<13;q++)
     {
-        tmpDelta = xi[q] * (*data)[ dir[q].x ][ dir[q].y ].getDeltaRho();
+        tmpDelta = GRAD_WEIGHTS[q] * (*data)[ dir[q].x ][ dir[q].y ].getDeltaRho();
         grad.x += e[q].x * tmpDelta;
         grad.y += e[q].y * tmpDelta;
     }
