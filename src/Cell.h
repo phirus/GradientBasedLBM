@@ -16,11 +16,11 @@ public:
     Cell(const array& finiRed,const array& finiBlue); // constr
 
     /// set-methods
-    inline void setF(const FSet& newF){f = newF;};
+    inline void setF(const DistributionSetType& newF){f = newF;};
     inline void setIsSolid(bool tmp){isSolid = tmp;};
 
     /// get-methods
-    inline const FSet getF()const{return f;};
+    inline const DistributionSetType getF()const{return f;};
     inline const ColSet getRho()const{return rho;};
     inline const bool getIsSolid()const{return isSolid;};
     inline const Vector getU()const{return u;};
@@ -34,7 +34,7 @@ public:
     const bool operator==(const Cell& other)const;
 
 private:
-    FSet f;                     /// < set of two distributions
+    DistributionSetType f;                     /// < set of two distributions
     ColSet rho;                    /// < rho_r = rho[0], rho_b = rho[1]
     Vector u;
     bool isSolid;               /// < used to mark solid cells

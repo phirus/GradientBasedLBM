@@ -142,7 +142,7 @@ TEST(Cell,equal){
     three.setIsSolid(true);
     EXPECT_FALSE(one == three);
     array fr = {{2,3,0,5,0,0,0,0,0}};
-    FSet f = four.getF();
+    DistributionSetType f = four.getF();
     f[1] = fr;
     four.setF(f);
     EXPECT_FALSE(one == four);
@@ -224,7 +224,7 @@ TEST(Matrix,plus_times){
 TEST(ParamSet,Phi)
 {
     ParamSet param;
-    FSet phi;
+    DistributionSetType phi;
     phi = param.getPhi();
 
     array phiR = {{0.9992, 1.6e-4, 4e-5, 1.6e-4, 4e-5, 1.6e-4, 4e-5, 1.6e-4, 4e-5}};
@@ -613,21 +613,21 @@ TEST(Lattice, assign){
 TEST(MRT,trafo){
     /// testet ob die Differenz im Geschw.-Raum gleich der Rücktransformierten Differenz im moment-Raum ist
     ParamSet param;
-    FSet phi = param.getPhi();
+    DistributionSetType phi = param.getPhi();
     const array f = {{1,2,3,4,5,6,7,8,9}};
     Cell testCell(f,f);
     testCell.calcRho();
     ColSet rho = testCell.getRho();
     Vector u = testCell.getU();
-    FSet fEq  = eqDistro(rho,u,phi);
-    FSet vergleich;
+    DistributionSetType fEq  = eqDistro(rho,u,phi);
+    DistributionSetType vergleich;
     vergleich[0] = arrayDiff(f, fEq[0]);
     vergleich[1] = arrayDiff(f, fEq[1]);
     array m = TrafoMatrix * f;
-    FSet mEq;
+    DistributionSetType mEq;
     mEq[0] = TrafoMatrix * fEq[0];
     mEq[1] = TrafoMatrix * fEq[1];
-    FSet transformed;
+    DistributionSetType transformed;
     transformed[0] = InvTtrafoMatrix * arrayDiff(m,mEq[0]);
     transformed[1] = InvTtrafoMatrix * arrayDiff(m,mEq[1]);
     for(int i = 0; i<9;i++)
@@ -639,13 +639,13 @@ TEST(MRT,trafo){
 
 TEST(MRT,mass){
     ParamSet param;
-    FSet phi = param.getPhi();
+    DistributionSetType phi = param.getPhi();
     const array f = {{1,2,3,4,5,6,7,8,9}};
     Cell testCell(f,f);
     testCell.calcRho();
     ColSet rho = testCell.getRho();
     Vector u = testCell.getU();
-    FSet fEq  = eqDistro(rho,u,phi);
+    DistributionSetType fEq  = eqDistro(rho,u,phi);
     array m = TrafoMatrix * f;
     array mEq = TrafoMatrix * fEq[0];
 

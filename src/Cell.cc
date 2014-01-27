@@ -2,7 +2,6 @@
 
 Cell::Cell(double fzero_red, double fzero_blue, bool solid):u(0,0),isSolid(solid),delta(0)
 {
-//    isSolid = solid;
     f[0][0] = fzero_red;
     f[1][0] = fzero_blue;
 
@@ -14,6 +13,7 @@ Cell::Cell(double fzero_red, double fzero_blue, bool solid):u(0,0),isSolid(solid
     rho[0] = 0;
     rho[1] = 0;
 }
+
 // like a copy constructor for the bulk phase
 Cell::Cell(const array& finiRed, const array& finiBlue):isSolid(false)
 {
@@ -65,7 +65,7 @@ const bool Cell::operator==(const Cell& other)const {
     ColSet rhoOther = other.getRho();
     if(rho[0] != rhoOther[0] || rho[1] != rhoOther[1]) exit = false;
 
-    FSet fOther = other.getF();
+    DistributionSetType fOther = other.getF();
     for(int color=0; color <2; color++){
         for(int q=0;q<9;q++){
             if(f[color][q] != fOther[color][q]) exit = false;

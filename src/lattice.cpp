@@ -51,14 +51,14 @@ void Lattice::setCell(int x, int y, const Cell& ncell)
 
 void Lattice::setF(int x, int y, int color, const array& nf)
 {
-    FSet f = (*data)[x][y].getF();
+    DistributionSetType f = (*data)[x][y].getF();
     f[color] = nf;
     (*data)[x][y].setF(f);
 }
 
 void Lattice::setF(int x, int y, int color, int pos, double value)
 {
-    FSet f = (*data)[x][y].getF();
+    DistributionSetType f = (*data)[x][y].getF();
     f[color][pos] = value;
     (*data)[x][y].setF(f);
 }
@@ -115,7 +115,7 @@ void Lattice::bottomWall()
 void Lattice::equilibriumIni()
 {
     Cell tmp;
-    FSet eqDis;
+    DistributionSetType eqDis;
 
     for (int j=0; j<ysize; j++)
     {
@@ -234,7 +234,7 @@ void Lattice::collideAll(int threads, bool gravity)
     omp_set_num_threads (threads);
 
     const double beta = param.getBeta();
-    const FSet phi = param.getPhi();
+    const DistributionSetType phi = param.getPhi();
     const int range = xsize * ysize;
 //    const double rhoRedFixed = param.getRhoR();
     const RelaxationPar relax = param.getRelaxation();
@@ -256,9 +256,9 @@ void Lattice::collideAll(int threads, bool gravity)
 
             if (tmpCell.getIsSolid() == false)
             {
-                FSet  fTmp;
-                FSet fCell = tmpCell.getF();
-                FSet Diff;
+                DistributionSetType  fTmp;
+                DistributionSetType fCell = tmpCell.getF();
+                DistributionSetType Diff;
 
                 const ColSet rho_k = tmpCell.getRho();
                 const double rho = sum(rho_k);
@@ -271,7 +271,7 @@ void Lattice::collideAll(int threads, bool gravity)
                 if ( u.Abs() > speedlimit) throw("maximum velocity reached");
 
 
-                const FSet fEq = eqDistro(rho_k, u, phi);
+                const DistributionSetType fEq = eqDistro(rho_k, u, phi);
 
                 Diff[0] = arrayDiff(fCell[0],fEq[0]);
                 Diff[1] = arrayDiff(fCell[1],fEq[1]);
@@ -361,8 +361,8 @@ inline void Lattice::linearIndex(int index, int& x, int& y)const
 
 void Lattice::streamAndBouncePull(Cell& tCell, const direction& dir)const
 {
-    const FSet f = tCell.getF();
-    FSet ftmp;
+    const DistributionSetType f = tCell.getF();
+    DistributionSetType ftmp;
     for (int color = 0; color<=1;color++)
     {
         ftmp[color][0] = (*data)[ dir[0].x ][ dir[0].y ].getF()[color][0];
@@ -418,9 +418,9 @@ void Lattice::streamAndBouncePull(Cell& tCell, const direction& dir)const
     tCell.setF(ftmp);
 }
 
-const FSet eqDistro(const ColSet& rho_k, const Vector& u, const FSet& phi)
+const DistributionSetType eqDistro(const ColSet& rho_k, const Vector& u, const DistributionSetType& phi)
 {
-    FSet feq;
+    DistributionSetType feq;
     const double usqr = u*u;
     double scal;
     for (int i=0; i<9; i++)

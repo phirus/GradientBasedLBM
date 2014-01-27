@@ -17,9 +17,9 @@ relax(rel)
     calcAlR();
 }
 
-const FSet ParamSet::getPhi()const
+const DistributionSetType ParamSet::getPhi()const
 {
-    FSet phi;
+    DistributionSetType phi;
     phi.at(0).at(0) = alphaRed;
     phi.at(1).at(0) = alphaBlue;
     for (int i = 1;i<9; i+=2)

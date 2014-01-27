@@ -11,7 +11,7 @@
 typedef boost::multi_array<Cell,2> field;
 
 /// calculates the equilibrium distribution based of a cell
-const FSet eqDistro(const ColSet& rho_k, const Vector& u, const FSet& phi);
+const DistributionSetType eqDistro(const ColSet& rho_k, const Vector& u, const DistributionSetType& phi);
 
 /// computes a difference array (needed for MRT)
 const array arrayDiff(const array &one, const array &two);
@@ -38,7 +38,7 @@ public:
     const field getData()const{return *data;}; /// < get the data field
     const Cell getCell(int x, int y)const{return (*data)[x][y];};  /// < get a Cell
     const ParamSet getParams()const{return param;}; /// < get the paramter set
-    const FSet getF(int x, int y)const{return (*data)[x][y].getF();};          /// < get F
+    const DistributionSetType getF(int x, int y)const{return (*data)[x][y].getF();};          /// < get F
 
     /// calculations
     void equilibriumIni(); /// < replace all distribution functions with the equilibrium distribution
