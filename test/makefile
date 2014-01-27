@@ -17,7 +17,7 @@ BIN_DIR = bin
 OUTPUT = $(BIN_DIR)/GradientBased
 
 # creating OBJs
-OBJ_DEBUG = $(OBJ_DIR)/binaryIO.o $(OBJ_DIR)/constants.o $(OBJ_DIR)/cell.o $(OBJ_DIR)/lattice.o $(OBJ_DIR)/main.o $(OBJ_DIR)/matrix.o $(OBJ_DIR)/paramset.o $(OBJ_DIR)/preprocess.o $(OBJ_DIR)/timetrack.o $(OBJ_DIR)/Vector.o
+OBJ_DEBUG = $(OBJ_DIR)/binaryIO.o $(OBJ_DIR)/constants.o $(OBJ_DIR)/Cell.o $(OBJ_DIR)/lattice.o $(OBJ_DIR)/main.o $(OBJ_DIR)/matrix.o $(OBJ_DIR)/paramset.o $(OBJ_DIR)/preprocess.o $(OBJ_DIR)/timetrack.o $(OBJ_DIR)/Vector.o
 
 all: build run
 
@@ -38,8 +38,8 @@ $(OBJ_DIR)/binaryIO.o: $(SRC)/binaryIO.cpp
 $(OBJ_DIR)/constants.o: $(SRC)/constants.cpp
 	$(CXX) $(CFLAGS) $(INC) -c $(SRC)/constants.cpp -o $(OBJ_DIR)/constants.o
 
-$(OBJ_DIR)/cell.o: $(SRC)/cell.cpp
-	$(CXX) $(CFLAGS) $(INC) -c $(SRC)/cell.cpp -o $(OBJ_DIR)/cell.o
+$(OBJ_DIR)/Cell.o: $(SRC)/Cell.cc
+	$(CXX) $(CFLAGS) $(INC) -c $(SRC)/Cell.cc -o $(OBJ_DIR)/Cell.o
 
 $(OBJ_DIR)/lattice.o: $(SRC)/lattice.cpp
 	$(CXX) $(CFLAGS) $(INC) -c $(SRC)/lattice.cpp -o $(OBJ_DIR)/lattice.o

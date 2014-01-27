@@ -1,4 +1,4 @@
-#include "cell.h"
+#include "Cell.h"
 
 Cell::Cell(double fzero_red, double fzero_blue, bool solid):u(0,0),isSolid(solid),delta(0)
 {

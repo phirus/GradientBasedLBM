@@ -1,14 +1,13 @@
+/** all distributions are provided as a Cell
+* with an additional element representing the density to reduce redundance 
+* when calculating rho or values like the color field or deltaRho
+*/
+
 #ifndef CELL_H
 #define CELL_H
 
 #include"constants.h"
-
 using namespace std;
-
-/// all distributions are provided as a Cell
-/** all distributions are provided as a Cell with an additional element representing
-    the density to reduce redundance when calculating rho or values like the color field
-    or deltaRho    */
 
 class Cell
 {

@@ -3,7 +3,7 @@
 
 #include<omp.h>
 
-#include"cell.h"
+#include"Cell.h"
 #include"paramset.h"
 #include"timetrack.h"
 

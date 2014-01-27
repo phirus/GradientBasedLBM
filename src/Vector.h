@@ -1,6 +1,6 @@
 /** TheVector class handles typical 2D vectors
 * provides functionfor absolute value and angles between two vectors 
-**/
+*/
 
 #ifndef VECTOR_H
 #define VECTOR_H
