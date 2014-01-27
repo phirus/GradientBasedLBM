@@ -17,7 +17,7 @@ BIN_DIR = bin
 OUTPUT = $(BIN_DIR)/GradientBased
 
 # creating OBJs
-OBJ_DEBUG = $(OBJ_DIR)/binaryIO.o $(OBJ_DIR)/constants.o $(OBJ_DIR)/cell.o $(OBJ_DIR)/lattice.o $(OBJ_DIR)/main.o $(OBJ_DIR)/matrix.o $(OBJ_DIR)/paramset.o $(OBJ_DIR)/preprocess.o $(OBJ_DIR)/timetrack.o $(OBJ_DIR)/vector.o
+OBJ_DEBUG = $(OBJ_DIR)/binaryIO.o $(OBJ_DIR)/constants.o $(OBJ_DIR)/cell.o $(OBJ_DIR)/lattice.o $(OBJ_DIR)/main.o $(OBJ_DIR)/matrix.o $(OBJ_DIR)/paramset.o $(OBJ_DIR)/preprocess.o $(OBJ_DIR)/timetrack.o $(OBJ_DIR)/Vector.o
 
 all: build run
 
@@ -59,8 +59,8 @@ $(OBJ_DIR)/preprocess.o: $(SRC)/preprocess.cpp
 $(OBJ_DIR)/timetrack.o: $(SRC)/timetrack.cpp
 	$(CXX) $(CFLAGS) $(INC) -c $(SRC)/timetrack.cpp -o $(OBJ_DIR)/timetrack.o
 
-$(OBJ_DIR)/vector.o: $(SRC)/vector.cpp
-	$(CXX) $(CFLAGS) $(INC) -c $(SRC)/vector.cpp -o $(OBJ_DIR)/vector.o
+$(OBJ_DIR)/Vector.o: $(SRC)/Vector.cc
+	$(CXX) $(CFLAGS) $(INC) -c $(SRC)/Vector.cc -o $(OBJ_DIR)/Vector.o
 
 clean: 
 	rm -f $(OBJ_DEBUG) $(OUTPUT)

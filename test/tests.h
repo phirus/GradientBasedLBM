@@ -3,7 +3,7 @@
 
 #include"gtest/gtest.h"
 #include"../src/lattice.h"
-#include"../src/vector.h"
+#include"../src/Vector.h"
 #include"../src/binaryIO.h"
 
 using namespace std;

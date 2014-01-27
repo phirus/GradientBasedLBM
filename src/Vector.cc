@@ -1,4 +1,4 @@
-#include"vector.h"
+#include"Vector.h"
 
 const double Vector::angle(const Vector& other)const
 {

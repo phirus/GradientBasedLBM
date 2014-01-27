@@ -3,7 +3,7 @@
 
 #include<boost/array.hpp>
 #include<boost/multi_array.hpp>
-#include"vector.h"
+#include"Vector.h"
 
 /// contains custom typedefs
 typedef boost::array<double,9> array;       /// < used to describe single distributions
