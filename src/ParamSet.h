@@ -11,6 +11,7 @@ using namespace std;
 class ParamSet
 {
 public:
+    /// Lifecycle
     ParamSet(double omR = 1, double omB = 1,double rhoR = 1, double gammaIni = 1000,double sigmaIni = 1e-4, double g = 9.81, double c_limit = 1, double t_step = 1e-3, RelaxationPar rel = RelaxationPar(1,1,1), double alB = 0.2, double deltaIni = 0.1, double betaIni = 0.99); /// < consructor
 
     /// get-methods, including calculations if necessary
@@ -54,16 +55,14 @@ private:
     double beta;                /// < beta, relevant for recoloring operator    
     double sigma;               /// < dimensionless surface tension
     double gravity;             /// < dimensionless gravity 
-
     // drive through
     double speedlimit;          /// < maximum allowed velocity
     double timestep;            /// < LB timestep
-        
     // deduced
     RelaxationPar relax;
     Interpol inter;             /// < interpolation parameters for finding omega, relevant for equilibrium distribution
 
-    // methods
+    /// operations
     void calcInter();           /// < calculate the interpolation paramters based on omega and delta
     void calcAlR();
 };

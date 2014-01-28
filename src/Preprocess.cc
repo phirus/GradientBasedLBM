@@ -1,39 +1,37 @@
 #include"Preprocess.h"
 
+///////////////////////////// PUBLIC /////////////////////////////
+
+//=========================== LIFECYCLE ===========================
+
 Preprocess::Preprocess(double Re, double Mo, double Eo, double res, double rl, double gam, double dia,double mu_rate, double soundspeed, double sig, double grav, double s_three, double s_five):
 ReynoldsMax(Re), Morton(Mo), Eotvos(Eo),
 resolution(res), rho_l(rl), gamma(gam), 
-diameter(dia), mu_ratio(mu_rate), 
+diameter(dia), muRatio(mu_rate), 
 c_s(soundspeed), sigma(sig), g(grav),
 s_3(s_three), s_5(s_five)
 {
     deduceAll();
 }
 
-void Preprocess::deduceAll(){
-	calcTau();
-	calcSpeedlimit();
-	calcSpacestep();
-	calcTimestep();
-	calcNu();
-    calcS2();
-	calcDelRho();
-}
+//=========================== OPERATIONS ===========================
 
 const ParamSet Preprocess::getParamSet()const{
-	const double omega = 1/tau;
-	const double rho_r = 1;  // normalized
+    const double omega = 1/tau;
+    const double rho_r = 1;  // normalized
     const RelaxationPar relax(s_2,s_3,s_3);
-	ParamSet param(omega, omega, rho_r, gamma, convertSigma(), convertG(), speedlimit, timestep, relax);
-	return param;
+    ParamSet param(omega, omega, rho_r, gamma, convertSigma(), convertG(), speedlimit, timestep, relax);
+    return param;
 }
 
 void Preprocess::refine(double factor){
-	c_s *= factor;			// raise the speedof sound
-	ReynoldsMax *=  factor;		// with constant diameter and nu, Reynolds raises with the Speed of sound
+    c_s *= factor;          // raise the speedof sound
+    ReynoldsMax *=  factor;     // with constant diameter and nu, Reynolds raises with the Speed of sound
 
-	deduceAll();		// deduces all new parameters
+    deduceAll();        // deduces all new parameters
 }
+
+//=========================== OPERATOR ===========================
 
 const bool Preprocess::operator==(const Preprocess& other)const
 {
@@ -45,7 +43,7 @@ const bool Preprocess::operator==(const Preprocess& other)const
     if(rho_l != other.getRhoL()) exit = false;
     if(gamma != other.getGamma()) exit = false;
     if(diameter != other.getDiameter()) exit = false;
-    if(mu_ratio != other.getMuRatio()) exit = false;
+    if(muRatio != other.getMuRatio()) exit = false;
     if(c_s != other.getSoundspeed()) exit = false;
     if(sigma != other.getSigma()) exit = false;
     if(g != other.getGPhys()) exit = false;
@@ -62,4 +60,18 @@ const bool Preprocess::operator==(const Preprocess& other)const
     if(nu != other.getNu()) exit = false;
     
     return exit;
+}
+
+///////////////////////////// PRIVATE /////////////////////////////
+
+//=========================== OPERATIONS ===========================
+
+void Preprocess::deduceAll(){
+	calcTau();
+	calcSpeedlimit();
+	calcSpacestep();
+	calcTimestep();
+	calcNu();
+    calcS2();
+	calcDelRho();
 }

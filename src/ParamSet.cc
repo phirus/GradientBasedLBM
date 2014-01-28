@@ -1,5 +1,9 @@
 #include"ParamSet.h"
 
+///////////////////////////// PUBLIC /////////////////////////////
+
+//=========================== LIFECYCLE ===========================
+
 ParamSet::ParamSet(double omR, double omB, double rhoR ,double gammaIni, double sigmaIni, double g, double c_limit, double t_step, RelaxationPar rel, double alB, double deltaIni, double betaIni):
 omegaRed(omR),
 omegaBlue(omB),
@@ -17,6 +21,8 @@ relax(rel)
     calcInter();
     calcAlR();
 }
+
+//=========================== OPERATIONS ===========================
 
 const DistributionSetType ParamSet::getPhi()const
 {
@@ -141,6 +147,11 @@ const bool ParamSet::operator==(const ParamSet& other)const{
     }
     return control;
 }
+
+
+///////////////////////////// PRIVATE /////////////////////////////
+
+//=========================== OPERATIONS ===========================
 
 void ParamSet::calcInter()
 {
