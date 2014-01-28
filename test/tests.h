@@ -218,7 +218,9 @@ TEST(Matrix,plus_times){
     const Matrix Identity = Matrix(true);
     
     EXPECT_EQ(Identity+Identity, Identity*2);
+
     EXPECT_EQ(TRAFO_MATRIX+TRAFO_MATRIX+TRAFO_MATRIX, TRAFO_MATRIX*3);
+    EXPECT_EQ(TRAFO_MATRIX+TRAFO_MATRIX, (TRAFO_MATRIX*3)-TRAFO_MATRIX);
 }
 
 TEST(ParamSet,Phi)

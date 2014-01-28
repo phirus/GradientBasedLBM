@@ -12,14 +12,16 @@ class Matrix
         /// Lifecylce
         Matrix(bool identity = false);
         Matrix(const boost::multi_array<double,2> &m);
-        Matrix(RelaxationPar relax, double omega = 1);
+        Matrix(const RelaxationPar &relax, double omega = 1);
+        Matrix(const Matrix &other);
 
          /// operators
         const array operator*(const array &other) const;
         const Matrix operator*(double other)const;
         const Matrix operator+(const Matrix &other)const;
+        const Matrix operator-(const Matrix &other)const;
         const bool operator==(const Matrix &other)const;       
-
+        
         /// operations
         const double linewise(const array &oher, int line) const;
         

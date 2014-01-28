@@ -236,7 +236,7 @@ void Lattice::collideAll(int threads, bool gravity)
     const double beta = param.getBeta();
     const DistributionSetType phi = param.getPhi();
     const int range = xsize * ysize;
-//    const double rhoRedFixed = param.getRhoR();
+    const double rhoRedFixed = param.getRhoR();
     const RelaxationPar relax = param.getRelaxation();
     const double dt = param.getDeltaT();
     const double speedlimit = param.getSpeedlimit();
@@ -263,8 +263,8 @@ void Lattice::collideAll(int threads, bool gravity)
                 const ColSet rho_k = tmpCell.getRho();
                 const double rho = sum(rho_k);
 
-//                const Vector G(0 ,  g*(rhoRedFixed - rho));
-                const Vector G(0 , - rho * g);
+                const Vector G(0 ,  g*(rhoRedFixed - rho));
+                // const Vector G(0 , - rho * g);
 
                 const Vector u = tmpCell.getU()  + G *  (dt/(2* rho)) ;
 
@@ -277,6 +277,7 @@ void Lattice::collideAll(int threads, bool gravity)
                 Diff[1] = arrayDiff(fCell[1],fEq[1]);
 
                 const double omega = param.getOmega(tmpCell.calcPsi());
+                const Matrix forcing_factor(Matrix(true) - Matrix(relax,omega)*0.5);    // (I - 0.5 S) -> ( 1 - 0.5 omega)
 
                 const ColSet A_k = param.getAk(omega);
 
@@ -296,6 +297,7 @@ void Lattice::collideAll(int threads, bool gravity)
                     else two_phase = 0;
 
                     if (gravity == true) forcingTerm = (1- 0.5*omega) * WEIGHTS[q] * (G * ( DIRECTION[q] * (DIRECTION[q] * u) + DIRECTION[q] - u )) ;
+
 
                     for (int color=0;color<=1; color++)
                     {
@@ -443,3 +445,4 @@ const array arrayDiff(const array &one, const array &two)
     }
     return a;
 }
+
