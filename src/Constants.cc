@@ -1,6 +1,7 @@
 #include "Constants.h"
 
-const boost::multi_array<double,2> defineTrafoMatrix(){
+const boost::multi_array<double,2> define_trafo_matrix()
+{
     boost::multi_array<double,2> matrix(boost::extents[9][9]);
 
     matrix[0][0] = 1;
@@ -97,8 +98,8 @@ const boost::multi_array<double,2> defineTrafoMatrix(){
 }
 
 
-const boost::multi_array<double,2> defineInverseTrafoMatrix(){
-
+const boost::multi_array<double,2> define_inverse_trafo_matrix()
+{
     boost::multi_array<double,2> matrix(boost::extents[9][9]);
 
     double t = 1;

@@ -12,32 +12,33 @@ using namespace std;
 class Cell
 {
 public:
+    /// Lifecylce
     Cell(double fzero_red=1, double fzero_blue=1, bool solid = false); /// < construcor
     Cell(const array& finiRed,const array& finiBlue); // constr
 
-    /// set-methods
+    /// operators
+    const bool operator==(const Cell& other)const;
+
+    /// operations
+    void calcRho();                                         /// < calculates both densities, the velocity and delta rho
+    const double calcPsi()const;                            /// < calculates the color field based on the densities
+ 
+    /// acsessors
     inline void setF(const DistributionSetType& newF){f = newF;};
     inline void setIsSolid(bool tmp){isSolid = tmp;};
 
-    /// get-methods
     inline const DistributionSetType getF()const{return f;};
     inline const ColSet getRho()const{return rho;};
     inline const bool getIsSolid()const{return isSolid;};
     inline const Vector getU()const{return u;};
-
-    /// calculations
-    void calcRho();             /// < calculates both densities, the velocity and delta rho
-    const double calcPsi()const;     /// < calculates the color field based on the densities
-    inline const double getDeltaRho()const{return delta;}; /// < returns rho_red - rho_blue
-
-    ///  overloaded == operator
-    const bool operator==(const Cell& other)const;
+    inline const double getDeltaRho()const{return delta;};  /// < returns rho_red - rho_blue
+   
 
 private:
-    DistributionSetType f;                     /// < set of two distributions
+    DistributionSetType f;         /// < set of two distributions
     ColSet rho;                    /// < rho_r = rho[0], rho_b = rho[1]
-    Vector u;
-    bool isSolid;               /// < used to mark solid cells
+    Vector u;                      /// < velocity vector resultińg from the distribution
+    bool isSolid;                  /// < used to mark solid cells
     double delta;
 };
 

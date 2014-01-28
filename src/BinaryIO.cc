@@ -1,6 +1,6 @@
 #include"BinaryIO.h"
 
-void binary_output(const Lattice& l, const string& filename){
+void write_binary(const Lattice& l, const string& filename){
 
     // setting up the file name
     stringstream name;
@@ -28,7 +28,7 @@ void binary_output(const Lattice& l, const string& filename){
     file.close();
 }
 
-const bool binary_input(Lattice& outL, const string& filename){
+const bool read_binary(Lattice& outL, const string& filename){
     bool success;
 
     // setting up file
@@ -61,7 +61,7 @@ const bool binary_input(Lattice& outL, const string& filename){
     return success;
 }
 
-void restart_file(const Lattice& l, const Preprocess& p, const Timetrack time, const string& filename){
+void write_restart_file(const Lattice& l, const Preprocess& p, const Timetrack time, const string& filename){
 
     // setting up the file name
     stringstream name;
@@ -142,7 +142,7 @@ void restart_file(const Lattice& l, const Preprocess& p, const Timetrack time, c
     file.close();
 }
 
-const bool restart_read(Lattice& outL, Preprocess& p, Timetrack& t, const string& filename)
+const bool read_restart_file(Lattice& outL, Preprocess& p, Timetrack& t, const string& filename)
 {
     bool success;
 
@@ -240,7 +240,7 @@ const bool restart_read(Lattice& outL, Preprocess& p, Timetrack& t, const string
     return success;
 }
 
-void techplotOutput(const Lattice& l, int iterNum, bool verbose)
+void write_techplot_output(const Lattice& l, int iterNum, bool verbose)
 {
     ofstream PsiFile;
     Cell tmp;
@@ -287,7 +287,7 @@ void techplotOutput(const Lattice& l, int iterNum, bool verbose)
     PsiFile.close();
 }
 
-void vtkOutput(const Lattice& l, int iterNum)
+void write_vtk_output(const Lattice& l, int iterNum)
 {
     ofstream VTKFile;
     Cell tmp;
@@ -370,7 +370,7 @@ void vtkOutput(const Lattice& l, int iterNum)
     VTKFile.close();
 }
 
-void paramLogOut(const Lattice& l){
+void write_param_log(const Lattice& l){
     ofstream paramLog;
     ColSet extent = l.getSize();
     ParamSet p = l.getParams();
@@ -399,7 +399,7 @@ void paramLogOut(const Lattice& l){
     paramLog.close();
 }
 
-const bool inputQuery(const string& filename, const string& query, double& value){
+const bool input_query(const string& filename, const string& query, double& value){
     bool success = false;
     value = 0;
     string lineString;
@@ -423,7 +423,7 @@ const bool inputQuery(const string& filename, const string& query, double& value
     return success;
 }
 
-const Preprocess getFilePreprocess(const string& filename){
+const Preprocess read_preprocess_file(const string& filename){
     vector<string> tags;
     vector<double> val;
     // initialzing strings and fallback values
@@ -445,14 +445,14 @@ const Preprocess getFilePreprocess(const string& filename){
         // cycling through the input file
         double tmp;
         for(map<string,double>::iterator it = mm.begin(); it != mm.end(); it++){            
-            if( inputQuery(filename,it->first,tmp) == true ) it->second = tmp;
+            if( input_query(filename,it->first,tmp) == true ) it->second = tmp;
         }
 
     Preprocess prepro(mm.at("Reynolds"),mm.at("Morton"),mm.at("Eotvos"),mm.at("resolution"),mm.at("rho_l"),mm.at("gamma"),mm.at("diameter"),mm.at("mu_ratio"),mm.at("c_s"),mm.at("sigma"), mm.at("g"), mm.at("s_3"), mm.at("s_5"));
     return prepro;
 }
 
-const Timetrack getFileTimetrack(const Preprocess& prepro, const string& filename){
+const Timetrack read_timetrack_file(const Preprocess& prepro, const string& filename){
     vector<string> tags;
     vector<double> val;
     // initialzing strings and fallback values
@@ -466,7 +466,7 @@ const Timetrack getFileTimetrack(const Preprocess& prepro, const string& filenam
     // cycling through the input file
     double tmp;
     for(map<string,double>::iterator it = mm.begin(); it != mm.end(); it++){            
-        if( inputQuery(filename,it->first,tmp) == true ) it->second = tmp;
+        if( input_query(filename,it->first,tmp) == true ) it->second = tmp;
     }
 
     Timetrack time(prepro.getTimestep(), mm.at("factor"), mm.at("max_steps"), mm.at("max_time"), mm.at("techplot_interval"), mm.at("restart_interval"));

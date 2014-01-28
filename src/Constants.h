@@ -23,11 +23,11 @@ const Vector e0(0,0),e1(1,0),e2(1,1),e3(0,1),e4(-1,1),e5(-1,0),e6(-1,-1),e7(0,-1
 const boost::array<Vector,13> DIRECTION = {{e0,e1,e2,e3,e4,e5,e6,e7,e8,e9,e10,e11,e12}};
 
 /// Transformation-Matrix
-const boost::multi_array<double,2> defineTrafoMatrix();
-const boost::multi_array<double,2> defineInverseTrafoMatrix();
+const boost::multi_array<double,2> define_trafo_matrix();
+const boost::multi_array<double,2> define_inverse_trafo_matrix();
 
-const Matrix TRAFO_MATRIX(defineTrafoMatrix());
-const Matrix INV_TRAFO_MATRIX(defineInverseTrafoMatrix());
+const Matrix TRAFO_MATRIX(define_trafo_matrix());
+const Matrix INV_TRAFO_MATRIX(define_inverse_trafo_matrix());
 
 /// arbitrary  definition
 const double MACH_MAX = 0.1; // maximal erlaubte Mach-Zahl

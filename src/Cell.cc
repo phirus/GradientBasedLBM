@@ -1,5 +1,9 @@
 #include "Cell.h"
 
+///////////////////////////// PUBLIC /////////////////////////////
+
+//=========================== LIFECYCLE ===========================
+
 Cell::Cell(double fzero_red, double fzero_blue, bool solid):u(0,0),isSolid(solid),delta(0)
 {
     f[0][0] = fzero_red;
@@ -23,6 +27,26 @@ Cell::Cell(const array& finiRed, const array& finiBlue):isSolid(false)
     rho[0] = 0;
     rho[1] = 0;
 }
+
+//=========================== OPERATORS ===========================
+
+const bool Cell::operator==(const Cell& other)const {
+    bool exit = true;
+    if (isSolid != other.getIsSolid()) exit = false;
+
+    ColSet rhoOther = other.getRho();
+    if(rho[0] != rhoOther[0] || rho[1] != rhoOther[1]) exit = false;
+
+    DistributionSetType fOther = other.getF();
+    for(int color=0; color <2; color++){
+        for(int q=0;q<9;q++){
+            if(f[color][q] != fOther[color][q]) exit = false;
+            }
+        }
+    return exit;
+}
+
+//=========================== OPERATIONS ===========================
 
 void Cell::calcRho()
 {
@@ -56,20 +80,4 @@ const double Cell::calcPsi()const
     double rhoSum = sum(rho);
     if(rhoSum > 0) return (rho[0] - rho[1])/( rhoSum ); // < prevent division by 0
     else return 0;
-}
-
-const bool Cell::operator==(const Cell& other)const {
-    bool exit = true;
-    if (isSolid != other.getIsSolid()) exit = false;
-
-    ColSet rhoOther = other.getRho();
-    if(rho[0] != rhoOther[0] || rho[1] != rhoOther[1]) exit = false;
-
-    DistributionSetType fOther = other.getF();
-    for(int color=0; color <2; color++){
-        for(int q=0;q<9;q++){
-            if(f[color][q] != fOther[color][q]) exit = false;
-            }
-        }
-    return exit;
 }

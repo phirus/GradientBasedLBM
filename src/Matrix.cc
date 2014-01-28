@@ -1,5 +1,9 @@
 #include"Matrix.h"
 
+///////////////////////////// PUBLIC /////////////////////////////
+
+//=========================== LIFECYCLE ===========================
+
 Matrix::Matrix(bool identity):matrix(boost::extents[9][9])
 {
     if (identity == true) {
@@ -46,10 +50,7 @@ Matrix::Matrix(RelaxationPar relax, double omega):matrix(boost::extents[9][9])
     matrix[8][8] = omega;
 }
 
-void Matrix::resetOmega(double omega){
-    matrix[7][7] = omega;
-    matrix[8][8] = omega;
-}
+//=========================== OPERATORS ===========================
 
 const array Matrix::operator*(const array &other)const {
     array a;
@@ -62,14 +63,6 @@ const array Matrix::operator*(const array &other)const {
         a[i] = sum;
     }
     return a;
-}
-
-const double Matrix::linewise(const array &other, int line)const{
-    double sum = 0;
-    for(int j = 0; j<9;j++){
-        sum += other[j] * matrix[line][j];
-    }
-    return sum;
 }
 
 const Matrix Matrix::operator*(double other)const{
@@ -101,4 +94,21 @@ const bool Matrix::operator==(const Matrix &other)const{
     if (matrix == mother) equal = true;
 
     return equal;
+}
+
+//=========================== OPERATIONS ===========================
+
+const double Matrix::linewise(const array &other, int line)const{
+    double sum = 0;
+    for(int j = 0; j<9;j++){
+        sum += other[j] * matrix[line][j];
+    }
+    return sum;
+}
+
+//=========================== ACCESSORS ===========================
+
+void Matrix::resetOmega(double omega){
+    matrix[7][7] = omega;
+    matrix[8][8] = omega;
 }

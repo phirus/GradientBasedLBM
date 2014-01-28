@@ -656,23 +656,23 @@ TEST(MRT,mass){
 
 TEST(BinaryIO,output){
     Lattice lattice(150,150);
-    binary_output(lattice);
+    write_binary(lattice);
     Lattice vergleich;
-    EXPECT_FALSE(binary_input(vergleich,"existiertnicht.txt"));
-    EXPECT_TRUE(binary_input(vergleich));
+    EXPECT_FALSE(read_binary(vergleich,"existiertnicht.txt"));
+    EXPECT_TRUE(read_binary(vergleich));
     EXPECT_EQ(lattice,vergleich);
 }
 
 TEST(BinaryIO,paramLog){
      Lattice lattice(100,100);    
-     EXPECT_NO_THROW(paramLogOut(lattice));
+     EXPECT_NO_THROW(write_param_log(lattice));
 }
 
 TEST(BinaryIO,queryTest){
     double value;
-    EXPECT_FALSE( inputQuery("existiertnicht","test",value) );
-    EXPECT_FALSE(inputQuery("queryTest","noflag",value));
-    EXPECT_TRUE(inputQuery("queryTest","test",value));
+    EXPECT_FALSE( input_query("existiertnicht","test",value) );
+    EXPECT_FALSE(input_query("queryTest","noflag",value));
+    EXPECT_TRUE(input_query("queryTest","test",value));
     EXPECT_DOUBLE_EQ(13.4, value); 
 }
 
@@ -687,13 +687,13 @@ TEST(BinaryIO,restart){
     time.timestep();
     time.timestep();
 
-    Preprocess newProcess = getFilePreprocess("preprocessFile");
-    restart_file(lattice, newProcess,time);
+    Preprocess newProcess = read_preprocess_file("preprocessFile");
+    write_restart_file(lattice, newProcess,time);
     
     Lattice vergleichL;
     Preprocess vergleichP;
     Timetrack vergleichT;
-    EXPECT_TRUE(restart_read(vergleichL,vergleichP,vergleichT));
+    EXPECT_TRUE(read_restart_file(vergleichL,vergleichP,vergleichT));
     EXPECT_EQ(lattice, vergleichL);
     EXPECT_EQ(newProcess, vergleichP);
     EXPECT_EQ(time, vergleichT);
@@ -724,7 +724,7 @@ TEST(Preprocess,constr){
 }
 
 TEST(Preprocess,FileInput){
-    Preprocess newProcess = getFilePreprocess("preprocessFile");
+    Preprocess newProcess = read_preprocess_file("preprocessFile");
 
     // test the given parameters (default values)
     EXPECT_DOUBLE_EQ(75,newProcess.getReynoldsMax());
@@ -763,7 +763,7 @@ TEST(Preprocess,refine){
 }
 
 TEST(Preprocess,ParameterCheck){
-    Preprocess newProcess = getFilePreprocess("realParameters");
+    Preprocess newProcess = read_preprocess_file("realParameters");
     ParamSet params = newProcess.getParamSet();
 
     // test the given parameters (default values)
@@ -802,8 +802,8 @@ TEST(timetrack,basic){
 }
 
 TEST(timetrack,FileInput){
-    Preprocess newProcess = getFilePreprocess("preprocessFile");
-    Timetrack newTimetrack = getFileTimetrack(newProcess, "preprocessFile");
+    Preprocess newProcess = read_preprocess_file("preprocessFile");
+    Timetrack newTimetrack = read_timetrack_file(newProcess, "preprocessFile");
      // test the given parameters 
     EXPECT_DOUBLE_EQ(newProcess.getTimestep(),newTimetrack.getDTini());
     EXPECT_DOUBLE_EQ(1.15,newTimetrack.getFactor());
