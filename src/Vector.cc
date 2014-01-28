@@ -1,5 +1,9 @@
 #include"Vector.h"
 
+///////////////////////////// PUBLIC /////////////////////////////
+
+//=========================== OPERATIONS ===========================
+
 const double Vector::Angle(const Vector& other)const
 {
     double av1 = Abs();

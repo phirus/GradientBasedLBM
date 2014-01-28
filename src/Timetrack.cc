@@ -1,15 +1,21 @@
 #include"Timetrack.h"
 
+///////////////////////////// PUBLIC /////////////////////////////
+
+//=========================== LIFECYCLE ===========================
+
 Timetrack::Timetrack(double iniTime, double fac, int t_c, double t_t, int tech, int rest):
 dtIni(iniTime)
 ,factor(fac)
 ,count(0)
 ,refinelist(1,0)
-,terminal_count(t_c)
-,terminal_time(t_t)
-,techplot_interval(tech)
-,restart_interval(rest)
+,terminalCount(t_c)
+,terminalTime(t_t)
+,techplotInterval(tech)
+,restartInterval(rest)
 {}
+
+//=========================== OPERATIONS ===========================
 
 const double Timetrack::getTime()const{
 	double time = 0;
@@ -22,6 +28,17 @@ const double Timetrack::getTime()const{
 	return time;
 }
 
+const bool Timetrack::proceed()const
+{
+	bool getGoing = true;
+	if(count > terminalCount) getGoing = false;
+	if(getTime() > terminalTime) getGoing = false;
+
+	return getGoing;
+}
+
+//=========================== OPERATORS ===========================
+
 const bool Timetrack::operator==(const Timetrack& other)const
 {
     bool exit = true;
@@ -29,19 +46,10 @@ const bool Timetrack::operator==(const Timetrack& other)const
     if(factor != other.getFactor()) exit = false;
     if(count != other.getCount()) exit = false;
     if(refinelist != other.getList()) exit = false;
-    if(terminal_count != other.getMaxCount()) exit = false;
-    if(terminal_time != other.getMaxTime()) exit = false;
-    if(techplot_interval != other.getTechPlotInt()) exit = false;
-    if(restart_interval != other.getRestartInt()) exit = false;
+    if(terminalCount != other.getMaxCount()) exit = false;
+    if(terminalTime != other.getMaxTime()) exit = false;
+    if(techplotInterval != other.getTechPlotInt()) exit = false;
+    if(restartInterval != other.getRestartInt()) exit = false;
 
     return exit;
-}
-
-const bool Timetrack::proceed()const
-{
-	bool getGoing = true;
-	if(count > terminal_count) getGoing = false;
-	if(getTime() > terminal_time) getGoing = false;
-
-	return getGoing;
 }
