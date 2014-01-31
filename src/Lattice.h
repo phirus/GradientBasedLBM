@@ -10,12 +10,6 @@
 /// custom typedef for the whole field of cells
 typedef boost::multi_array<Cell,2> field;
 
-/// calculates the equilibrium distribution based of a cell
-const DistributionSetType eqDistro(const ColSet& rho_k, const Vector& u, const DistributionSetType& phi);
-
-/// computes a difference array (needed for MRT)
-const array arrayDiff(const array &one, const array &two);
-
 /// contains the domain of the simulation with LB operators
 class Lattice
 {
@@ -63,5 +57,16 @@ private:
     inline void linearIndex(int index, int& x, int& y)const;
     void streamAndBouncePull(Cell& tCell, const direction& dir)const; /// < internal streaming mechanism with bounce back
 };
+
+/// calculates the equilibrium distribution based of a cell
+const DistributionSetType eqDistro(const ColSet& rho_k, const Vector& u, const DistributionSetType& phi);
+
+/// computes a difference array (needed for MRT)
+const array arrayDiff(const array &one, const array &two);
+
+const array arrayAdd(const array &one, const array &two);
+
+const array calculate_forcing_term(Vector G, Vector u);
+
 
 #endif // LATTICE_H

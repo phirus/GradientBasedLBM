@@ -258,7 +258,6 @@ void Lattice::collideAll(int threads, bool gravity)
             {
                 DistributionSetType  fTmp;
                 DistributionSetType fCell = tmpCell.getF();
-                DistributionSetType Diff;
 
                 const ColSet rho_k = tmpCell.getRho();
                 const double rho = sum(rho_k);
@@ -267,46 +266,56 @@ void Lattice::collideAll(int threads, bool gravity)
                 // const Vector G(0 , - rho * g);
 
                 const Vector u = tmpCell.getU()  + G *  (dt/(2* rho)) ;
-
                 if ( u.Abs() > speedlimit) throw("maximum velocity reached");
-
 
                 const DistributionSetType fEq = eqDistro(rho_k, u, phi);
 
+                DistributionSetType Diff;
                 Diff[0] = arrayDiff(fCell[0],fEq[0]);
                 Diff[1] = arrayDiff(fCell[1],fEq[1]);
 
                 const double omega = param.getOmega(tmpCell.calcPsi());
-                const Matrix forcing_factor(Matrix(true) - Matrix(relax,omega)*0.5);    // (I - 0.5 S) -> ( 1 - 0.5 omega)
+                const Matrix relaxation_matrix(relax,omega);
+
+
+                
+                const Matrix forcing_factor(Matrix(true) - (relaxation_matrix*0.5));    // (I - 0.5 S) -> ( 1 - 0.5 omega)
+                const array first_forcing_term = forcing_factor * (TRAFO_MATRIX * calculate_forcing_term(G,u));
+                const array second_forcing_term = INV_TRAFO_MATRIX * first_forcing_term;
 
                 const ColSet A_k = param.getAk(omega);
 
                 const Vector grad = getGradient(x,y);
                 const double av = grad.Abs();
 
-                double two_phase;
+                double gradient_collision;
                 double scal;
                 double fges;
                 double recolor;
-                double forcingTerm = 0;
+                double final_forcing_term;                
 
                 for (int q=0; q<9; q++)
                 {
+                    // gradient based two phase
                     scal = grad*DIRECTION[q];
-                    if (av > 0) two_phase = av/2 * (WEIGHTS[q] * ( scal*scal )/(av*av) - B[q]);
-                    else two_phase = 0;
+                    if (av > 0) gradient_collision = av/2 * (WEIGHTS[q] * ( scal*scal )/(av*av) - B[q]);
+                    else gradient_collision = 0;
 
-                    if (gravity == true) forcingTerm = (1- 0.5*omega) * WEIGHTS[q] * (G * ( DIRECTION[q] * (DIRECTION[q] * u) + DIRECTION[q] - u )) ;
-
+                    if (gravity == true) final_forcing_term = second_forcing_term[q] ;
 
                     for (int color=0;color<=1; color++)
                     {
-                        fTmp[color][q] =  fCell[color][q] - omega * Diff[color][q] + A_k[color] * two_phase + forcingTerm * dt;
+                        fTmp[color][q] =  fCell[color][q] - omega * Diff[color][q] + final_forcing_term * dt + A_k[color] * gradient_collision;
                         if (fTmp[color][q] < 0) fTmp[color][q] = 0;
                     }
-                    if (rho_k[0] > 0 && rho_k[1] > 0 && rho > 0) recolor = beta * (rho_k[0] * rho_k[1])/(rho*rho) *  grad.Angle(DIRECTION[q])   * (rho_k[0] * phi.at(0).at(q) + rho_k[1] * phi.at(1).at(q));
-                    else recolor = 0;
 
+                    // recoloring
+                    if (rho_k[0] > 0 && rho_k[1] > 0 && rho > 0) {
+                        recolor = beta * (rho_k[0] * rho_k[1])/(rho*rho) *  grad.Angle(DIRECTION[q])   * (rho_k[0] * phi.at(0).at(q) + rho_k[1] * phi.at(1).at(q));
+                    } 
+                    else {
+                        recolor = 0;
+                    }
                     fges = fTmp[0][q]+fTmp[1][q];
 
                     if (rho > 0)
@@ -446,3 +455,22 @@ const array arrayDiff(const array &one, const array &two)
     return a;
 }
 
+const array arrayAdd(const array &one, const array &two)
+{
+    array a;
+    for (int i=0; i<9; i++)
+    {
+        a[i] = one[i]+two[i];
+    }
+    return a;
+}
+
+const array calculate_forcing_term(Vector G, Vector u)
+{
+    array forcing_term;
+    for (int i=0; i<9; i++)
+    {
+        forcing_term[i] = WEIGHTS[i] * (G * ( DIRECTION[i] * (DIRECTION[i] * u) + DIRECTION[i] - u )) ;
+    }
+    return forcing_term;
+}
