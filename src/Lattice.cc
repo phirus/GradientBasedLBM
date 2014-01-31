@@ -270,10 +270,8 @@ void Lattice::collideAll(int threads, bool gravity)
 
                 const DistributionSetType fEq = eqDistro(rho_k, u, phi);
 
-                DistributionSetType Diff;
-                Diff[0] = arrayDiff(fCell[0],fEq[0]);
-                Diff[1] = arrayDiff(fCell[1],fEq[1]);
-
+                const DistributionSetType diff = distro_diff(fCell, fEq);
+            
                 const double omega = param.getOmega(tmpCell.calcPsi());
                 const Matrix relaxation_matrix(relax,omega);
 
@@ -305,7 +303,7 @@ void Lattice::collideAll(int threads, bool gravity)
 
                     for (int color=0;color<=1; color++)
                     {
-                        fTmp[color][q] =  fCell[color][q] - omega * Diff[color][q] + final_forcing_term * dt + A_k[color] * gradient_collision;
+                        fTmp[color][q] =  fCell[color][q] - omega * diff[color][q] + final_forcing_term * dt + A_k[color] * gradient_collision;
                         if (fTmp[color][q] < 0) fTmp[color][q] = 0;
                     }
 
@@ -454,6 +452,15 @@ const array arrayDiff(const array &one, const array &two)
     }
     return a;
 }
+
+const DistributionSetType distro_diff(const DistributionSetType &one, const DistributionSetType &two)
+{
+    DistributionSetType diff;
+    diff[0] = arrayDiff(one[0],two[0]);
+    diff[1] = arrayDiff(one[1],two[1]);
+    return diff;
+}
+
 
 const array arrayAdd(const array &one, const array &two)
 {

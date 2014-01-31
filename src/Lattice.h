@@ -63,6 +63,7 @@ const DistributionSetType eqDistro(const ColSet& rho_k, const Vector& u, const D
 
 /// computes a difference array (needed for MRT)
 const array arrayDiff(const array &one, const array &two);
+const DistributionSetType distro_diff(const DistributionSetType &one, const DistributionSetType &two);
 
 const array arrayAdd(const array &one, const array &two);
 
