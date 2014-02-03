@@ -220,6 +220,15 @@ TEST(Constants,Xi)
     EXPECT_DOUBLE_EQ(1,GRAD_WEIGHTS.at(9)*120);
 }
 
+TEST(Definitions,array_diff)
+{
+    array one = {{100, 5.5, 1.4, -2, 0, 0, 1, 91.6, 45}};
+    array two = {{5,   0.6, 1.9, -2, 1.8, 100, 0.5, 91.6, 25}};
+    array vergleich = {{95, 4.9, -0.5, 0, -1.8, -100, 0.5, 0, 20}};
+
+    EXPECT_EQ (vergleich, arrayDiff(one, two));
+}
+
 TEST(Lattice,constructor)
 {
     Lattice lattice;
