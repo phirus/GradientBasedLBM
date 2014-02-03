@@ -18,7 +18,7 @@ BIN_DIR = bin
 OUTPUT = $(BIN_DIR)/BubbleTest
 
 # creating OBJs
-OBJ_DEBUG = $(OBJ_DIR)/BinaryIO.o $(OBJ_DIR)/Constants.o $(OBJ_DIR)/Cell.o $(OBJ_DIR)/Lattice.o $(OBJ_DIR)/main.o $(OBJ_DIR)/Matrix.o $(OBJ_DIR)/ParamSet.o $(OBJ_DIR)/Preprocess.o $(OBJ_DIR)/Timetrack.o $(OBJ_DIR)/Vector.o
+OBJ_DEBUG = $(OBJ_DIR)/BinaryIO.o $(OBJ_DIR)/Constants.o $(OBJ_DIR)/Cell.o $(OBJ_DIR)/Definitions.o $(OBJ_DIR)/Lattice.o $(OBJ_DIR)/main.o $(OBJ_DIR)/Matrix.o $(OBJ_DIR)/ParamSet.o $(OBJ_DIR)/Preprocess.o $(OBJ_DIR)/Timetrack.o $(OBJ_DIR)/Vector.o
 
 all: clean build
 
@@ -43,6 +43,9 @@ $(OBJ_DIR)/Constants.o: $(SRC)/Constants.cc
 
 $(OBJ_DIR)/Cell.o: $(SRC)/Cell.cc
 	$(CXX) $(CFLAGS) $(INC) -c $(SRC)/Cell.cc -o $(OBJ_DIR)/Cell.o
+
+$(OBJ_DIR)/Definitions.o: $(SRC)/Definitions.cc
+	$(CXX) $(CFLAGS) $(INC) -c $(SRC)/Definitions.cc -o $(OBJ_DIR)/Definitions.o
 
 $(OBJ_DIR)/Lattice.o: $(SRC)/Lattice.cc
 	$(CXX) $(CFLAGS) $(INC) -c $(SRC)/Lattice.cc -o $(OBJ_DIR)/Lattice.o

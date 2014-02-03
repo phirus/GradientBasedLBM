@@ -1,4 +1,4 @@
-#include "Lattice.h"
+#include"Lattice.h"
 
 Lattice::Lattice(int x_size, int y_size,double fzero_red, double fzero_blue):
 xsize(x_size)
@@ -441,35 +441,6 @@ const DistributionSetType eqDistro(const ColSet& rho_k, const Vector& u, const D
         }
     }
     return feq;
-}
-
-const array arrayDiff(const array &one, const array &two)
-{
-    array a;
-    for (int i=0; i<9; i++)
-    {
-        a[i] = one[i]-two[i];
-    }
-    return a;
-}
-
-const DistributionSetType distro_diff(const DistributionSetType &one, const DistributionSetType &two)
-{
-    DistributionSetType diff;
-    diff[0] = arrayDiff(one[0],two[0]);
-    diff[1] = arrayDiff(one[1],two[1]);
-    return diff;
-}
-
-
-const array arrayAdd(const array &one, const array &two)
-{
-    array a;
-    for (int i=0; i<9; i++)
-    {
-        a[i] = one[i]+two[i];
-    }
-    return a;
 }
 
 const array calculate_forcing_term(Vector G, Vector u)
