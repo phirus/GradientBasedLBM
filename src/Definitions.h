@@ -33,7 +33,9 @@ const array array_diff(const array &one, const array &two);
 const DistributionSetType distro_diff(const DistributionSetType &one, const DistributionSetType &two);
 
 const array array_add(const array &one, const array &two);
+const DistributionSetType distro_add(const DistributionSetType &one, const DistributionSetType &two);
 
 const array array_times(const array &foo, double factor);
+const DistributionSetType distro_times(const DistributionSetType &one, double factor);
 
 #endif

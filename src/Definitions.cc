@@ -28,6 +28,14 @@ const array array_add(const array &one, const array &two)
     return a;
 }
 
+const DistributionSetType distro_add(const DistributionSetType &one, const DistributionSetType &two)
+{
+    DistributionSetType foo;
+    foo[0] = array_add(one[0],two[0]);
+    foo[1] = array_add(one[1],two[1]);
+    return foo;
+}
+
 const array array_times(const array &foo, double factor)
 {
     array bar = foo;
@@ -36,4 +44,12 @@ const array array_times(const array &foo, double factor)
         *it = *it * factor;
     }
     return bar;
+}
+
+const DistributionSetType distro_times(const DistributionSetType &one, double factor)
+{
+    DistributionSetType foo;
+    foo[0] = array_times(one[0],factor);
+    foo[1] = array_times(one[1],factor);
+    return foo;
 }
