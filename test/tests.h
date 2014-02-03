@@ -220,13 +220,26 @@ TEST(Constants,Xi)
     EXPECT_DOUBLE_EQ(1,GRAD_WEIGHTS.at(9)*120);
 }
 
-TEST(Definitions,array_diff)
+TEST(Definitions,array_diff_add)
 {
     array one = {{100, 5.5, 1.4, -2, 0, 0, 1, 91.6, 45}};
     array two = {{5,   0.6, 1.9, -2, 1.8, 100, 0.5, 91.6, 25}};
     array vergleich = {{95, 4.9, -0.5, 0, -1.8, -100, 0.5, 0, 20}};
 
-    EXPECT_EQ (vergleich, arrayDiff(one, two));
+    EXPECT_EQ (vergleich, array_diff(one, two));
+    EXPECT_EQ (one, array_add(vergleich, two));
+    EXPECT_EQ (one, array_add(two, vergleich));
+}
+
+TEST(Definitions,array_times)
+{
+    array one = {{100, 5, 14, -2, 0, 0, 1, 916, 45}};
+    array vergleich = {{110, 5.5, 15.4, -2.2, 0, 0, 1.1, 1007.6, 49.5}};
+    array result = array_times(one, 1.1);
+
+    for(int i=0;i<9;i++){
+        EXPECT_DOUBLE_EQ (vergleich[i], result[i]);
+    }    
 }
 
 TEST(Lattice,constructor)
@@ -612,15 +625,15 @@ TEST(MRT,trafo){
     Vector u = testCell.getU();
     DistributionSetType fEq  = eqDistro(rho,u,phi);
     DistributionSetType vergleich;
-    vergleich[0] = arrayDiff(f, fEq[0]);
-    vergleich[1] = arrayDiff(f, fEq[1]);
+    vergleich[0] = array_diff(f, fEq[0]);
+    vergleich[1] = array_diff(f, fEq[1]);
     array m = TRAFO_MATRIX * f;
     DistributionSetType mEq;
     mEq[0] = TRAFO_MATRIX * fEq[0];
     mEq[1] = TRAFO_MATRIX * fEq[1];
     DistributionSetType transformed;
-    transformed[0] = INV_TRAFO_MATRIX * arrayDiff(m,mEq[0]);
-    transformed[1] = INV_TRAFO_MATRIX * arrayDiff(m,mEq[1]);
+    transformed[0] = INV_TRAFO_MATRIX * array_diff(m,mEq[0]);
+    transformed[1] = INV_TRAFO_MATRIX * array_diff(m,mEq[1]);
     for(int i = 0; i<9;i++)
     {
         EXPECT_NEAR(vergleich[0][i],transformed[0][i],1e-10) ;

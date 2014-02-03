@@ -29,10 +29,10 @@ struct Interpol
 /// Functions
 
 /// computes a difference array (needed for MRT)
-const array arrayDiff(const array &one, const array &two);
+const array array_diff(const array &one, const array &two);
 const DistributionSetType distro_diff(const DistributionSetType &one, const DistributionSetType &two);
 
-const array arrayAdd(const array &one, const array &two);
+const array array_add(const array &one, const array &two);
 
 const array array_times(const array &foo, double factor);
 

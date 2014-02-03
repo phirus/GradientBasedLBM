@@ -1,6 +1,6 @@
 #include"Definitions.h"
 
-const array arrayDiff(const array &one, const array &two)
+const array array_diff(const array &one, const array &two)
 {
     array a;
     for (int i=0; i<9; i++)
@@ -13,12 +13,12 @@ const array arrayDiff(const array &one, const array &two)
 const DistributionSetType distro_diff(const DistributionSetType &one, const DistributionSetType &two)
 {
     DistributionSetType diff;
-    diff[0] = arrayDiff(one[0],two[0]);
-    diff[1] = arrayDiff(one[1],two[1]);
+    diff[0] = array_diff(one[0],two[0]);
+    diff[1] = array_diff(one[1],two[1]);
     return diff;
 }
 
-const array arrayAdd(const array &one, const array &two)
+const array array_add(const array &one, const array &two)
 {
     array a;
     for (int i=0; i<9; i++)
