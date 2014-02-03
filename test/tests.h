@@ -195,8 +195,6 @@ TEST(Cell,equal){
 
 TEST(Constants,BReis)
 {
-    Lattice lattice;
-
     EXPECT_DOUBLE_EQ(-4,B[0]*27);
     EXPECT_DOUBLE_EQ(2,B[1]*27);
     EXPECT_DOUBLE_EQ(5,B[2]*108);
@@ -204,8 +202,6 @@ TEST(Constants,BReis)
 
 TEST(Constants,W)
 {
-    Lattice lattice;
-
     EXPECT_DOUBLE_EQ(4,WEIGHTS.at(0)*9);
     EXPECT_DOUBLE_EQ(1,WEIGHTS.at(1)*9);
     EXPECT_DOUBLE_EQ(1,WEIGHTS.at(2)*36);
@@ -213,7 +209,6 @@ TEST(Constants,W)
 
 TEST(Constants,Xi)
 {
-    Lattice lattice;
     EXPECT_DOUBLE_EQ(0,GRAD_WEIGHTS.at(0));
     EXPECT_DOUBLE_EQ(32,GRAD_WEIGHTS.at(1)*120);
     EXPECT_DOUBLE_EQ(12,GRAD_WEIGHTS.at(2)*120);
@@ -222,9 +217,9 @@ TEST(Constants,Xi)
 
 TEST(Definitions,array_diff_add)
 {
-    array one = {{100, 5.5, 1.4, -2, 0, 0, 1, 91.6, 45}};
-    array two = {{5,   0.6, 1.9, -2, 1.8, 100, 0.5, 91.6, 25}};
-    array vergleich = {{95, 4.9, -0.5, 0, -1.8, -100, 0.5, 0, 20}};
+    const array one = {{100, 5.5, 1.4, -2, 0, 0, 1, 91.6, 45}};
+    const array two = {{5,   0.6, 1.9, -2, 1.8, 100, 0.5, 91.6, 25}};
+    const array vergleich = {{95, 4.9, -0.5, 0, -1.8, -100, 0.5, 0, 20}};
 
     EXPECT_EQ (vergleich, array_diff(one, two));
     EXPECT_EQ (one, array_add(vergleich, two));
@@ -233,9 +228,9 @@ TEST(Definitions,array_diff_add)
 
 TEST(Definitions,array_times)
 {
-    array one = {{100, 5, 14, -2, 0, 0, 1, 916, 45}};
-    array vergleich = {{110, 5.5, 15.4, -2.2, 0, 0, 1.1, 1007.6, 49.5}};
-    array result = array_times(one, 1.1);
+    const array one = {{100, 5, 14, -2, 0, 0, 1, 916, 45}};
+    const array vergleich = {{110, 5.5, 15.4, -2.2, 0, 0, 1.1, 1007.6, 49.5}};
+    const array result = array_times(one, 1.1);
 
     for(int i=0;i<9;i++){
         EXPECT_DOUBLE_EQ (vergleich[i], result[i]);
@@ -244,7 +239,7 @@ TEST(Definitions,array_times)
 
 TEST(Lattice,constructor)
 {
-    Lattice lattice;
+    const Lattice lattice;
     EXPECT_EQ(10, lattice.getSize()[1]);
     EXPECT_EQ(10, lattice.getSize()[0]);
     EXPECT_EQ(1,lattice.getF(1,1)[0][0]);
