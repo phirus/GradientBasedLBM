@@ -226,6 +226,21 @@ TEST(Definitions,array_diff_add)
     EXPECT_EQ (one, array_add(two, vergleich));
 }
 
+TEST(Definitions,distro_add_array)
+{
+    const array one = {{95, 4.9, -0.5, 0, -1.8, -100, 0.5, 0, 20}};
+    const array zeros = {{0,0,0,0,0,0,0,0,0}};
+    DistributionSetType first = {{one, zeros}};
+
+    const array plus = {{5,   0.6, 1.9, -2, 1.8, 100, 0.5, 91.6, 25}};
+    
+    const array result = {{100, 5.5, 1.4, -2, 0, 0, 1, 91.6, 45}};
+    
+    DistributionSetType vergleich = {{result, plus}};
+
+    EXPECT_EQ(vergleich, distro_add_array(first,plus));
+}
+
 TEST(Definitions,array_times)
 {
     const array one = {{100, 5, 14, -2, 0, 0, 1, 916, 45}};

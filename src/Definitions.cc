@@ -36,12 +36,20 @@ const DistributionSetType distro_add(const DistributionSetType &one, const Distr
     return foo;
 }
 
+const DistributionSetType distro_add_array(const DistributionSetType &one, const array &two)
+{
+    DistributionSetType foo;
+    foo[0] = array_add(one[0],two);
+    foo[1] = array_add(one[1],two);
+    return foo;
+}
+
 const array array_times(const array &foo, double factor)
 {
     array bar = foo;
     for(boost::array<double,9>::iterator it = bar.begin(); it != bar.end(); ++it)
     {
-        *it = *it * factor;
+        *it *= factor;
     }
     return bar;
 }
