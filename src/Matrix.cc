@@ -70,6 +70,15 @@ const array Matrix::operator*(const array &other)const {
     return a;
 }
 
+const DistributionSetType Matrix::operator*(const DistributionSetType &other)const {
+    DistributionSetType a;
+
+    a[0] = *this * other[0];
+    a[1] = *this * other[1];
+ 
+    return a;
+}
+
 const Matrix Matrix::operator*(double other)const{
     boost::multi_array<double,2> m(boost::extents[9][9]);
 

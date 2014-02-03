@@ -274,10 +274,8 @@ void Lattice::collideAll(int threads, bool gravity)
             
                 const double omega = param.getOmega(tmpCell.calcPsi());
                 const Matrix relaxation_matrix(relax,omega);
-
-
                 
-                const Matrix forcing_factor(Matrix(true) - (relaxation_matrix*0.5));    // (I - 0.5 S) -> ( 1 - 0.5 omega)
+                const Matrix forcing_factor = Matrix(true) - (relaxation_matrix*0.5);    // (I - 0.5 S) -> ( 1 - 0.5 omega)
                 const array first_forcing_term = forcing_factor * (TRAFO_MATRIX * calculate_forcing_term(G,u));
                 const array second_forcing_term = INV_TRAFO_MATRIX * first_forcing_term;
 

@@ -17,6 +17,7 @@ class Matrix
 
          /// operators
         const array operator*(const array &other) const;
+        const DistributionSetType operator*(const DistributionSetType &other) const;
         const Matrix operator*(double other)const;
         const Matrix operator+(const Matrix &other)const;
         const Matrix operator-(const Matrix &other)const;
