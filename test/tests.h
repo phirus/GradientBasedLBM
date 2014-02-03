@@ -8,6 +8,51 @@
 
 using namespace std;
 
+TEST(BinaryIO,output){
+    Lattice lattice(150,150);
+    write_binary(lattice);
+    Lattice vergleich;
+    EXPECT_FALSE(read_binary(vergleich,"existiertnicht.txt"));
+    EXPECT_TRUE(read_binary(vergleich));
+    EXPECT_EQ(lattice,vergleich);
+}
+
+TEST(BinaryIO,paramLog){
+     Lattice lattice(100,100);    
+     EXPECT_NO_THROW(write_param_log(lattice));
+}
+
+TEST(BinaryIO,queryTest){
+    double value;
+    EXPECT_FALSE( input_query("existiertnicht","test",value) );
+    EXPECT_FALSE(input_query("queryTest","noflag",value));
+    EXPECT_TRUE(input_query("queryTest","test",value));
+    EXPECT_DOUBLE_EQ(13.4, value); 
+}
+
+TEST(BinaryIO,restart){
+    Lattice lattice(150,150);
+
+    Timetrack time(1e-2, 1.05, 2e5, 6,100,1000);
+    time.timestep();
+    time.timestep();
+    time.timestep();
+    time.refine();
+    time.timestep();
+    time.timestep();
+
+    Preprocess newProcess = read_preprocess_file("preprocessFile");
+    write_restart_file(lattice, newProcess,time);
+    
+    Lattice vergleichL;
+    Preprocess vergleichP;
+    Timetrack vergleichT;
+    EXPECT_TRUE(read_restart_file(vergleichL,vergleichP,vergleichT));
+    EXPECT_EQ(lattice, vergleichL);
+    EXPECT_EQ(newProcess, vergleichP);
+    EXPECT_EQ(time, vergleichT);
+}
+
 TEST(Cell,constructor0)
 {
     array f = {{1,0,0,0,0,0,0,0,0}};
@@ -146,146 +191,6 @@ TEST(Cell,equal){
     f[1] = fr;
     four.setF(f);
     EXPECT_FALSE(one == four);
-}
-
-TEST(Matrix,trafo){
-    const array verteilung = {{1,2,3,4,5,6,7,8,9}};
-    const array vergleich = {{45,24,-12,-4,8,-12,0,-4,-4}};
-
-    array trafo = TRAFO_MATRIX * verteilung;
-
-    EXPECT_EQ(vergleich, trafo);
-}
-
-TEST(Matrix,backtrafo){
-    const array vergleich = {{1,2,3,4,5,6,7,8,9}};
-    const array verteilung = {{45,24,-12,-4,8,-12,0,-4,-4}};
-
-    array backtrafo = INV_TRAFO_MATRIX * verteilung;
-
-    for(int i = 0; i<9;i++)
-    {
-        EXPECT_DOUBLE_EQ(vergleich[i],backtrafo[i]);
-    }
-}
-
-TEST(Matrix,multiply){
-    const Matrix S(RelaxationPar(1,10,100));
-    const array f = {{1,2,3,4,5,6,7,8,9}};
-    // const array vergleich = {{ -48, -382, 194, 18, -206, 418, -206, 18, 194}};
-    const array vergleich = {{ 0, 2, 30, 0, 500, 0, 700, 8, 9}};
-
-    array test = S*f;
-
-    for(int i = 0; i<9;i++)
-    {
-        EXPECT_DOUBLE_EQ(vergleich[i],test[i])<<"i = "<<i ;
-    }
-}
-
-TEST(Matrix,multiply_linewise){
-    const Matrix S(RelaxationPar(1,10,100));
-    const array f = {{1,2,3,4,5,6,7,8,9}};
-    // const array vergleich = {{ -48, -382, 194, 18, -206, 418, -206, 18, 194}};
-    const array vergleich = {{ 0, 2, 30, 0, 500, 0, 700, 8, 9}};
-    array test;
-
-    for(int i = 0; i<9;i++)
-    {
-        test[i] = S.linewise(f,i);
-        EXPECT_DOUBLE_EQ(vergleich[i],test[i])<<"i = "<<i ;
-    }
-}
-
-TEST(Matrix,identity){
-    const array f = {{1,2,3,4,5,6,7,8,9}};
-    const array f0 = {{0,0,0,0,0,0,0,0,0}};
-
-    const Matrix Identity = Matrix(true);
-    const Matrix Zeros = Matrix();
-    array test;
-
-    EXPECT_EQ(f, Identity * f);
-    EXPECT_EQ(f0, Zeros * f);
-    for(int i = 0; i<9;i++)
-    {
-        test[i] = Identity.linewise(f,i);
-    }
-    EXPECT_EQ(f, test);
-}
-
-TEST(Matrix,plus_times){
-    const Matrix Identity = Matrix(true);
-    
-    EXPECT_EQ(Identity+Identity, Identity*2);
-
-    EXPECT_EQ(TRAFO_MATRIX+TRAFO_MATRIX+TRAFO_MATRIX, TRAFO_MATRIX*3);
-    EXPECT_EQ(TRAFO_MATRIX+TRAFO_MATRIX, (TRAFO_MATRIX*3)-TRAFO_MATRIX);
-}
-
-TEST(ParamSet,Phi)
-{
-    ParamSet param;
-    DistributionSetType phi;
-    phi = param.getPhi();
-
-    array phiR = {{0.9992, 1.6e-4, 4e-5, 1.6e-4, 4e-5, 1.6e-4, 4e-5, 1.6e-4, 4e-5}};
-    array phiB = {{0.2,0.16,0.04,0.16,0.04,0.16,0.04,0.16,0.04}};
-
-    for(int q=0;q<9;q++)
-    {
-        EXPECT_NEAR(phiR[q], phi.at(0)[q],1e-10);
-    }
-    EXPECT_EQ(phiB, phi.at(1));
-}
-
-TEST(ParamSet,inter)
-{
-    ParamSet param;
-    param.setOmega(1.1,0.9,0.1);
-    Interpol inter = param.getInter();
-
-    EXPECT_DOUBLE_EQ(0.99,inter.chi);
-    EXPECT_DOUBLE_EQ(2.2,inter.eta);
-    EXPECT_DOUBLE_EQ(-11,inter.kappa);
-    EXPECT_NEAR(1.8,inter.lambda,1e-10);
-    EXPECT_NEAR(9,inter.ny,1e-10);
-}
-
-TEST(ParamSet, equal){
-    ParamSet one, two, three, four;
-    EXPECT_TRUE(one == two);
-    three.setBeta(0);
-    EXPECT_FALSE(one == three);
-    four.setRelaxation(1,1,1);
-    EXPECT_EQ(one,four);
-}
-
-
-TEST(Vector,scalar){
-    Vector v0, v1(1,2), v2(3,4);
-    EXPECT_DOUBLE_EQ(0, v0*v1);
-    EXPECT_DOUBLE_EQ(0, v2*v0);
-    EXPECT_DOUBLE_EQ(11, v1*v2);
-    EXPECT_DOUBLE_EQ(11, v2*v1);
-}
-
-TEST(Vector,angle){
-    Vector g(1,1);
-
-    EXPECT_DOUBLE_EQ(0, g.Angle(DIRECTION[0]));
-    EXPECT_DOUBLE_EQ(cos(PI/4), g.Angle(DIRECTION[1]));
-    EXPECT_DOUBLE_EQ(1, g.Angle(DIRECTION[2]));
-    EXPECT_DOUBLE_EQ(cos(PI/4), g.Angle(DIRECTION[3]));
-    EXPECT_DOUBLE_EQ(0, g.Angle(DIRECTION[4]));
-    EXPECT_DOUBLE_EQ(-cos(PI/4), g.Angle(DIRECTION[5]));
-    EXPECT_DOUBLE_EQ(-1, g.Angle(DIRECTION[6]));
-    EXPECT_DOUBLE_EQ(-cos(PI/4), g.Angle(DIRECTION[7]));
-    EXPECT_DOUBLE_EQ(0, g.Angle(DIRECTION[8]));
-
-    Vector g1(1e-10, -1e-10), g2(1e-6, -1e-6);
-    EXPECT_DOUBLE_EQ(1,g1.Angle(g2));
-    EXPECT_DOUBLE_EQ(0,g1.Angle(DIRECTION[0]));
 }
 
 TEST(Constants,BReis)
@@ -612,6 +517,81 @@ TEST(Lattice, assign){
     EXPECT_EQ(lBig,tmp);
 }
 
+TEST(Matrix,trafo){
+    const array verteilung = {{1,2,3,4,5,6,7,8,9}};
+    const array vergleich = {{45,24,-12,-4,8,-12,0,-4,-4}};
+
+    array trafo = TRAFO_MATRIX * verteilung;
+
+    EXPECT_EQ(vergleich, trafo);
+}
+
+TEST(Matrix,backtrafo){
+    const array vergleich = {{1,2,3,4,5,6,7,8,9}};
+    const array verteilung = {{45,24,-12,-4,8,-12,0,-4,-4}};
+
+    array backtrafo = INV_TRAFO_MATRIX * verteilung;
+
+    for(int i = 0; i<9;i++)
+    {
+        EXPECT_DOUBLE_EQ(vergleich[i],backtrafo[i]);
+    }
+}
+
+TEST(Matrix,multiply){
+    const Matrix S(RelaxationPar(1,10,100));
+    const array f = {{1,2,3,4,5,6,7,8,9}};
+    // const array vergleich = {{ -48, -382, 194, 18, -206, 418, -206, 18, 194}};
+    const array vergleich = {{ 0, 2, 30, 0, 500, 0, 700, 8, 9}};
+
+    array test = S*f;
+
+    for(int i = 0; i<9;i++)
+    {
+        EXPECT_DOUBLE_EQ(vergleich[i],test[i])<<"i = "<<i ;
+    }
+}
+
+TEST(Matrix,multiply_linewise){
+    const Matrix S(RelaxationPar(1,10,100));
+    const array f = {{1,2,3,4,5,6,7,8,9}};
+    // const array vergleich = {{ -48, -382, 194, 18, -206, 418, -206, 18, 194}};
+    const array vergleich = {{ 0, 2, 30, 0, 500, 0, 700, 8, 9}};
+    array test;
+
+    for(int i = 0; i<9;i++)
+    {
+        test[i] = S.linewise(f,i);
+        EXPECT_DOUBLE_EQ(vergleich[i],test[i])<<"i = "<<i ;
+    }
+}
+
+TEST(Matrix,identity){
+    const array f = {{1,2,3,4,5,6,7,8,9}};
+    const array f0 = {{0,0,0,0,0,0,0,0,0}};
+
+    const Matrix Identity = Matrix(true);
+    const Matrix Zeros = Matrix();
+    array test;
+
+    EXPECT_EQ(f, Identity * f);
+    EXPECT_EQ(f0, Zeros * f);
+    for(int i = 0; i<9;i++)
+    {
+        test[i] = Identity.linewise(f,i);
+    }
+    EXPECT_EQ(f, test);
+}
+
+TEST(Matrix,plus_times){
+    const Matrix Identity = Matrix(true);
+    
+    EXPECT_EQ(Identity+Identity, Identity*2);
+
+    EXPECT_EQ(TRAFO_MATRIX+TRAFO_MATRIX+TRAFO_MATRIX, TRAFO_MATRIX*3);
+    EXPECT_EQ(TRAFO_MATRIX+TRAFO_MATRIX, (TRAFO_MATRIX*3)-TRAFO_MATRIX);
+}
+
 TEST(MRT,trafo){
     /// testet ob die Differenz im Geschw.-Raum gleich der Rücktransformierten Differenz im moment-Raum ist
     ParamSet param;
@@ -656,49 +636,42 @@ TEST(MRT,mass){
     EXPECT_DOUBLE_EQ(m[5],mEq[5]);
 }
 
-TEST(BinaryIO,output){
-    Lattice lattice(150,150);
-    write_binary(lattice);
-    Lattice vergleich;
-    EXPECT_FALSE(read_binary(vergleich,"existiertnicht.txt"));
-    EXPECT_TRUE(read_binary(vergleich));
-    EXPECT_EQ(lattice,vergleich);
+TEST(ParamSet,Phi)
+{
+    ParamSet param;
+    DistributionSetType phi;
+    phi = param.getPhi();
+
+    array phiR = {{0.9992, 1.6e-4, 4e-5, 1.6e-4, 4e-5, 1.6e-4, 4e-5, 1.6e-4, 4e-5}};
+    array phiB = {{0.2,0.16,0.04,0.16,0.04,0.16,0.04,0.16,0.04}};
+
+    for(int q=0;q<9;q++)
+    {
+        EXPECT_NEAR(phiR[q], phi.at(0)[q],1e-10);
+    }
+    EXPECT_EQ(phiB, phi.at(1));
 }
 
-TEST(BinaryIO,paramLog){
-     Lattice lattice(100,100);    
-     EXPECT_NO_THROW(write_param_log(lattice));
+TEST(ParamSet,inter)
+{
+    ParamSet param;
+    param.setOmega(1.1,0.9,0.1);
+    Interpol inter = param.getInter();
+
+    EXPECT_DOUBLE_EQ(0.99,inter.chi);
+    EXPECT_DOUBLE_EQ(2.2,inter.eta);
+    EXPECT_DOUBLE_EQ(-11,inter.kappa);
+    EXPECT_NEAR(1.8,inter.lambda,1e-10);
+    EXPECT_NEAR(9,inter.ny,1e-10);
 }
 
-TEST(BinaryIO,queryTest){
-    double value;
-    EXPECT_FALSE( input_query("existiertnicht","test",value) );
-    EXPECT_FALSE(input_query("queryTest","noflag",value));
-    EXPECT_TRUE(input_query("queryTest","test",value));
-    EXPECT_DOUBLE_EQ(13.4, value); 
-}
-
-TEST(BinaryIO,restart){
-    Lattice lattice(150,150);
-
-    Timetrack time(1e-2, 1.05, 2e5, 6,100,1000);
-    time.timestep();
-    time.timestep();
-    time.timestep();
-    time.refine();
-    time.timestep();
-    time.timestep();
-
-    Preprocess newProcess = read_preprocess_file("preprocessFile");
-    write_restart_file(lattice, newProcess,time);
-    
-    Lattice vergleichL;
-    Preprocess vergleichP;
-    Timetrack vergleichT;
-    EXPECT_TRUE(read_restart_file(vergleichL,vergleichP,vergleichT));
-    EXPECT_EQ(lattice, vergleichL);
-    EXPECT_EQ(newProcess, vergleichP);
-    EXPECT_EQ(time, vergleichT);
+TEST(ParamSet, equal){
+    ParamSet one, two, three, four;
+    EXPECT_TRUE(one == two);
+    three.setBeta(0);
+    EXPECT_FALSE(one == three);
+    four.setRelaxation(1,1,1);
+    EXPECT_EQ(one,four);
 }
 
 TEST(Preprocess,constr){
@@ -814,6 +787,32 @@ TEST(timetrack,FileInput){
 
     EXPECT_DOUBLE_EQ(100,newTimetrack.getTechPlotInt());
     EXPECT_DOUBLE_EQ(1000,newTimetrack.getRestartInt());
+}
+
+TEST(Vector,scalar){
+    Vector v0, v1(1,2), v2(3,4);
+    EXPECT_DOUBLE_EQ(0, v0*v1);
+    EXPECT_DOUBLE_EQ(0, v2*v0);
+    EXPECT_DOUBLE_EQ(11, v1*v2);
+    EXPECT_DOUBLE_EQ(11, v2*v1);
+}
+
+TEST(Vector,angle){
+    Vector g(1,1);
+
+    EXPECT_DOUBLE_EQ(0, g.Angle(DIRECTION[0]));
+    EXPECT_DOUBLE_EQ(cos(PI/4), g.Angle(DIRECTION[1]));
+    EXPECT_DOUBLE_EQ(1, g.Angle(DIRECTION[2]));
+    EXPECT_DOUBLE_EQ(cos(PI/4), g.Angle(DIRECTION[3]));
+    EXPECT_DOUBLE_EQ(0, g.Angle(DIRECTION[4]));
+    EXPECT_DOUBLE_EQ(-cos(PI/4), g.Angle(DIRECTION[5]));
+    EXPECT_DOUBLE_EQ(-1, g.Angle(DIRECTION[6]));
+    EXPECT_DOUBLE_EQ(-cos(PI/4), g.Angle(DIRECTION[7]));
+    EXPECT_DOUBLE_EQ(0, g.Angle(DIRECTION[8]));
+
+    Vector g1(1e-10, -1e-10), g2(1e-6, -1e-6);
+    EXPECT_DOUBLE_EQ(1,g1.Angle(g2));
+    EXPECT_DOUBLE_EQ(0,g1.Angle(DIRECTION[0]));
 }
 
 #endif
