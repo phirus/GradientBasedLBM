@@ -53,6 +53,12 @@ function createPFile(Mo, Eo, c_s, gamma, sigma, g)
 	write(stream,"\nmax_time = ")
 	write(stream, string(MAX_TIME))
 
+	write(stream, "\n\n# output Settings")
+	write(stream,"\ntechplot_interval = ")
+	write(stream, string(TECH_PLOT))
+	write(stream,"\nrestart_interval = ")
+	write(stream, string(RESTART))
+
 	write(stream,"\n")
 	close(stream)
 end

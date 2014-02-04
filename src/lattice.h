@@ -1,6 +1,8 @@
 #ifndef LATTICE_H
 #define LATTICE_H
 
+#include<omp.h>
+
 #include"cell.h"
 #include"paramset.h"
 #include"timetrack.h"
@@ -50,8 +52,8 @@ public:
     void bottomWall(); /// < initialize the Lattice (set up walls and calculate rho)
 
     /// LB steps
-    void streamAll(int threads = 0); /// < streaming step
-    void collideAll(int threads = 0, bool gravity = false); /// < collision step
+    void streamAll(int threads = 1); /// < streaming step
+    void collideAll(int threads = 1, bool gravity = false); /// < collision step
 
 private:
     int xsize, ysize;   /// < extent of the Lattice

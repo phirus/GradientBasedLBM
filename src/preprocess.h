@@ -61,10 +61,10 @@ private:
 	double rho_l ;			/// < liquid density
   	double gamma; 			/// < density ratio
   	double diameter;   		/// < bubble diameter /m
+	
 	double c_s; 	       	/// < speed of sound / m * s^-1
 	double sigma;   	   	/// < surface tension
 	double g;          		/// < gravity / m * s^-2	
-
 
     // deduced
     double tau;

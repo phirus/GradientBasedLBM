@@ -30,12 +30,12 @@ int main(int argc, char** argv){
 
     int numOfCPUs = 1;
     Preprocess prepro = getFilePreprocess("preprocessFile");
-    Timetrack timetrack = getFileTimetrack(prepro, "preprocessFile");    
+    Timetrack timetrack = getFileTimetrack(prepro, "preprocessFile");
 
     if (vm.count("preprocess")) {
         cout << "preprocess file is: " << vm["preprocess"].as<string>() << ".\n" << endl ;
         prepro = getFilePreprocess(vm["preprocess"].as<string>());
-        Timetrack timetrack = getFileTimetrack(prepro, vm["preprocess"].as<string>());
+        timetrack = getFileTimetrack(prepro, vm["preprocess"].as<string>());
     }
    
     int ymax = 150;
@@ -43,6 +43,7 @@ int main(int argc, char** argv){
     // create a Lattice
     Lattice meins(xmax,ymax);
     initialSetUp(meins, prepro, xmax, ymax);
+    techplotOutput(meins,0,true);
        
     if (vm.count("restart")) {
         cout << "Restart file is: " << vm["restart"].as<string>() << ".\n" << endl ;
@@ -63,11 +64,14 @@ int main(int argc, char** argv){
 
     if(vm.count("cpu")){
         numOfCPUs = vm["cpu"].as<int>();
-        cout << "number of CPUs set to "<< numOfCPUs;
+        cout << "number of CPUs set to "<< numOfCPUs << endl;
     }
 
     time_t start,end;
     time(&start);
+
+    int techPlotInterval = timetrack.getTechPlotInt();
+    int restartInterval = timetrack.getRestartInt();
 
     while (timetrack.proceed() == true){
         try{
@@ -76,8 +80,8 @@ int main(int argc, char** argv){
             timetrack.timestep();
             int i = timetrack.getCount();
             if(i%1000 == 0) cout << i<<endl;
-            if(i%10000 == 0)  techplotOutput(meins,i,true);
-            if(i%10000 == 0) restart_file(meins, prepro, timetrack);
+            if(i%techPlotInterval == 0)  techplotOutput(meins,i,true);
+            if(i%restartInterval == 0) restart_file(meins, prepro, timetrack);
         }
         catch(string s)
         {

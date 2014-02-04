@@ -94,6 +94,8 @@ void restart_file(const Lattice& l, const Preprocess& p, const Timetrack time, c
 
     int maxCount = time.getMaxCount();
     double maxTime = time.getMaxTime();
+    int techplot_interval = time.getTechPlotInt();
+    int restart_interval = time.getRestartInt();
 
     file.write(reinterpret_cast<char*> (&count), sizeof count);
     file.write(reinterpret_cast<char*> (&factor), sizeof factor);
@@ -105,6 +107,8 @@ void restart_file(const Lattice& l, const Preprocess& p, const Timetrack time, c
     }
     file.write(reinterpret_cast<char*> (&maxCount), sizeof maxCount);
     file.write(reinterpret_cast<char*> (&maxTime), sizeof maxTime);
+    file.write(reinterpret_cast<char*> (&techplot_interval), sizeof techplot_interval);
+    file.write(reinterpret_cast<char*> (&restart_interval), sizeof restart_interval);
 
     double ReynoldsMax = p.getReynoldsMax();    
     double Morton = p.getMorton();
@@ -186,10 +190,18 @@ const bool restart_read(Lattice& outL, Preprocess& p, Timetrack& t, const string
         int maxCount;
         file.read((char*) &maxCount, sizeof maxCount);
         time.setMaxCount(maxCount);
+
         double maxTime;
         file.read((char*) &maxTime, sizeof maxTime);
         time.setMaxTime(maxTime);
 
+        int techplot_interval;
+        file.read((char*) &techplot_interval, sizeof techplot_interval);
+        time.setTechPlotInt(techplot_interval);
+
+        int restart_interval;
+        file.read((char*) &restart_interval, sizeof restart_interval);
+        time.setRestartInt(restart_interval);
 
         double ReynoldsMax, Morton, Eotvos;
         double resolution, rho_l, gamma;
@@ -483,6 +495,8 @@ const Timetrack getFileTimetrack(const Preprocess& prepro, const string& filenam
     mm.insert(pair<string,double>("factor",1.1));
     mm.insert(pair<string,double>("max_steps",1e5));
     mm.insert(pair<string,double>("max_time",5));
+    mm.insert(pair<string,double>("techplot_interval",1e3));
+    mm.insert(pair<string,double>("restart_interval",1e4));
 
     // cycling through the input file
     double tmp;
@@ -490,7 +504,7 @@ const Timetrack getFileTimetrack(const Preprocess& prepro, const string& filenam
         if( inputQuery(filename,it->first,tmp) == true ) it->second = tmp;
     }
 
-    Timetrack time(prepro.getTimestep(), mm.at("factor"), mm.at("max_steps"), mm.at("max_time"));
+    Timetrack time(prepro.getTimestep(), mm.at("factor"), mm.at("max_steps"), mm.at("max_time"), mm.at("techplot_interval"), mm.at("restart_interval"));
  
     return time;
 }

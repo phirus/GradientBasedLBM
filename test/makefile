@@ -7,9 +7,9 @@ LD = g++
 WINDRES = windres
 
 INC = -I../../../gtest-1.6.0/include
-CFLAGS =  -Wall -g
+CFLAGS =  -Wall -g -fopenmp
 LIB = ../../../gtest-1.6.0/make/gtest_main.a
-LDFLAGS = -lpthread
+LDFLAGS = -lpthread -lgomp
 
 SRC = ../src
 OBJ_DIR = obj
