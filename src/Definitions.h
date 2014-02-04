@@ -30,13 +30,31 @@ struct Interpol
 
 /// computes a difference array (needed for MRT)
 const array array_diff(const array &one, const array &two);
-const DistributionSetType distro_diff(const DistributionSetType &one, const DistributionSetType &two);
+inline const DistributionSetType distro_diff(const DistributionSetType &one, const DistributionSetType &two)
+{
+    const DistributionSetType diff = {{array_diff(one[0],two[0]), array_diff(one[1],two[1])}};
+    return diff;
+};
 
 const array array_add(const array &one, const array &two);
-const DistributionSetType distro_add(const DistributionSetType &one, const DistributionSetType &two);
-const DistributionSetType distro_add_array(const DistributionSetType &one, const array &two);
+inline const DistributionSetType distro_add(const DistributionSetType &one, const DistributionSetType &two)
+{
+    const DistributionSetType foo = {{array_add(one[0],two[0]),array_add(one[1],two[1])}};
+    return foo;
+};
+
+inline const DistributionSetType distro_add_array(const DistributionSetType &one, const array &two)
+{
+    const DistributionSetType foo = {{array_add(one[0],two), array_add(one[1],two)}};
+    return foo;
+};
 
 const array array_times(const array &foo, double factor);
-const DistributionSetType distro_times(const DistributionSetType &one, double factor);
+
+inline const DistributionSetType distro_times(const DistributionSetType &one, double factor)
+{
+    const DistributionSetType foo = {{array_times(one[0],factor), array_times(one[1],factor)}};    
+    return foo;
+};
 
 #endif
