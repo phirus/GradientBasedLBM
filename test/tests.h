@@ -58,7 +58,7 @@ TEST(Cell,constructor0)
     array f = {{1,0,0,0,0,0,0,0,0}};
     Cell cell;
     EXPECT_EQ(f,cell.getF()[0]);
-    EXPECT_EQ(false,cell.getIsSolid());
+    EXPECT_FALSE(cell.getIsSolid());
     EXPECT_EQ(f,cell.getF()[1]);
 }
 
@@ -67,7 +67,7 @@ TEST(Cell,constructorRed1)
     array f = {{1,0,0,0,0,0,0,0,0}};
     Cell cell(1,0);
     EXPECT_EQ(f,cell.getF()[0]);
-    EXPECT_EQ(false,cell.getIsSolid());
+    EXPECT_FALSE(cell.getIsSolid());
     Cell cell1(1,1);
     Cell cell2(1,100);
     EXPECT_EQ(f,cell1.getF()[0]);
@@ -79,7 +79,7 @@ TEST(Cell,constructorBlue1)
     array f = {{1,0,0,0,0,0,0,0,0}};
     Cell cell(0,1);
     EXPECT_EQ(f,cell.getF()[1]);
-    EXPECT_EQ(false,cell.getIsSolid());
+    EXPECT_FALSE(cell.getIsSolid());
     Cell cell1(1,1);
     Cell cell2(100,1);
     EXPECT_EQ(f,cell1.getF()[1]);
@@ -91,7 +91,7 @@ TEST(Cell,constructorRed2)
     array f = {{0,0,0,0,0,0,0,0,0}};
     Cell cell(0,0);
     EXPECT_EQ(f,cell.getF()[0]);
-    EXPECT_EQ(false,cell.getIsSolid());
+    EXPECT_FALSE(cell.getIsSolid());
     Cell cell1(0,1);
     Cell cell2(0,100);
     EXPECT_EQ(f,cell1.getF()[0]);
@@ -103,7 +103,7 @@ TEST(Cell,constructorBlue2)
     array f = {{0,0,0,0,0,0,0,0,0}};
     Cell cell(0,0);
     EXPECT_EQ(f,cell.getF()[1]);
-    EXPECT_EQ(false,cell.getIsSolid());
+    EXPECT_FALSE(cell.getIsSolid());
     Cell cell1(1,0);
     Cell cell2(100,0);
     EXPECT_EQ(f,cell1.getF()[1]);
@@ -123,7 +123,7 @@ TEST(Cell,constructorIni)
     Cell cell(f1,f2);
     EXPECT_EQ(f1,cell.getF()[0]);
     EXPECT_EQ(f2,cell.getF()[1]);
-    EXPECT_EQ(false,cell.getIsSolid());
+    EXPECT_FALSE(cell.getIsSolid());
 }
 
 TEST(Cell,rho)
