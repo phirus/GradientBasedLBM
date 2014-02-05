@@ -279,8 +279,8 @@ void Lattice::collideAll(int threads, bool gravity)
                 const array first_forcing_term = forcing_factor * (TRAFO_MATRIX * calculate_forcing_term(G,u)); // F' = (I - 0.5 S) M F
                 const array second_forcing_term = INV_TRAFO_MATRIX * first_forcing_term;    // M^{-1} F'
 
+                const DistributionSetType single_phase_col = distro_add_array(INV_TRAFO_MATRIX * (relaxation_matrix * (TRAFO_MATRIX * diff)), array_times(second_forcing_term, dt));
                 
-
                 const ColSet A_k = param.getAk(omega);
                 const Vector grad = getGradient(x,y);
                 const double av = grad.Abs();
@@ -298,11 +298,17 @@ void Lattice::collideAll(int threads, bool gravity)
                     if (av > 0) gradient_collision = av/2 * (WEIGHTS[q] * ( scal*scal )/(av*av) - B[q]);
                     else gradient_collision = 0;
 
-                    if (gravity == true) final_forcing_term = second_forcing_term[q] ;
+                    // if (gravity == true) final_forcing_term = second_forcing_term[q] ;
 
-                    for (int color=0;color<=1; color++)
+                    // for (int color=0;color<=1; color++)
+                    // {
+                    //     fTmp[color][q] =  fCell[color][q] - omega * diff[color][q] + final_forcing_term * dt + A_k[color] * gradient_collision;
+                    //     if (fTmp[color][q] < 0) fTmp[color][q] = 0;
+                    // }
+
+                     for (int color=0;color<=1; color++)
                     {
-                        fTmp[color][q] =  fCell[color][q] - omega * diff[color][q] + final_forcing_term * dt + A_k[color] * gradient_collision;
+                        fTmp[color][q] =  single_phase_col[color][q] + A_k[color] * gradient_collision;
                         if (fTmp[color][q] < 0) fTmp[color][q] = 0;
                     }
 

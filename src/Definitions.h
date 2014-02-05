@@ -26,17 +26,20 @@ struct Interpol
     double chi, eta, kappa, lambda, ny;
 };
 
-/// Functions
+//=========================== FUNCTIONS ===========================
 
-/// computes a difference array (needed for MRT)
+/// functions handling basic operations on arrays
 const array array_diff(const array &one, const array &two);
+const array array_add(const array &one, const array &two);
+const array array_times(const array &foo, double factor);
+
+/// translating array functions to distribution sets 
 inline const DistributionSetType distro_diff(const DistributionSetType &one, const DistributionSetType &two)
 {
     const DistributionSetType diff = {{array_diff(one[0],two[0]), array_diff(one[1],two[1])}};
     return diff;
 };
 
-const array array_add(const array &one, const array &two);
 inline const DistributionSetType distro_add(const DistributionSetType &one, const DistributionSetType &two)
 {
     const DistributionSetType foo = {{array_add(one[0],two[0]),array_add(one[1],two[1])}};
@@ -48,8 +51,6 @@ inline const DistributionSetType distro_add_array(const DistributionSetType &one
     const DistributionSetType foo = {{array_add(one[0],two), array_add(one[1],two)}};
     return foo;
 };
-
-const array array_times(const array &foo, double factor);
 
 inline const DistributionSetType distro_times(const DistributionSetType &one, double factor)
 {
