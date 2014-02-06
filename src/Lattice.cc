@@ -289,7 +289,7 @@ void Lattice::collideAll(int threads, bool gravity)
                 double scal;
                 double fges;
                 double recolor;
-                double final_forcing_term;                
+                double final_forcing_term = 0;                
 
                 for (int q=0; q<9; q++)
                 {
