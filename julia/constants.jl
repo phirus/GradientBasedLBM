@@ -1,5 +1,5 @@
 # dimensionless numbers
-global const REYNOLDS_MAX_INI = 75
+global const REYNOLDS_MAX_INI = 20
 global const MORTON = 0.01
 global const EOTVOS = 10
 
