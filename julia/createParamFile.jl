@@ -1,6 +1,6 @@
 function createPFile(Mo, Eo, c_s, gamma, sigma, g)
 
-	stream = open("parameterFile",true,true,true,true,false)
+	stream = open("preprocessFile",true,true,true,true,false)
 	write(stream,"# Parameterset yielding")
 	write(stream,"\n Reynolds = ")
 	write(stream, string(REYNOLDS_MAX_INI))
