@@ -1,21 +1,23 @@
 cd ../julia
-count=0
+julia_count=0
 codelines=`cat *.jl | wc -l`
-count=$((count+codelines))
-echo $count "lines of julia code"
+julia_count=$((codelines))
+echo $julia_count "lines of julia code"
 
 cd ../src
-count=0
+src_count=0
 headers=`cat *.h | wc -l`
-codelines=`cat *.cpp | wc -l`
-count=$((count+headers+codelines))
-echo $count "lines of C++ source code"
+codelines=`cat *.cc | wc -l`
+src_count=$((headers+codelines))
+echo $src_count "lines of C++ source code"
 
 cd ../test
-count=0
+test_count=0
 headers=`cat *.h | wc -l`
-codelines=`cat *.cpp | wc -l`
-count=$((count+headers+codelines))
-echo $count "lines of test code"
+codelines=`cat *.cc | wc -l`
+test_count=$((headers+codelines))
+echo $test_count "lines of test code"
 
+total_count=$((test_count+src_count+julia_count))
+echo $total_count "total lines of code"
 cd ../aux
