@@ -15,7 +15,7 @@ int main(int argc, char** argv){
     boost::program_options::options_description desc("Allowed options");
 	desc.add_options()
         ("help,h", "produce help message")
-        ("preprocess,p", boost::program_options::value<string> (), "specify preprocess parameter file")
+        ("input,i", boost::program_options::value<string> (), "specify preprocess parameter file")
         ;
     boost::program_options::variables_map vm;
     boost::program_options::store(boost::program_options::parse_command_line(argc,argv,desc),vm);
@@ -35,7 +35,8 @@ int main(int argc, char** argv){
         timetrack = read_timetrack_file(prepro, vm["preprocess"].as<string>());
     }
    
-     const ParamSet params = prepro.getParamSet();       
+     const ParamSet params = prepro.getParamSet();
+     write_param_log(params);       
 
     return 0;
 }

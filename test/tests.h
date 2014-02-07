@@ -18,8 +18,8 @@ TEST(BinaryIO,output){
 }
 
 TEST(BinaryIO,paramLog){
-     Lattice lattice(100,100);    
-     EXPECT_NO_THROW(write_param_log(lattice));
+     ParamSet p;   
+     EXPECT_NO_THROW(write_param_log(p));
 }
 
 TEST(BinaryIO,queryTest){

@@ -9,5 +9,6 @@ Documentation/
 *.cpb
 test/paramLog
 translate/preprocessFile
+translate/paramLog
 julia/preprocessFile
 *.sublime-workspace

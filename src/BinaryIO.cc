@@ -370,31 +370,32 @@ void write_vtk_output(const Lattice& l, int iterNum)
     VTKFile.close();
 }
 
-void write_param_log(const Lattice& l){
+void write_param_log(const ParamSet& p){
     ofstream paramLog;
-    ColSet extent = l.getSize();
-    ParamSet p = l.getParams();
-    int xsize = static_cast<int> (extent[0]);
-    int ysize = static_cast<int> (extent[1]);
 
     stringstream name;
     name <<"paramLog";
 
     paramLog.open( name.str().c_str() );
     paramLog << "# used setup parameters\n" << endl;
-    paramLog << "xsize = "      << xsize            << " Cells " << endl;
-    paramLog << "ysize = "      << ysize            << " Cells " << endl;
-    paramLog << "omega_red = "  << p.getOmegaRed()  << " /-" << endl;
-    paramLog << "omega_blue = " << p.getOmegaBlue() << " /-" << endl;
-    paramLog << "rho_red = "    << p.getRhoR()      << " / kg m^-3" << endl;
-    paramLog << "gamma = "      << p.getGamma()     << " /-" << endl;
-    paramLog << "alpha_blue = " << p.getAlpha()     << " /-" << endl;
+    paramLog << "omega_red = "  << p.getOmegaRed()           << " /-" << endl;
+    paramLog << "omega_blue = " << p.getOmegaBlue()          << " /-" << endl;
+    paramLog << "rho_red = "    << p.getRhoR()               << " / kg m^-3" << endl;
+    paramLog << "gamma = "      << p.getGamma()              << " /-" << endl;
+    paramLog << "alpha_blue = " << p.getAlpha()              << " /-" << endl;
     paramLog << "delta = "      << p.getInterfaceThickness() << " /-" << endl;
-    paramLog << "beta = "       << p.getBeta()      << " /-" << endl;
-    paramLog << "sigma = "      << p.getSigma()     << " /?" << endl; //TODO get SI units of sigma
-    paramLog << "speedlimit = "        << p.getSpeedlimit()<< " / m s^-1" << endl; 
-    paramLog << "dt = "         << p.getDeltaT()    << " / m " << endl;
-    paramLog << "gravity = "          << p.getG()         << " / -" << endl;
+    paramLog << "beta = "       << p.getBeta()               << " /-" << endl;
+    paramLog << "sigma = "      << p.getSigma()              << " /?" << endl; //TODO get SI units of sigma
+    paramLog << "speedlimit = " << p.getSpeedlimit()         << " / m s^-1" << endl; 
+    paramLog << "dt = "         << p.getDeltaT()             << " / s " << endl;
+    paramLog << "gravity = "    << p.getG()                  << " / -" << endl;
+
+    RelaxationPar relax = p.getRelaxation();
+
+    paramLog << "s_2 = " << relax.s_2 << " / -" << endl;
+    paramLog << "s_3 = " << relax.s_3 << " / -" << endl;
+    paramLog << "s_5 = " << relax.s_5 << " / -" << endl;
+
 
     paramLog.close();
 }
