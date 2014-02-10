@@ -1,6 +1,6 @@
 function createPFile(Mo, Eo, c_s, gamma, sigma, g)
 
-	stream = open("parameterFile",true,true,true,true,false)
+	stream = open("preprocessFile",true,true,true,true,false)
 	write(stream,"# Parameterset yielding")
 	write(stream,"\n Reynolds = ")
 	write(stream, string(REYNOLDS_MAX_INI))
@@ -40,6 +40,18 @@ function createPFile(Mo, Eo, c_s, gamma, sigma, g)
 	write(stream, "\n\n# gravitational constant / m s^-1, default [10]")
 	write(stream,"\ng = ")
 	write(stream, string(g))
+
+	write(stream, "\n\n# bulk viscosity ratio mu'/mu  , default [2]")
+	write(stream,"\nmu_ratio = ")
+	write(stream, string(MU_RATIO))
+
+	write(stream, "\n\n# s_3 , default [1]")
+	write(stream,"\ns_3 = ")
+	write(stream, string(S_3))
+
+	write(stream, "\n\n# s_5 , default [1]")
+	write(stream,"\ns_5 = ")
+	write(stream, string(S_5))
 
 	write(stream, "\n\n# refine factor, default [1.1]")
 	write(stream,"\nfactor = ")

@@ -3,18 +3,12 @@
 
 #include<omp.h>
 
-#include"cell.h"
-#include"paramset.h"
-#include"timetrack.h"
+#include"Cell.h"
+#include"ParamSet.h"
+#include"Timetrack.h"
 
 /// custom typedef for the whole field of cells
 typedef boost::multi_array<Cell,2> field;
-
-/// calculates the equilibrium distribution based of a cell
-const FSet eqDistro(const ColSet& rho_k, const VeloSet& u, const FSet& phi);
-
-/// computes a difference array (needed for MRT)
-const array arrayDiff(const array &one, const array &two);
 
 /// contains the domain of the simulation with LB operators
 class Lattice
@@ -38,7 +32,7 @@ public:
     const field getData()const{return *data;}; /// < get the data field
     const Cell getCell(int x, int y)const{return (*data)[x][y];};  /// < get a Cell
     const ParamSet getParams()const{return param;}; /// < get the paramter set
-    const FSet getF(int x, int y)const{return (*data)[x][y].getF();};          /// < get F
+    const DistributionSetType getF(int x, int y)const{return (*data)[x][y].getF();};          /// < get F
 
     /// calculations
     void equilibriumIni(); /// < replace all distribution functions with the equilibrium distribution
@@ -63,5 +57,10 @@ private:
     inline void linearIndex(int index, int& x, int& y)const;
     void streamAndBouncePull(Cell& tCell, const direction& dir)const; /// < internal streaming mechanism with bounce back
 };
+
+/// calculates the equilibrium distribution based of a cell
+const DistributionSetType eqDistro(const ColSet& rho_k, const VeloSet& u, const DistributionSetType& phi);
+
+const DistributionSetType calculate_forcing_term(Vector G, VeloSet u);
 
 #endif // LATTICE_H

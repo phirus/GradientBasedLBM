@@ -1,6 +1,6 @@
-#include"binaryIO.h"
+#include"BinaryIO.h"
 
-void binary_output(const Lattice& l, const string& filename){
+void write_binary(const Lattice& l, const string& filename){
 
     // setting up the file name
     stringstream name;
@@ -27,7 +27,7 @@ void binary_output(const Lattice& l, const string& filename){
     file.close();
 }
 
-const bool binary_input(Lattice& outL, const string& filename){
+const bool read_binary(Lattice& outL, const string& filename){
     bool success;
 
     // setting up file
@@ -60,7 +60,7 @@ const bool binary_input(Lattice& outL, const string& filename){
     return success;
 }
 
-void restart_file(const Lattice& l, const Preprocess& p, const Timetrack time, const string& filename){
+void write_restart_file(const Lattice& l, const Preprocess& p, const Timetrack time, const string& filename){
 
     // setting up the file name
     stringstream name;
@@ -117,9 +117,12 @@ void restart_file(const Lattice& l, const Preprocess& p, const Timetrack time, c
     double rho_l = p.getRhoL();
     double gamma = p.getGamma();
     double diameter = p.getDiameter();
+    double mu_ratio = p.getMuRatio();
     double c_s = p.getSoundspeed();
     double sigma = p.getSigma();
     double g = p.getGPhys(); 
+    double s_3 = p.getS_3();
+    double s_5 = p.getS_5();
 
     file.write(reinterpret_cast<char*> (&ReynoldsMax), sizeof(double));
     file.write(reinterpret_cast<char*> (&Morton), sizeof(double));
@@ -128,15 +131,17 @@ void restart_file(const Lattice& l, const Preprocess& p, const Timetrack time, c
     file.write(reinterpret_cast<char*> (&rho_l), sizeof(double));
     file.write(reinterpret_cast<char*> (&gamma), sizeof(double));
     file.write(reinterpret_cast<char*> (&diameter), sizeof(double));
+    file.write(reinterpret_cast<char*> (&mu_ratio), sizeof(double));    
     file.write(reinterpret_cast<char*> (&c_s), sizeof(double));
-
     file.write(reinterpret_cast<char*> (&sigma), sizeof(double));
     file.write(reinterpret_cast<char*> (&g), sizeof(double));
+    file.write(reinterpret_cast<char*> (&s_3), sizeof(double));
+    file.write(reinterpret_cast<char*> (&s_5), sizeof(double));
 
     file.close();
 }
 
-const bool restart_read(Lattice& outL, Preprocess& p, Timetrack& t, const string& filename)
+const bool read_restart_file(Lattice& outL, Preprocess& p, Timetrack& t, const string& filename)
 {
     bool success;
 
@@ -205,7 +210,7 @@ const bool restart_read(Lattice& outL, Preprocess& p, Timetrack& t, const string
 
         double ReynoldsMax, Morton, Eotvos;
         double resolution, rho_l, gamma;
-        double diameter, c_s, sigma,  g; 
+        double diameter, mu_ratio, c_s, sigma,  g, s_3, s_5; 
 
         file.read((char*) &ReynoldsMax, sizeof(double));
         file.read((char*) &Morton, sizeof(double));
@@ -214,11 +219,14 @@ const bool restart_read(Lattice& outL, Preprocess& p, Timetrack& t, const string
         file.read((char*) &rho_l, sizeof(double));
         file.read((char*) &gamma, sizeof(double));
         file.read((char*) &diameter, sizeof(double));
+        file.read((char*) &mu_ratio, sizeof(double));
         file.read((char*) &c_s, sizeof(double));
         file.read((char*) &sigma, sizeof(double));
         file.read((char*) &g, sizeof(double));
+        file.read((char*) &s_3, sizeof(double));
+        file.read((char*) &s_5, sizeof(double));
 
-        Preprocess prepro(ReynoldsMax, Morton, Eotvos, resolution, rho_l, gamma, diameter, c_s, sigma, g);
+        Preprocess prepro(ReynoldsMax, Morton, Eotvos, resolution, rho_l, gamma, diameter, mu_ratio, c_s, sigma, g, s_3, s_5);
         
         file.close();
         outL.setParams(param);
@@ -231,7 +239,7 @@ const bool restart_read(Lattice& outL, Preprocess& p, Timetrack& t, const string
     return success;
 }
 
-void techplotOutput(const Lattice& l, int iterNum, bool verbose)
+void write_techplot_output(const Lattice& l, int iterNum, bool verbose)
 {
     ofstream PsiFile;
     Cell tmp;
@@ -274,7 +282,7 @@ void techplotOutput(const Lattice& l, int iterNum, bool verbose)
                 VeloSet u = tmp.getU();
                 ColSet rho = tmp.getRho();
                 Vector v = (u[0]*rho[0] + u[1]*rho[1]) * (1/sum(rho));
-                PsiFile << "\t" << sum(rho) << "\t" << u[0].x << "\t" << u[0].y << "\t" << u[1].x << "\t" << u[1].y << "\t" << v.abs() ;
+                PsiFile << "\t" << sum(rho) << "\t" << u[0].x << "\t" << u[0].y << "\t" << u[1].x << "\t" << u[1].y << "\t" << v.Abs();
             }
             PsiFile << endl;
         }
@@ -282,7 +290,7 @@ void techplotOutput(const Lattice& l, int iterNum, bool verbose)
     PsiFile.close();
 }
 
-void vtkOutput(const Lattice& l, int iterNum)
+void write_vtk_output(const Lattice& l, int iterNum)
 {
     ofstream VTKFile;
     Cell tmp;
@@ -379,36 +387,37 @@ void vtkOutput(const Lattice& l, int iterNum)
     VTKFile.close();
 }
 
-void paramLogOut(const Lattice& l){
+void write_param_log(const ParamSet& p){
     ofstream paramLog;
-    ColSet extent = l.getSize();
-    ParamSet p = l.getParams();
-    int xsize = static_cast<int> (extent[0]);
-    int ysize = static_cast<int> (extent[1]);
 
     stringstream name;
     name <<"paramLog";
 
     paramLog.open( name.str().c_str() );
     paramLog << "# used setup parameters\n" << endl;
-    paramLog << "xsize = "      << xsize            << " Cells " << endl;
-    paramLog << "ysize = "      << ysize            << " Cells " << endl;
-    paramLog << "omega_red = "  << p.getOmegaRed()  << " /-" << endl;
-    paramLog << "omega_blue = " << p.getOmegaBlue() << " /-" << endl;
-    paramLog << "rho_red = "    << p.getRhoR()      << " / kg m^-3" << endl;
-    paramLog << "gamma = "      << p.getGamma()     << " /-" << endl;
-    paramLog << "alpha_blue = " << p.getAlpha()     << " /-" << endl;
+    paramLog << "omega_red = "  << p.getOmegaRed()           << " /-" << endl;
+    paramLog << "omega_blue = " << p.getOmegaBlue()          << " /-" << endl;
+    paramLog << "rho_red = "    << p.getRhoR()               << " / kg m^-3" << endl;
+    paramLog << "gamma = "      << p.getGamma()              << " /-" << endl;
+    paramLog << "alpha_blue = " << p.getAlpha()              << " /-" << endl;
     paramLog << "delta = "      << p.getInterfaceThickness() << " /-" << endl;
-    paramLog << "beta = "       << p.getBeta()      << " /-" << endl;
-    paramLog << "sigma = "      << p.getSigma()     << " /?" << endl; //TODO get SI units of sigma
-    paramLog << "speedlimit = "        << p.getSpeedlimit()<< " / m s^-1" << endl; 
-    paramLog << "dt = "         << p.getDeltaT()    << " / m " << endl;
-    paramLog << "gravity = "          << p.getG()         << " / -" << endl;
+    paramLog << "beta = "       << p.getBeta()               << " /-" << endl;
+    paramLog << "sigma = "      << p.getSigma()              << " /?" << endl; //TODO get SI units of sigma
+    paramLog << "speedlimit = " << p.getSpeedlimit()         << " / m s^-1" << endl; 
+    paramLog << "dt = "         << p.getDeltaT()             << " / s " << endl;
+    paramLog << "gravity = "    << p.getG()                  << " / -" << endl;
+
+    RelaxationPar relax = p.getRelaxation();
+
+    paramLog << "s_2 = " << relax.s_2 << " / -" << endl;
+    paramLog << "s_3 = " << relax.s_3 << " / -" << endl;
+    paramLog << "s_5 = " << relax.s_5 << " / -" << endl;
+
 
     paramLog.close();
 }
 
-const bool inputQuery(const string& filename, const string& query, double& value){
+const bool input_query(const string& filename, const string& query, double& value){
     bool success = false;
     value = 0;
     string lineString;
@@ -432,35 +441,7 @@ const bool inputQuery(const string& filename, const string& query, double& value
     return success;
 }
 
-const ParamSet getFileParams(const string& filename){
-    vector<string> tags;
-    vector<double> val;
-    // initialzing strings and fallback values
-    map<string,double> mm;
-        mm.insert(pair<string,double>("omega_red",1));
-        mm.insert(pair<string,double>("omega_blue",1));
-        mm.insert(pair<string,double>("rho_red",1));
-        mm.insert(pair<string,double>("gamma",1000));
-        mm.insert(pair<string,double>("alpha_blue",0.2));
-        mm.insert(pair<string,double>("delta",0.1));
-        mm.insert(pair<string,double>("beta",0.99));
-        mm.insert(pair<string,double>("sigma",1e-4));
-        mm.insert(pair<string,double>("speedlimit",1));
-        mm.insert(pair<string,double>("timestep",0.001));
-        mm.insert(pair<string,double>("g",9.81));
-
-
-        // cycling through the input file
-        double tmp;
-        for(map<string,double>::iterator it = mm.begin(); it != mm.end(); it++){            
-            if( inputQuery(filename,it->first,tmp) == true ) it->second = tmp;
-        }
-
-    ParamSet params(mm.at("omega_red"),mm.at("omega_blue"),mm.at("rho_red"),mm.at("gamma"),mm.at("sigma"),mm.at("g"), mm.at("speedlimit"),mm.at("timestep"),mm.at("alpha_blue"),mm.at("delta"),mm.at("beta"));
-    return params;
-}
-
-const Preprocess getFilePreprocess(const string& filename){
+const Preprocess read_preprocess_file(const string& filename){
     vector<string> tags;
     vector<double> val;
     // initialzing strings and fallback values
@@ -475,19 +456,21 @@ const Preprocess getFilePreprocess(const string& filename){
         mm.insert(pair<string,double>("c_s",10));
         mm.insert(pair<string,double>("sigma",1e-4));
         mm.insert(pair<string,double>("g",10));
-
+        mm.insert(pair<string,double>("mu_ratio",2));
+        mm.insert(pair<string,double>("s_3",1));
+        mm.insert(pair<string,double>("s_5",1));
 
         // cycling through the input file
         double tmp;
         for(map<string,double>::iterator it = mm.begin(); it != mm.end(); it++){            
-            if( inputQuery(filename,it->first,tmp) == true ) it->second = tmp;
+            if( input_query(filename,it->first,tmp) == true ) it->second = tmp;
         }
 
-    Preprocess prepro(mm.at("Reynolds"),mm.at("Morton"),mm.at("Eotvos"),mm.at("resolution"),mm.at("rho_l"),mm.at("gamma"),mm.at("diameter"),mm.at("c_s"),mm.at("sigma"), mm.at("g"));
+    Preprocess prepro(mm.at("Reynolds"),mm.at("Morton"),mm.at("Eotvos"),mm.at("resolution"),mm.at("rho_l"),mm.at("gamma"),mm.at("diameter"),mm.at("mu_ratio"),mm.at("c_s"),mm.at("sigma"), mm.at("g"), mm.at("s_3"), mm.at("s_5"));
     return prepro;
 }
 
-const Timetrack getFileTimetrack(const Preprocess& prepro, const string& filename){
+const Timetrack read_timetrack_file(const Preprocess& prepro, const string& filename){
     vector<string> tags;
     vector<double> val;
     // initialzing strings and fallback values
@@ -501,7 +484,7 @@ const Timetrack getFileTimetrack(const Preprocess& prepro, const string& filenam
     // cycling through the input file
     double tmp;
     for(map<string,double>::iterator it = mm.begin(); it != mm.end(); it++){            
-        if( inputQuery(filename,it->first,tmp) == true ) it->second = tmp;
+        if( input_query(filename,it->first,tmp) == true ) it->second = tmp;
     }
 
     Timetrack time(prepro.getTimestep(), mm.at("factor"), mm.at("max_steps"), mm.at("max_time"), mm.at("techplot_interval"), mm.at("restart_interval"));

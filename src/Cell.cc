@@ -1,8 +1,11 @@
-#include "cell.h"
+#include "Cell.h"
+
+///////////////////////////// PUBLIC /////////////////////////////
+
+//=========================== LIFECYCLE ===========================
 
 Cell::Cell(double fzero_red, double fzero_blue, bool solid):isSolid(solid),delta(0)
 {
-//    isSolid = solid;
     f[0][0] = fzero_red;
     f[1][0] = fzero_blue;
 
@@ -20,6 +23,7 @@ Cell::Cell(double fzero_red, double fzero_blue, bool solid):isSolid(solid),delta
     u[1].y = 0;
 
 }
+
 // like a copy constructor for the bulk phase
 Cell::Cell(const array& finiRed, const array& finiBlue):isSolid(false),delta(0)
 {
@@ -34,6 +38,26 @@ Cell::Cell(const array& finiRed, const array& finiBlue):isSolid(false),delta(0)
     u[1].x = 0;
     u[1].y = 0;
 }
+
+//=========================== OPERATORS ===========================
+
+const bool Cell::operator==(const Cell& other)const {
+    bool exit = true;
+    if (isSolid != other.getIsSolid()) exit = false;
+
+    ColSet rhoOther = other.getRho();
+    if(rho[0] != rhoOther[0] || rho[1] != rhoOther[1]) exit = false;
+
+    DistributionSetType fOther = other.getF();
+    for(int color=0; color <2; color++){
+        for(int q=0;q<9;q++){
+            if(f[color][q] != fOther[color][q]) exit = false;
+            }
+        }
+    return exit;
+}
+
+//=========================== OPERATIONS ===========================
 
 void Cell::calcRho()
 {
@@ -53,10 +77,10 @@ void Cell::calcRho()
         {
             rho[0] += f[0][i];
             rho[1] += f[1][i];
-            u[0].x += ( f[0][i]) * e[i].x;
-            u[0].y += ( f[0][i]) * e[i].y;
-            u[1].x += ( f[1][i] ) * e[i].x;
-            u[1].y += ( f[1][i] ) * e[i].y;
+            u[0].x += ( f[0][i]) * DIRECTION[i].x;
+            u[0].y += ( f[0][i]) * DIRECTION[i].y;
+            u[1].x += ( f[1][i] ) * DIRECTION[i].x;
+            u[1].y += ( f[1][i] ) * DIRECTION[i].y;
         }
         delta = rho[0]-rho[1];
         if(rho[0] >0) {
@@ -75,20 +99,4 @@ const double Cell::calcPsi()const
     double rhoSum = sum(rho);
     if(rhoSum > 0) return (rho[0] - rho[1])/( rhoSum ); // < prevent division by 0
     else return 0;
-}
-
-const bool Cell::operator==(const Cell& other)const {
-    bool exit = true;
-    if (isSolid != other.getIsSolid()) exit = false;
-
-    ColSet rhoOther = other.getRho();
-    if(rho[0] != rhoOther[0] || rho[1] != rhoOther[1]) exit = false;
-
-    FSet fOther = other.getF();
-    for(int color=0; color <2; color++){
-        for(int q=0;q<9;q++){
-            if(f[color][q] != fOther[color][q]) exit = false;
-            }
-        }
-    return exit;
 }

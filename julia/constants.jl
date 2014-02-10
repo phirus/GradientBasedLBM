@@ -1,5 +1,5 @@
 # dimensionless numbers
-global const REYNOLDS_MAX_INI = 75
+global const REYNOLDS_MAX_INI = 20
 global const MORTON = 0.01
 global const EOTVOS = 10
 
@@ -17,5 +17,13 @@ global const MAX_TIME = 5
 # output settings
 global const TECH_PLOT = 100
 global const RESTART = 1000
+
+# Parameters for relaxation matrix
+# bulk viscosity -> s_2
+global const MU_RATIO = 2
+# s_3 + s_5
+global const S_3 = 1
+global const S_5 = 1
+
 
 println("Parameter wurden geladen")

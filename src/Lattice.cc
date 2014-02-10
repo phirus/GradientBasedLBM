@@ -1,4 +1,4 @@
-#include "lattice.h"
+#include"Lattice.h"
 
 Lattice::Lattice(int x_size, int y_size,double fzero_red, double fzero_blue):
 xsize(x_size)
@@ -51,14 +51,14 @@ void Lattice::setCell(int x, int y, const Cell& ncell)
 
 void Lattice::setF(int x, int y, int color, const array& nf)
 {
-    FSet f = (*data)[x][y].getF();
+    DistributionSetType f = (*data)[x][y].getF();
     f[color] = nf;
     (*data)[x][y].setF(f);
 }
 
 void Lattice::setF(int x, int y, int color, int pos, double value)
 {
-    FSet f = (*data)[x][y].getF();
+    DistributionSetType f = (*data)[x][y].getF();
     f[color][pos] = value;
     (*data)[x][y].setF(f);
 }
@@ -115,7 +115,7 @@ void Lattice::bottomWall()
 void Lattice::equilibriumIni()
 {
     Cell tmp;
-    FSet eqDis;
+    DistributionSetType eqDis;
 
     for (int j=0; j<ysize; j++)
     {
@@ -171,12 +171,12 @@ direction Lattice::directions(int x, int y)const
     int tmp;
     for (int q=0; q<13; q++)
     {
-        tmp = x + e[q].x;
+        tmp = x + DIRECTION[q].x;
         if (tmp<0) tmp += xsize;
         if (tmp>= xsize) tmp -= xsize;
         dir[q].x = tmp;
 
-        tmp = y + e[q].y;
+        tmp = y + DIRECTION[q].y;
         if (tmp<0) tmp += ysize;
         if (tmp>= ysize) tmp -= ysize;
         dir[q].y = tmp;
@@ -192,9 +192,9 @@ const Vector Lattice::getGradient(int x, int y)const
     const direction dir = directions(x,y);
     for (int q=0;q<13;q++)
     {
-        tmpDelta = xi[q] * (*data)[ dir[q].x ][ dir[q].y ].getDeltaRho();
-        grad.x += e[q].x * tmpDelta;
-        grad.y += e[q].y * tmpDelta;
+        tmpDelta = GRAD_WEIGHTS[q] * (*data)[ dir[q].x ][ dir[q].y ].getDeltaRho();
+        grad.x += DIRECTION[q].x * tmpDelta;
+        grad.y += DIRECTION[q].y * tmpDelta;
     }
     return grad;
 }
@@ -234,7 +234,7 @@ void Lattice::collideAll(int threads, bool gravity)
     omp_set_num_threads (threads);
 
     const double beta = param.getBeta();
-    const FSet phi = param.getPhi();
+    const DistributionSetType phi = param.getPhi();
     const int range = xsize * ysize;
     const double rhoRedFixed = param.getRhoR();
     const RelaxationPar relax = param.getRelaxation();
@@ -256,15 +256,15 @@ void Lattice::collideAll(int threads, bool gravity)
 
             if (tmpCell.getIsSolid() == false)
             {
-                FSet  fTmp;
-                FSet fCell = tmpCell.getF();
-                FSet Diff;
+                DistributionSetType  fTmp;
+                DistributionSetType fCell = tmpCell.getF();
 
                 const ColSet rho_k = tmpCell.getRho();
                 const double rho = sum(rho_k);
 
                 const Vector G(0 ,  g*(rhoRedFixed - rho));
-//                const Vector G(0 , - rho * g);
+
+                // const Vector G(0 , - rho * g);
 
                 VeloSet u = tmpCell.getU();// + G *  (dt/(2* rho)) ;
 
@@ -273,43 +273,55 @@ void Lattice::collideAll(int threads, bool gravity)
                 u[1] = u[1] + G *  (dt/(2* rho)) ;
                 }
 
-                if ( u[0].abs() > speedlimit) throw("maximum velocity reached");
-                if ( u[1].abs() > speedlimit) throw("maximum velocity reached");
+                if ( u[0].Abs() > speedlimit) throw("maximum velocity reached");
+                if ( u[1].Abs() > speedlimit) throw("maximum velocity reached");
 
-                const FSet fEq = eqDistro(rho_k, u, phi);
-
-                Diff[0] = arrayDiff(fCell[0],fEq[0]);
-                Diff[1] = arrayDiff(fCell[1],fEq[1]);
-
+                const DistributionSetType fEq = eqDistro(rho_k, u, phi);
+                const DistributionSetType diff = distro_diff(fCell, fEq);
+            
                 const double omega = param.getOmega(tmpCell.calcPsi());
+                const Matrix relaxation_matrix(relax,omega);
+                
+                const Matrix forcing_factor = Matrix(true) - (relaxation_matrix*0.5);    // (I - 0.5 S) -> ( 1 - 0.5 omega)
+               
+                const DistributionSetType first_forcing_term = forcing_factor * (TRAFO_MATRIX * calculate_forcing_term(G,u)); // F' = (I - 0.5 S) M F
+               
+                const DistributionSetType second_forcing_term = INV_TRAFO_MATRIX * first_forcing_term;    // M^{-1} F'
 
+                const DistributionSetType single_phase_col = INV_TRAFO_MATRIX * (relaxation_matrix * (TRAFO_MATRIX * diff));
+                
                 const ColSet A_k = param.getAk(omega);
-
                 const Vector grad = getGradient(x,y);
-                const double av = grad.abs();
+                const double av = grad.Abs();
 
-                double two_phase;
+                double gradient_collision;
                 double scal;
                 double fges;
                 double recolor;
-                double forcingTerm = 0;
+                double final_forcing_term = 0;                
 
                 for (int q=0; q<9; q++)
                 {
-                    scal = grad*e[q];
-                    if (av > 0) two_phase = av/2 * (w[q] * ( scal*scal )/(av*av) - B[q]);
-                    else two_phase = 0;
+                    // gradient based two phase
+                    scal = grad*DIRECTION[q];
+                    if (av > 0) gradient_collision = av/2 * (WEIGHTS[q] * ( scal*scal )/(av*av) - B[q]);
+                    else gradient_collision = 0;
 
                     for (int color=0;color<=1; color++)
                     {
-                        if (gravity == true) forcingTerm = (1- 0.5*omega) * w[q] * (G * ( e[q] * (e[q] * u[color]) + e[q] - u[color] )) ;
+                        if (gravity == true) final_forcing_term = second_forcing_term[color][q] ;
 
-                        fTmp[color][q] =  fCell[color][q] - omega * Diff[color][q] + A_k[color] * two_phase + forcingTerm * dt;
+                        fTmp[color][q] =  fCell[color][q] - single_phase_col[color][q] + dt * final_forcing_term + A_k[color] * gradient_collision;
                         if (fTmp[color][q] < 0) fTmp[color][q] = 0;
                     }
-                    if (rho_k[0] > 0 && rho_k[1] > 0 && rho > 0) recolor = beta * (rho_k[0] * rho_k[1])/(rho*rho) *  grad.angle(e[q])   * (rho_k[0] * phi.at(0).at(q) + rho_k[1] * phi.at(1).at(q));
-                    else recolor = 0;
 
+                    // recoloring
+                    if (rho_k[0] > 0 && rho_k[1] > 0 && rho > 0) {
+                        recolor = beta * (rho_k[0] * rho_k[1])/(rho*rho) *  grad.Angle(DIRECTION[q])   * (rho_k[0] * phi.at(0).at(q) + rho_k[1] * phi.at(1).at(q));
+                    } 
+                    else {
+                        recolor = 0;
+                    }
                     fges = fTmp[0][q]+fTmp[1][q];
 
                     if (rho > 0)
@@ -366,8 +378,8 @@ inline void Lattice::linearIndex(int index, int& x, int& y)const
 
 void Lattice::streamAndBouncePull(Cell& tCell, const direction& dir)const
 {
-    const FSet f = tCell.getF();
-    FSet ftmp;
+    const DistributionSetType f = tCell.getF();
+    DistributionSetType ftmp;
     for (int color = 0; color<=1;color++)
     {
         ftmp[color][0] = (*data)[ dir[0].x ][ dir[0].y ].getF()[color][0];
@@ -423,27 +435,31 @@ void Lattice::streamAndBouncePull(Cell& tCell, const direction& dir)const
     tCell.setF(ftmp);
 }
 
-const FSet eqDistro(const ColSet& rho_k, const VeloSet& u, const FSet& phi)
+const DistributionSetType eqDistro(const ColSet& rho_k, const VeloSet& u, const DistributionSetType& phi)
 {
-    FSet feq;
+    DistributionSetType feq;
     const boost::array<double,2> usqr = {{u[0]*u[0],u[1]*u[1]}};
+    
     for (int i=0; i<9; i++)
     {
-        const boost::array<double,2> scal = {{u[0]*e[i],u[1]*e[i]}};
+        const boost::array<double,2> scal = {{u[0]*DIRECTION[i],u[1]*DIRECTION[i]}};
         for (int color = 0; color<=1; color++)
         {
-            feq[color][i] = rho_k[color] * ( phi[color][i] + w[i] * ( 3 * scal[color] + 4.5 * (scal[color]*scal[color]) - 1.5 * usqr[color]));
+            feq[color][i] = rho_k[color] * ( phi[color][i] + WEIGHTS[i] * ( 3 * scal[color] + 4.5 * (scal[color]*scal[color]) - 1.5 * usqr[color]));
         }
     }
     return feq;
 }
 
-const array arrayDiff(const array &one, const array &two)
+const DistributionSetType calculate_forcing_term(Vector G, VeloSet u)
 {
-    array a;
+    DistributionSetType forcing_term;
     for (int i=0; i<9; i++)
     {
-        a[i] = one[i]-two[i];
+        for (int color = 0; color<=1; color++)
+        {
+            forcing_term[color][i] = WEIGHTS[i] * (G * ( DIRECTION[i] * (DIRECTION[i] * u[color]) + DIRECTION[i] - u[color])) ;
+        } 
     }
-    return a;
+    return forcing_term;
 }

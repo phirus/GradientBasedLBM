@@ -6,20 +6,22 @@ AR = ar
 LD = g++
 WINDRES = windres
 
-INC = -I../../../gtest-1.6.0/include
-CFLAGS =  -Wall -g -fopenmp
-LIB = ../../../gtest-1.6.0/make/gtest_main.a
-LDFLAGS = -lpthread -lgomp
+#INC = -I../../../gtest-1.6.0/include
+CFLAGS =  -Wall -O3 -fopenmp
+#LIB = gomp
+LDFLAGS = -lboost_program_options -lgomp
+#-lpthread
 
 SRC = ../src
 OBJ_DIR = obj
-BIN_DIR = bin
-OUTPUT = $(BIN_DIR)/GradientBased
+OUTPUT = translate_params
 
 # creating OBJs
 OBJ_DEBUG = $(OBJ_DIR)/BinaryIO.o $(OBJ_DIR)/Constants.o $(OBJ_DIR)/Cell.o $(OBJ_DIR)/Definitions.o $(OBJ_DIR)/Lattice.o $(OBJ_DIR)/main.o $(OBJ_DIR)/Matrix.o $(OBJ_DIR)/ParamSet.o $(OBJ_DIR)/Preprocess.o $(OBJ_DIR)/Timetrack.o $(OBJ_DIR)/Vector.o
 
-all: build run
+all: clean build
+
+Release: build
 
 before_debug: 
 	test -d $(BIN_DIR) || mkdir -p $(BIN_DIR)
@@ -42,7 +44,7 @@ $(OBJ_DIR)/Cell.o: $(SRC)/Cell.cc
 	$(CXX) $(CFLAGS) $(INC) -c $(SRC)/Cell.cc -o $(OBJ_DIR)/Cell.o
 
 $(OBJ_DIR)/Definitions.o: $(SRC)/Definitions.cc
-	$(CXX) $(CFLAGS) $(INC) -c $(SRC)/Definitions.cc -o $(OBJ_DIR)/Definitions.o	
+	$(CXX) $(CFLAGS) $(INC) -c $(SRC)/Definitions.cc -o $(OBJ_DIR)/Definitions.o
 
 $(OBJ_DIR)/Lattice.o: $(SRC)/Lattice.cc
 	$(CXX) $(CFLAGS) $(INC) -c $(SRC)/Lattice.cc -o $(OBJ_DIR)/Lattice.o
@@ -67,7 +69,6 @@ $(OBJ_DIR)/Vector.o: $(SRC)/Vector.cc
 
 clean: 
 	rm -f $(OBJ_DEBUG) $(OUTPUT)
-	rm -rf $(BIN_DIR)
 	rm -rf $(OBJ_DIR)
 run: 
 	./$(OUTPUT)
