@@ -670,7 +670,7 @@ TEST(MRT,mass){
 
 TEST(ParamSet,Phi)
 {
-    ParamSet param;
+    ParamSet param(1,1,1,1000);
     DistributionSetType phi;
     phi = param.getPhi();
 

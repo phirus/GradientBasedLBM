@@ -12,7 +12,7 @@ class ParamSet
 {
 public:
     /// Lifecycle
-    ParamSet(double omR = 1, double omB = 1,double rhoR = 1, double gammaIni = 1000,double sigmaIni = 1e-4, double g = 9.81, double c_limit = 1, double t_step = 1e-3, RelaxationPar rel = RelaxationPar(1,1,1), double alB = 0.2, double deltaIni = 0.1, double betaIni = 0.99); /// < consructor
+    ParamSet(double omR = 1, double omB = 1,double rhoR = 1, double gammaIni = 2,double sigmaIni = 1e-4, double g = 1e-4, double c_limit = 1, double t_step = 1e-3, RelaxationPar rel = RelaxationPar(1,1,1), double alB = 0.2, double deltaIni = 0.1, double betaIni = 0.99); /// < consructor
 
     /// get-methods, including calculations if necessary
     const DistributionSetType getPhi()const;                   /// < calculates phi, based on alpha_b and rho (density ratio)

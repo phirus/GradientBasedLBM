@@ -236,14 +236,14 @@ void Lattice::collideAll(int threads, bool gravity)
     const double beta = param.getBeta();
     const DistributionSetType phi = param.getPhi();
     const int range = xsize * ysize;
-    const double rhoRedFixed = param.getRhoR();
+    // const double rhoRedFixed = param.getRhoR();
     const RelaxationPar relax = param.getRelaxation();
-    const double dt = param.getDeltaT();
-    const double speedlimit = param.getSpeedlimit();
+    // const double dt = param.getDeltaT();
+    // const double speedlimit = param.getSpeedlimit();
 
-    double g;
-    if(gravity == true) g = param.getG();
-    else  g = 0;
+    // double g;
+    // if(gravity == true) g = param.getG();
+    // else  g = 0;
 
     #pragma omp parallel
     {
@@ -262,11 +262,12 @@ void Lattice::collideAll(int threads, bool gravity)
                 const ColSet rho_k = tmpCell.getRho();
                 const double rho = sum(rho_k);
 
-                const Vector G(0 ,  g*(rhoRedFixed - rho));
-                // const Vector G(0 , - rho * g);
+                // const Vector G(0 ,  g*(rhoRedFixed - rho));
+                // // const Vector G(0 , - rho * g);
 
-                const Vector u = tmpCell.getU()  + G *  (dt/(2* rho)) ;
-                if ( u.Abs() > speedlimit) throw("maximum velocity reached");
+                // const Vector u = tmpCell.getU()  + G *  (dt/(2* rho)) ;
+                // if ( u.Abs() > speedlimit) throw("maximum velocity reached");
+                const Vector u = tmpCell.getU();
 
                 const DistributionSetType fEq = eqDistro(rho_k, u, phi);
 
@@ -275,11 +276,12 @@ void Lattice::collideAll(int threads, bool gravity)
                 const double omega = param.getOmega(tmpCell.calcPsi());
                 const Matrix relaxation_matrix(relax,omega);
                 
-                const Matrix forcing_factor = Matrix(true) - (relaxation_matrix*0.5);    // (I - 0.5 S) -> ( 1 - 0.5 omega)
-                const array first_forcing_term = forcing_factor * (TRAFO_MATRIX * calculate_forcing_term(G,u)); // F' = (I - 0.5 S) M F
-                const array second_forcing_term = INV_TRAFO_MATRIX * first_forcing_term;    // M^{-1} F'
+                // const Matrix forcing_factor = Matrix(true) - (relaxation_matrix*0.5);    // (I - 0.5 S) -> ( 1 - 0.5 omega)
+                // const array first_forcing_term = forcing_factor * (TRAFO_MATRIX * calculate_forcing_term(G,u)); // F' = (I - 0.5 S) M F
+                // const array second_forcing_term = INV_TRAFO_MATRIX * first_forcing_term;    // M^{-1} F'
 
-                const DistributionSetType single_phase_col = INV_TRAFO_MATRIX * (relaxation_matrix * (TRAFO_MATRIX * diff));
+                // const DistributionSetType single_phase_col = INV_TRAFO_MATRIX * (relaxation_matrix * (TRAFO_MATRIX * diff));
+                const DistributionSetType single_phase_col = distro_times(diff,omega);
                 
                 const ColSet A_k = param.getAk(omega);
                 const Vector grad = getGradient(x,y);
@@ -289,7 +291,7 @@ void Lattice::collideAll(int threads, bool gravity)
                 double scal;
                 double fges;
                 double recolor;
-                double final_forcing_term = 0;                
+                // double final_forcing_term = 0;                
 
                 for (int q=0; q<9; q++)
                 {
@@ -298,11 +300,17 @@ void Lattice::collideAll(int threads, bool gravity)
                     if (av > 0) gradient_collision = av/2 * (WEIGHTS[q] * ( scal*scal )/(av*av) - B[q]);
                     else gradient_collision = 0;
 
-                    if (gravity == true) final_forcing_term = second_forcing_term[q] ;
+                    // if (gravity == true) final_forcing_term = second_forcing_term[q] ;
 
-                    for (int color=0;color<=1; color++)
+                    // for (int color=0;color<=1; color++)
+                    // {
+                    //     fTmp[color][q] =  fCell[color][q] - single_phase_col[color][q] + dt * final_forcing_term + A_k[color] * gradient_collision;
+                    //     if (fTmp[color][q] < 0) fTmp[color][q] = 0;
+                    // }
+
+                     for (int color=0;color<=1; color++)
                     {
-                        fTmp[color][q] =  fCell[color][q] - single_phase_col[color][q] + dt * final_forcing_term + A_k[color] * gradient_collision;
+                        fTmp[color][q] =  fCell[color][q] - single_phase_col[color][q] + A_k[color] * gradient_collision;
                         if (fTmp[color][q] < 0) fTmp[color][q] = 0;
                     }
 
