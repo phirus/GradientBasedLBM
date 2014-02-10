@@ -105,7 +105,7 @@ int main(int argc, char** argv){
 void initialSetUp(Lattice& meins, Preprocess& prepro, int xmax, int ymax){
     // set the parameters    
     // const ParamSet params = prepro.getParamSet();
-    const ParamSet params = prepro.getParamSet();
+    const ParamSet params = ParamSet();
     meins.setParams(params);
 
     // get densities

@@ -280,8 +280,8 @@ void Lattice::collideAll(int threads, bool gravity)
                 // const array first_forcing_term = forcing_factor * (TRAFO_MATRIX * calculate_forcing_term(G,u)); // F' = (I - 0.5 S) M F
                 // const array second_forcing_term = INV_TRAFO_MATRIX * first_forcing_term;    // M^{-1} F'
 
-                // const DistributionSetType single_phase_col = INV_TRAFO_MATRIX * (relaxation_matrix * (TRAFO_MATRIX * diff));
-                const DistributionSetType single_phase_col = distro_times(diff,omega);
+                const DistributionSetType single_phase_col = INV_TRAFO_MATRIX * (relaxation_matrix * (TRAFO_MATRIX * diff));
+                // const DistributionSetType single_phase_col = distro_times(diff,omega);
                 
                 const ColSet A_k = param.getAk(omega);
                 const Vector grad = getGradient(x,y);
