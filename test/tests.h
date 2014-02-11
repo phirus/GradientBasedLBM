@@ -173,7 +173,11 @@ TEST(Cell,Velo)
 
     Cell cell(fr,fb);
     cell.calcRho();
-    Vector u = cell.getU();
+    ColSet rho = cell.getRho();
+    VeloSet v = cell.getU();
+
+    Vector u = (v[0]*rho[0] + v[1]*rho[1]) * (1/sum(rho));
+
     usqr = u*u;
 
     EXPECT_DOUBLE_EQ(0.05,u.y);
@@ -459,8 +463,8 @@ TEST(Lattice,collideSingle)
     double rho,usqr;
     cell.calcRho();
     rho = sum(cell.getRho());
-    Vector u = cell.getU();
-    usqr = u*u;
+    VeloSet u = cell.getU();
+    usqr = u[0]*u[0];
 
     EXPECT_DOUBLE_EQ(2.0,rho);
     EXPECT_NEAR(0,usqr,1e-10);
@@ -632,7 +636,8 @@ TEST(MRT,trafo){
     Cell testCell(f,f);
     testCell.calcRho();
     ColSet rho = testCell.getRho();
-    Vector u = testCell.getU();
+
+    VeloSet u = testCell.getU();
     DistributionSetType fEq  = eqDistro(rho,u,phi);
     DistributionSetType vergleich;
     vergleich[0] = array_diff(f, fEq[0]);
@@ -644,6 +649,7 @@ TEST(MRT,trafo){
     DistributionSetType transformed;
     transformed[0] = INV_TRAFO_MATRIX * array_diff(m,mEq[0]);
     transformed[1] = INV_TRAFO_MATRIX * array_diff(m,mEq[1]);
+
     for(int i = 0; i<9;i++)
     {
         EXPECT_NEAR(vergleich[0][i],transformed[0][i],1e-10) ;
@@ -658,7 +664,7 @@ TEST(MRT,mass){
     Cell testCell(f,f);
     testCell.calcRho();
     ColSet rho = testCell.getRho();
-    Vector u = testCell.getU();
+    VeloSet u = testCell.getU();
     DistributionSetType fEq  = eqDistro(rho,u,phi);
     array m = TRAFO_MATRIX * f;
     array mEq = TRAFO_MATRIX * fEq[0];

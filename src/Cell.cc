@@ -4,7 +4,7 @@
 
 //=========================== LIFECYCLE ===========================
 
-Cell::Cell(double fzero_red, double fzero_blue, bool solid):u(0,0),isSolid(solid),delta(0)
+Cell::Cell(double fzero_red, double fzero_blue, bool solid):isSolid(solid),delta(0)
 {
     f[0][0] = fzero_red;
     f[1][0] = fzero_blue;
@@ -16,16 +16,27 @@ Cell::Cell(double fzero_red, double fzero_blue, bool solid):u(0,0),isSolid(solid
     }
     rho[0] = 0;
     rho[1] = 0;
+
+    u[0].x = 0;
+    u[0].y = 0;
+    u[1].x = 0;
+    u[1].y = 0;
+
 }
 
 // like a copy constructor for the bulk phase
-Cell::Cell(const array& finiRed, const array& finiBlue):isSolid(false)
+Cell::Cell(const array& finiRed, const array& finiBlue):isSolid(false),delta(0)
 {
     f.at(0) = finiRed;
     f.at(1) = finiBlue;
 
     rho[0] = 0;
     rho[1] = 0;
+
+    u[0].x = 0;
+    u[0].y = 0;
+    u[1].x = 0;
+    u[1].y = 0;
 }
 
 //=========================== OPERATORS ===========================
@@ -53,8 +64,11 @@ void Cell::calcRho()
     // initialize
     rho[0] = 0;
     rho[1] = 0;
-    u.x = 0;
-    u.y = 0;
+
+    u[0].x = 0;
+    u[0].y = 0;
+    u[1].x = 0;
+    u[1].y = 0;
 
     // iterate
     if (isSolid == false)
@@ -63,15 +77,20 @@ void Cell::calcRho()
         {
             rho[0] += f[0][i];
             rho[1] += f[1][i];
-            u.x += ( f[0][i] + f[1][i] ) * DIRECTION[i].x;
-            u.y += ( f[0][i] + f[1][i] ) * DIRECTION[i].y;
+            u[0].x += ( f[0][i]) * DIRECTION[i].x;
+            u[0].y += ( f[0][i]) * DIRECTION[i].y;
+            u[1].x += ( f[1][i] ) * DIRECTION[i].x;
+            u[1].y += ( f[1][i] ) * DIRECTION[i].y;
         }
-        double rhoSum = rho[0] + rho[1];
         delta = rho[0]-rho[1];
-        if(rhoSum >0) {
-            u.x /= rhoSum;
-            u.y /= rhoSum;
-            }
+        if(rho[0] >0) {
+            u[0].x /= rho[0];
+            u[0].y /= rho[0];
+        }
+        if(rho[1] >0) {
+            u[1].x /= rho[1];
+            u[1].y /= rho[1];
+        }
     }
 }
 
