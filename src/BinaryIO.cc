@@ -281,7 +281,8 @@ void write_techplot_output(const Lattice& l, int iterNum, bool verbose)
             {
                 VeloSet u = tmp.getU();
                 ColSet rho = tmp.getRho();
-                Vector v = (u[0]*rho[0] + u[1]*rho[1]) * (1/sum(rho));
+                Vector v;
+                if(sum(rho) > 0) v = (u[0]*rho[0] + u[1]*rho[1]) * (1/sum(rho));
                 PsiFile << "\t" << sum(rho) << "\t" << u[0].x << "\t" << u[0].y << "\t" << u[1].x << "\t" << u[1].y << "\t" << v.Abs();
             }
             PsiFile << endl;

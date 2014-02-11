@@ -137,7 +137,7 @@ void initialSetUp(Lattice& meins, Preprocess& prepro, int xmax, int ymax){
 
     // Bildung der Grenzschicht bevor Schwerkraft zugeschaltet wird
 
-   for (int i = 1; i< 501; i++){
+   for (int i = 1; i< 1501; i++){
        meins.collideAll(1,false);
        meins.streamAll(1);
        if(i%10 == 0) cout << i<<endl;
