@@ -18,8 +18,8 @@ public:
 	// unit conversions
 	inline const double convertG()const{return g * timestep * timestep / spacestep;};		///  m/s^2 -> -
 	inline const double convertSigma()const{return sigma * timestep * timestep / (rho_l * spacestep * spacestep * spacestep) ;};  /// kg/s^2 -> -
-	inline const double convertRhoL()const{return rho_l/rho_l;};
-	inline const double convertRhoG()const{return rho_g/rho_l;};
+	inline const double convertRhoL()const{return 1;};	// rho_l / rho_l
+	inline const double convertRhoG()const{return 1/gamma;}; // (rho_l / gamma) / rho_l
 	// get the parameter set
 	const ParamSet getParamSet()const;
 	// refine timestep
@@ -77,7 +77,6 @@ private:
 	double spacestep;  /// < spacestep /m	
 	double timestep;   /// < timestep /s
 	double delRho;     /// < density difference / kg * m^-3
-	double rho_g;
 	double nu;
 
 	/// operations
@@ -87,7 +86,7 @@ private:
 	inline void calcTimestep(){timestep = spacestep / (sqrt(3) * c_s);};
 	inline void calcNu(){nu = c_s * c_s * timestep * (tau - 0.5);};
 	inline void calcDelRho(){delRho = rho_l * (1 - 1/gamma);};
-	inline void calcS2(){s_2 = 1/( (nu*muRatio) / (c_s*c_s * timestep) + 1/2);};
+	inline void calcS2(){s_2 = 1/( (nu * muRatio) / (c_s*c_s * timestep) + 0.5);};
 
 	void deduceAll();
 

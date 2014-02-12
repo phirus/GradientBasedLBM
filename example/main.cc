@@ -38,8 +38,8 @@ int main(int argc, char** argv){
         timetrack = read_timetrack_file(prepro, vm["preprocess"].as<string>());
     }
    
-    int ymax = 150;
-    int xmax = 80;
+    int ymax = 200;
+    int xmax = 120;
     // create a Lattice
     Lattice meins(xmax,ymax);
     initialSetUp(meins, prepro, xmax, ymax);
@@ -105,20 +105,21 @@ int main(int argc, char** argv){
 void initialSetUp(Lattice& meins, Preprocess& prepro, int xmax, int ymax){
     // set the parameters    
     // const ParamSet params = prepro.getParamSet();
-    const ParamSet params = ParamSet();
+    //                              omega1    omega2   rho gamma    sigma      g            cs      dt
+    const ParamSet params = ParamSet(1.12396, 1.12396, 1, 1.92506, 0.0118585, 0.000121866, 1.26367, 8.79271e-05, RelaxationPar(0.781602,1,1));
     meins.setParams(params);
 
     // get densities
     const double rho_liquid = 1;//prepro.convertRhoL();
-    const double rho_gas = 0.5;///prepro.convertRhoG();
+    const double rho_gas = 0.5;//prepro.convertRhoG();
 
     const Cell air(0,rho_gas,false);
     const Cell liquid(rho_liquid,0,false);
     const Cell wall(0,0,true);
 
     // setup geometry (bubble at the bottom, x-centered)
-    // const int R1 = prepro.getResolution()/2;
-    const int R1 = 40/2;
+    const int R1 = prepro.getResolution()/2;
+    // const int R1 = 40/2;
     const int xm1 = xmax/2;
     const int ym1 = 2*R1;
 
