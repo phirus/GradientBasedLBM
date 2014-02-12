@@ -227,7 +227,7 @@ void Lattice::streamAll(int threads)
     data = newData;
 }
 
-void Lattice::collideAll(int threads, bool gravity)
+void Lattice::collideAll(int threads, bool gravity, bool isLimitActive)
 {
     field *newData = new field(boost::extents[xsize][ysize]);
 
@@ -239,7 +239,7 @@ void Lattice::collideAll(int threads, bool gravity)
     // const double rhoRedFixed = param.getRhoR();
     const RelaxationPar relax = param.getRelaxation();
     // const double dt = param.getDeltaT();
-    // const double speedlimit = param.getSpeedlimit();
+    const double speedlimit = param.getSpeedlimit();
 
     // double g;
     // if(gravity == true) g = param.getG();
@@ -273,8 +273,11 @@ void Lattice::collideAll(int threads, bool gravity)
                 // u[1] = u[1] + G *  (dt/(2* rho)) ;
                 // }
 
-                // if ( u[0].Abs() > speedlimit) throw("maximum velocity reached");
-                // if ( u[1].Abs() > speedlimit) throw("maximum velocity reached");
+                if (isLimitActive == true) {
+                    // check for exceptions
+                    if ( u[0].Abs() > speedlimit) throw("maximum velocity reached");
+                    if ( u[1].Abs() > speedlimit) throw("maximum velocity reached");
+                }
 
                 const DistributionSetType fEq = eqDistro(rho_k, u, phi);
                 const DistributionSetType diff = distro_diff(fCell, fEq);

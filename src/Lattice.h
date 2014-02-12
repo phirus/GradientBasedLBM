@@ -47,7 +47,7 @@ public:
 
     /// LB steps
     void streamAll(int threads = 1); /// < streaming step
-    void collideAll(int threads = 1, bool gravity = false); /// < collision step
+    void collideAll(int threads = 1, bool gravity = false, bool isLimitActive = true); /// < collision step
 
 private:
     int xsize, ysize;   /// < extent of the Lattice
