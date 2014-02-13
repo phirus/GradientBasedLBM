@@ -1,5 +1,6 @@
-#include <iostream>
+#include<iostream>
 #include<ctime>
+#include<vector>
 
 #include"../src/Lattice.h"
 #include"../src/BinaryIO.h"
@@ -104,14 +105,14 @@ int main(int argc, char** argv){
 
 void initialSetUp(Lattice& meins, Preprocess& prepro, int xmax, int ymax){
     // set the parameters    
-    // const ParamSet params = prepro.getParamSet();
+    const ParamSet params = prepro.getParamSet();
     //                              omega1    omega2   rho gamma    sigma      g            cs      dt
-    const ParamSet params = ParamSet(1.12396, 1.12396, 1, 1.92506, 0.0118585, 0.000121866, 1.26367, 8.79271e-05, RelaxationPar(0.781602,1,1));
+    // const ParamSet params = ParamSet(1.12396, 1.12396, 1, 1.92506, 0.0118585, 0.000121866, 1.26367, 8.79271e-05, RelaxationPar(0.781602,1,1));
     meins.setParams(params);
 
     // get densities
-    const double rho_liquid = 1;//prepro.convertRhoL();
-    const double rho_gas = 0.5;//prepro.convertRhoG();
+    const double rho_liquid = prepro.convertRhoL();
+    const double rho_gas = prepro.convertRhoG();
 
     const Cell air(0,rho_gas,false);
     const Cell liquid(rho_liquid,0,false);
@@ -131,10 +132,15 @@ void initialSetUp(Lattice& meins, Preprocess& prepro, int xmax, int ymax){
         }
     }
 
-    meins.bottomWall();
+    // meins.bottomWall();
     meins.equilibriumIni();
 
     write_techplot_output(meins,0,true);
+
+    // temporal mass_balance
+    std::vector<double> count;
+    std::vector<double> liquid_mass;
+    std::vector<double> gas_mass;
 
     // Bildung der Grenzschicht bevor Schwerkraft zugeschaltet wird
 
@@ -145,12 +151,21 @@ void initialSetUp(Lattice& meins, Preprocess& prepro, int xmax, int ymax){
        if(i%10 == 0) write_techplot_output(meins,i,true);;
    }
 
-   for (int i = 501; i< 1501; i++){
-       meins.collideAll(1,false,true);
-       meins.streamAll(1);
-       if(i%10 == 0) cout << i<<endl;
-       if(i%10 == 0) write_techplot_output(meins,i,true);;
+   for (int i = 501; i< 100001; i++){
+       meins.collideAll(4,false,true);
+       meins.streamAll(4);
+       if(i%100 == 0) cout << i<<endl;
+       if(i%500 == 0) write_techplot_output(meins,i,true);
+       if(i%500 == 0){
+        double tmpL,tmpG;
+        meins.mass_balance(tmpL,tmpG);
+        count.push_back(i);
+        liquid_mass.push_back(tmpL);
+        gas_mass.push_back(tmpG);
+       }
    }
+
+   write_data_plot(count, liquid_mass, gas_mass);
 cout<<"Initialisierung beendet\n\nSchwerkraft wird zugeschaltet\n"<<endl;
 //
 

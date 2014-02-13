@@ -417,6 +417,19 @@ void write_param_log(const ParamSet& p){
 
     paramLog.close();
 }
+void write_data_plot(const std::vector<double> x, const std::vector<double> y1, const std::vector<double> y2, const string& filename){
+    ofstream massplot;
+
+    stringstream name;
+    name << filename;
+
+    massplot.open( name.str().c_str() );
+    massplot << "x" << "\t" << "y1" << "\t" << "y2" << "\n";
+    for(int i = 0; i< x.size(); i++){
+        massplot << x.at(i) << "\t" << y1.at(i) << "\t" << y2.at(i) << "\n";
+    } 
+    massplot.close();
+}
 
 const bool input_query(const string& filename, const string& query, double& value){
     bool success = false;

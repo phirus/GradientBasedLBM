@@ -24,4 +24,6 @@ const bool input_query(const string& filename, const string& query, double& valu
 const Preprocess read_preprocess_file(const string& filename);
 const Timetrack read_timetrack_file(const Preprocess& prepro, const string& filename);
 
+void write_data_plot(const std::vector<double> x, const std::vector<double> y1, const std::vector<double> y2, const string& filename = "massplot.dat");
+
 #endif

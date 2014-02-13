@@ -37,6 +37,7 @@ public:
     /// calculations
     void equilibriumIni(); /// < replace all distribution functions with the equilibrium distribution
     void balance(double& mass, double& momentum)const; /// < monitor overall mass and momentum
+    void mass_balance(double& liquid_mass, double& gas_mass)const;
     void overallRho();
     direction directions(int x, int y)const; /// < calculates positions of neighboring sites (periodical)
     const Vector getGradient(int x, int y)const; /// < calculates the color gradient on the position (y,x)

@@ -154,6 +154,24 @@ void Lattice::balance(double& mass, double& momentum)const
     }
 }
 
+void Lattice::mass_balance(double& liquid_mass, double& gas_mass)const
+{
+    ColSet rho;
+    liquid_mass = 0;
+    gas_mass = 0;
+
+    for (int j=0; j<ysize; j++)
+    {
+        for (int i=0; i<xsize; i++)
+        {
+            (*data)[i][j].calcRho();
+            rho = (*data)[i][j].getRho();
+            liquid_mass += rho[0];
+            gas_mass += rho[1];
+        }
+    }
+}
+
 void Lattice::overallRho()
 {
     for (int j=0; j<ysize; j++)
@@ -236,14 +254,13 @@ void Lattice::collideAll(int threads, bool gravity, bool isLimitActive)
     const double beta = param.getBeta();
     const DistributionSetType phi = param.getPhi();
     const int range = xsize * ysize;
-    // const double rhoRedFixed = param.getRhoR();
+    const double rhoRedFixed = param.getRhoR();
     const RelaxationPar relax = param.getRelaxation();
-    // const double dt = param.getDeltaT();
+    const double dt = param.getDeltaT();
     const double speedlimit = param.getSpeedlimit();
 
-    // double g;
-    // if(gravity == true) g = param.getG();
-    // else  g = 0;
+    double g(0);
+    if(gravity == true) g = param.getG();
 
     #pragma omp parallel
     {
@@ -262,11 +279,10 @@ void Lattice::collideAll(int threads, bool gravity, bool isLimitActive)
                 const ColSet rho_k = tmpCell.getRho();
                 const double rho = sum(rho_k);
 
-                // const Vector G(0 ,  g*(rhoRedFixed - rho));
-
+                const Vector G(0 ,  g*(rhoRedFixed - rho));
                 // const Vector G(0 , - rho * g);
 
-                VeloSet u = tmpCell.getU();// + G *  (dt/(2* rho)) ;
+                VeloSet u = tmpCell.getU();
 
                 // if(gravity == true){
                 // u[0] = u[0] + G *  (dt/(2* rho)) ;
