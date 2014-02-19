@@ -15,6 +15,7 @@ public:
     /// Lifecylce
     Cell(double fzero_red=1, double fzero_blue=1, bool solid = false); /// < construcor
     Cell(const array& finiRed,const array& finiBlue); // constr
+    Cell(const DistributionSetType& newF); // constr
 
     /// operators
     const bool operator==(const Cell& other)const;

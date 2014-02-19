@@ -39,8 +39,8 @@ int main(int argc, char** argv){
         timetrack = read_timetrack_file(prepro, vm["preprocess"].as<string>());
     }
    
-    int ymax = 200;
-    int xmax = 120;
+    int ymax = 100;
+    int xmax = 100;
     // create a Lattice
     Lattice meins(xmax,ymax);
     initialSetUp(meins, prepro, xmax, ymax);
@@ -116,18 +116,24 @@ void initialSetUp(Lattice& meins, Preprocess& prepro, int xmax, int ymax){
 
     const Cell air(0,rho_gas,false);
     const Cell liquid(rho_liquid,0,false);
+
+    // const Cell air(rho_liquid,rho_gas*1.005,false);
+    // const Cell liquid(rho_liquid,rho_gas,false);
+
     const Cell wall(0,0,true);
 
     // setup geometry (bubble at the bottom, x-centered)
     const int R1 = prepro.getResolution()/2;
     // const int R1 = 40/2;
     const int xm1 = xmax/2;
-    const int ym1 = 2*R1;
+    // const int ym1 = 2*R1;
+    const int ym1 = ymax/2;
 
     for(int j=0; j< ymax; j++)
     {
         for(int i=0; i< xmax; i++){
             if( (i-xm1)*(i-xm1) + (j-ym1)*(j-ym1) < R1*R1 ) meins.setCell(i,j,air);
+            // if( j > ym1) meins.setCell(i,j,air);
             else meins.setCell(i,j,liquid);
         }
     }
@@ -152,11 +158,15 @@ void initialSetUp(Lattice& meins, Preprocess& prepro, int xmax, int ymax){
    }
 
    for (int i = 501; i< 100001; i++){
-       meins.collideAll(4,false,true);
+    
+       meins.collideAll(4,false,false);
        meins.streamAll(4);
+
+    
        if(i%100 == 0) cout << i<<endl;
        if(i%500 == 0) write_techplot_output(meins,i,true);
-       if(i%500 == 0){
+       if(i%500 == 0)
+       {
         double tmpL,tmpG;
         meins.mass_balance(tmpL,tmpG);
         count.push_back(i);
