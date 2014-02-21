@@ -174,6 +174,8 @@ void initialSetUp(Lattice& meins, Preprocess& prepro, int xmax, int ymax){
         gas_mass.push_back(tmpG);
        }
    }
+          meins.collideAll(4,false,false,true);
+
 
    write_data_plot(count, liquid_mass, gas_mass);
 cout<<"Initialisierung beendet\n\nSchwerkraft wird zugeschaltet\n"<<endl;

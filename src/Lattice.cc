@@ -245,7 +245,7 @@ void Lattice::streamAll(int threads)
     data = newData;
 }
 
-void Lattice::collideAll(int threads, bool gravity, bool isLimitActive)
+void Lattice::collideAll(int threads, bool gravity, bool isLimitActive, bool giveErrors)
 {
     field *newData = new field(boost::extents[xsize][ysize]);
 
@@ -357,16 +357,18 @@ void Lattice::collideAll(int threads, bool gravity, bool isLimitActive)
 
                 tmpCell.setF(fTmp);
                 tmpCell.calcRho();
-                DistributionSetType fZwischen = tmpCell.getF();
-                const ColSet rho_n = tmpCell.getRho();
-                for (int q=0; q<9; q++)
-                {
-                    if (rho_n[0] <= 0) fZwischen[0][q] = 0;
-                    else fZwischen[0][q] = (fZwischen[0][q] / rho_n[0])*rho_k[0]; 
-                    if (rho_n[1] <= 0) fZwischen[1][q] = 0;
-                    else fZwischen[1][q] = (fZwischen[1][q] / rho_n[1])*rho_k[1]; 
-                }
-                tmpCell.setF(fZwischen);
+                #pragma omp critical(standardOutput)
+                if(sum(tmpCell.getRho()) > rho * 1.000001 && giveErrors == true) std::cout << "mass defect in x= " << x << "\t y=" << y << std::endl;
+                // DistributionSetType fZwischen = tmpCell.getF();
+                // const ColSet rho_n = tmpCell.getRho();
+                // for (int q=0; q<9; q++)
+                // {
+                //     if (rho_n[0] <= 0) fZwischen[0][q] = 0;
+                //     else fZwischen[0][q] = (fZwischen[0][q] / rho_n[0])*rho_k[0]; 
+                //     if (rho_n[1] <= 0) fZwischen[1][q] = 0;
+                //     else fZwischen[1][q] = (fZwischen[1][q] / rho_n[1])*rho_k[1]; 
+                // }
+                // tmpCell.setF(fZwischen);
             }
             #pragma omp critical(Zuweisung2)
             (*newData)[x][y] = tmpCell;
