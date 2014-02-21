@@ -264,10 +264,12 @@ void write_techplot_output(const Lattice& l, int iterNum, bool verbose)
         PsiFile << "\"ux2\""<<endl;
         PsiFile << "\"uy2\""<<endl;
         PsiFile << "\"u_abs\""<<endl;
+        PsiFile << "\"grad_x\""<<endl;
+        PsiFile << "\"grad_y\""<<endl;
     }
     PsiFile << "ZONE T=\" "<< iterNum << "\""<< endl;
     PsiFile << "I="<<xsize<<", J="<<ysize<<", K=1,F=POINT"<< endl;
-    if (verbose == true) PsiFile << "DT=(DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE)"<<endl;
+    if (verbose == true) PsiFile << "DT=(DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE)"<<endl;
     else PsiFile << "DT=(DOUBLE DOUBLE DOUBLE DOUBLE)"<<endl;
 
     for (int j=0; j<ysize; j++)
@@ -282,8 +284,9 @@ void write_techplot_output(const Lattice& l, int iterNum, bool verbose)
                 VeloSet u = tmp.getU();
                 ColSet rho = tmp.getRho();
                 Vector v;
+                Vector gradient = l.getGradient(i, j);
                 if(sum(rho) > 0) v = (u[0]*rho[0] + u[1]*rho[1]) * (1/sum(rho));
-                PsiFile << "\t" << sum(rho) << "\t" << u[0].x << "\t" << u[0].y << "\t" << u[1].x << "\t" << u[1].y << "\t" << v.Abs();
+                PsiFile << "\t" << sum(rho) << "\t" << u[0].x << "\t" << u[0].y << "\t" << u[1].x << "\t" << u[1].y << "\t" << v.Abs() << "\t" << gradient.x << "\t" << gradient.y;
             }
             PsiFile << endl;
         }
