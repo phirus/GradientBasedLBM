@@ -13,7 +13,7 @@ void explicit_output(Lattice& l, int x, int y);
 
 void plot_array(const array& a);
 void plot_distribution(const DistributionSetType& f);
-void plot_cell(const Cell& c);
+void plot_cell(const Cell& c, bool verbose);
 
 int main(int argc, char** argv){
 
@@ -76,20 +76,17 @@ int main(int argc, char** argv){
 
     // Bildung der Grenzschicht bevor Schwerkraft zugeschaltet wird
 
-   // for (int i = 1; i< 1001; i++){
+   for (int i = 1; i< 501; i++){
     
-   //     meins.collideAll(4,false,false);
-   //     meins.streamAll(4);
+       meins.collideAll(1,false,false);
+       meins.streamAll(1);
 
     
-   //     if(i%100 == 0) cout << i<<endl;
-   //     if(i%500 == 0) write_techplot_output(meins,i,true);
-   // }
+       if(i%100 == 0) cout << i<<endl;
+       // if(i%500 == 0) write_techplot_output(meins,i,true);
+   }
     // meins.collideAll(4,false,false,true);
-   explicit_output(meins,1,1);
-
-   array a;
-   plot_array(a);
+   explicit_output(meins,50,50);
 
 
    return 0;
@@ -97,7 +94,33 @@ int main(int argc, char** argv){
 
 void explicit_output(Lattice& l, int x, int y)
 {
-    cout<<"Test"<<endl;
+    Cell tmp;
+    tmp = l.getCell(x,y);
+    plot_cell(tmp,true);
+
+    Vector gradient = l.getGradient(x,y);
+    
+    {
+        cout << "\ndelta";
+        count << "\nn: " << l.getCell(x,y+1).getDeltaRho();
+        count << "\nne: " << l.getCell(x,y+1).getDeltaRho();
+        count << "\ne: " << l.getCell(x,y+1).getDeltaRho();
+        count << "\nse: " << l.getCell(x,y+1).getDeltaRho();
+        count << "\ns: " << l.getCell(x,y+1).getDeltaRho();
+        count << "\nsw: " << l.getCell(x,y+1).getDeltaRho();
+        count << "\nw: " << l.getCell(x,y+1).getDeltaRho();
+        count << "\nnw: " << l.getCell(x,y+1).getDeltaRho();
+        count << "\nnn: " << l.getCell(x,y+1).getDeltaRho();
+        count << "\nee: " << l.getCell(x,y+1).getDeltaRho();
+        count << "\nss: " << l.getCell(x,y+1).getDeltaRho();
+        count << "\nww: " << l.getCell(x,y+1).getDeltaRho();
+    }
+    
+
+
+    cout << "\ngradient: x= " << gradient.x << "\ty = " << gradient.y ;
+    cout << "\n";
+    cout << "\n";
 }
 
 void plot_array(const array& a)
@@ -115,18 +138,18 @@ void plot_distribution(const DistributionSetType& f)
     plot_array(f[1]);
 }
 
-void plot_cell(const Cell& c)
+void plot_cell(const Cell& c, bool verbose)
 {
     const ColSet rho = c.getRho();
     cout << "\nrho[0] = " << rho[0];
     cout << "\nrho[1] = " << rho[1];
     cout << "\ndeltaRho = " << c.getDeltaRho();
-
-    const VeloSet u = c.getU();
-    cout << "\nu[0]: x = " << u[0].x << "\ty=" << u[0].y;
-    cout << "\nu[1]: x = " << u[1].x << "\ty=" << u[1].y;       
-
+    if(true == verbose)
+    {
+        const VeloSet u = c.getU();
+        cout << "\nu[0]: x = " << u[0].x << "\ty=" << u[0].y;
+        cout << "\nu[1]: x = " << u[1].x << "\ty=" << u[1].y; 
+    }
     cout << "\n";
-
     plot_distribution(c.getF());
 }
