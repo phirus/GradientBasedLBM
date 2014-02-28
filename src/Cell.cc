@@ -42,7 +42,7 @@ Cell::Cell(const array& finiRed, const array& finiBlue):isSolid(false),delta(0)
 Cell::Cell(const DistributionSetType& newF):isSolid(false),delta(0)
 {
     f.at(0) = newF.at(0);
-    f.at(1) = newF.at(0);
+    f.at(1) = newF.at(1);
 
     rho[0] = 0;
     rho[1] = 0;

@@ -106,8 +106,6 @@ int main(int argc, char** argv){
 void initialSetUp(Lattice& meins, Preprocess& prepro, int xmax, int ymax){
     // set the parameters    
     const ParamSet params = prepro.getParamSet();
-    //                              omega1    omega2   rho gamma    sigma      g            cs      dt
-    // const ParamSet params = ParamSet(1.12396, 1.12396, 1, 1.92506, 0.0118585, 0.000121866, 1.26367, 8.79271e-05, RelaxationPar(0.781602,1,1));
     meins.setParams(params);
 
     // get densities
@@ -117,14 +115,10 @@ void initialSetUp(Lattice& meins, Preprocess& prepro, int xmax, int ymax){
     const Cell air(0,rho_gas,false);
     const Cell liquid(rho_liquid,0,false);
 
-    // const Cell air(rho_liquid,rho_gas*1.005,false);
-    // const Cell liquid(rho_liquid,rho_gas,false);
-
     const Cell wall(0,0,true);
 
     // setup geometry (bubble at the bottom, x-centered)
     const int R1 = prepro.getResolution()/2;
-    // const int R1 = 40/2;
     const int xm1 = xmax/2;
     // const int ym1 = 2*R1;
     const int ym1 = ymax/2;
@@ -157,7 +151,7 @@ void initialSetUp(Lattice& meins, Preprocess& prepro, int xmax, int ymax){
        if(i%10 == 0) write_techplot_output(meins,i,true);;
    }
 
-   for (int i = 501; i< 1001; i++){
+   for (int i = 501; i< 10001; i++){
     
        meins.collideAll(4,false,false);
        meins.streamAll(4);

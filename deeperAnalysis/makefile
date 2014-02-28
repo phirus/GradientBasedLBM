@@ -19,7 +19,7 @@ OUTPUT = deeperAnalysis
 # creating OBJs
 OBJ_DEBUG = $(OBJ_DIR)/BinaryIO.o $(OBJ_DIR)/Constants.o $(OBJ_DIR)/Cell.o $(OBJ_DIR)/Definitions.o $(OBJ_DIR)/Lattice.o $(OBJ_DIR)/main.o $(OBJ_DIR)/Matrix.o $(OBJ_DIR)/ParamSet.o $(OBJ_DIR)/Preprocess.o $(OBJ_DIR)/Timetrack.o $(OBJ_DIR)/Vector.o
 
-all: clean build
+all: clean build run
 
 Release: build
 
@@ -70,7 +70,8 @@ $(OBJ_DIR)/Vector.o: $(SRC)/Vector.cc
 clean: 
 	rm -f $(OBJ_DEBUG) $(OUTPUT)
 	rm -rf $(OBJ_DIR)
+	rm -rf log
 run: 
-	./$(OUTPUT)
+	./$(OUTPUT) > log
 
 .PHONY: before_debug after_debug clean

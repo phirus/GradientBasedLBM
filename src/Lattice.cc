@@ -331,14 +331,14 @@ void Lattice::collideAll(int threads, bool gravity, bool isLimitActive, bool giv
                         // if (gravity == true) final_forcing_term = second_forcing_term[color][q] ;
                         // fTmp[color][q] =  fCell[color][q] - single_phase_col[color][q] + dt * final_forcing_term + A_k[color] * gradient_collision;
                         fTmp[color][q] =  fCell[color][q] - single_phase_col[color][q];
-                        if (fTmp[color][q] < 0) fTmp[color][q] = 0;
+                        // if (fTmp[color][q] < 0) fTmp[color][q] = 0;
                     }
                     fges = fTmp[0][q]+fTmp[1][q];
 
                     for (int color=0;color<=1; color++)
                     {
                         fTmp[color][q] += A_k[color] * gradient_collision;
-                        if (fTmp[color][q] < 0) fTmp[color][q] = 0;
+                        // if (fTmp[color][q] < 0) fTmp[color][q] = 0;
                     }
 
                     // recoloring
@@ -470,19 +470,25 @@ void Lattice::streamAndBouncePull(Cell& tCell, const direction& dir)const
     tCell.setF(ftmp);
 }
 
-const DistributionSetType eqDistro(const ColSet& rho_k, const VeloSet& u, const DistributionSetType& phi)
+const DistributionSetType eqDistro(const ColSet& rho_k, const VeloSet& u, const DistributionSetType& phi, bool debug)
 {
     DistributionSetType feq;
-    const boost::array<double,2> usqr = {{u[0]*u[0],u[1]*u[1]}};
-    
+    Vector velo = (u[0] * rho_k[0] + u[1] * rho_k[1]) * (1.0 / (rho_k[0]+rho_k[1])) ;
+    // const boost::array<double,2> usqr = {{u[0]*u[0],u[1]*u[1]}};
+    double usqr = velo*velo;
+   
     for (int i=0; i<9; i++)
     {
-        const boost::array<double,2> scal = {{u[0]*DIRECTION[i],u[1]*DIRECTION[i]}};
+        double scal = velo*DIRECTION[i];
+        // const boost::array<double,2> scal = {{u[0]*DIRECTION[i],u[1]*DIRECTION[i]}};
         for (int color = 0; color<=1; color++)
         {
-            feq[color][i] = rho_k[color] * ( phi[color][i] + WEIGHTS[i] * ( 3 * scal[color] + 4.5 * (scal[color]*scal[color]) - 1.5 * usqr[color]));
+            // feq[color][i] = rho_k[color] * ( phi[color][i] + WEIGHTS[i] * ( 3 * scal[color] + 4.5 * (scal[color]*scal[color]) - 1.5 * usqr[color]));
+            feq[color][i] = rho_k[color] * ( phi[color][i] + WEIGHTS[i] * ( 3 * scal + 4.5 * (scal*scal) - 1.5 * usqr));
         }
     }
+
+    if(debug == true) cout << "\n\n";
     return feq;
 }
 

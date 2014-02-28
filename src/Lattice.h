@@ -60,7 +60,7 @@ private:
 };
 
 /// calculates the equilibrium distribution based of a cell
-const DistributionSetType eqDistro(const ColSet& rho_k, const VeloSet& u, const DistributionSetType& phi);
+const DistributionSetType eqDistro(const ColSet& rho_k, const VeloSet& u, const DistributionSetType& phi, bool debug = false);
 
 const DistributionSetType calculate_forcing_term(Vector G, VeloSet u);
 

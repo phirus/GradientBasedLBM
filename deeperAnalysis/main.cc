@@ -14,6 +14,8 @@ void explicit_output(Lattice& l, int x, int y);
 void plot_array(const array& a);
 void plot_distribution(const DistributionSetType& f);
 void plot_cell(const Cell& c, bool verbose);
+void plot_gradient_information(Lattice& l, int x, int y);
+const Cell mock_single_collision(const Cell& c, const ParamSet& params);
 
 int main(int argc, char** argv){
 
@@ -72,21 +74,16 @@ int main(int argc, char** argv){
     }
 
     meins.equilibriumIni();
-    write_techplot_output(meins,0,true);
-
-    // Bildung der Grenzschicht bevor Schwerkraft zugeschaltet wird
-
    for (int i = 1; i< 501; i++){
     
        meins.collideAll(1,false,false);
        meins.streamAll(1);
-
-    
-       if(i%100 == 0) cout << i<<endl;
-       // if(i%500 == 0) write_techplot_output(meins,i,true);
    }
-    // meins.collideAll(4,false,false,true);
-   explicit_output(meins,50,50);
+   explicit_output(meins,37,37);
+   // meins.overallRho();
+   // meins.collideAll(1,false,false,false);
+   // cout << "\n\n\nafter collision";
+   // explicit_output(meins,37,37);
 
 
    return 0;
@@ -94,31 +91,36 @@ int main(int argc, char** argv){
 
 void explicit_output(Lattice& l, int x, int y)
 {
+    cout.precision(15);
     Cell tmp;
     tmp = l.getCell(x,y);
+    cout << "\nactual cell:";
     plot_cell(tmp,true);
 
-    Vector gradient = l.getGradient(x,y);
-    
-    {
-        cout << "\ndelta";
-        count << "\nn: " << l.getCell(x,y+1).getDeltaRho();
-        count << "\nne: " << l.getCell(x,y+1).getDeltaRho();
-        count << "\ne: " << l.getCell(x,y+1).getDeltaRho();
-        count << "\nse: " << l.getCell(x,y+1).getDeltaRho();
-        count << "\ns: " << l.getCell(x,y+1).getDeltaRho();
-        count << "\nsw: " << l.getCell(x,y+1).getDeltaRho();
-        count << "\nw: " << l.getCell(x,y+1).getDeltaRho();
-        count << "\nnw: " << l.getCell(x,y+1).getDeltaRho();
-        count << "\nnn: " << l.getCell(x,y+1).getDeltaRho();
-        count << "\nee: " << l.getCell(x,y+1).getDeltaRho();
-        count << "\nss: " << l.getCell(x,y+1).getDeltaRho();
-        count << "\nww: " << l.getCell(x,y+1).getDeltaRho();
-    }
-    
+    cout << "\n";
+    cout << "\n";
 
+    const ParamSet param = l.getParams();
+    const DistributionSetType phi = param.getPhi();
+    const ColSet rho_k = tmp.getRho();
+    const double rho = sum(rho_k);
+    const VeloSet u = tmp.getU();
+    const DistributionSetType fEq = eqDistro(rho_k, u, phi);
 
-    cout << "\ngradient: x= " << gradient.x << "\ty = " << gradient.y ;
+    Cell EqCell(fEq);
+    EqCell.calcRho();
+    cout << "\nequilibrium cell:";
+    plot_cell(EqCell,true);
+
+    cout << "\n";
+    cout << "\n";
+
+    cout << "\npost-collision cell:";
+    cout << "\nomega = "<<param.getOmega(0);
+    plot_cell(mock_single_collision(tmp, param),true);
+
+    // plot_gradient_information(l, x, y);
+    
     cout << "\n";
     cout << "\n";
 }
@@ -126,7 +128,7 @@ void explicit_output(Lattice& l, int x, int y)
 void plot_array(const array& a)
 {
     for(int i=0; i<9;i++){
-        cout<<"\n"<< a[i];
+        cout<<"\n"<< a[i] << "\tf[" << i << "]";
     }
 }
 
@@ -152,4 +154,60 @@ void plot_cell(const Cell& c, bool verbose)
     }
     cout << "\n";
     plot_distribution(c.getF());
+}
+
+void plot_gradient_information(Lattice& l, int x, int y)
+{
+    Vector gradient = l.getGradient(x,y);
+    
+    {
+        cout.precision(15);
+        cout << "\ndelta";
+        cout << "\nn: "  << "\t" << l.getCell(x  ,y+1).getDeltaRho();
+        cout << "\nne: " << "\t" << l.getCell(x-1,y+1).getDeltaRho();
+        cout << "\ne: "  << "\t" << l.getCell(x-1,y  ).getDeltaRho();
+        cout << "\nse: " << "\t" << l.getCell(x-1,y-1).getDeltaRho();
+        cout << "\ns: "  << "\t" << l.getCell(x  ,y-1).getDeltaRho();
+        cout << "\nsw: " << "\t" << l.getCell(x+1,y-1).getDeltaRho();
+        cout << "\nw: "  << "\t" << l.getCell(x+1,y  ).getDeltaRho();
+        cout << "\nnw: " << "\t" << l.getCell(x+1,y+1).getDeltaRho();
+        cout << "\nnn: " << "\t" << l.getCell(x  ,y+2).getDeltaRho();
+        cout << "\nee: " << "\t" << l.getCell(x-2,y  ).getDeltaRho();
+        cout << "\nss: " << "\t" << l.getCell(x  ,y-2).getDeltaRho();
+        cout << "\nww: " << "\t" << l.getCell(x+2,y  ).getDeltaRho();
+    }
+    
+    cout << "\ngradient: x= " << gradient.x << "\ty = " << gradient.y ;
+}
+
+const Cell mock_single_collision(const Cell& c, const ParamSet& param)
+{
+    const DistributionSetType phi = param.getPhi();
+    const RelaxationPar relax = param.getRelaxation();
+    DistributionSetType  fTmp;
+    const DistributionSetType fCell = c.getF();
+    
+    const ColSet rho_k = c.getRho();
+    const VeloSet u = c.getU();
+    const DistributionSetType fEq = eqDistro(rho_k, u, phi,true);
+    // const DistributionSetType diff = distro_diff(fCell, fEq);
+            
+    const double omega = param.getOmega(c.calcPsi());
+    // const Matrix relaxation_matrix(relax,omega);
+                
+    // const DistributionSetType single_phase_col = INV_TRAFO_MATRIX * (relaxation_matrix * (TRAFO_MATRIX * diff));
+                
+    for (int q=0; q<9; q++)
+    {
+        for (int color=0;color<=1; color++)
+        {
+            // fTmp[color][q] =  fCell[color][q] - 1 * (fCell[color][q] - fEq[color][q]);
+            fTmp[color][q] =  fCell[color][q] - omega * (fCell[color][q] - fEq[color][q]);
+            // fTmp[color][q] =  fCell[color][q] - single_phase_col[color][q];
+            if (fTmp[color][q] < 0) fTmp[color][q] = 0;
+        }
+    } // end for 
+    Cell result(fTmp);
+    result.calcRho();
+    return result;
 }
