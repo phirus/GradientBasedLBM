@@ -151,7 +151,7 @@ void initialSetUp(Lattice& meins, Preprocess& prepro, int xmax, int ymax){
        if(i%10 == 0) write_techplot_output(meins,i,true);;
    }
 
-   for (int i = 501; i< 10001; i++){
+   for (int i = 501; i< 100001; i++){
     
        meins.collideAll(4,false,false);
        meins.streamAll(4);

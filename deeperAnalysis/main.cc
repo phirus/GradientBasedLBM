@@ -80,11 +80,6 @@ int main(int argc, char** argv){
        meins.streamAll(1);
    }
    explicit_output(meins,37,37);
-   // meins.overallRho();
-   // meins.collideAll(1,false,false,false);
-   // cout << "\n\n\nafter collision";
-   // explicit_output(meins,37,37);
-
 
    return 0;
 }
@@ -119,8 +114,6 @@ void explicit_output(Lattice& l, int x, int y)
     cout << "\nomega = "<<param.getOmega(0);
     plot_cell(mock_single_collision(tmp, param),true);
 
-    // plot_gradient_information(l, x, y);
-    
     cout << "\n";
     cout << "\n";
 }
@@ -190,20 +183,13 @@ const Cell mock_single_collision(const Cell& c, const ParamSet& param)
     const ColSet rho_k = c.getRho();
     const VeloSet u = c.getU();
     const DistributionSetType fEq = eqDistro(rho_k, u, phi,true);
-    // const DistributionSetType diff = distro_diff(fCell, fEq);
-            
     const double omega = param.getOmega(c.calcPsi());
-    // const Matrix relaxation_matrix(relax,omega);
-                
-    // const DistributionSetType single_phase_col = INV_TRAFO_MATRIX * (relaxation_matrix * (TRAFO_MATRIX * diff));
                 
     for (int q=0; q<9; q++)
     {
         for (int color=0;color<=1; color++)
         {
-            // fTmp[color][q] =  fCell[color][q] - 1 * (fCell[color][q] - fEq[color][q]);
             fTmp[color][q] =  fCell[color][q] - omega * (fCell[color][q] - fEq[color][q]);
-            // fTmp[color][q] =  fCell[color][q] - single_phase_col[color][q];
             if (fTmp[color][q] < 0) fTmp[color][q] = 0;
         }
     } // end for 

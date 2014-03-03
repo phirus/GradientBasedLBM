@@ -245,7 +245,7 @@ void Lattice::streamAll(int threads)
     data = newData;
 }
 
-void Lattice::collideAll(int threads, bool gravity, bool isLimitActive, bool giveErrors)
+void Lattice::collideAll(int threads, bool gravity, bool isLimitActive)
 {
     field *newData = new field(boost::extents[xsize][ysize]);
 
@@ -357,18 +357,8 @@ void Lattice::collideAll(int threads, bool gravity, bool isLimitActive, bool giv
 
                 tmpCell.setF(fTmp);
                 tmpCell.calcRho();
-                #pragma omp critical(standardOutput)
-                if(sum(tmpCell.getRho()) > rho * 1.000001 && giveErrors == true) std::cout << "mass defect in x= " << x << "\t y=" << y << std::endl;
-                // DistributionSetType fZwischen = tmpCell.getF();
-                // const ColSet rho_n = tmpCell.getRho();
-                // for (int q=0; q<9; q++)
-                // {
-                //     if (rho_n[0] <= 0) fZwischen[0][q] = 0;
-                //     else fZwischen[0][q] = (fZwischen[0][q] / rho_n[0])*rho_k[0]; 
-                //     if (rho_n[1] <= 0) fZwischen[1][q] = 0;
-                //     else fZwischen[1][q] = (fZwischen[1][q] / rho_n[1])*rho_k[1]; 
-                // }
-                // tmpCell.setF(fZwischen);
+                // #pragma omp critical(standardOutput)
+                // if(sum(tmpCell.getRho()) > rho * 1.000001 && giveErrors == true) std::cout << "mass defect in x= " << x << "\t y=" << y << std::endl;
             }
             #pragma omp critical(Zuweisung2)
             (*newData)[x][y] = tmpCell;
@@ -470,25 +460,20 @@ void Lattice::streamAndBouncePull(Cell& tCell, const direction& dir)const
     tCell.setF(ftmp);
 }
 
-const DistributionSetType eqDistro(const ColSet& rho_k, const VeloSet& u, const DistributionSetType& phi, bool debug)
+const DistributionSetType eqDistro(const ColSet& rho_k, const VeloSet& u, const DistributionSetType& phi)
 {
     DistributionSetType feq;
     Vector velo = (u[0] * rho_k[0] + u[1] * rho_k[1]) * (1.0 / (rho_k[0]+rho_k[1])) ;
-    // const boost::array<double,2> usqr = {{u[0]*u[0],u[1]*u[1]}};
     double usqr = velo*velo;
    
     for (int i=0; i<9; i++)
     {
         double scal = velo*DIRECTION[i];
-        // const boost::array<double,2> scal = {{u[0]*DIRECTION[i],u[1]*DIRECTION[i]}};
         for (int color = 0; color<=1; color++)
         {
-            // feq[color][i] = rho_k[color] * ( phi[color][i] + WEIGHTS[i] * ( 3 * scal[color] + 4.5 * (scal[color]*scal[color]) - 1.5 * usqr[color]));
             feq[color][i] = rho_k[color] * ( phi[color][i] + WEIGHTS[i] * ( 3 * scal + 4.5 * (scal*scal) - 1.5 * usqr));
         }
     }
-
-    if(debug == true) cout << "\n\n";
     return feq;
 }
 
