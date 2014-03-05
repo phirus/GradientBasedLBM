@@ -39,12 +39,12 @@ Matrix::Matrix(const RelaxationPar &relax, double omega):matrix(boost::extents[9
             matrix[i][j] = 0;
         }
     }
-    matrix[0][0] = 0;
+    matrix[0][0] = 1;
     matrix[1][1] = relax.s_2;
     matrix[2][2] = relax.s_3;
-    matrix[3][3] = 0;
+    matrix[3][3] = 1;
     matrix[4][4] = relax.s_5;
-    matrix[5][5] = 0;
+    matrix[5][5] = 1;
     matrix[6][6] = relax.s_5;
     matrix[7][7] = omega;
     matrix[8][8] = omega;

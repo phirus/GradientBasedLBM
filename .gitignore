@@ -11,4 +11,5 @@ test/paramLog
 translate/preprocessFile
 translate/paramLog
 julia/preprocessFile
+julia/constants.jl
 *.sublime-workspace
