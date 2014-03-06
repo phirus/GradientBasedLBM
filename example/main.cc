@@ -75,25 +75,22 @@ int main(int argc, char** argv){
     int restartInterval = timetrack.getRestartInt();
 
     while (timetrack.proceed() == true){
-        try{
-            meins.collideAll(numOfCPUs,true);
-            meins.streamAll(numOfCPUs);
-            timetrack.timestep();
-            int i = timetrack.getCount();
-            if(i%1000 == 0) cout << i<<endl;
-            if(i%techPlotInterval == 0)  write_techplot_output(meins,i,true);
-            if(i%restartInterval == 0) write_restart_file(meins, prepro, timetrack);
-        } 
-        catch(...)
-        {
+        bool success = meins.collideAll(numOfCPUs,true);
+        if(success == false){
             prepro.refine();
             const ParamSet params = prepro.getParamSet();
             meins.setParams(params);
             timetrack.refine();
             // cout << s << endl;
             cout<<"\nGitter verfeinert bei i = " << timetrack.getCount() << endl;
+            continue;
         }
-        
+        meins.streamAll(numOfCPUs);
+        timetrack.timestep();
+        int i = timetrack.getCount();
+        if(i%1000 == 0) cout << i<<endl;
+        if(i%techPlotInterval == 0)  write_techplot_output(meins,i,true);
+        if(i%restartInterval == 0) write_restart_file(meins, prepro, timetrack);        
     }
 
     time(&end);

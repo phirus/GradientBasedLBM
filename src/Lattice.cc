@@ -245,8 +245,9 @@ void Lattice::streamAll(int threads)
     data = newData;
 }
 
-void Lattice::collideAll(int threads, bool gravity, bool isLimitActive)
+bool Lattice::collideAll(int threads, bool gravity, bool isLimitActive)
 {
+    bool success(true);
     field *newData = new field(boost::extents[xsize][ysize]);
 
     omp_set_num_threads (threads);
@@ -284,12 +285,14 @@ void Lattice::collideAll(int threads, bool gravity, bool isLimitActive)
 
                 VeloSet u = tmpCell.getU();
 
-                // if (isLimitActive == true)
-                // {
-                //     // check for exceptions
-                //     if ( u[0].Abs() > speedlimit) throw("maximum velocity reached");
-                //     if ( u[1].Abs() > speedlimit) throw("maximum velocity reached");
-                // }   // end if(isLimitActive == true) 
+                if (isLimitActive == true)
+                {
+                    // check for exceptions
+                    if ( u[0].Abs() > speedlimit || u[1].Abs() > speedlimit){
+                        #pragma omp critical(ExceptionLike)
+                        success = false;
+                    } 
+                }   // end if(isLimitActive == true) 
 
                 if(gravity == true){
                 // u[0] = u[0] + G *  (dt/(2* rho)) ;
@@ -356,15 +359,20 @@ void Lattice::collideAll(int threads, bool gravity, bool isLimitActive)
 
                 tmpCell.setF(fTmp);
                 tmpCell.calcRho();
-                // #pragma omp critical(standardOutput)
-                // if(sum(tmpCell.getRho()) > rho * 1.000001 && giveErrors == true) std::cout << "mass defect in x= " << x << "\t y=" << y << std::endl;
             }
             #pragma omp critical(Zuweisung2)
             (*newData)[x][y] = tmpCell;
         }
     }
-    delete data;
-    data = newData;
+    if(success == true){
+        delete data;
+        data = newData;
+    }
+    else{
+        delete newData;
+    }     
+
+    return success;
 }
 
 const bool Lattice::operator==(const Lattice& other)const
