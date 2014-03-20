@@ -288,7 +288,11 @@ bool Lattice::collideAll(int threads, bool gravity, bool isLimitActive)
                 if (isLimitActive == true)
                 {
                     // check for exceptions
-                    if ( u[0].Abs() > speedlimit || u[1].Abs() > speedlimit){
+                    if ( u[0].Abs() > speedlimit || u[1].Abs() > speedlimit)
+                    {
+                        #pragma omp critical(Output)
+                        cout<<"u[0].Abs() = "<< u[0].Abs() << "\tu[1].Abs() = "<< u[1].Abs() << "\tspeedlimit = " << speedlimit << endl;
+
                         #pragma omp critical(ExceptionLike)
                         success = false;
                     } 

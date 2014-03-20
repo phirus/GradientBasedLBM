@@ -75,7 +75,7 @@ int main(int argc, char** argv){
     int restartInterval = timetrack.getRestartInt();
 
     while (timetrack.proceed() == true){
-        bool success = meins.collideAll(numOfCPUs,true);
+        bool success = meins.collideAll(numOfCPUs,false,true);
         if(success == false){
             prepro.refine();
             const ParamSet params = prepro.getParamSet();
@@ -83,7 +83,10 @@ int main(int argc, char** argv){
             timetrack.refine();
             // cout << s << endl;
             cout<<"\nGitter verfeinert bei i = " << timetrack.getCount() << endl;
+            cout<<"\n new timestep = " << params.getDeltaT();
+            cout<<"\n max Velo = " << params.getSpeedlimit();
             continue;
+            // break;
         }
         meins.streamAll(numOfCPUs);
         timetrack.timestep();

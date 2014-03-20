@@ -1,6 +1,6 @@
 #ifndef LATTICE_H
 #define LATTICE_H
-// #include<iostream>
+#include<iostream>
 #include<omp.h>
 
 #include"Cell.h"
