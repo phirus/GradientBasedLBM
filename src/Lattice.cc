@@ -280,7 +280,7 @@ bool Lattice::collideAll(int threads, bool gravity, bool isLimitActive)
                 const ColSet rho_k = tmpCell.getRho();
                 const double rho = sum(rho_k);
 
-                const Vector G(0 ,  g*(rhoRedFixed - rho_k[1]));
+                const Vector G(0 ,  g*(rho - rho_k[0]));
                 // const Vector G(0 , - rho * g);
 
                 VeloSet u = tmpCell.getU();
@@ -299,8 +299,8 @@ bool Lattice::collideAll(int threads, bool gravity, bool isLimitActive)
                 }   // end if(isLimitActive == true) 
 
                 if(gravity == true){
-                // u[0] = u[0] + G *  (dt/(2* rho)) ;
-                u[1] = u[1] + G *  (dt/(2* rho_k[1])) ;
+                u[0] = u[0] + G *  (dt/(2* rho)) ;
+                u[1] = u[1] + G *  (dt/(2* rho)) ;
                 }
 
                 const DistributionSetType fEq = eqDistro(rho_k, u, phi);
@@ -337,13 +337,15 @@ bool Lattice::collideAll(int threads, bool gravity, bool isLimitActive)
                         // if (gravity == true) final_forcing_term = second_forcing_term[color][q] ;
                         // fTmp[color][q] =  fCell[color][q] - single_phase_col[color][q] + dt * final_forcing_term + A_k[color] * gradient_collision;
                         fTmp[color][q] =  fCell[color][q] - single_phase_col[color][q];// + dt * final_forcing_term;
+                        // if (gravity == true) fTmp[color][q] +=  dt * second_forcing_term[color][q];
                     }
-                    fges = fTmp[0][q]+fTmp[1][q];
-
+                    
                     for (int color=0;color<=1; color++)
                     {
                         fTmp[color][q] += A_k[color] * gradient_collision;
                     }
+
+                    fges = fTmp[0][q]+fTmp[1][q];
 
                     // recoloring
                     if (rho > 0) recolor = beta * (rho_k[0] * rho_k[1])/(rho*rho) *  grad.Angle(DIRECTION[q])   * (rho_k[0] * phi.at(0).at(q) + rho_k[1] * phi.at(1).at(q)); 
@@ -355,10 +357,14 @@ bool Lattice::collideAll(int threads, bool gravity, bool isLimitActive)
                         fTmp[1][q] = rho_k[1]/rho * fges - recolor;
                     }
 
-                    if (fTmp[0][q] < 0) fTmp[0][q] = 0;
-                    if (fTmp[1][q] < 0) fTmp[1][q] = 0;
+                    if (gravity == true){
+                        fTmp[0][q] +=  dt * second_forcing_term[0][q];
+                        fTmp[1][q] +=  dt * second_forcing_term[1][q];
+                    } 
 
-                    if (gravity == true) fTmp[1][q] +=  dt * second_forcing_term[1][q];
+                    // if (fTmp[0][q] < 0) fTmp[0][q] = 0;
+                    // if (fTmp[1][q] < 0) fTmp[1][q] = 0;
+
                 } // end for 
 
                 tmpCell.setF(fTmp);

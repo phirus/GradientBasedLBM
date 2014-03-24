@@ -797,17 +797,17 @@ TEST(Preprocess,ParameterCheck){
      }
 
 TEST(timetrack,basic){
-    Timetrack track(0.5,1.1);
+    Timetrack track(0.605,1.1);
     EXPECT_DOUBLE_EQ(0, track.getTime());
     track.timestep();
     track.timestep();
     track.timestep();
-    EXPECT_DOUBLE_EQ(1.5, track.getTime());
+    EXPECT_DOUBLE_EQ(1.815, track.getTime());
     track.refine();
-    EXPECT_DOUBLE_EQ(1.5, track.getTime());
+    EXPECT_DOUBLE_EQ(1.815, track.getTime());
     track.timestep();
     track.timestep();
-    EXPECT_DOUBLE_EQ(2.6, track.getTime());
+    EXPECT_DOUBLE_EQ(2.915, track.getTime());
     track.refine();
     track.timestep();
     track.timestep();
