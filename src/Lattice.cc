@@ -262,6 +262,8 @@ bool Lattice::collideAll(int threads, bool gravity, bool isLimitActive)
 
     double g(0);
     if(gravity == true) g = param.getG();
+    // if(gravity == true) g = 1e-1;
+
 
     #pragma omp parallel
     {

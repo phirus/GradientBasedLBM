@@ -75,7 +75,7 @@ int main(int argc, char** argv){
     int restartInterval = timetrack.getRestartInt();
 
     while (timetrack.proceed() == true){
-        bool success = meins.collideAll(numOfCPUs,false,true);
+        bool success = meins.collideAll(numOfCPUs,true,true);
         if(success == false){
             prepro.refine();
             const ParamSet params = prepro.getParamSet();
