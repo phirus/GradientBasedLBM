@@ -21,3 +21,29 @@ echo $test_count "lines of test code"
 total_count=$((test_count+src_count+julia_count))
 echo $total_count "total lines of code"
 cd ../aux
+
+echo 
+
+cd ../example
+example_count=`cat *.cc | wc -l`
+echo $example_count "extra lines for example binary"
+cd ../bin2tec
+bin2tec_count=`cat *.cc | wc -l`
+echo $bin2tec_count "extra lines for bin2tec binary"
+cd ../deeperAnalysis
+deeperAnalysis_count=`cat *.cc | wc -l`
+echo $deeperAnalysis_count "extra lines for deeperAnalysis binary"
+cd ../translate
+translate_count=`cat *.cc | wc -l`
+echo $translate_count "extra lines for translate binary"
+
+binary_total=$((example_count+bin2tec_count+deeperAnalysis_count+translate_count)) 
+echo $binary_total "lines of code for binaries"
+
+echo
+
+absolute_total=$((total_count+binary_total)) 
+echo $absolute_total "all in all lines of code"
+cd ../aux
+
+echo
