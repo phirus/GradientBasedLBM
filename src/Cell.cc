@@ -4,10 +4,10 @@
 
 //=========================== LIFECYCLE ===========================
 
-Cell::Cell(double fzero_red, double fzero_blue, bool solid):isSolid(solid),delta(0)
+Cell::Cell(double fzero_dense, double fzero_dilute, bool solid):isSolid(solid),delta(0)
 {
-    f[0][0] = fzero_red;
-    f[1][0] = fzero_blue;
+    f[0][0] = fzero_dense;
+    f[1][0] = fzero_dilute;
 
     for (int i=1; i<=8; i++)
     {
@@ -25,10 +25,10 @@ Cell::Cell(double fzero_red, double fzero_blue, bool solid):isSolid(solid),delta
 }
 
 // like a copy constructor for the bulk phase
-Cell::Cell(const array& finiRed, const array& finiBlue):isSolid(false),delta(0)
+Cell::Cell(const array& finiDense, const array& finiDilute):isSolid(false),delta(0)
 {
-    f.at(0) = finiRed;
-    f.at(1) = finiBlue;
+    f.at(0) = finiDense;
+    f.at(1) = finiDilute;
 
     rho[0] = 0;
     rho[1] = 0;

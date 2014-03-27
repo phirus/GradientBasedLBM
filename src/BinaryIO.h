@@ -15,6 +15,7 @@ void write_restart_file(const Lattice& l, const Preprocess& p, const Timetrack t
 const bool read_restart_file(Lattice& outL, Preprocess& p, Timetrack& time, const string& filename = "restart.bin");
 
 void write_techplot_output(const Lattice& l, int iterNum, bool vebose = false);
+void write_techplot_output_alternative(const Lattice& l, const string& filename = "alternative.dat");
 void write_vtk_output(const Lattice& l, int iterNum);
 
 void write_param_log(const ParamSet& p);

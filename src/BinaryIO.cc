@@ -293,6 +293,55 @@ void write_techplot_output(const Lattice& l, int iterNum, bool verbose)
     }
     PsiFile.close();
 }
+void write_techplot_output_alternative(const Lattice& l, const string& filename)
+{
+    ofstream PsiFile;
+    Cell tmp;
+    ColSet extent = l.getSize();
+    int xsize = static_cast<int> (extent[0]);
+    int ysize = static_cast<int> (extent[1]);
+
+    stringstream name;
+    name <<filename;
+
+    PsiFile.open( name.str().c_str() );
+    PsiFile << "TITLE = \" NewDataSet \" "<<endl;
+    PsiFile << "Variables = \" x \" "<<endl;
+    PsiFile << "\"y\""<<endl;
+    PsiFile << "\"z\""<<endl;
+    PsiFile << "\"psi\""<<endl;
+    PsiFile << "\"rho\""<<endl;
+    PsiFile << "\"ux1\""<<endl;
+    PsiFile << "\"uy1\""<<endl;
+    PsiFile << "\"ux2\""<<endl;
+    PsiFile << "\"uy2\""<<endl;
+    PsiFile << "\"u_abs\""<<endl;
+    PsiFile << "\"grad_x\""<<endl;
+    PsiFile << "\"grad_y\""<<endl;
+    
+    PsiFile << "ZONE T=\"0\""<< endl;
+    PsiFile << "I="<<xsize<<", J="<<ysize<<", K=1,F=POINT"<< endl;
+    PsiFile << "DT=(DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE)"<<endl;
+    
+    for (int j=0; j<ysize; j++)
+    {
+        for (int i=0; i<xsize; i++)
+        {
+            tmp = l.getCell(i,j);
+            tmp.calcRho();
+            PsiFile << i << "\t" << j << "\t" << "0 \t" << tmp.calcPsi() ;
+            
+            VeloSet u = tmp.getU();
+            ColSet rho = tmp.getRho();
+            Vector v;
+            Vector gradient = l.getGradient(i, j);
+            if(sum(rho) > 0) v = (u[0]*rho[0] + u[1]*rho[1]) * (1/sum(rho));
+            PsiFile << "\t" << sum(rho) << "\t" << u[0].x*rho[0] << "\t" << u[0].y*rho[0] << "\t" << u[1].x*rho[1] << "\t" << u[1].y*rho[1] << "\t" << v.Abs() << "\t" << gradient.x << "\t" << gradient.y;
+            PsiFile << endl;
+        }
+    }
+    PsiFile.close();
+}
 
 void write_vtk_output(const Lattice& l, int iterNum)
 {

@@ -13,8 +13,8 @@ class Cell
 {
 public:
     /// Lifecylce
-    Cell(double fzero_red=1, double fzero_blue=1, bool solid = false); /// < construcor
-    Cell(const array& finiRed,const array& finiBlue); // constr
+    Cell(double fzero_dense=1, double fzero_dilute=1, bool solid = false); /// < construcor
+    Cell(const array& finiDense,const array& finiDilute); // constr
     Cell(const DistributionSetType& newF); // constr
 
     /// operators

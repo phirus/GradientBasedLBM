@@ -13,3 +13,4 @@ translate/paramLog
 julia/preprocessFile
 julia/constants.jl
 *.sublime-workspace
+bin2tec/*.dat

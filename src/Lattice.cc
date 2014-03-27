@@ -1,6 +1,6 @@
 #include"Lattice.h"
 
-Lattice::Lattice(int x_size, int y_size,double fzero_red, double fzero_blue):
+Lattice::Lattice(int x_size, int y_size,double fzero_dense, double fzero_dilute):
 xsize(x_size)
 ,ysize(y_size)
 ,data(new field(boost::extents[xsize][ysize]))
@@ -10,7 +10,7 @@ xsize(x_size)
     {
         for (int y=0; y<ysize; y++)
         {
-            (*data)[x][y] = Cell(fzero_red,fzero_blue);
+            (*data)[x][y] = Cell(fzero_dense,fzero_dilute);
         }
     }
 }
