@@ -8,8 +8,8 @@ Documentation/
 *.depend
 *.cpb
 test/paramLog
-translate/preprocessFile
-translate/paramLog
+aux/translate/preprocessFile
+aux/translate/paramLog
 julia/preprocessFile
 julia/constants.jl
 *.sublime-workspace

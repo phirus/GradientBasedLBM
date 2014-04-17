@@ -12,7 +12,7 @@ CFLAGS =  -Wall -O3 -fopenmp
 LDFLAGS = -lboost_program_options -lgomp
 #-lpthread
 
-SRC = ../src
+SRC = ../../src
 OBJ_DIR = obj
 OUTPUT = deeperAnalysis
 

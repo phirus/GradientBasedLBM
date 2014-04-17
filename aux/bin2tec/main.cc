@@ -2,7 +2,7 @@
 #include<ctime>
 #include<vector>
 
-#include"../src/BinaryIO.h"
+#include"../../src/BinaryIO.h"
 #include<boost/program_options.hpp>
 
 using namespace std;
