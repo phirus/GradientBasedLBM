@@ -1,6 +1,11 @@
 #include"Lattice.h"
 
+///////////////////////////// PUBLIC /////////////////////////////
+
+//=========================== LIFECYCLE ===========================
+
 Lattice::Lattice(int x_size, int y_size,double fzero_dense, double fzero_dilute):
+
 xsize(x_size)
 ,ysize(y_size)
 ,data(new field(boost::extents[xsize][ysize]))
@@ -30,87 +35,7 @@ Lattice::~Lattice(){
     data = NULL;
 }
 
-Lattice& Lattice::operator=(const Lattice& other){
-    this->setData(other.getData(), other.getSize()[0], other.getSize()[1]);
-    this->setParams(other.getParams());
-
-    return *this;
-}
-
-void Lattice::setData(const field& ndata, int x, int y){
-    data->resize(boost::extents[x][y]);
-    *data = ndata;
-    xsize = x;
-    ysize = y;
-}
-
-void Lattice::setCell(int x, int y, const Cell& ncell)
-{
-    if (y >= 0 && y < ysize && x >= 0 && x < xsize) (*data)[x][y] = ncell;
-}
-
-void Lattice::setF(int x, int y, int color, const array& nf)
-{
-    DistributionSetType f = (*data)[x][y].getF();
-    f[color] = nf;
-    (*data)[x][y].setF(f);
-}
-
-void Lattice::setF(int x, int y, int color, int pos, double value)
-{
-    DistributionSetType f = (*data)[x][y].getF();
-    f[color][pos] = value;
-    (*data)[x][y].setF(f);
-}
-
-const ColSet Lattice::getSize()const
-{
-    ColSet pony = {{xsize, ysize}};
-    return pony;
-}
-
-void Lattice::closedBox()
-{
-    const Cell wall(0,0,true);
-
-    for (int x=0; x<xsize; x++)
-    {
-        (*data)[x][0] = wall;
-        (*data)[x][ysize-1] = wall;
-    }
-    for (int y=0; y<ysize; y++)
-    {
-        (*data)[0][y] = wall;
-        (*data)[xsize-1][y] = wall;
-    }
-
-    for (int y=0; y<ysize; y++)
-    {
-        for (int x=0; x<xsize; x++)
-        {
-            (*data)[x][y].calcRho();
-        }
-    }
-}
-
-void Lattice::bottomWall()
-{
-    const Cell wall(0,0,true);
-
-    for (int x=0; x<xsize; x++)
-    {
-        (*data)[x][0] = wall;
-    }
-
-    for (int y=0; y<ysize; y++)
-    {
-        for (int x=0; x<xsize; x++)
-        {
-            (*data)[x][y].calcRho();
-        }
-    }
-}
-
+//=========================== OPERATIONS ===========================
 
 void Lattice::equilibriumIni()
 {
@@ -387,6 +312,91 @@ bool Lattice::collideAll(int threads, bool gravity, bool isLimitActive)
     return success;
 }
 
+void Lattice::closedBox()
+{
+    const Cell wall(0,0,true);
+
+    for (int x=0; x<xsize; x++)
+    {
+        (*data)[x][0] = wall;
+        (*data)[x][ysize-1] = wall;
+    }
+    for (int y=0; y<ysize; y++)
+    {
+        (*data)[0][y] = wall;
+        (*data)[xsize-1][y] = wall;
+    }
+
+    for (int y=0; y<ysize; y++)
+    {
+        for (int x=0; x<xsize; x++)
+        {
+            (*data)[x][y].calcRho();
+        }
+    }
+}
+
+void Lattice::bottomWall()
+{
+    const Cell wall(0,0,true);
+
+    for (int x=0; x<xsize; x++)
+    {
+        (*data)[x][0] = wall;
+    }
+
+    for (int y=0; y<ysize; y++)
+    {
+        for (int x=0; x<xsize; x++)
+        {
+            (*data)[x][y].calcRho();
+        }
+    }
+}
+
+//=========================== ACCESSORS ===========================
+
+const ColSet Lattice::getSize()const
+{
+    ColSet pony = {{xsize, ysize}};
+    return pony;
+}
+
+void Lattice::setData(const field& ndata, int x, int y){
+    data->resize(boost::extents[x][y]);
+    *data = ndata;
+    xsize = x;
+    ysize = y;
+}
+
+void Lattice::setCell(int x, int y, const Cell& ncell)
+{
+    if (y >= 0 && y < ysize && x >= 0 && x < xsize) (*data)[x][y] = ncell;
+}
+
+void Lattice::setF(int x, int y, int color, const array& nf)
+{
+    DistributionSetType f = (*data)[x][y].getF();
+    f[color] = nf;
+    (*data)[x][y].setF(f);
+}
+
+void Lattice::setF(int x, int y, int color, int pos, double value)
+{
+    DistributionSetType f = (*data)[x][y].getF();
+    f[color][pos] = value;
+    (*data)[x][y].setF(f);
+}
+
+//=========================== OPERATOR ===========================
+
+Lattice& Lattice::operator=(const Lattice& other){
+    this->setData(other.getData(), other.getSize()[0], other.getSize()[1]);
+    this->setParams(other.getParams());
+
+    return *this;
+}
+
 const bool Lattice::operator==(const Lattice& other)const
 {
     bool exit = true;
@@ -413,6 +423,10 @@ const bool Lattice::operator==(const Lattice& other)const
    
     return exit;
 }
+
+///////////////////////////// PRIVATE /////////////////////////////
+
+//=========================== OPERATIONS ===========================
 
 inline void Lattice::linearIndex(int index, int& x, int& y)const
 {
@@ -478,6 +492,10 @@ void Lattice::streamAndBouncePull(Cell& tCell, const direction& dir)const
     }
     tCell.setF(ftmp);
 }
+
+///////////////////////////// C-STYLE /////////////////////////////
+
+//=========================== OPERATIONS ===========================
 
 const DistributionSetType eqDistro(const ColSet& rho_k, const VeloSet& u, const DistributionSetType& phi)
 {
