@@ -1,5 +1,9 @@
 #include"Definitions.h"
 
+///////////////////////////// C-STYLE /////////////////////////////
+
+//=========================== OPERATIONS ===========================
+
 const array array_diff(const array &one, const array &two)
 {
     array a;
