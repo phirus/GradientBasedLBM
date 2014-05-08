@@ -23,7 +23,7 @@ public:
 	// get the parameter set
 	const ParamSet getParamSet()const;
 	// refine timestep
-	void refine(double factor = 1.1); // standard factor: 10%
+	// void refine(double factor = 1.1); // standard factor: 10%
 
 	/// accessors
 	inline const double getReynoldsMax()const{return ReynoldsMax;};

@@ -77,15 +77,15 @@ int main(int argc, char** argv){
     while (timetrack.proceed() == true){
         bool success = meins.collideAll(numOfCPUs,true,true);
         if(success == false){
-            prepro.refine();
-            const ParamSet params = prepro.getParamSet();
-            meins.setParams(params);
-            timetrack.refine();
+            // prepro.refine();
+            // const ParamSet params = prepro.getParamSet();
+            // meins.setParams(params);
+            // timetrack.refine();
             // cout << s << endl;
-            cout<<"\nGitter verfeinert bei i = " << timetrack.getCount() << endl;
-            cout<<"\n new timestep = " << params.getDeltaT();
-            cout<<"\n max Velo = " << params.getSpeedlimit();
-            continue;
+            // cout<<"\nGitter verfeinert bei i = " << timetrack.getCount() << endl;
+            // cout<<"\n new timestep = " << params.getDeltaT();
+            // cout<<"\n max Velo = " << params.getSpeedlimit();
+            // continue;
             // break;
         }
         meins.streamAll(numOfCPUs);

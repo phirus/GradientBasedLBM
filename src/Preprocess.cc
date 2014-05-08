@@ -24,12 +24,12 @@ const ParamSet Preprocess::getParamSet()const{
     return param;
 }
 
-void Preprocess::refine(double factor){
-    c_s *= factor;          // raise the speedof sound
-    ReynoldsMax *=  factor;     // with constant diameter and nu, Reynolds raises with the Speed of sound
+// void Preprocess::refine(double factor){
+//     c_s *= factor;          // raise the speedof sound
+//     ReynoldsMax *=  factor;     // with constant diameter and nu, Reynolds raises with the Speed of sound
 
-    deduceAll();        // deduces all new parameters
-}
+//     deduceAll();        // deduces all new parameters
+// }
 
 //=========================== OPERATOR ===========================
 
