@@ -93,7 +93,7 @@ void write_restart_file(const Lattice& l, const Preprocess& p, const Timetrack t
     unsigned int vsize = refinelist.size();
 
     int maxCount = time.getMaxCount();
-    double maxTime = time.getMaxTime();
+    // double maxTime = time.getMaxTime();
     int techplot_interval = time.getTechPlotInt();
     int restart_interval = time.getRestartInt();
 
@@ -106,7 +106,7 @@ void write_restart_file(const Lattice& l, const Preprocess& p, const Timetrack t
         file.write(reinterpret_cast<char*> (&tmp), sizeof(int));
     }
     file.write(reinterpret_cast<char*> (&maxCount), sizeof maxCount);
-    file.write(reinterpret_cast<char*> (&maxTime), sizeof maxTime);
+    // file.write(reinterpret_cast<char*> (&maxTime), sizeof maxTime);
     file.write(reinterpret_cast<char*> (&techplot_interval), sizeof techplot_interval);
     file.write(reinterpret_cast<char*> (&restart_interval), sizeof restart_interval);
 
@@ -196,9 +196,9 @@ const bool read_restart_file(Lattice& outL, Preprocess& p, Timetrack& t, const s
         file.read((char*) &maxCount, sizeof maxCount);
         time.setMaxCount(maxCount);
 
-        double maxTime;
-        file.read((char*) &maxTime, sizeof maxTime);
-        time.setMaxTime(maxTime);
+        // double maxTime;
+        // file.read((char*) &maxTime, sizeof maxTime);
+        // time.setMaxTime(maxTime);
 
         int techplot_interval;
         file.read((char*) &techplot_interval, sizeof techplot_interval);
@@ -477,7 +477,7 @@ void write_data_plot(const std::vector<double> x, const std::vector<double> y1, 
 
     massplot.open( name.str().c_str() );
     massplot << "x" << "\t" << "y1" << "\t" << "y2" << "\n";
-    for(int i = 0; i< x.size(); i++){
+    for(unsigned int i = 0; i< x.size(); i++){
         massplot << x.at(i) << "\t" << y1.at(i) << "\t" << y2.at(i) << "\n";
     } 
     massplot.close();
@@ -543,7 +543,6 @@ const Timetrack read_timetrack_file(const Preprocess& prepro, const string& file
     map<string,double> mm;
     mm.insert(pair<string,double>("factor",1.1));
     mm.insert(pair<string,double>("max_steps",1e5));
-    mm.insert(pair<string,double>("max_time",5));
     mm.insert(pair<string,double>("techplot_interval",1e3));
     mm.insert(pair<string,double>("restart_interval",1e4));
 
@@ -553,7 +552,7 @@ const Timetrack read_timetrack_file(const Preprocess& prepro, const string& file
         if( input_query(filename,it->first,tmp) == true ) it->second = tmp;
     }
 
-    Timetrack time(prepro.getTimestep(), mm.at("factor"), mm.at("max_steps"), mm.at("max_time"), mm.at("techplot_interval"), mm.at("restart_interval"));
+    Timetrack time(prepro.getTimestep(), mm.at("factor"), mm.at("max_steps"), mm.at("techplot_interval"), mm.at("restart_interval"));
  
     return time;
 }

@@ -61,10 +61,6 @@ function createPFile(Mo, Eo, c_s, gamma, sigma, g)
 	write(stream,"\nmax_steps = ")
 	write(stream, string(MAX_ITER))
 
-	write(stream, "\n\n# maximum simulation time / s, default [5]")
-	write(stream,"\nmax_time = ")
-	write(stream, string(MAX_TIME))
-
 	write(stream, "\n\n# output Settings")
 	write(stream,"\ntechplot_interval = ")
 	write(stream, string(TECH_PLOT))
