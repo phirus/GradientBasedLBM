@@ -261,9 +261,10 @@ bool Lattice::collideAll(int threads, bool gravity, bool isLimitActive)
 
                     for (int color=0;color<=1; color++)
                     {
-                        // if (gravity == true) final_forcing_term = second_forcing_term[color][q] ;
+                        if (gravity == true) final_forcing_term = second_forcing_term[color][q] ;
                         // fTmp[color][q] =  fCell[color][q] - single_phase_col[color][q] + dt * final_forcing_term + A_k[color] * gradient_collision;
-                        fTmp[color][q] =  fCell[color][q] - single_phase_col[color][q];// + dt * final_forcing_term;
+                        // fTmp[color][q] =  fCell[color][q] - single_phase_col[color][q];// + dt * final_forcing_term;
+                        fTmp[color][q] =  fCell[color][q] - single_phase_col[color][q] + dt * final_forcing_term;
                         // if (gravity == true) fTmp[color][q] +=  dt * second_forcing_term[color][q];
                     }
                     
