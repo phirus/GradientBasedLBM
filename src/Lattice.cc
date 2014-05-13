@@ -212,18 +212,18 @@ bool Lattice::collideAll(int threads, bool gravity, bool isLimitActive)
 
                 VeloSet u = tmpCell.getU();
 
-                if (isLimitActive == true)
-                {
-                    // check for exceptions
-                    if ( u[0].Abs() > speedlimit || u[1].Abs() > speedlimit)
-                    {
-                        #pragma omp critical(Output)
-                        cout<<"u[0].Abs() = "<< u[0].Abs() << "\tu[1].Abs() = "<< u[1].Abs() << "\tspeedlimit = " << speedlimit << endl;
+                // if (isLimitActive == true)
+                // {
+                //     // check for exceptions
+                //     if ( u[0].Abs() > speedlimit || u[1].Abs() > speedlimit)
+                //     {
+                //         #pragma omp critical(Output)
+                //         cout<<"u[0].Abs() = "<< u[0].Abs() << "\tu[1].Abs() = "<< u[1].Abs() << "\tspeedlimit = " << speedlimit << endl;
 
-                        #pragma omp critical(ExceptionLike)
-                        success = false;
-                    } 
-                }   // end if(isLimitActive == true) 
+                //         #pragma omp critical(ExceptionLike)
+                //         success = false;
+                //     } 
+                // }   // end if(isLimitActive == true) 
 
                 if(gravity == true){
                 u[0] = u[0] + G *  (dt/(2* rho)) ;
