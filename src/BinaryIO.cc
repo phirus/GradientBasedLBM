@@ -1,5 +1,7 @@
 #include"BinaryIO.h"
 
+//=========================== BINARY DUMP ===========================
+
 void write_binary(const Lattice& l, const string& filename){
 
     // setting up the file name
@@ -59,6 +61,8 @@ const bool read_binary(Lattice& outL, const string& filename){
 
     return success;
 }
+
+//=========================== RESTART FILES ===========================
 
 void write_restart_file(const Lattice& l, const Preprocess& p, const Timetrack time, const string& filename){
 
@@ -238,6 +242,8 @@ const bool read_restart_file(Lattice& outL, Preprocess& p, Timetrack& t, const s
 
     return success;
 }
+
+//=========================== WRITE OUTPUT ===========================
 
 void write_techplot_output(const Lattice& l, int iterNum, bool verbose)
 {
@@ -440,6 +446,20 @@ void write_vtk_output(const Lattice& l, int iterNum)
     VTKFile.close();
 }
 
+void write_data_plot(const std::vector<double> x, const std::vector<double> y1, const std::vector<double> y2, const string& filename){
+    ofstream massplot;
+
+    stringstream name;
+    name << filename;
+
+    massplot.open( name.str().c_str() );
+    massplot << "x" << "\t" << "y1" << "\t" << "y2" << "\n";
+    for(unsigned int i = 0; i< x.size(); i++){
+        massplot << x.at(i) << "\t" << y1.at(i) << "\t" << y2.at(i) << "\n";
+    } 
+    massplot.close();
+}
+
 void write_param_log(const ParamSet& p){
     ofstream paramLog;
 
@@ -469,43 +489,8 @@ void write_param_log(const ParamSet& p){
 
     paramLog.close();
 }
-void write_data_plot(const std::vector<double> x, const std::vector<double> y1, const std::vector<double> y2, const string& filename){
-    ofstream massplot;
 
-    stringstream name;
-    name << filename;
-
-    massplot.open( name.str().c_str() );
-    massplot << "x" << "\t" << "y1" << "\t" << "y2" << "\n";
-    for(unsigned int i = 0; i< x.size(); i++){
-        massplot << x.at(i) << "\t" << y1.at(i) << "\t" << y2.at(i) << "\n";
-    } 
-    massplot.close();
-}
-
-const bool input_query(const string& filename, const string& query, double& value){
-    bool success = false;
-    value = 0;
-    string lineString;
-    string word;
-    fstream file(filename.c_str(),ios::in);
-
-    while(file.good()){
-    getline(file,lineString);
-    if ( lineString.substr(0,1) != "#" ){
-        istringstream lineStream(lineString);
-        lineStream >> word;
-        if (word == query) {
-            lineStream >> word; // gets the "="
-            lineStream >> value;
-            success = true;
-            break;
-            }         
-        }
-    }
-    file.close();
-    return success;
-}
+//=========================== READ INPUT ===========================
 
 const Preprocess read_preprocess_file(const string& filename){
     vector<string> tags;
@@ -555,4 +540,28 @@ const Timetrack read_timetrack_file(const Preprocess& prepro, const string& file
     Timetrack time(prepro.getTimestep(), mm.at("factor"), mm.at("max_steps"), mm.at("techplot_interval"), mm.at("restart_interval"));
  
     return time;
+}
+
+const bool input_query(const string& filename, const string& query, double& value){
+    bool success = false;
+    value = 0;
+    string lineString;
+    string word;
+    fstream file(filename.c_str(),ios::in);
+
+    while(file.good()){
+    getline(file,lineString);
+    if ( lineString.substr(0,1) != "#" ){
+        istringstream lineStream(lineString);
+        lineStream >> word;
+        if (word == query) {
+            lineStream >> word; // gets the "="
+            lineStream >> value;
+            success = true;
+            break;
+            }         
+        }
+    }
+    file.close();
+    return success;
 }
