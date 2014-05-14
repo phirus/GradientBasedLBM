@@ -542,6 +542,41 @@ const Timetrack read_timetrack_file(const Preprocess& prepro, const string& file
     return time;
 }
 
+const ParamSet read_paramset_file(const string& filename){
+    vector<string> tags;
+    vector<double> val;
+    // initialzing strings and fallback values
+    map<string,double> mm;
+        mm.insert(pair<string,double>("omega_red",1));
+        mm.insert(pair<string,double>("omega_blue",1));
+        mm.insert(pair<string,double>("rho_red",1));
+        mm.insert(pair<string,double>("gamma",2));
+        mm.insert(pair<string,double>("sigma",1e-4));
+        mm.insert(pair<string,double>("gravity",1e-4));
+        mm.insert(pair<string,double>("speedlimit",1));
+        mm.insert(pair<string,double>("dt",1e-3));
+
+        mm.insert(pair<string,double>("s_2",1));
+        mm.insert(pair<string,double>("s_3",1));
+        mm.insert(pair<string,double>("s_5",1));
+
+        mm.insert(pair<string,double>("alpha_blue",0.2));
+        mm.insert(pair<string,double>("delta",0.1));
+        mm.insert(pair<string,double>("beta",0.99));
+     
+
+        // cycling through the input file
+        double tmp;
+        for(map<string,double>::iterator it = mm.begin(); it != mm.end(); it++){            
+            if( input_query(filename,it->first,tmp) == true ) it->second = tmp;
+        }
+
+    RelaxationPar rel(mm.at("s_2"),mm.at("s_3"),mm.at("s_5"));
+
+    ParamSet params(mm.at("omega_red"), mm.at("omega_blue"), mm.at("rho_red"), mm.at("gamma"), mm.at("sigma"), mm.at("gravity"), mm.at("speedlimit"), mm.at("dt"), rel, mm.at("alpha_blue"), mm.at("delta"), mm.at("beta")); /// < consructor
+    return params;
+}
+
 const bool input_query(const string& filename, const string& query, double& value){
     bool success = false;
     value = 0;

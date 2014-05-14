@@ -27,6 +27,7 @@ void write_param_log(const ParamSet& p);
 /// read input
 const Preprocess read_preprocess_file(const string& filename);
 const Timetrack read_timetrack_file(const Preprocess& prepro, const string& filename);
+const ParamSet read_paramset_file(const string& filename);
 
 const bool input_query(const string& filename, const string& query, double& value);
 #endif
