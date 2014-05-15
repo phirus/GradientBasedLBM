@@ -467,24 +467,30 @@ void write_param_log(const ParamSet& p){
     name <<"paramLog";
 
     paramLog.open( name.str().c_str() );
-    paramLog << "# used setup parameters\n" << endl;
-    paramLog << "omega_red = "  << p.getOmegaRed()           << " /-" << endl;
-    paramLog << "omega_blue = " << p.getOmegaBlue()          << " /-" << endl;
-    paramLog << "rho_red = "    << p.getRhoR()               << " / kg m^-3" << endl;
-    paramLog << "gamma = "      << p.getGamma()              << " /-" << endl;
-    paramLog << "alpha_blue = " << p.getAlpha()              << " /-" << endl;
-    paramLog << "delta = "      << p.getInterfaceThickness() << " /-" << endl;
-    paramLog << "beta = "       << p.getBeta()               << " /-" << endl;
-    paramLog << "sigma = "      << p.getSigma()              << " /?" << endl; //TODO get SI units of sigma
-    paramLog << "speedlimit = " << p.getSpeedlimit()         << " / m s^-1" << endl; 
-    paramLog << "dt = "         << p.getDeltaT()             << " / s " << endl;
-    paramLog << "gravity = "    << p.getG()                  << " / -" << endl;
+    paramLog << "# used setup parameters" << endl;
+    paramLog << "\n# omega [-]" << endl;
+    paramLog << "omega_red = "  << p.getOmegaRed()           << endl;
+    paramLog << "omega_blue = " << p.getOmegaBlue()          << endl;
+    paramLog << "\n# density of denser phase, normalized [-]" << endl;
+    paramLog << "rho_red = "    << p.getRhoR()               << endl;
+    paramLog << "\n# density ratio [-]" << endl;
+    paramLog << "gamma = "      << p.getGamma()              << endl;
+    paramLog << "\n# method specific parameters [-]" << endl;
+    paramLog << "alpha_blue = " << p.getAlpha()              << endl;
+    paramLog << "delta = "      << p.getInterfaceThickness() << endl;
+    paramLog << "beta = "       << p.getBeta()               << endl;
+    paramLog << "\n# surface tension [-]" << endl;
+    paramLog << "sigma = "      << p.getSigma()              << endl; //TODO get SI units of sigma
+    paramLog << "\n# discretisization [-]" << endl;
+    paramLog << "speedlimit = " << p.getSpeedlimit()         << endl; 
+    paramLog << "dt = "         << p.getDeltaT()             << endl;
+    paramLog << "gravity = "    << p.getG()                  << endl;
 
     RelaxationPar relax = p.getRelaxation();
-
-    paramLog << "s_2 = " << relax.s_2 << " / -" << endl;
-    paramLog << "s_3 = " << relax.s_3 << " / -" << endl;
-    paramLog << "s_5 = " << relax.s_5 << " / -" << endl;
+    paramLog << "\n# MRT parameters [-]" << endl;
+    paramLog << "s_2 = " << relax.s_2 << endl;
+    paramLog << "s_3 = " << relax.s_3 << endl;
+    paramLog << "s_5 = " << relax.s_5 << endl;
 
 
     paramLog.close();
