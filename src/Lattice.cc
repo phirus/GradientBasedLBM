@@ -180,10 +180,10 @@ bool Lattice::collideAll(int threads, bool gravity, bool isLimitActive)
     const double beta = param.getBeta();
     const DistributionSetType phi = param.getPhi();
     const int range = xsize * ysize;
-    const double rhoRedFixed = param.getRhoR();
+    // const double rhoRedFixed = param.getRhoR();
     const RelaxationPar relax = param.getRelaxation();
     const double dt = param.getDeltaT();
-    const double speedlimit = param.getSpeedlimit();
+    // const double speedlimit = param.getSpeedlimit();
 
     double g(0);
     if(gravity == true) g = param.getG();
