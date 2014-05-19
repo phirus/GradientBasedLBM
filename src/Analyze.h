@@ -1,7 +1,13 @@
 #ifndef ANALYZE_H
 #define ANALYZE_H
 
+#include<cmath>
+
 #include"Lattice.h"
+
+using namespace std;
+
 const double getEotvos(const ParamSet& params, double resolution = 40);
+const double getMorton(const ParamSet& params);
 
 #endif
