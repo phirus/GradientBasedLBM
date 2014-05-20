@@ -27,17 +27,17 @@ echo
 cd ../example
 example_count=`cat *.cc | wc -l`
 echo $example_count "extra lines for example binary"
-cd ../bin2tec
-bin2tec_count=`cat *.cc | wc -l`
-echo $bin2tec_count "extra lines for bin2tec binary"
 cd ../deeperAnalysis
 deeperAnalysis_count=`cat *.cc | wc -l`
 echo $deeperAnalysis_count "extra lines for deeperAnalysis binary"
 cd ../translate
 translate_count=`cat *.cc | wc -l`
 echo $translate_count "extra lines for translate binary"
+cd ../Postprocess
+Postprocess_count=`cat *.cc | wc -l`
+echo $Postprocess_count "extra lines for Postprocess binary"
 
-binary_total=$((example_count+bin2tec_count+deeperAnalysis_count+translate_count)) 
+binary_total=$((example_count+deeperAnalysis_count+translate_count+Postprocess_count)) 
 echo $binary_total "lines of code for binaries"
 
 echo
