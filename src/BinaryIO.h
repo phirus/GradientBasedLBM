@@ -30,4 +30,8 @@ const Timetrack read_timetrack_file(const Preprocess& prepro, const string& file
 const ParamSet read_paramset_file(const string& filename = "paramLog");
 
 const bool input_query(const string& filename, const string& query, double& value);
+
+///auxiliary
+const string createFilename(const string& name, int iteration, const string& type = ".bin");
+
 #endif

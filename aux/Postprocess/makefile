@@ -14,7 +14,7 @@ LDFLAGS = -lboost_program_options -lgomp
 
 SRC = ../../src
 OBJ_DIR = obj
-OUTPUT = bin2tec
+OUTPUT = postprocess
 
 # creating OBJs
 OBJ_DEBUG = $(OBJ_DIR)/Analyze.o $(OBJ_DIR)/BinaryIO.o $(OBJ_DIR)/Constants.o $(OBJ_DIR)/Cell.o $(OBJ_DIR)/Definitions.o $(OBJ_DIR)/Lattice.o $(OBJ_DIR)/main.o $(OBJ_DIR)/Matrix.o $(OBJ_DIR)/ParamSet.o $(OBJ_DIR)/Preprocess.o $(OBJ_DIR)/Timetrack.o $(OBJ_DIR)/Vector.o

@@ -606,3 +606,12 @@ const bool input_query(const string& filename, const string& query, double& valu
     file.close();
     return success;
 }
+
+//=========================== AUXILIARY ===========================
+
+const string createFilename(const string& name, int iteration, const string& type)
+{
+    stringstream filename;
+    filename << name << iteration << type;
+    return filename.str();
+}
