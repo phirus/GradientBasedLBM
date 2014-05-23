@@ -9,7 +9,7 @@
 using namespace std;
 namespace po = boost::program_options;
 
-void initialSetUp(Lattice& meins, Preprocess& prepro, int xmax, int ymax);
+void initialSetUp(Lattice& meins, Preprocess& prepro, int xmax, int ymax, ParamSet params);
 
 int main(int argc, char** argv){
 
@@ -18,6 +18,7 @@ int main(int argc, char** argv){
         ("help,h", "produce help message")
         ("cpu,c", boost::program_options::value<int> (), "takes the number of CPUs")
         ("preprocess,p", boost::program_options::value<string> (), "specify preprocess parameter file")
+        ("bypass,b", boost::program_options::value<string> (), "specify parameter file to bypass preprocess routine")
         ("restart,r", boost::program_options::value<string> (), "specify restart file")
         ;
     boost::program_options::variables_map vm;
@@ -32,18 +33,25 @@ int main(int argc, char** argv){
     int numOfCPUs = 1;
     Preprocess prepro = read_preprocess_file("preprocessFile");
     Timetrack timetrack = read_timetrack_file(prepro, "preprocessFile");
+    ParamSet params = prepro.getParamSet();
 
     if (vm.count("preprocess")) {
         cout << "preprocess file is: " << vm["preprocess"].as<string>() << ".\n" << endl ;
         prepro = read_preprocess_file(vm["preprocess"].as<string>());
         timetrack = read_timetrack_file(prepro, vm["preprocess"].as<string>());
+        params = prepro.getParamSet();
+    }
+
+    if (vm.count("bypass")) {
+        cout << "bypass preprocess file with: " << vm["bypass"].as<string>() << ".\n" << endl ;
+        params = read_paramset_file(vm["bypass"].as<string>());
     }
    
     int ymax = 200;
     int xmax = 100;
     // create a Lattice
     Lattice meins(xmax,ymax);
-    initialSetUp(meins, prepro, xmax, ymax);
+    initialSetUp(meins, prepro, xmax, ymax, params);
     write_techplot_output(meins,0,true);
        
     if (vm.count("restart")) {
@@ -93,7 +101,10 @@ int main(int argc, char** argv){
         int i = timetrack.getCount();
         if(i%1000 == 0) cout << i<<endl;
         if(i%techPlotInterval == 0)  write_techplot_output(meins,i,true);
-        if(i%restartInterval == 0) write_restart_file(meins, prepro, timetrack);        
+        if(i%restartInterval == 0){
+            const string restart_file_name =  createFilename("restart", i, ".bin");
+            write_restart_file(meins, prepro, timetrack, restart_file_name);
+        }         
     }
 
     time(&end);
@@ -103,10 +114,9 @@ int main(int argc, char** argv){
 }
 
 
-void initialSetUp(Lattice& meins, Preprocess& prepro, int xmax, int ymax)
+void initialSetUp(Lattice& meins, Preprocess& prepro, int xmax, int ymax, ParamSet params)
 {
-    // set the parameters    
-    const ParamSet params = prepro.getParamSet();
+    // set the parameters        
     meins.setParams(params);
 
     // get densities
