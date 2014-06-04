@@ -4,6 +4,7 @@
 
 #include"../src/Lattice.h"
 #include"../src/BinaryIO.h"
+#include"../src/Analyze.h"
 #include<boost/program_options.hpp>
 
 using namespace std;
@@ -42,6 +43,8 @@ int main(int argc, char** argv){
 
     Preprocess prepro_input;
     Timetrack timetrack_input;    
+    ParamSet params_input;
+
     if (vm.count("preprocess")) {
         cout << "preprocess file is: " << vm["preprocess"].as<string>() << ".\n" << endl ;
         prepro_input = read_preprocess_file(vm["preprocess"].as<string>());
@@ -53,7 +56,6 @@ int main(int argc, char** argv){
         params = params_input;
     }
 
-    ParamSet params_input;
     if (vm.count("bypass")) {
         cout << "bypass preprocess file with: " << vm["bypass"].as<string>() << ".\n" << endl ;
         params_input = read_paramset_file(vm["bypass"].as<string>());
@@ -117,7 +119,7 @@ int main(int argc, char** argv){
         if(i%1000 == 0) {
             cout << i<<endl;
             Re_old = Re_new;
-            Re_new = getReynolds(meins, 40);
+            Re_new = getReynolds(meins);
             reynolds_data.push_back(Re_new);
 
             double rel_res = (Re_new - Re_old)/Re_new;
