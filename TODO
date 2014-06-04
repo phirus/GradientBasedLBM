@@ -1,1 +1,3 @@
-- MRT sauber implementieren -> forcing term MRT kompatibel
+- Reynolds tracken
+- bei restart neue max_time lesen
+- Reynolds-Konvergenz als Kriterium
