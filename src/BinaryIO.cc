@@ -536,6 +536,7 @@ const Timetrack read_timetrack_file(const Preprocess& prepro, const string& file
     mm.insert(pair<string,double>("max_steps",1e5));
     mm.insert(pair<string,double>("techplot_interval",1e3));
     mm.insert(pair<string,double>("restart_interval",1e4));
+    mm.insert(pair<string,double>("resi_Re_rel",1e-3));
 
     // cycling through the input file
     double tmp;
@@ -543,7 +544,7 @@ const Timetrack read_timetrack_file(const Preprocess& prepro, const string& file
         if( input_query(filename,it->first,tmp) == true ) it->second = tmp;
     }
 
-    Timetrack time(prepro.getTimestep(), mm.at("factor"), mm.at("max_steps"), mm.at("techplot_interval"), mm.at("restart_interval"));
+    Timetrack time(prepro.getTimestep(), mm.at("factor"), mm.at("max_steps"), mm.at("techplot_interval"), mm.at("restart_interval"), mm.at("resi_Re_rel"));
  
     return time;
 }

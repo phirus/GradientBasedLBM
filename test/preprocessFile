@@ -42,3 +42,6 @@ max_steps = 400000.0
 # output Settings
 techplot_interval = 100
 restart_interval = 1000
+
+# termination criterion
+resi_Re_rel = 0.0001

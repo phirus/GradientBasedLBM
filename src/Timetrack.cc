@@ -4,14 +4,15 @@
 
 //=========================== LIFECYCLE ===========================
 
-Timetrack::Timetrack(double iniTime, double fac, int t_c, int tech, int rest):
+Timetrack::Timetrack(double iniTime, double fac, int t_c, int tech, int restart, double resi):
 dtIni(iniTime)
 ,factor(fac)
 ,count(0)
 ,refinelist(1,0)
 ,terminalCount(t_c)
 ,techplotInterval(tech)
-,restartInterval(rest)
+,restartInterval(restart)
+,relativeResidual(resi)
 {}
 
 //=========================== OPERATIONS ===========================
@@ -47,6 +48,7 @@ const bool Timetrack::operator==(const Timetrack& other)const
     if(terminalCount != other.getMaxCount()) exit = false;
     if(techplotInterval != other.getTechPlotInt()) exit = false;
     if(restartInterval != other.getRestartInt()) exit = false;
+    if(relativeResidual != other.getResidual()) exit = false;
 
     return exit;
 }
