@@ -39,9 +39,9 @@ factor = 1.1
 # maximum number of time steps, default [1e5]
 max_steps = 100000.0
 
-# maximum simulation time / s, default [5]
-max_time = 5
-
 # output Settings
 techplot_interval = 100
 restart_interval = 1000
+
+# termination criterion
+resi_Re_rel = 0.001

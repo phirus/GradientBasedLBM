@@ -31,20 +31,33 @@ int main(int argc, char** argv){
     }
 
     int numOfCPUs = 1;
+    if(vm.count("cpu")){
+        numOfCPUs = vm["cpu"].as<int>();
+        cout << "number of CPUs set to "<< numOfCPUs << endl;
+    }
+
     Preprocess prepro = read_preprocess_file("preprocessFile");
     Timetrack timetrack = read_timetrack_file(prepro, "preprocessFile");
     ParamSet params = prepro.getParamSet();
 
+    Preprocess prepro_input;
+    Timetrack timetrack_input;    
     if (vm.count("preprocess")) {
         cout << "preprocess file is: " << vm["preprocess"].as<string>() << ".\n" << endl ;
-        prepro = read_preprocess_file(vm["preprocess"].as<string>());
-        timetrack = read_timetrack_file(prepro, vm["preprocess"].as<string>());
-        params = prepro.getParamSet();
+        prepro_input = read_preprocess_file(vm["preprocess"].as<string>());
+        timetrack_input = read_timetrack_file(prepro_input, vm["preprocess"].as<string>());
+        params_input = prepro_input.getParamSet();
+        
+        prepro = prepro_input;
+        timetrack = timetrack_input;
+        params = params_input;
     }
 
+    ParamSet params_input;
     if (vm.count("bypass")) {
         cout << "bypass preprocess file with: " << vm["bypass"].as<string>() << ".\n" << endl ;
-        params = read_paramset_file(vm["bypass"].as<string>());
+        params_input = read_paramset_file(vm["bypass"].as<string>());
+        params = params_input;
     }
    
     int ymax = 200;
@@ -69,11 +82,9 @@ int main(int argc, char** argv){
             cout << "failed to read input file" << endl;
             return 1;
         }
-    }
-
-    if(vm.count("cpu")){
-        numOfCPUs = vm["cpu"].as<int>();
-        cout << "number of CPUs set to "<< numOfCPUs << endl;
+        if (vm.count("preprocess")){
+            timetrack = timetrack_input;
+        }
     }
 
     time_t start,end;
@@ -81,6 +92,10 @@ int main(int argc, char** argv){
 
     int techPlotInterval = timetrack.getTechPlotInt();
     int restartInterval = timetrack.getRestartInt();
+    double residual = timetrack.getResidual();
+    double Re_old(0);
+    double Re_new(0);
+    std::vector<double> reynolds_data;
 
     while (timetrack.proceed() == true){
         bool success = meins.collideAll(numOfCPUs,true,true);
@@ -99,7 +114,18 @@ int main(int argc, char** argv){
         meins.streamAll(numOfCPUs);
         timetrack.timestep();
         int i = timetrack.getCount();
-        if(i%1000 == 0) cout << i<<endl;
+        if(i%1000 == 0) {
+            cout << i<<endl;
+            Re_old = Re_new;
+            Re_new = getReynolds(meins, 40);
+            reynolds_data.push_back(Re_new);
+
+            double rel_res = (Re_new - Re_old)/Re_new;
+            if ((rel_res * rel_res) <= (residual * residual)){
+                cout<<"\nResiduum klein genug"<<endl;
+                break;
+            }
+        }
         if(i%techPlotInterval == 0)  write_techplot_output(meins,i,true);
         if(i%restartInterval == 0){
             const string restart_file_name =  createFilename("restart", i, ".bin");
@@ -108,6 +134,7 @@ int main(int argc, char** argv){
     }
 
     time(&end);
+    write_data_plot(reynolds_data, 1000, "ReynoldsPlot.dat");
     cout<<"\nBerechnung beendet nach "<< difftime(end,start) <<" Sekunden"<<endl;
 
     return 0;

@@ -7,6 +7,7 @@
 
 #include"Lattice.h"
 #include"Preprocess.h"
+#include"Timetrack.h"
 
 /// binary dump
 void write_binary(const Lattice& l, const string& filename = "data.bin");
@@ -21,7 +22,9 @@ const bool read_restart_file(Lattice& outL, Preprocess& p, Timetrack& time, cons
 void write_techplot_output(const Lattice& l, int iterNum, bool vebose = false);
 void write_techplot_output_alternative(const Lattice& l, const string& filename = "alternative.dat");
 void write_vtk_output(const Lattice& l, int iterNum);
+
 void write_data_plot(const std::vector<double> x, const std::vector<double> y1, const std::vector<double> y2, const string& filename = "massplot.dat");
+void write_data_plot(const std::vector<double> y, double del_x, const string& filename = "ReynoldsPlot.dat");
 
 void write_param_log(const ParamSet& p);
 
