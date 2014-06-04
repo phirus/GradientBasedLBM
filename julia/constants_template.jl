@@ -13,6 +13,9 @@ global const MACH_MAX = 0.1
 global const REFINE_FACTOR = 1.1
 global const MAX_ITER = 2e6
 
+# termination criterion
+global const RESIDUAL_RE = 1e-3
+
 # output settings
 global const TECH_PLOT = 1000
 global const RESTART = 10000

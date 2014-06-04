@@ -67,6 +67,10 @@ function createPFile(Mo, Eo, c_s, gamma, sigma, g)
 	write(stream,"\nrestart_interval = ")
 	write(stream, string(RESTART))
 
+	write(stream, "\n\n# termination criterion")
+	write(stream,"\nresi_Re_rel = ")
+	write(stream, string(RESIDUAL_RE))
+
 	write(stream,"\n")
 	close(stream)
 end
