@@ -127,6 +127,8 @@ int main(int argc, char** argv){
             Re_new = getReynolds(meins);
             reynolds_data.push_back(Re_new);
 
+            write_data_plot(reynolds_data, 10000, "ReynoldsPlot.dat");
+
             double rel_res = (Re_new - Re_old)/Re_new;
             if ((rel_res * rel_res) <= (residual * residual)){
                 cout<<"\nResiduum klein genug"<<endl;
