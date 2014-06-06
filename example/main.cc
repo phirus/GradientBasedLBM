@@ -66,9 +66,7 @@ int main(int argc, char** argv){
     int xmax = 100;
     // create a Lattice
     Lattice meins(xmax,ymax);
-    initialSetUp(meins, prepro, xmax, ymax, params);
-    write_techplot_output(meins,0,true);
-       
+
     if (vm.count("restart")) {
         cout << "Restart file is: " << vm["restart"].as<string>() << ".\n" << endl ;
         Lattice tmpL;
@@ -85,8 +83,15 @@ int main(int argc, char** argv){
             return 1;
         }
         if (vm.count("preprocess")){
-            timetrack = timetrack_input;
+            timetrack.setMaxCount( timetrack_input.getMaxCount() );
+            timetrack.setTechPlotInt( timetrack_input.getTechPlotInt() );
+            timetrack.setRestartInt( timetrack_input.getRestartInt() );
+            timetrack.setResidual( timetrack_input.getResidual() );
         }
+    }
+    else {      // vm.count("restart")
+        initialSetUp(meins, prepro, xmax, ymax, params);
+        write_techplot_output(meins,0,true);
     }
 
     time_t start,end;
@@ -116,7 +121,7 @@ int main(int argc, char** argv){
         meins.streamAll(numOfCPUs);
         timetrack.timestep();
         int i = timetrack.getCount();
-        if(i%1000 == 0) {
+        if(i%10000 == 0) {
             cout << i<<endl;
             Re_old = Re_new;
             Re_new = getReynolds(meins);
