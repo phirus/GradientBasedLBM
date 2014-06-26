@@ -5,6 +5,7 @@ const double getBubbleVelocity(const Lattice& l)
     field data = l.getData();
     ColSet extent = l.getSize();
 
+    Cell tmp_cell;
     VeloSet tmp_velo;
     ColSet tmp_rho;
     Vector momentum(0,0);
@@ -14,10 +15,14 @@ const double getBubbleVelocity(const Lattice& l)
     {
         for (int y = 0; y<extent[1];y++)
         {
-            tmp_velo = data[x][y].getU();
-            tmp_rho = data[x][y].getRho();
-            momentum = momentum + (tmp_velo[1] * tmp_rho[1]);
-            rho_sum += tmp_rho[1];
+            tmp_cell = data[x][y];
+            tmp_cell.calcRho();
+            tmp_velo = tmp_cell.getU();
+            tmp_rho = tmp_cell.getRho();
+            if ( tmp_cell.calcPsi() < -0.99) {
+                momentum = momentum + (tmp_velo[1] * tmp_rho[1]);
+                rho_sum += tmp_rho[1];
+            }
         }
     }
 
@@ -35,8 +40,8 @@ const double getEotvos(const ParamSet& params, double resolution)
 
     const double tau = 1.0 / params.getOmegaRed();
     const double dt = params.getDeltaT();
-    const ColSet A_k = getAk(params.getOmegaRed());
-    const double sigma_alt = (2.0/9.0) (A_k[0] + A_k[1]) *dt * tau; 
+    const ColSet A_k = params.getAk(params.getOmegaRed());
+    const double sigma_alt = (2.0/9.0) * (A_k[0] + A_k[1]) *dt * tau; 
 
     const double eotvos = (g * (1.0 - 1.0/gamma) * resolution * resolution) / sigma;
     return eotvos;
@@ -50,8 +55,8 @@ const double getMorton(const ParamSet& params)
 
     const double tau = 1.0 / params.getOmegaRed();
     const double dt = params.getDeltaT();
-    const ColSet A_k = getAk(params.getOmegaRed());
-    const double sigma_alt = (2.0/9.0) (A_k[0] + A_k[1]) *dt * tau;
+    const ColSet A_k = params.getAk(params.getOmegaRed());
+    const double sigma_alt = (2.0/9.0) * (A_k[0] + A_k[1]) *dt * tau;
     
     const double morton = (g * pow((tau - 0.5),4) * (1.0 - 1.0/gamma) ) / (sigma_alt * sigma_alt * sigma_alt);
     return morton;
