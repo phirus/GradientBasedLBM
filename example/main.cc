@@ -62,8 +62,8 @@ int main(int argc, char** argv){
         params = params_input;
     }
    
-    int ymax = 200;
-    int xmax = 100;
+    int ymax = 360;
+    int xmax = 120;
     // create a Lattice
     Lattice meins(xmax,ymax);
 
@@ -124,7 +124,7 @@ int main(int argc, char** argv){
         if(i%10000 == 0) {
             cout << i<<endl;
             Re_old = Re_new;
-            Re_new = getReynolds(meins);
+            Re_new = getReynolds(meins, prepro.getResolution());
             reynolds_data.push_back(Re_new);
 
             write_data_plot(reynolds_data, 10000, "ReynoldsPlot.dat");
@@ -167,7 +167,9 @@ void initialSetUp(Lattice& meins, Preprocess& prepro, int xmax, int ymax, ParamS
     // setup geometry (bubble at the bottom, x-centered)
     const int R1 = prepro.getResolution()/2;
     const int xm1 = xmax/2;
-    const int ym1 = 2*R1;
+    // const int ym1 = 2*R1;
+    const int ym1 = R1 + 20;
+
     // const int ym1 = ymax/2;
 
     for(int j=0; j< ymax; j++)
@@ -179,7 +181,7 @@ void initialSetUp(Lattice& meins, Preprocess& prepro, int xmax, int ymax, ParamS
         }
     }
 
-    // meins.bottomWall();
+    meins.bottomWall();
     meins.equilibriumIni();
 
     // write_techplot_output(meins,0,true);

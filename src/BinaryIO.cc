@@ -335,13 +335,22 @@ void write_techplot_output_alternative(const Lattice& l, const string& filename)
         {
             tmp = l.getCell(i,j);
             tmp.calcRho();
-            PsiFile << i << "\t" << j << "\t" << "0 \t" << tmp.calcPsi() ;
+            double psi = tmp.calcPsi();
+            PsiFile << i << "\t" << j << "\t" << "0 \t" << psi ;
             
             VeloSet u = tmp.getU();
             ColSet rho = tmp.getRho();
             Vector v;
             Vector gradient = l.getGradient(i, j);
             if(sum(rho) > 0) v = (u[0]*rho[0] + u[1]*rho[1]) * (1/sum(rho));
+            if(psi < 1) {
+                u[0].x = 0;
+                u[0].y = 0;
+            }
+            if(psi > -0.99) {
+                u[1].x = 0;
+                u[1].y = 0;
+            }
             PsiFile << "\t" << sum(rho) << "\t" << u[0].x*rho[0] << "\t" << u[0].y*rho[0] << "\t" << u[1].x*rho[1] << "\t" << u[1].y*rho[1] << "\t" << v.Abs() << "\t" << gradient.x << "\t" << gradient.y;
             PsiFile << endl;
         }
