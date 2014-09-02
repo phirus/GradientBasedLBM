@@ -20,7 +20,8 @@ int main(int argc, char** argv){
         ("binary,b", boost::program_options::value<string> (), "specify binary input file")
         ("restart,r", boost::program_options::value<string> (), "specify restart file")
         ("analyze,a", "analyze for Mo, Eo and Re")
-        ("tecplot,t", boost::program_options::value<string> (), "specify output file")
+        ("tecplot,t", boost::program_options::value<string> (), "specify tecplot output file")
+        ("vtk,v", boost::program_options::value<string> (), "specify vtk output file")
         ;
     boost::program_options::variables_map vm;
     boost::program_options::store(boost::program_options::parse_command_line(argc,argv,desc),vm);
@@ -76,6 +77,12 @@ int main(int argc, char** argv){
     if (vm.count("tecplot")) {
         filename_out = vm["tecplot"].as<string>();
         write_techplot_output_alternative(meins, filename_out);
+        cout<<"\noutput written to "<< filename_out <<endl;
+    }
+    else if (vm.count("vtk")) {
+        filename_out = vm["vtk"].as<string>();
+        // write_techplot_output_alternative(meins, filename_out);
+        write_vtk_output(meins, 0);
         cout<<"\noutput written to "<< filename_out <<endl;
     }
     else {
