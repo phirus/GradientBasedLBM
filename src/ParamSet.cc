@@ -16,7 +16,7 @@ sigma(sigmaIni),
 gravity(g), 
 speedlimit(c_limit), 
 timestep(t_step),
-spacestep(t_step),
+spacestep(s_step),
 relax(rel)
 {
     calcInter();
@@ -73,7 +73,8 @@ const double ParamSet::getOmega(double psi)const
 
 const ColSet ParamSet::getAk(double omega)const
 {
-    double A = (9 * omega * sigma) / (2* timestep);
+    double tmp = pow(spacestep,4) / pow(timestep,3);
+    double A = (9 * omega * sigma) / (2* tmp);
     ColSet Ak = {{A,A}};
     return Ak;
 }

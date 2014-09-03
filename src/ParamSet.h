@@ -1,6 +1,8 @@
 #ifndef PARAMSET_H
 #define PARAMSET_H
 
+#include<cmath>
+
 #include"Definitions.h"
 #include<string.h>
 
