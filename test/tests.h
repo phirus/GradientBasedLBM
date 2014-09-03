@@ -19,7 +19,7 @@ TEST(BinaryIO,output){
 
 TEST(BinaryIO,paramLog){
     RelaxationPar rel = RelaxationPar(0.8,1.2,1.2);
-    ParamSet params(1.1, 0.9, 1.1, 5, 2e-4, 2e-4, 10, 1e-4, rel, 0.21, 0.11, 0.98);   
+    ParamSet params(1.1, 0.9, 1.1, 5, 2e-4, 2e-4, 10, 1e-4, 1e-3,rel, 0.21, 0.11, 0.98);   
     EXPECT_NO_THROW(write_param_log(params));
 
     ParamSet read_in = read_paramset_file();

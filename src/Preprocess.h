@@ -69,7 +69,6 @@ private:
 	double g;          		/// < gravity / m * s^-2	
 	double s_3, s_5;
 
-
     // deduced
     double tau;
     double s_2;

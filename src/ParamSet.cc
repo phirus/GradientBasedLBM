@@ -4,7 +4,7 @@
 
 //=========================== LIFECYCLE ===========================
 
-ParamSet::ParamSet(double omR, double omB, double rhoR ,double gammaIni, double sigmaIni, double g, double c_limit, double t_step, RelaxationPar rel, double alB, double deltaIni, double betaIni):
+ParamSet::ParamSet(double omR, double omB, double rhoR ,double gammaIni, double sigmaIni, double g, double c_limit, double t_step, double s_step,RelaxationPar rel, double alB, double deltaIni, double betaIni):
 omegaRed(omR),
 omegaBlue(omB),
 rhoRed(rhoR),
@@ -16,6 +16,7 @@ sigma(sigmaIni),
 gravity(g), 
 speedlimit(c_limit), 
 timestep(t_step),
+spacestep(t_step),
 relax(rel)
 {
     calcInter();
@@ -77,8 +78,8 @@ const ColSet ParamSet::getAk(double omega)const
     return Ak;
 }
 
-const boost::array<double,12> ParamSet::getEverything()const{
-    boost::array<double,12> pinkie;
+const boost::array<double,13> ParamSet::getEverything()const{
+    boost::array<double,13> pinkie;
     pinkie[0] = omegaRed;
     pinkie[1] = omegaBlue;
     pinkie[2] = rhoRed;
@@ -91,6 +92,7 @@ const boost::array<double,12> ParamSet::getEverything()const{
     pinkie[9] = gravity;
     pinkie[10] = speedlimit;
     pinkie[11] = timestep;
+    pinkie[12] = spacestep;
     
 
     return pinkie;
@@ -128,7 +130,7 @@ void ParamSet::setRelaxation(double s_2, double s_3, double s_5)
 const bool ParamSet::operator==(const ParamSet& other)const{
     bool control = true;
     {
-        boost::array<double,12> foo, bar;
+        boost::array<double,13> foo, bar;
         foo = getEverything();
         bar = other.getEverything();
 

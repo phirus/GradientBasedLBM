@@ -20,7 +20,7 @@ const ParamSet Preprocess::getParamSet()const{
     const double omega = 1/tau;
     const double rho_r = 1;  // normalized
     const RelaxationPar relax(s_2,s_3,s_5);
-    ParamSet param(omega, omega, rho_r, gamma, convertSigma(), convertG(), speedlimit, timestep, relax);
+    ParamSet param(omega, omega, rho_r, gamma, convertSigma(), convertG(), speedlimit, timestep, spacestep, relax);
     return param;
 }
 
