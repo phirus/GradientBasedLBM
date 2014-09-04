@@ -737,9 +737,11 @@ TEST(Preprocess,constr){
     // test the deduced parameters
     EXPECT_DOUBLE_EQ(0.6385640646055102,newProcess.getTau());
     EXPECT_DOUBLE_EQ(sqrt(3),newProcess.getSpeedlimit());
-    EXPECT_DOUBLE_EQ(0.0025,newProcess.getSpacestep());
-    EXPECT_DOUBLE_EQ(0.00014433756729740645,newProcess.getTimestep());
-    EXPECT_DOUBLE_EQ(0.002,newProcess.getNu());
+    // EXPECT_DOUBLE_EQ(0.0025,newProcess.getSpacestep());
+    // EXPECT_DOUBLE_EQ(0.00014433756729740645,newProcess.getTimestep());
+    EXPECT_DOUBLE_EQ(1,newProcess.getSpacestep());
+    EXPECT_DOUBLE_EQ(1,newProcess.getTimestep());
+    // EXPECT_DOUBLE_EQ(0.002,newProcess.getNu());
     EXPECT_DOUBLE_EQ(800,newProcess.getDelRho());
 }
 
@@ -798,8 +800,8 @@ TEST(Preprocess,ParameterCheck){
     EXPECT_DOUBLE_EQ(0.2,params.getAlpha());
     EXPECT_DOUBLE_EQ(0.1,params.getInterfaceThickness());
     EXPECT_DOUBLE_EQ(0.99,params.getBeta());
-    EXPECT_DOUBLE_EQ(0.00084327404271156506,params.getSigma());
-    EXPECT_DOUBLE_EQ(0.00014491665424627533,params.getG());
+    // EXPECT_DOUBLE_EQ(0.00084327404271156506,params.getSigma());
+    // EXPECT_DOUBLE_EQ(0.00014491665424627533,params.getG());
      }
 
 TEST(timetrack,basic){

@@ -16,8 +16,9 @@ public:
 
 	/// operations
 	// unit conversions
-	inline const double convertG()const{return g * timestep * timestep / spacestep;};		///  m/s^2 -> -
-	inline const double convertSigma()const{return sigma * timestep * timestep / (rho_l * spacestep * spacestep * spacestep) ;};  /// kg/s^2 -> -
+	inline const double convertG()const{return g ;} //* timestep * timestep / spacestep;};		///  m/s^2 -> -
+	// inline const double convertSigma()const{return sigma * timestep * timestep / (rho_l * spacestep * spacestep * spacestep) ;};  /// kg/s^2 -> -
+	inline const double convertSigma()const{return sigma / (rho_l) ;};  /// kg/s^2 -> -
 	inline const double convertRhoL()const{return 1;};	// rho_l / rho_l
 	inline const double convertRhoG()const{return 1/gamma;}; // (rho_l / gamma) / rho_l
 	// get the parameter set
@@ -81,8 +82,8 @@ private:
 	/// operations
 	inline void calcTau(){tau = (resolution * MACH_MAX   * sqrt(3) / ReynoldsMax ) + 0.5;};
 	inline void calcSpeedlimit(){speedlimit = MACH_MAX * sqrt(3) * c_s ;};
-	inline void calcSpacestep(){spacestep = diameter / resolution;};
-	inline void calcTimestep(){timestep = spacestep / (sqrt(3) * c_s);};
+	inline void calcSpacestep(){spacestep = 1;}	//diameter / resolution;};
+	inline void calcTimestep(){timestep = 1;} 	//spacestep / (sqrt(3) * c_s);};
 	inline void calcNu(){nu = c_s * c_s * timestep * (tau - 0.5);};
 	inline void calcDelRho(){delRho = rho_l * (1 - 1/gamma);};
 	inline void calcS2(){s_2 = 1/( (nu * muRatio) / (c_s*c_s * timestep) + 0.5);};

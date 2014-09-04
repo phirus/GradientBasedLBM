@@ -2,30 +2,22 @@ function getTau(Re)
 	tau = (RESOLUTION * MACH_MAX * sqrt(3) /  Re) + 0.5
 end
 
-function getTerminalRiseVelo(sigma, g)
-	tmp = 2.14 * sigma / (RHO_L * DIAMETER) + 0.505 *g * DIAMETER
-	if (tmp < 0 ) 
-		tmp = 0
-	end
-	ut = sqrt( tmp )
-	return ut
-end
-
 function getOtherParams(g, sigma,gamma)
 
 	delRho = 	RHO_L * (1- 1/ gamma)
 	tau = 	getTau(REYNOLDS_MAX_INI)
-	dx = DIAMETER/RESOLUTION
-	ut = getTerminalRiseVelo(sigma, g)
-	c_s = ut / MACH_MAX;
-	dt = dx / (sqrt(3)*c_s)
+	dx = 1; #DIAMETER/RESOLUTION
+	# ut = getTerminalRiseVelo(sigma, g)
+	c_s = 1/sqrt(3); #ut / MACH_MAX;
+	dt = 1; # dx / (sqrt(3)*c_s)
 	nu = c_s^2 * dt *(tau - 0.5)
 	mu = RHO_L * nu
 	
 	Mo = g * mu^4 * delRho/(RHO_L^2 * sigma^3)
-	Eo = (g*delRho*DIAMETER^2)/sigma
+	# Eo = (g*delRho*DIAMETER^2)/sigma
+	Eo = (g*delRho*RESOLUTION^2)/sigma
 
-	return Mo, Eo, dx, ut, c_s, dt, nu, mu, delRho, tau
+	return Mo, Eo, dx, c_s, dt, nu, mu, delRho, tau
 end
 
 function transform(x::Vector) # made a function in case i need another transformation
