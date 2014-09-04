@@ -9,16 +9,15 @@ g = 1e-4 #10.0
 sigma = 1e-4
 gamma = 2
 
-res = optimize(targetF, [g, sigma, gamma], method = :nelder_mead, iterations = 10000)
+res = optimize(targetF, [g, sigma], method = :nelder_mead, iterations = 10000)
 show(res)
 
 x = transform(res.minimum)
 
 g = 		x[1]
 sigma = 	x[2]
-gamma = 	x[3]
 
-Mo, Eo, dx, c_s, dt, nu, mu, delRho, tau = getOtherParams(g, sigma, gamma)
+Mo, Eo, dx, c_s, dt, nu, mu, delRho, tau = getOtherParams(g, sigma)
 
 xi = nu * MU_RATIO
 s_2 = 1/(xi/(c_s^2 * dt) + 1/2)

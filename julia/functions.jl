@@ -2,8 +2,9 @@ function getTau(Re)
 	tau = (RESOLUTION * MACH_MAX * sqrt(3) /  Re) + 0.5
 end
 
-function getOtherParams(g, sigma,gamma)
+function getOtherParams(g, sigma) 
 
+	gamma = 2;
 	delRho = 	RHO_L * (1- 1/ gamma)
 	tau = 	getTau(REYNOLDS_MAX_INI)
 	dx = 1; #DIAMETER/RESOLUTION
@@ -14,7 +15,6 @@ function getOtherParams(g, sigma,gamma)
 	mu = RHO_L * nu
 	
 	Mo = g * mu^4 * delRho/(RHO_L^2 * sigma^3)
-	# Eo = (g*delRho*DIAMETER^2)/sigma
 	Eo = (g*delRho*RESOLUTION^2)/sigma
 
 	return Mo, Eo, dx, c_s, dt, nu, mu, delRho, tau
@@ -30,9 +30,8 @@ function targetF(x::Vector)
 
 	g = 		x[1]
 	sigma = 	x[2]
-	gamma = 	x[3]
 
-	Mo, Eo = getOtherParams(g, sigma, gamma)
+	Mo, Eo = getOtherParams(g, sigma)
 	
 	return  ((EOTVOS - Eo)/EOTVOS)^2 + ((MORTON - Mo)/MORTON)^2 
 end
