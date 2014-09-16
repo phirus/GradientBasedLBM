@@ -4,8 +4,7 @@ end
 
 function getParams_alter() 
 
-	gamma = 2;
-	delRho = 	RHO_L * (1- 1/ gamma)
+	delRho = 	RHO_L * (1- 1/ GAMMA)
 	tau = 	getTau(REYNOLDS_MAX_INI)
 	dx = 1; 
 	c_s = 1/sqrt(3); 
@@ -14,7 +13,7 @@ function getParams_alter()
 	mu = RHO_L * nu
 
 	sigma = sqrt((EOTVOS * (tau - 0.5)^4) / (81 * RESOLUTION^2 * MORTON)) * RHO_L;
-	g = (EOTVOS * sigma) / ( RHO_L * (1 - 1/gamma) * RESOLUTION^2 ) ;
+	g = (EOTVOS * sigma) / ( RHO_L * (1 - 1/GAMMA) * RESOLUTION^2 ) ;
 	
 	Mo = g * mu^4 * delRho/(RHO_L^2 * sigma^3)
 	Eo = (g*delRho*RESOLUTION^2)/sigma

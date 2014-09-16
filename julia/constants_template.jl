@@ -4,8 +4,9 @@ global const MORTON = 0.01
 global const EOTVOS = 10
 
 # several parameters
-global const RHO_L = 1000
-global const RESOLUTION = 40
+global const RHO_L = 1
+global const RESOLUTION = 30
+global const GAMMA = 2
 global const MACH_MAX = 0.1
 
 # timetracking

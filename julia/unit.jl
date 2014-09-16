@@ -23,6 +23,7 @@ println("\nnu = ",nu)
 println("\nmu = ",mu)
 println("\nrho = ",RHO_L)
 println("\ndelta rho = ",delRho)
+println("\ngamma = ",GAMMA)
 println("\ntau = ",tau)
 println("\ns_2 = ",s_2)
 
@@ -33,4 +34,4 @@ println("\nReynolds = ",REYNOLDS_MAX_INI)
 println("\nMorton = ",Mo)
 println("\nEotvos = ",Eo)
 
-createPFile(Mo, Eo, c_s, gamma, sigma, g)
+createPFile(Mo, Eo, c_s, sigma, g)
