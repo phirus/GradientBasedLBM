@@ -1,8 +1,9 @@
-cd ../julia
+cd julia
 julia_count=0
 codelines=`cat *.jl | wc -l`
 julia_count=$((codelines))
 echo $julia_count "lines of julia code"
+cd ..
 
 cd ../src
 src_count=0
@@ -20,20 +21,25 @@ echo $test_count "lines of test code"
 
 total_count=$((test_count+src_count+julia_count))
 echo $total_count "total lines of code"
-cd ../aux
 
-echo 
+echo
 
 cd ../example
 example_count=`cat *.cc | wc -l`
 echo $example_count "extra lines for example binary"
-cd ../deeperAnalysis
+
+cd ../aux
+cd deeperAnalysis
 deeperAnalysis_count=`cat *.cc | wc -l`
 echo $deeperAnalysis_count "extra lines for deeperAnalysis binary"
-cd ../translate
+cd ..
+
+cd translate
 translate_count=`cat *.cc | wc -l`
 echo $translate_count "extra lines for translate binary"
-cd ../Postprocess
+cd ..
+
+cd Postprocess
 Postprocess_count=`cat *.cc | wc -l`
 echo $Postprocess_count "extra lines for Postprocess binary"
 
@@ -44,6 +50,5 @@ echo
 
 absolute_total=$((total_count+binary_total)) 
 echo $absolute_total "all in all lines of code"
-cd ../aux
 
 echo
