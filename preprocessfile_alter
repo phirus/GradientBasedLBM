@@ -1,0 +1,50 @@
+####### DIMENSIONLESS PARAMETERS #######
+
+# Reynolds-Number -> corresponds with tau
+Reynolds = 10
+
+# Morton-Number
+Morton = 100
+
+# Eotvos-Number
+Eotvos = 10.0
+
+#### DOMAIM SIZE ####
+
+# resolution / Cells per Bubble diameter, default [40]
+resolution = 30
+
+# height /Cells, default [360]
+height = 360
+
+# width /Cells, default [120]
+width = 120
+
+####### DENSITY #######
+
+# density of the denser phase / kg m^-3, default [1]
+rho_l = 1
+
+# density ratio, default [2]
+gamma = 2
+
+####### PARAMETERS FOR RELAXATION-MATRIX #######
+
+# bulk viscosity ratio mu'/mu  , default [2]
+mu_ratio = 2
+
+# s_3 , default [1]
+s_3 = 1.2
+
+# s_5 , default [1]
+s_5 = 1.2
+
+####### CONTOLS #######
+
+# maximum number of time steps, default [1e5]
+max_steps = 3.0e6
+
+# output Settings
+techplot_interval = 2000
+restart_interval = 10000
+vtk_interval = 2000
