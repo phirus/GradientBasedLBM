@@ -12,7 +12,7 @@ class Preprocess
 {
 public: 
 	/// Lifecycle
-	Preprocess(double Re = 50, double Mo = 1e-3, double Eo = 20, double res = 40, double rhol = 1, double gamma_ini = 2, double mu_rate = 2, double s_three = 1, double s_five = 1, int width_ini = 120, int height_ini = 360, int max_iter_ini = 1e5, int vtk__ini = 1e4, int tecplot_ini = 1e4, int restart_ini = 1e4);
+	Preprocess(double Re = 10, double Mo = 100, double Eo = 10, double res = 30, double rhol = 1, double gamma_ini = 2, double mu_rate = 2, double s_three = 1, double s_five = 1, int width_ini = 120, int height_ini = 360, int max_iter_ini = 1e5, int vtk__ini = 1e4, int tecplot_ini = 1e4, int restart_ini = 1e4);
 
 	/// operations
 	// unit conversions

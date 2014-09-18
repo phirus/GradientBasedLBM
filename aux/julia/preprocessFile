@@ -25,10 +25,10 @@ g = 7.0272836892630665e-6
 mu_ratio = 2
 
 # s_3 , default [1]
-s_3 = 1.2
+s_3 = 1
 
 # s_5 , default [1]
-s_5 = 1.2
+s_5 = 1
 
 # refine factor, default [1.1]
 factor = 1.1

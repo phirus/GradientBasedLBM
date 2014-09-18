@@ -69,7 +69,7 @@ void Preprocess::deduceAll(){
     calcTimestep();
     calcSoundspeed();
 	calcNu();
-    calcS2();	
-
-
+    calcS2();
+    calcSigma();
+    calcG();
 }

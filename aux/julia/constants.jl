@@ -24,8 +24,8 @@ global const RESTART = 10000
 # bulk viscosity -> s_2
 global const MU_RATIO = 2
 # s_3 + s_5
-global const S_3 = 1.2
-global const S_5 = 1.2
+global const S_3 = 1
+global const S_5 = 1
 
 
 println("Parameter wurden geladen")
