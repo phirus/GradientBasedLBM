@@ -726,7 +726,7 @@ TEST(Preprocess,constr){
     EXPECT_DOUBLE_EQ(10,newProcess.getReynoldsMax());
     EXPECT_DOUBLE_EQ(100,newProcess.getMorton());
     EXPECT_DOUBLE_EQ(10,newProcess.getEotvos());
-    EXPECT_DOUBLE_EQ(30,newProcess.getResolution());
+    EXPECT_EQ(30,newProcess.getResolution());
     EXPECT_DOUBLE_EQ(1,newProcess.getRhoL());
     EXPECT_DOUBLE_EQ(2,newProcess.getGamma());
     EXPECT_DOUBLE_EQ(2,newProcess.getMuRatio());
@@ -745,7 +745,12 @@ TEST(Preprocess,constr){
     EXPECT_DOUBLE_EQ(0.000316227766016838,newProcess.getSigma());
     EXPECT_DOUBLE_EQ(7.0272836892630665e-6,newProcess.getG());
 
-    
+    EXPECT_EQ(120,newProcess.getWidth());
+    EXPECT_EQ(360,newProcess.getHeight());
+    EXPECT_EQ(1e5,newProcess.getIterMax());
+    EXPECT_EQ(1e4,newProcess.getVtkInterval());
+    EXPECT_EQ(1e4,newProcess.getTecplotInterval());
+    EXPECT_EQ(1e4,newProcess.getRestartInterval());    
 }
 
 TEST(Preprocess,FileInput){
