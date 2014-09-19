@@ -12,7 +12,7 @@ class Preprocess
 {
 public: 
 	/// Lifecycle
-	Preprocess(double Re = 10, double Mo = 100, double Eo = 10, double res = 30, double rhol = 1, double gamma_ini = 2, double mu_rate = 2, double s_three = 1, double s_five = 1, int width_ini = 120, int height_ini = 360, int max_iter_ini = 1e5, int vtk__ini = 1e4, int tecplot_ini = 1e4, int restart_ini = 1e4);
+	Preprocess(double Re = 10, double Mo = 100, double Eo = 10, double res = 30, double rhol = 1, double gamma_ini = 2, double mu_rate = 2, double s_three = 1, double s_five = 1, int width_ini = 120, int height_ini = 360);
 
 	/// operations
 	// unit conversions
@@ -45,10 +45,6 @@ public:
 
 	inline const int getWidth()const{return width;};
 	inline const int getHeight()const{return height;};
-	inline const int getIterMax()const{return max_iter;};
-	inline const int getVtkInterval()const{return vtk_interval;};
-	inline const int getTecplotInterval()const{return tecplot_interval;};
-	inline const int getRestartInterval()const{return restart_interval;};
 
 	void setReynoldsMax(double val){ReynoldsMax = val;};
 //////FAKE
@@ -70,6 +66,10 @@ private:
   	double muRatio;		/// ratio of second to first viscosity mu'/mu
 	double s_3, s_5;
 
+	// stored
+	int width;
+	int height;
+
     // deduced
     double spacestep;  /// < spacestep /m	
 	double timestep;   /// < timestep /s
@@ -82,16 +82,6 @@ private:
 
    	double sigma;   	   	/// < surface tension
 	double g;          		/// < gravity / m * s^-2
-
-	// stored
-	int width;
-	int height;
-
-	int max_iter;
-	int vtk_interval;
-	int tecplot_interval;
-	int restart_interval;
-
 
 	/// operations
 	inline void calcTau(){tau = (resolution * MACH_MAX   * sqrt(3) / ReynoldsMax ) + 0.5;};
@@ -106,7 +96,6 @@ private:
 
 
 	void deduceAll();
-
 };
 
 #endif
