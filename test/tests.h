@@ -771,29 +771,6 @@ TEST(Preprocess,FileInput){
 
 }
 
-// TEST(Preprocess,refine){
-//     Preprocess newProcess;
-//     const double Reynolds = newProcess.getReynoldsMax();
-//     const double c_s = newProcess.getSoundspeed();         
-//     const double tau_r = newProcess.getTau()-0.5;
-//     const double speedlimit = newProcess.getSpeedlimit();     
-//     const double spacestep = newProcess.getSpacestep();  
-//     const double timestep = newProcess.getTimestep();   
-//     const double delRho = newProcess.getDelRho();     
-//     const double nu = newProcess.getNu();
-
-//     newProcess.refine();
-
-//     EXPECT_DOUBLE_EQ(Reynolds*1.1, newProcess.getReynoldsMax());
-//     EXPECT_DOUBLE_EQ(c_s*1.1, newProcess.getSoundspeed());
-//     EXPECT_DOUBLE_EQ(tau_r/1.1 ,newProcess.getTau()-0.5);
-//     EXPECT_DOUBLE_EQ(timestep / 1.1, newProcess.getTimestep());
-//     EXPECT_DOUBLE_EQ(speedlimit*1.1, newProcess.getSpeedlimit());
-//     EXPECT_DOUBLE_EQ(spacestep,newProcess.getSpacestep());
-//     EXPECT_DOUBLE_EQ(delRho, newProcess.getDelRho());
-//     EXPECT_DOUBLE_EQ(nu,newProcess.getNu());
-// }
-
 TEST(Preprocess,ParameterCheck){
     Preprocess newProcess = read_preprocess_file("realParameters");
     ParamSet params = newProcess.getParamSet();
@@ -838,11 +815,11 @@ TEST(timetrack,FileInput){
     Timetrack newTimetrack = read_timetrack_file(newProcess, "preprocessFile");
      // test the given parameters 
     EXPECT_DOUBLE_EQ(newProcess.getTimestep(),newTimetrack.getDTini());
-    EXPECT_DOUBLE_EQ(1.15,newTimetrack.getFactor());
-    EXPECT_DOUBLE_EQ(4e5,newTimetrack.getMaxCount());
+    // EXPECT_DOUBLE_EQ(1.15,newTimetrack.getFactor());
+    EXPECT_DOUBLE_EQ(3e6,newTimetrack.getMaxCount());
 
-    EXPECT_DOUBLE_EQ(100,newTimetrack.getTechPlotInt());
-    EXPECT_DOUBLE_EQ(1000,newTimetrack.getRestartInt());
+    EXPECT_DOUBLE_EQ(2000,newTimetrack.getTechPlotInt());
+    EXPECT_DOUBLE_EQ(10000,newTimetrack.getRestartInt());
 }
 
 TEST(Vector,scalar){
