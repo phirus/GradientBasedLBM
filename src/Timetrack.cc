@@ -4,10 +4,10 @@
 
 //=========================== LIFECYCLE ===========================
 
-Timetrack::Timetrack(int t_c, int tech, int restart):
+Timetrack::Timetrack(int t_c, int out, int restart):
 count(0)
 ,terminalCount(t_c)
-,techplotInterval(tech)
+,outputInterval(out)
 ,restartInterval(restart)
 {}
 
@@ -28,7 +28,7 @@ const bool Timetrack::operator==(const Timetrack& other)const
     bool exit = true;
     if(count != other.getCount()) exit = false;
     if(terminalCount != other.getMaxCount()) exit = false;
-    if(techplotInterval != other.getTechPlotInt()) exit = false;
+    if(outputInterval != other.getOutputInt()) exit = false;
     if(restartInterval != other.getRestartInt()) exit = false;
    
     return exit;

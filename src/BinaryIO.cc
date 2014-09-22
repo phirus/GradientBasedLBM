@@ -92,12 +92,12 @@ void write_restart_file(const Lattice& l, const Preprocess& p, const Timetrack t
     // write Timetrack
     int count = time.getCount();
     int maxCount = time.getMaxCount();
-    int techplot_interval = time.getTechPlotInt();
+    int output_interval = time.getOutputInt();
     int restart_interval = time.getRestartInt();
 
     file.write(reinterpret_cast<char*> (&count), sizeof count);
     file.write(reinterpret_cast<char*> (&maxCount), sizeof maxCount);
-    file.write(reinterpret_cast<char*> (&techplot_interval), sizeof techplot_interval);
+    file.write(reinterpret_cast<char*> (&output_interval), sizeof output_interval);
     file.write(reinterpret_cast<char*> (&restart_interval), sizeof restart_interval);
 
     // write Preprocess
@@ -155,24 +155,18 @@ const bool read_restart_file(Lattice& outL, Preprocess& p, Timetrack& t, const s
             }
         }
 
-        Timetrack time;
-
         int count;
-        file.read((char*) &count, sizeof count);
-        time.setCount(count);
-        
         int maxCount;
-        file.read((char*) &maxCount, sizeof maxCount);
-        time.setMaxCount(maxCount);
-        
-        int techplot_interval;
-        file.read((char*) &techplot_interval, sizeof techplot_interval);
-        time.setTechPlotInt(techplot_interval);
-
+        int output_interval;
         int restart_interval;
-        file.read((char*) &restart_interval, sizeof restart_interval);
-        time.setRestartInt(restart_interval);
 
+        file.read((char*) &count, sizeof count);
+        file.read((char*) &maxCount, sizeof maxCount);
+        file.read((char*) &output_interval, sizeof output_interval);
+        file.read((char*) &restart_interval, sizeof restart_interval);
+
+        Timetrack time(maxCount, output_interval, restart_interval);
+        time.setCount(count);
 
         double ReynoldsMax, Morton, Eotvos;
         double resolution, rho_l, gamma;
@@ -516,7 +510,7 @@ const Timetrack read_timetrack_file(const string& filename){
     // initialzing strings and fallback values
     map<string,double> mm;
     mm.insert(pair<string,double>("max_steps",1e5));
-    mm.insert(pair<string,double>("techplot_interval",1e3));
+    mm.insert(pair<string,double>("output_interval",2e3));
     mm.insert(pair<string,double>("restart_interval",1e4));
     
     // cycling through the input file
@@ -525,7 +519,7 @@ const Timetrack read_timetrack_file(const string& filename){
         if( input_query(filename,it->first,tmp) == true ) it->second = tmp;
     }
 
-    Timetrack time(mm.at("max_steps"), mm.at("techplot_interval"), mm.at("restart_interval"));
+    Timetrack time(mm.at("max_steps"), mm.at("output_interval"), mm.at("restart_interval"));
  
     return time;
 }

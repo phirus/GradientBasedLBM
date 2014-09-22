@@ -12,7 +12,7 @@ class Timetrack
 {
 public: 
 	/// Lifecycle
-	Timetrack(int t_c = 1e5, int tech = 1e3, int restart = 1e4); //, double resi = 1e-3);
+	Timetrack(int t_c = 1e5, int out = 2e3, int restart = 1e4); //, double resi = 1e-3);
 	
 	/// operations	
 	inline void timestep(){count++;};
@@ -22,12 +22,12 @@ public:
 	/// accessors
 	inline const int getCount()const{return count;};
 	inline const int getMaxCount()const{return terminalCount;};
-	inline const int getTechPlotInt()const{return techplotInterval;};
+	inline const int getOutputInt()const{return outputInterval;};
 	inline const int getRestartInt()const{return restartInterval;};
 	
 	inline void setCount(int c){count = c;};
 	inline void setMaxCount(int t_c){terminalCount = t_c;};
-	inline void setTechPlotInt(int tmp){techplotInterval = tmp;};
+	inline void setOutputInt(int tmp){outputInterval = tmp;};
 	inline void setRestartInt(int tmp){restartInterval = tmp;};
 	
 	/// operators
@@ -40,7 +40,7 @@ private:
 	int terminalCount;			// maximum number of time steps
 	
 	// output intervals
-	int techplotInterval;
+	int outputInterval;
 	int restartInterval;
 };
 #endif

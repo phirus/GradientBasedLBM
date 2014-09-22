@@ -791,7 +791,7 @@ TEST(timetrack,FileInput){
     Timetrack newTimetrack = read_timetrack_file("preprocessFile");
      // test the given parameters 
     EXPECT_DOUBLE_EQ(1e6,newTimetrack.getMaxCount());
-    EXPECT_DOUBLE_EQ(2000,newTimetrack.getTechPlotInt());
+    EXPECT_DOUBLE_EQ(2000,newTimetrack.getOutputInt());
     EXPECT_DOUBLE_EQ(10000,newTimetrack.getRestartInt());
 }
 
