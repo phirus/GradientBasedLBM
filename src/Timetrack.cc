@@ -11,16 +11,6 @@ count(0)
 ,restartInterval(restart)
 {}
 
-//=========================== OPERATIONS ===========================
-
-const bool Timetrack::proceed()const
-{
-	bool getGoing = true;
-	if(count > terminalCount) getGoing = false;
-
-	return getGoing;
-}
-
 //=========================== OPERATORS ===========================
 
 const bool Timetrack::operator==(const Timetrack& other)const
