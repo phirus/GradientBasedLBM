@@ -37,12 +37,7 @@ TEST(BinaryIO,queryTest){
 TEST(BinaryIO,restart){
     Lattice lattice(150,150);
 
-    Timetrack time(1e-2, 1.05, 2e5,100,1000);
-    time.timestep();
-    time.timestep();
-    time.timestep();
-    time.refine();
-    time.timestep();
+    Timetrack time(2e5,100,1000);
     time.timestep();
 
     Preprocess newProcess = read_preprocess_file("preprocessFile");
@@ -791,33 +786,11 @@ TEST(Preprocess,ParameterCheck){
     // EXPECT_DOUBLE_EQ(0.00014491665424627533,params.getG());
      }
 
-TEST(timetrack,basic){
-    Timetrack track(0.605,1.1);
-    EXPECT_DOUBLE_EQ(0, track.getTime());
-    track.timestep();
-    track.timestep();
-    track.timestep();
-    EXPECT_DOUBLE_EQ(1.815, track.getTime());
-    track.refine();
-    EXPECT_DOUBLE_EQ(1.815, track.getTime());
-    track.timestep();
-    track.timestep();
-    EXPECT_DOUBLE_EQ(2.915, track.getTime());
-    track.refine();
-    track.timestep();
-    track.timestep();
-    track.timestep();
-    EXPECT_DOUBLE_EQ(4.415, track.getTime());
-}
-
 TEST(timetrack,FileInput){
     Preprocess newProcess = read_preprocess_file("preprocessFile");
-    Timetrack newTimetrack = read_timetrack_file(newProcess, "preprocessFile");
+    Timetrack newTimetrack = read_timetrack_file("preprocessFile");
      // test the given parameters 
-    EXPECT_DOUBLE_EQ(newProcess.getTimestep(),newTimetrack.getDTini());
-    // EXPECT_DOUBLE_EQ(1.15,newTimetrack.getFactor());
-    EXPECT_DOUBLE_EQ(3e6,newTimetrack.getMaxCount());
-
+    EXPECT_DOUBLE_EQ(1e6,newTimetrack.getMaxCount());
     EXPECT_DOUBLE_EQ(2000,newTimetrack.getTechPlotInt());
     EXPECT_DOUBLE_EQ(10000,newTimetrack.getRestartInt());
 }

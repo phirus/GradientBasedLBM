@@ -42,7 +42,7 @@ s_5 = 1.2
 ####### CONTOLS #######
 
 # maximum number of time steps, default [1e5]
-max_steps = 3.0e6
+max_steps = 1.0e6
 
 # output Settings
 techplot_interval = 2000

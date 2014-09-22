@@ -91,28 +91,16 @@ void write_restart_file(const Lattice& l, const Preprocess& p, const Timetrack t
 
     // write Timetrack
     int count = time.getCount();
-    double factor = time.getFactor();
-    double dtini = time.getDTini();
-    vector<int> refinelist = time.getList();
-    unsigned int vsize = refinelist.size();
-
     int maxCount = time.getMaxCount();
-    // double maxTime = time.getMaxTime();
     int techplot_interval = time.getTechPlotInt();
     int restart_interval = time.getRestartInt();
 
     file.write(reinterpret_cast<char*> (&count), sizeof count);
-    file.write(reinterpret_cast<char*> (&factor), sizeof factor);
-    file.write(reinterpret_cast<char*> (&dtini), sizeof dtini);
-    file.write(reinterpret_cast<char*> (&vsize), sizeof vsize);
-    for(unsigned int i = 0; i< vsize; i++){
-        int tmp = refinelist[i];
-        file.write(reinterpret_cast<char*> (&tmp), sizeof(int));
-    }
     file.write(reinterpret_cast<char*> (&maxCount), sizeof maxCount);
-    // file.write(reinterpret_cast<char*> (&maxTime), sizeof maxTime);
     file.write(reinterpret_cast<char*> (&techplot_interval), sizeof techplot_interval);
     file.write(reinterpret_cast<char*> (&restart_interval), sizeof restart_interval);
+
+    // write Preprocess
 
     double ReynoldsMax = p.getReynoldsMax();    
     double Morton = p.getMorton();
@@ -173,33 +161,10 @@ const bool read_restart_file(Lattice& outL, Preprocess& p, Timetrack& t, const s
         file.read((char*) &count, sizeof count);
         time.setCount(count);
         
-        double factor;
-        file.read((char*) &factor, sizeof factor);
-        time.setFactor(factor);
-        
-        double dtini;
-        file.read((char*) &dtini, sizeof dtini);
-        time.setDTini(dtini);
-
-        unsigned int vsize;
-        file.read((char*) &vsize, sizeof vsize);
-        
-        vector<int> refinelist(vsize);
-        for(unsigned int i = 0; i< vsize; i++){
-            int tmp;
-            file.read((char*) &tmp, sizeof(int));
-            refinelist[i] = tmp; 
-            }
-        time.setVector(refinelist);
-
         int maxCount;
         file.read((char*) &maxCount, sizeof maxCount);
         time.setMaxCount(maxCount);
-
-        // double maxTime;
-        // file.read((char*) &maxTime, sizeof maxTime);
-        // time.setMaxTime(maxTime);
-
+        
         int techplot_interval;
         file.read((char*) &techplot_interval, sizeof techplot_interval);
         time.setTechPlotInt(techplot_interval);
@@ -207,6 +172,7 @@ const bool read_restart_file(Lattice& outL, Preprocess& p, Timetrack& t, const s
         int restart_interval;
         file.read((char*) &restart_interval, sizeof restart_interval);
         time.setRestartInt(restart_interval);
+
 
         double ReynoldsMax, Morton, Eotvos;
         double resolution, rho_l, gamma;
@@ -544,12 +510,11 @@ const Preprocess read_preprocess_file(const string& filename){
     return prepro;
 }
 
-const Timetrack read_timetrack_file(const Preprocess& prepro, const string& filename){
+const Timetrack read_timetrack_file(const string& filename){
     vector<string> tags;
     vector<double> val;
     // initialzing strings and fallback values
     map<string,double> mm;
-    mm.insert(pair<string,double>("factor",1.1));
     mm.insert(pair<string,double>("max_steps",1e5));
     mm.insert(pair<string,double>("techplot_interval",1e3));
     mm.insert(pair<string,double>("restart_interval",1e4));
@@ -560,7 +525,7 @@ const Timetrack read_timetrack_file(const Preprocess& prepro, const string& file
         if( input_query(filename,it->first,tmp) == true ) it->second = tmp;
     }
 
-    Timetrack time(prepro.getTimestep(), mm.at("factor"), mm.at("max_steps"), mm.at("techplot_interval"), mm.at("restart_interval"));
+    Timetrack time(mm.at("max_steps"), mm.at("techplot_interval"), mm.at("restart_interval"));
  
     return time;
 }
