@@ -15,12 +15,11 @@ public:
 	Preprocess(double Re = 10, double Mo = 100, double Eo = 10, double res = 30, double rhol = 1, double gamma_ini = 2, double mu_rate = 2, double s_three = 1, double s_five = 1, int width_ini = 120, int height_ini = 360);
 
 	/// operations
+
 	// unit conversions
 	inline const double convertSigma()const{return sigma / (rho_l) ;};  /// kg/s^2 -> -
-	// inline const double convertRhoG()const{return 1/gamma;}; 
 	// get the parameter set
 	const ParamSet getParamSet()const;
-
 
 	/// accessors
 	inline const double getReynoldsMax()const{return ReynoldsMax;};
@@ -47,10 +46,6 @@ public:
 	inline const int getHeight()const{return height;};
 
 	void setReynoldsMax(double val){ReynoldsMax = val;};
-//////FAKE
-	inline double getDiameter()const{return 1;};
-	inline double getSpeedlimit()const{return 1;};
-	inline const double getGPhys()const{return 1;};
 
 	/// operators
 	const bool operator==(const Preprocess& other)const;
@@ -93,7 +88,6 @@ private:
 	inline void calcS2(){s_2 = 1.0/( (nu * muRatio) / (c_s*c_s * timestep) + 0.5);};
 	inline void calcSigma(){sigma = sqrt( ( Eotvos * pow((tau - 0.5),4) ) / (81 * resolution * resolution * Morton)) * rho_l;};
 	inline void calcG(){g = (Eotvos * sigma) / ( rho_l * (1 - 1/gamma) * resolution * resolution );};
-
 
 	void deduceAll();
 };

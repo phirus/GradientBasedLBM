@@ -132,11 +132,7 @@ void write_restart_file(const Lattice& l, const Preprocess& p, const Timetrack t
     file.write(reinterpret_cast<char*> (&resolution), sizeof(double));
     file.write(reinterpret_cast<char*> (&rho_l), sizeof(double));
     file.write(reinterpret_cast<char*> (&gamma), sizeof(double));
-    // file.write(reinterpret_cast<char*> (&diameter), sizeof(double));
     file.write(reinterpret_cast<char*> (&mu_ratio), sizeof(double));    
-    // file.write(reinterpret_cast<char*> (&c_s), sizeof(double));
-    // file.write(reinterpret_cast<char*> (&sigma), sizeof(double));
-    // file.write(reinterpret_cast<char*> (&g), sizeof(double));
     file.write(reinterpret_cast<char*> (&s_3), sizeof(double));
     file.write(reinterpret_cast<char*> (&s_5), sizeof(double));
     file.write(reinterpret_cast<char*> (&width), sizeof(int));
@@ -223,11 +219,7 @@ const bool read_restart_file(Lattice& outL, Preprocess& p, Timetrack& t, const s
         file.read((char*) &resolution, sizeof(double));
         file.read((char*) &rho_l, sizeof(double));
         file.read((char*) &gamma, sizeof(double));
-        // file.read((char*) &diameter, sizeof(double));
         file.read((char*) &mu_ratio, sizeof(double));
-        // file.read((char*) &c_s, sizeof(double));
-        // file.read((char*) &sigma, sizeof(double));
-        // file.read((char*) &g, sizeof(double));
         file.read((char*) &s_3, sizeof(double));
         file.read((char*) &s_5, sizeof(double));
 
@@ -537,10 +529,6 @@ const Preprocess read_preprocess_file(const string& filename){
         mm.insert(pair<string,double>("resolution",30));
         mm.insert(pair<string,double>("rho_l",1));
         mm.insert(pair<string,double>("gamma",2));
-        // mm.insert(pair<string,double>("diameter",0.1));
-        // mm.insert(pair<string,double>("c_s",10));
-        // mm.insert(pair<string,double>("sigma",1e-4));
-        // mm.insert(pair<string,double>("g",10));
         mm.insert(pair<string,double>("mu_ratio",2));
         mm.insert(pair<string,double>("s_3",1));
         mm.insert(pair<string,double>("s_5",1));

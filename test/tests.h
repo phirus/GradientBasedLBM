@@ -769,7 +769,6 @@ TEST(Preprocess,FileInput){
     EXPECT_DOUBLE_EQ(0.13471506281091272,newProcess.getNu());
     EXPECT_DOUBLE_EQ(0.00016396995274947155,newProcess.getSigma());
     EXPECT_DOUBLE_EQ(2.0077953397894473e-7,newProcess.getG());
-
 }
 
 TEST(Preprocess,ParameterCheck){
