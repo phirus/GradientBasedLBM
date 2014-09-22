@@ -756,18 +756,19 @@ TEST(Preprocess,FileInput){
     EXPECT_DOUBLE_EQ(3,newProcess.getGamma());
     EXPECT_DOUBLE_EQ(1.8,newProcess.getMuRatio());
 
-    // test the deduced parameters
+    // test the stored parameters
     EXPECT_DOUBLE_EQ(1,newProcess.getSpacestep());
     EXPECT_DOUBLE_EQ(1,newProcess.getTimestep());
     EXPECT_EQ(150,newProcess.getWidth());
     EXPECT_EQ(400,newProcess.getHeight());
-    // EXPECT_DOUBLE_EQ(1.0196152422706632,newProcess.getTau());
-    // EXPECT_DOUBLE_EQ(0.5,newProcess.getDelRho());
-    // EXPECT_DOUBLE_EQ(0.5773502691896258,newProcess.getSoundspeed());
-    // EXPECT_DOUBLE_EQ(0.17320508075688779,newProcess.getNu());
-    // EXPECT_DOUBLE_EQ(0.000316227766016838,newProcess.getSigma());
-    // EXPECT_DOUBLE_EQ(7.0272836892630665e-6,newProcess.getG());
 
+    // test the deduced parameters
+    EXPECT_DOUBLE_EQ(0.9041451884327381,newProcess.getTau());
+    EXPECT_DOUBLE_EQ(0.6666666666666667,newProcess.getDelRho());
+    EXPECT_DOUBLE_EQ(0.5773502691896258,newProcess.getSoundspeed());
+    EXPECT_DOUBLE_EQ(0.13471506281091272,newProcess.getNu());
+    EXPECT_DOUBLE_EQ(0.00016396995274947155,newProcess.getSigma());
+    EXPECT_DOUBLE_EQ(2.0077953397894473e-7,newProcess.getG());
 
 }
 

@@ -1,34 +1,34 @@
 # Parameterset yielding
- Reynolds = 10
- Morton = 100.00000000000009
- Eotvos = 10.0
+ Reynolds = 15
+ Morton = 10.00000000000001
+ Eotvos = 1.0
 
 # resolution / Cells per Bubble diameter, default [40]
-resolution = 30
+resolution = 35
 
 # density of the denser phase / kg m^-3, default [1000]
 rho_l = 1
 
 # density ratio, default [5]
-gamma = 2
+gamma = 3
 
 # speed of sound / m s^-1, default [10]
 c_s = 0.5773502691896258
 
 # surface tension /?, default [1e-4]
-sigma = 0.000316227766016838
+sigma = 0.00016396995274947155
 
 # gravitational constant / m s^-1, default [10]
-g = 7.0272836892630665e-6
+g = 2.0077953397894473e-7
 
 # bulk viscosity ratio mu'/mu  , default [2]
-mu_ratio = 2
+mu_ratio = 1.8
 
 # s_3 , default [1]
-s_3 = 1
+s_3 = 1.2
 
 # s_5 , default [1]
-s_5 = 1
+s_5 = 1.2
 
 # refine factor, default [1.1]
 factor = 1.1
