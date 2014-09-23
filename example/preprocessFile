@@ -1,47 +1,50 @@
-# Parameterset yielding
- Reynolds = 20
- Morton = 0.010000000000000004
- Eotvos = 10.000000000000002
+####### DIMENSIONLESS PARAMETERS #######
 
-# resolution / Cells per Bubble diameter, default [40]
-resolution = 45
+# Reynolds-Number -> corresponds with tau, default [10]
+Reynolds = 15
 
-# density of the denser phase / kg m^-3, default [1000]
-rho_l = 1000
+# Morton-Number, default [100]
+Morton = 10
 
-# density ratio, default [5]
-gamma = 1.925059104384987
+# Eotvos-Number, default [10]
+Eotvos = 1
 
-# bubble diameter / m, default [0.1]
-diameter = 0.05
+#### DOMAIM SIZE ####
 
-# speed of sound / m s^-1, default [10]
-c_s = 5.364635997198423
+# resolution / Cells per Bubble diameter, default [30]
+resolution = 35
 
-# surface tension /?, default [1e-4]
-sigma = 1.1376024844741466
+# height /Cells, default [360]
+height = 400
 
-# gravitational constant / m s^-1, default [10]
-g = 9.469457722331791
+# width /Cells, default [120]
+width = 150
+
+####### DENSITY #######
+
+# density of the denser phase / kg m^-3, default [1]
+rho_l = 1
+
+# density ratio, default [2]
+gamma = 3
+
+####### PARAMETERS FOR RELAXATION-MATRIX #######
 
 # bulk viscosity ratio mu'/mu  , default [2]
-mu_ratio = 2
+mu_ratio = 1.8
 
 # s_3 , default [1]
-s_3 = 1
+s_3 = 1.2
 
 # s_5 , default [1]
-s_5 = 1
+s_5 = 1.2
 
-# refine factor, default [1.1]
-factor = 1.1
+####### CONTOLS #######
 
 # maximum number of time steps, default [1e5]
-max_steps = 100000.0
+max_steps = 1.0e6
 
 # output Settings
-techplot_interval = 100
-restart_interval = 1000
-
-# termination criterion
-resi_Re_rel = 0.001
+techplot_interval = 2000
+restart_interval = 10000
+vtk_interval = 2000
