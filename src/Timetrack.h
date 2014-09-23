@@ -17,7 +17,7 @@ public:
 	/// operations	
 	inline void timestep(){count++;};
 	
-	inline const bool proceed()const{return (terminalCount <= count);};
+	inline const bool proceed()const{return (count <= terminalCount);};
 
 	/// accessors
 	inline const int getCount()const{return count;};
