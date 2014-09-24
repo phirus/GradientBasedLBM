@@ -16,7 +16,6 @@ const bool read_binary(Lattice& outL, const string& filename = "data.bin");
 /// restart files
 void write_restart_file(const Lattice& l, const Preprocess& p, const Timetrack time, const string& filename = "restart.bin");
 const bool read_restart_file(Lattice& outL, Preprocess& p, Timetrack& time, const string& filename = "restart.bin");
-// have to be adapted for a change in Timetrack (residual), but not now (04.06.2014), Timetrack gets overwritten anyway in the extended restart
 
 /// write output
 void write_techplot_output(const Lattice& l, int iterNum, bool vebose = false);
@@ -30,7 +29,7 @@ void write_param_log(const ParamSet& p);
 
 /// read input
 const Preprocess read_preprocess_file(const string& filename);
-const Timetrack read_timetrack_file(const Preprocess& prepro, const string& filename);
+const Timetrack read_timetrack_file(const string& filename);
 const ParamSet read_paramset_file(const string& filename = "paramLog");
 
 const bool input_query(const string& filename, const string& query, double& value);

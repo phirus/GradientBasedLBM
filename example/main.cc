@@ -26,29 +26,32 @@ int main(int argc, char** argv){
     boost::program_options::store(boost::program_options::parse_command_line(argc,argv,desc),vm);
     boost::program_options::notify(vm);
 
-    if(vm.count("help")){
+    if(vm.count("help"))
+    {
         cout << desc << endl;
         return 1;
     }
 
     int numOfCPUs = 1;
-    if(vm.count("cpu")){
+    if(vm.count("cpu"))
+    {
         numOfCPUs = vm["cpu"].as<int>();
         cout << "number of CPUs set to "<< numOfCPUs << endl;
     }
 
     Preprocess prepro = read_preprocess_file("preprocessFile");
-    Timetrack timetrack = read_timetrack_file(prepro, "preprocessFile");
+    Timetrack timetrack = read_timetrack_file("preprocessFile");
     ParamSet params = prepro.getParamSet();
 
     Preprocess prepro_input;
     Timetrack timetrack_input;    
     ParamSet params_input;
 
-    if (vm.count("preprocess")) {
+    if (vm.count("preprocess")) 
+    {
         cout << "preprocess file is: " << vm["preprocess"].as<string>() << ".\n" << endl ;
         prepro_input = read_preprocess_file(vm["preprocess"].as<string>());
-        timetrack_input = read_timetrack_file(prepro_input, vm["preprocess"].as<string>());
+        timetrack_input = read_timetrack_file(vm["preprocess"].as<string>());
         params_input = prepro_input.getParamSet();
         
         prepro = prepro_input;
@@ -56,37 +59,41 @@ int main(int argc, char** argv){
         params = params_input;
     }
 
-    if (vm.count("bypass")) {
+    if (vm.count("bypass")) 
+    {
         cout << "bypass preprocess file with: " << vm["bypass"].as<string>() << ".\n" << endl ;
         params_input = read_paramset_file(vm["bypass"].as<string>());
         params = params_input;
     }
-   
-    int ymax = 360;
-    int xmax = 120;
-    // create a Lattice
+
+    // create a Lattice   
+    int ymax = prepro.getHeight();
+    int xmax = prepro.getWidth();
     Lattice meins(xmax,ymax);
 
-    if (vm.count("restart")) {
+    if (vm.count("restart")) 
+    {
         cout << "Restart file is: " << vm["restart"].as<string>() << ".\n" << endl ;
         Lattice tmpL;
         Preprocess tmpP;
         Timetrack tmpT;
         bool tmpB = read_restart_file(tmpL, tmpP, tmpT, vm["restart"].as<string>());
-        if (tmpB == true){
+        if (tmpB == true)
+        {
             meins = tmpL;
             prepro = tmpP;
             timetrack = tmpT;
         }
-        else {
+        else 
+        {
             cout << "failed to read input file" << endl;
             return 1;
         }
-        if (vm.count("preprocess")){
+        if (vm.count("preprocess"))
+        {
             timetrack.setMaxCount( timetrack_input.getMaxCount() );
-            timetrack.setTechPlotInt( timetrack_input.getTechPlotInt() );
+            timetrack.setOutputInt( timetrack_input.getOutputInt() );
             timetrack.setRestartInt( timetrack_input.getRestartInt() );
-            timetrack.setResidual( timetrack_input.getResidual() );
         }
     }
     else {      // vm.count("restart")
@@ -97,46 +104,40 @@ int main(int argc, char** argv){
     time_t start,end;
     time(&start);
 
-    int techPlotInterval = timetrack.getTechPlotInt();
-    int restartInterval = timetrack.getRestartInt();
-    double residual = timetrack.getResidual();
-    double Re_old(0);
-    double Re_new(0);
-    std::vector<double> reynolds_data;
+    const int outputInterval = timetrack.getOutputInt();
+    const int restartInterval = timetrack.getRestartInt();
 
-    while (timetrack.proceed() == true){
-        bool success = meins.collideAll(numOfCPUs,true,true);
-        if(success == false){
-            // prepro.refine();
-            // const ParamSet params = prepro.getParamSet();
-            // meins.setParams(params);
-            // timetrack.refine();
-            // cout << s << endl;
-            // cout<<"\nGitter verfeinert bei i = " << timetrack.getCount() << endl;
-            // cout<<"\n new timestep = " << params.getDeltaT();
-            // cout<<"\n max Velo = " << params.getSpeedlimit();
-            // continue;
-            // break;
-        }
+    std::vector<double> reynolds_data;
+    int i;
+
+    while (timetrack.proceed() == true)
+    {
+        meins.collideAll(numOfCPUs,true,true);
         meins.streamAll(numOfCPUs);
         timetrack.timestep();
-        int i = timetrack.getCount();
-        if(i%10000 == 0) {
-            cout << i<<endl;
-            Re_old = Re_new;
-            Re_new = getReynolds(meins, prepro.getResolution());
-            reynolds_data.push_back(Re_new);
 
-            write_data_plot(reynolds_data, 10000, "ReynoldsPlot.dat");
-
-            double rel_res = (Re_new - Re_old)/Re_new;
-            if ((rel_res * rel_res) <= (residual * residual)){
-                cout<<"\nResiduum klein genug"<<endl;
-                break;
-            }
+        // Output if necessary
+        i = timetrack.getCount();
+        
+        if(i%10000 == 0) 
+        {
+            cout << i <<endl;
         }
-        if(i%techPlotInterval == 0)  write_techplot_output(meins,i,true);
-        if(i%restartInterval == 0){
+        
+        if(i%10 == 0) 
+        {            
+            reynolds_data.push_back(getReynolds(meins, prepro.getResolution()));
+            write_data_plot(reynolds_data, 10000, "ReynoldsPlot.dat");
+        }
+
+        if(i%outputInterval == 0) 
+        {
+            write_techplot_output(meins,i,true);
+            write_vtk_output(meins, i);
+        } 
+        
+        if(i%restartInterval == 0)
+        {
             const string restart_file_name =  createFilename("restart", i, ".bin");
             write_restart_file(meins, prepro, timetrack, restart_file_name);
         }         
@@ -156,8 +157,8 @@ void initialSetUp(Lattice& meins, Preprocess& prepro, int xmax, int ymax, ParamS
     meins.setParams(params);
 
     // get densities
-    const double rho_liquid = prepro.convertRhoL();
-    const double rho_gas = prepro.convertRhoG();
+    const double rho_liquid = prepro.getRhoL();
+    const double rho_gas = rho_liquid / prepro.getGamma();
 
     const Cell air(0,rho_gas,false);
     const Cell liquid(rho_liquid,0,false);

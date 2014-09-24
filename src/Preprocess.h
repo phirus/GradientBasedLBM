@@ -12,18 +12,14 @@ class Preprocess
 {
 public: 
 	/// Lifecycle
-	Preprocess(double Re = 50, double Mo = 1e-3, double Eo = 20, double res = 40, double rl= 1000, double gam = 5, double dia = 0.1, double mu_rate = 2, double soundspeed = 10, double sig= 1e-4, double grav = 10, double s_three = 1, double s_five = 1);
+	Preprocess(double Re = 10, double Mo = 100, double Eo = 10, double res = 30, double rhol = 1, double gamma_ini = 2, double mu_rate = 2, double s_three = 1, double s_five = 1, int width_ini = 120, int height_ini = 360);
 
 	/// operations
+
 	// unit conversions
-	inline const double convertG()const{return g * timestep * timestep / spacestep;};		///  m/s^2 -> -
-	inline const double convertSigma()const{return sigma * timestep * timestep / (rho_l * spacestep * spacestep * spacestep) ;};  /// kg/s^2 -> -
-	inline const double convertRhoL()const{return 1;};	// rho_l / rho_l
-	inline const double convertRhoG()const{return 1/gamma;}; // (rho_l / gamma) / rho_l
+	inline const double convertSigma()const{return sigma / (rho_l) ;};  /// kg/s^2 -> -
 	// get the parameter set
 	const ParamSet getParamSet()const;
-	// refine timestep
-	// void refine(double factor = 1.1); // standard factor: 10%
 
 	/// accessors
 	inline const double getReynoldsMax()const{return ReynoldsMax;};
@@ -32,21 +28,22 @@ public:
 	inline const double getResolution()const{return resolution;};
 	inline const double getRhoL()const{return rho_l;};
 	inline const double getGamma()const{return gamma;};
-	inline const double getDiameter()const{return diameter;};
 	inline const double getMuRatio()const{return muRatio;};
-	inline const double getSoundspeed()const{return c_s;};
-	inline const double getSigma()const{return sigma;};
-	inline const double getGPhys()const{return g;};
 	inline const double getS_3()const{return s_3;};
 	inline const double getS_5()const{return s_5;};
 	
-	inline const double getTau()const {return tau;};
-	inline const double getS2()const {return s_2;};
-	inline const double getSpeedlimit()const{return speedlimit;};
 	inline const double getSpacestep()const{return spacestep;};
 	inline const double getTimestep()const{return timestep;};
-	inline const double getNu()const{return nu;};
+	inline const double getTau()const {return tau;};
 	inline const double getDelRho()const{return delRho;};
+	inline const double getSoundspeed()const{return c_s;};
+	inline const double getNu()const{return nu;};
+	inline const double getS2()const {return s_2;};
+	inline const double getSigma()const{return sigma;};
+	inline const double getG()const{return g;};
+
+	inline const int getWidth()const{return width;};
+	inline const int getHeight()const{return height;};
 
 	void setReynoldsMax(double val){ReynoldsMax = val;};
 
@@ -61,34 +58,38 @@ private:
 	double resolution; 		/// < width of bubble in cells
 	double rho_l ;			/// < liquid density
   	double gamma; 			/// < density ratio
-  	double diameter;   		/// < bubble diameter /m
   	double muRatio;		/// ratio of second to first viscosity mu'/mu
-
-	double c_s; 	       	/// < speed of sound / m * s^-1
-	double sigma;   	   	/// < surface tension
-	double g;          		/// < gravity / m * s^-2	
 	double s_3, s_5;
 
+	// stored
+	int width;
+	int height;
+
     // deduced
-    double tau;
-    double s_2;
-    double speedlimit; /// < maximum allowed velocity
-	double spacestep;  /// < spacestep /m	
+    double spacestep;  /// < spacestep /m	
 	double timestep;   /// < timestep /s
-	double delRho;     /// < density difference / kg * m^-3
+
+    double tau;
+   	double delRho;     /// < density difference / kg * m^-3
+    double c_s;
 	double nu;
+    double s_2;
+
+   	double sigma;   	   	/// < surface tension
+	double g;          		/// < gravity / m * s^-2
 
 	/// operations
 	inline void calcTau(){tau = (resolution * MACH_MAX   * sqrt(3) / ReynoldsMax ) + 0.5;};
-	inline void calcSpeedlimit(){speedlimit = MACH_MAX * sqrt(3) * c_s ;};
-	inline void calcSpacestep(){spacestep = diameter / resolution;};
-	inline void calcTimestep(){timestep = spacestep / (sqrt(3) * c_s);};
+	inline void calcDelRho(){delRho = rho_l * (1.0 - 1.0/gamma);};
+	inline void calcSpacestep(){spacestep = 1;}	//diameter / resolution;};
+	inline void calcTimestep(){timestep = 1;} 	//spacestep / (sqrt(3) * c_s);};
+	inline void calcSoundspeed(){c_s = 1.0/sqrt(3);};
 	inline void calcNu(){nu = c_s * c_s * timestep * (tau - 0.5);};
-	inline void calcDelRho(){delRho = rho_l * (1 - 1/gamma);};
-	inline void calcS2(){s_2 = 1/( (nu * muRatio) / (c_s*c_s * timestep) + 0.5);};
+	inline void calcS2(){s_2 = 1.0/( (nu * muRatio) / (c_s*c_s * timestep) + 0.5);};
+	inline void calcSigma(){sigma = sqrt( ( Eotvos * pow((tau - 0.5),4) ) / (81 * resolution * resolution * Morton)) * rho_l;};
+	inline void calcG(){g = (Eotvos * sigma) / ( rho_l * (1 - 1/gamma) * resolution * resolution );};
 
 	void deduceAll();
-
 };
 
 #endif

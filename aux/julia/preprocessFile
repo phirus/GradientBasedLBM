@@ -1,47 +1,44 @@
 # Parameterset yielding
- Reynolds = 20
- Morton = 0.010000000000000004
- Eotvos = 10.000000000000002
+ Reynolds = 15
+ Morton = 10.00000000000001
+ Eotvos = 1.0
 
 # resolution / Cells per Bubble diameter, default [40]
-resolution = 45
+resolution = 35
 
 # density of the denser phase / kg m^-3, default [1000]
-rho_l = 1000
+rho_l = 1
 
 # density ratio, default [5]
-gamma = 1.925059104384987
-
-# bubble diameter / m, default [0.1]
-diameter = 0.05
+gamma = 3
 
 # speed of sound / m s^-1, default [10]
-c_s = 5.364635997198423
+c_s = 0.5773502691896258
 
 # surface tension /?, default [1e-4]
-sigma = 1.1376024844741466
+sigma = 0.00016396995274947155
 
 # gravitational constant / m s^-1, default [10]
-g = 9.469457722331791
+g = 2.0077953397894473e-7
 
 # bulk viscosity ratio mu'/mu  , default [2]
-mu_ratio = 2
+mu_ratio = 1.8
 
 # s_3 , default [1]
-s_3 = 1
+s_3 = 1.2
 
 # s_5 , default [1]
-s_5 = 1
+s_5 = 1.2
 
 # refine factor, default [1.1]
 factor = 1.1
 
 # maximum number of time steps, default [1e5]
-max_steps = 100000.0
+max_steps = 3.0e6
 
 # output Settings
-techplot_interval = 100
-restart_interval = 1000
+techplot_interval = 2000
+restart_interval = 10000
 
 # termination criterion
-resi_Re_rel = 0.001
+resi_Re_rel = 1.0e-6

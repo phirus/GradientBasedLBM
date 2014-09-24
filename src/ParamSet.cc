@@ -73,8 +73,8 @@ const double ParamSet::getOmega(double psi)const
 
 const ColSet ParamSet::getAk(double omega)const
 {
-    double tmp = pow(spacestep,4) / pow(timestep,3);
-    double A = (9 * omega * sigma) / (2* tmp);
+    // double tmp = pow(spacestep,4) / pow(timestep,3);
+    double A = (9 * omega * sigma) / (4);
     ColSet Ak = {{A,A}};
     return Ak;
 }

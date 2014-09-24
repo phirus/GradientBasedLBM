@@ -91,28 +91,16 @@ void write_restart_file(const Lattice& l, const Preprocess& p, const Timetrack t
 
     // write Timetrack
     int count = time.getCount();
-    double factor = time.getFactor();
-    double dtini = time.getDTini();
-    vector<int> refinelist = time.getList();
-    unsigned int vsize = refinelist.size();
-
     int maxCount = time.getMaxCount();
-    // double maxTime = time.getMaxTime();
-    int techplot_interval = time.getTechPlotInt();
+    int output_interval = time.getOutputInt();
     int restart_interval = time.getRestartInt();
 
     file.write(reinterpret_cast<char*> (&count), sizeof count);
-    file.write(reinterpret_cast<char*> (&factor), sizeof factor);
-    file.write(reinterpret_cast<char*> (&dtini), sizeof dtini);
-    file.write(reinterpret_cast<char*> (&vsize), sizeof vsize);
-    for(unsigned int i = 0; i< vsize; i++){
-        int tmp = refinelist[i];
-        file.write(reinterpret_cast<char*> (&tmp), sizeof(int));
-    }
     file.write(reinterpret_cast<char*> (&maxCount), sizeof maxCount);
-    // file.write(reinterpret_cast<char*> (&maxTime), sizeof maxTime);
-    file.write(reinterpret_cast<char*> (&techplot_interval), sizeof techplot_interval);
+    file.write(reinterpret_cast<char*> (&output_interval), sizeof output_interval);
     file.write(reinterpret_cast<char*> (&restart_interval), sizeof restart_interval);
+
+    // write Preprocess
 
     double ReynoldsMax = p.getReynoldsMax();    
     double Morton = p.getMorton();
@@ -120,13 +108,11 @@ void write_restart_file(const Lattice& l, const Preprocess& p, const Timetrack t
     double resolution = p.getResolution();
     double rho_l = p.getRhoL();
     double gamma = p.getGamma();
-    double diameter = p.getDiameter();
     double mu_ratio = p.getMuRatio();
-    double c_s = p.getSoundspeed();
-    double sigma = p.getSigma();
-    double g = p.getGPhys(); 
     double s_3 = p.getS_3();
     double s_5 = p.getS_5();
+    int width = p.getWidth();
+    int height = p.getHeight();
 
     file.write(reinterpret_cast<char*> (&ReynoldsMax), sizeof(double));
     file.write(reinterpret_cast<char*> (&Morton), sizeof(double));
@@ -134,13 +120,11 @@ void write_restart_file(const Lattice& l, const Preprocess& p, const Timetrack t
     file.write(reinterpret_cast<char*> (&resolution), sizeof(double));
     file.write(reinterpret_cast<char*> (&rho_l), sizeof(double));
     file.write(reinterpret_cast<char*> (&gamma), sizeof(double));
-    file.write(reinterpret_cast<char*> (&diameter), sizeof(double));
     file.write(reinterpret_cast<char*> (&mu_ratio), sizeof(double));    
-    file.write(reinterpret_cast<char*> (&c_s), sizeof(double));
-    file.write(reinterpret_cast<char*> (&sigma), sizeof(double));
-    file.write(reinterpret_cast<char*> (&g), sizeof(double));
     file.write(reinterpret_cast<char*> (&s_3), sizeof(double));
     file.write(reinterpret_cast<char*> (&s_5), sizeof(double));
+    file.write(reinterpret_cast<char*> (&width), sizeof(int));
+    file.write(reinterpret_cast<char*> (&height), sizeof(int));
 
     file.close();
 }
@@ -171,50 +155,23 @@ const bool read_restart_file(Lattice& outL, Preprocess& p, Timetrack& t, const s
             }
         }
 
-        Timetrack time;
-
         int count;
-        file.read((char*) &count, sizeof count);
-        time.setCount(count);
-        
-        double factor;
-        file.read((char*) &factor, sizeof factor);
-        time.setFactor(factor);
-        
-        double dtini;
-        file.read((char*) &dtini, sizeof dtini);
-        time.setDTini(dtini);
-
-        unsigned int vsize;
-        file.read((char*) &vsize, sizeof vsize);
-        
-        vector<int> refinelist(vsize);
-        for(unsigned int i = 0; i< vsize; i++){
-            int tmp;
-            file.read((char*) &tmp, sizeof(int));
-            refinelist[i] = tmp; 
-            }
-        time.setVector(refinelist);
-
         int maxCount;
-        file.read((char*) &maxCount, sizeof maxCount);
-        time.setMaxCount(maxCount);
-
-        // double maxTime;
-        // file.read((char*) &maxTime, sizeof maxTime);
-        // time.setMaxTime(maxTime);
-
-        int techplot_interval;
-        file.read((char*) &techplot_interval, sizeof techplot_interval);
-        time.setTechPlotInt(techplot_interval);
-
+        int output_interval;
         int restart_interval;
+
+        file.read((char*) &count, sizeof count);
+        file.read((char*) &maxCount, sizeof maxCount);
+        file.read((char*) &output_interval, sizeof output_interval);
         file.read((char*) &restart_interval, sizeof restart_interval);
-        time.setRestartInt(restart_interval);
+
+        Timetrack time(maxCount, output_interval, restart_interval);
+        time.setCount(count);
 
         double ReynoldsMax, Morton, Eotvos;
         double resolution, rho_l, gamma;
-        double diameter, mu_ratio, c_s, sigma,  g, s_3, s_5; 
+        double mu_ratio, s_3, s_5; 
+        int width, height;
 
         file.read((char*) &ReynoldsMax, sizeof(double));
         file.read((char*) &Morton, sizeof(double));
@@ -222,15 +179,14 @@ const bool read_restart_file(Lattice& outL, Preprocess& p, Timetrack& t, const s
         file.read((char*) &resolution, sizeof(double));
         file.read((char*) &rho_l, sizeof(double));
         file.read((char*) &gamma, sizeof(double));
-        file.read((char*) &diameter, sizeof(double));
         file.read((char*) &mu_ratio, sizeof(double));
-        file.read((char*) &c_s, sizeof(double));
-        file.read((char*) &sigma, sizeof(double));
-        file.read((char*) &g, sizeof(double));
         file.read((char*) &s_3, sizeof(double));
         file.read((char*) &s_5, sizeof(double));
 
-        Preprocess prepro(ReynoldsMax, Morton, Eotvos, resolution, rho_l, gamma, diameter, mu_ratio, c_s, sigma, g, s_3, s_5);
+        file.read((char*) &width, sizeof(int));
+        file.read((char*) &height, sizeof(int));
+
+        Preprocess prepro(ReynoldsMax, Morton, Eotvos, resolution, rho_l, gamma, mu_ratio, s_3, s_5, width, height);
         
         file.close();
         outL.setParams(param);
@@ -527,48 +483,43 @@ const Preprocess read_preprocess_file(const string& filename){
     vector<double> val;
     // initialzing strings and fallback values
     map<string,double> mm;
-        mm.insert(pair<string,double>("Reynolds",50));
-        mm.insert(pair<string,double>("Morton",1e-3));
-        mm.insert(pair<string,double>("Eotvos",20));
-        mm.insert(pair<string,double>("resolution",40));
-        mm.insert(pair<string,double>("rho_l",1000));
-        mm.insert(pair<string,double>("gamma",5));
-        mm.insert(pair<string,double>("diameter",0.1));
-        mm.insert(pair<string,double>("c_s",10));
-        mm.insert(pair<string,double>("sigma",1e-4));
-        mm.insert(pair<string,double>("g",10));
+        mm.insert(pair<string,double>("Reynolds",10));
+        mm.insert(pair<string,double>("Morton",100));
+        mm.insert(pair<string,double>("Eotvos",10));
+        mm.insert(pair<string,double>("resolution",30));
+        mm.insert(pair<string,double>("rho_l",1));
+        mm.insert(pair<string,double>("gamma",2));
         mm.insert(pair<string,double>("mu_ratio",2));
         mm.insert(pair<string,double>("s_3",1));
         mm.insert(pair<string,double>("s_5",1));
+        mm.insert(pair<string,double>("width",120));
+        mm.insert(pair<string,double>("height",360));
 
         // cycling through the input file
         double tmp;
         for(map<string,double>::iterator it = mm.begin(); it != mm.end(); it++){            
             if( input_query(filename,it->first,tmp) == true ) it->second = tmp;
         }
-
-    Preprocess prepro(mm.at("Reynolds"),mm.at("Morton"),mm.at("Eotvos"),mm.at("resolution"),mm.at("rho_l"),mm.at("gamma"),mm.at("diameter"),mm.at("mu_ratio"),mm.at("c_s"),mm.at("sigma"), mm.at("g"), mm.at("s_3"), mm.at("s_5"));
+    Preprocess prepro(mm.at("Reynolds"),mm.at("Morton"),mm.at("Eotvos"),mm.at("resolution"),mm.at("rho_l"),mm.at("gamma"), mm.at("mu_ratio"), mm.at("s_3"), mm.at("s_5"), mm.at("width"), mm.at("height"));
     return prepro;
 }
 
-const Timetrack read_timetrack_file(const Preprocess& prepro, const string& filename){
+const Timetrack read_timetrack_file(const string& filename){
     vector<string> tags;
     vector<double> val;
     // initialzing strings and fallback values
     map<string,double> mm;
-    mm.insert(pair<string,double>("factor",1.1));
     mm.insert(pair<string,double>("max_steps",1e5));
-    mm.insert(pair<string,double>("techplot_interval",1e3));
+    mm.insert(pair<string,double>("output_interval",2e3));
     mm.insert(pair<string,double>("restart_interval",1e4));
-    mm.insert(pair<string,double>("resi_Re_rel",1e-3));
-
+    
     // cycling through the input file
     double tmp;
     for(map<string,double>::iterator it = mm.begin(); it != mm.end(); it++){            
         if( input_query(filename,it->first,tmp) == true ) it->second = tmp;
     }
 
-    Timetrack time(prepro.getTimestep(), mm.at("factor"), mm.at("max_steps"), mm.at("techplot_interval"), mm.at("restart_interval"), mm.at("resi_Re_rel"));
+    Timetrack time(mm.at("max_steps"), mm.at("output_interval"), mm.at("restart_interval"));
  
     return time;
 }

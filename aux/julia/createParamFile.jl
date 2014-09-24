@@ -1,4 +1,4 @@
-function createPFile(Mo, Eo, c_s, gamma, sigma, g)
+function createPFile(Mo, Eo, c_s, sigma, g)
 
 	stream = open("preprocessFile",true,true,true,true,false)
 	write(stream,"# Parameterset yielding")
@@ -19,15 +19,11 @@ function createPFile(Mo, Eo, c_s, gamma, sigma, g)
 
 	write(stream, "\n\n# density ratio, default [5]")
 	write(stream,"\ngamma = ")
-	write(stream, string(gamma))
+	write(stream, string(GAMMA))
 
 	# write(stream, "\n\n# alpha, default [0.2] \nalpha_blue = 0.2")
 	# write(stream, "\n\n# delta, default [0.1] \ndelta = 0.1 ")
 	# write(stream, "\n\n# beta, default [0.99] \nbeta = 0.99")
-
-	write(stream, "\n\n# bubble diameter / m, default [0.1]")
-	write(stream,"\ndiameter = ")
-	write(stream, string(DIAMETER))
 
 	write(stream, "\n\n# speed of sound / m s^-1, default [10]")
 	write(stream,"\nc_s = ")
