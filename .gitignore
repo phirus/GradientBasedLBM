@@ -8,9 +8,13 @@ Documentation/
 *.depend
 *.cpb
 test/paramLog
+
 helpers/translate/preprocessFile
 helpers/translate/paramLog
-julia/preprocessFile
-julia/constants.jl
+helpers/translate/translate_params
+
+helpers/Postprocess/postprocess
+helpers/julia/preprocessFile
+helpers/julia/constants.jl
+
 *.sublime-workspace
-bin2tec/*.dat

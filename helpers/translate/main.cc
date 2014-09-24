@@ -27,12 +27,12 @@ int main(int argc, char** argv){
     }
 
     Preprocess prepro = read_preprocess_file("preprocessFile");
-    Timetrack timetrack = read_timetrack_file(prepro, "preprocessFile");
+    Timetrack timetrack = read_timetrack_file("preprocessFile");
 
     if (vm.count("input")) {
         cout << "preprocess file is: " << vm["input"].as<string>() << ".\n" << endl ;
         prepro = read_preprocess_file(vm["input"].as<string>());
-        timetrack = read_timetrack_file(prepro, vm["input"].as<string>());
+        timetrack = read_timetrack_file(vm["input"].as<string>());
     }
    
      const ParamSet params = prepro.getParamSet();
