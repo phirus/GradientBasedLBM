@@ -385,7 +385,7 @@ void write_vtk_output(const Lattice& l, int iterNum)
 
     VTKFile << "\nPOINT_DATA "<< (xsize+1) * (ysize+1)  << endl;
 
-    VTKFile << "\nVECTORS u1 DOUBLE"<<endl;
+    VTKFile << "\nVECTORS j1 DOUBLE"<<endl;
     for (int j = 0; j < ysize; j++)
     {        
         for (int i = 0; i < xsize; i++)
@@ -394,7 +394,8 @@ void write_vtk_output(const Lattice& l, int iterNum)
             tmp.calcRho();
 
             VeloSet u = tmp.getU();
-            VTKFile << u[0].x << " " << u[0].y << " 0 ";
+            ColSet rho = tmp.getRho();
+            VTKFile << u[0].x * rho[0] << " " << u[0].y * rho[0] << " 0 ";
         }
         VTKFile << "0 0 0 "; // last  column empty to match number of points
     }
@@ -404,7 +405,7 @@ void write_vtk_output(const Lattice& l, int iterNum)
         }
 
 
-    VTKFile << "\nVECTORS u2 DOUBLE"<<endl;
+    VTKFile << "\nVECTORS j2 DOUBLE"<<endl;
     for (int j = 0; j < ysize; j++)
     {
         for (int i = 0; i < xsize; i++)
@@ -413,7 +414,8 @@ void write_vtk_output(const Lattice& l, int iterNum)
             tmp.calcRho();
 
             VeloSet u = tmp.getU();
-            VTKFile << u[1].x << " " << u[1].y << " 0 ";
+            ColSet rho = tmp.getRho();
+            VTKFile << u[1].x * rho[1] << " " << u[1].y * rho[1] << " 0 ";
         }
         VTKFile << "0 0 0 "; // last  column empty to match number of points
     }
