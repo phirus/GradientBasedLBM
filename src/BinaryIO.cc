@@ -349,14 +349,14 @@ void write_vtk_output(const Lattice& l, int iterNum)
         for (int i = 0; i < xsize; i++)
         {
             e = i+(xsize+1)*j;
-            VTKFile <<"4 "<< e << " " << e+1 << " "<< e + xsize + 2 << " "<< e + xsize +1 << " ";
+            VTKFile <<"4 "<< e << " " << e+1 << " "<< e + xsize +1 << " " << e + xsize + 2 << " ";
         }
         VTKFile<< endl;
     }
     VTKFile << "\nCELL_TYPES "<< (xsize) * (ysize) << endl;
     for (int q = 0; q < (xsize * ysize); q++)
     {
-        VTKFile <<"9 ";
+        VTKFile <<"8 ";
     }
 
     VTKFile << "\nCELL_DATA "<< (xsize) * (ysize) << endl;
@@ -383,8 +383,6 @@ void write_vtk_output(const Lattice& l, int iterNum)
         }
     }
 
-    VTKFile << "\nPOINT_DATA "<< (xsize+1) * (ysize+1)  << endl;
-
     VTKFile << "\nVECTORS j1 DOUBLE"<<endl;
     for (int j = 0; j < ysize; j++)
     {        
@@ -397,13 +395,7 @@ void write_vtk_output(const Lattice& l, int iterNum)
             ColSet rho = tmp.getRho();
             VTKFile << u[0].x * rho[0] << " " << u[0].y * rho[0] << " 0 ";
         }
-        VTKFile << "0 0 0 "; // last  column empty to match number of points
     }
-    for (int i = 0; i < xsize+1; i++)
-        {
-            VTKFile << "0 0 0 " ; // last line empty to match number of points
-        }
-
 
     VTKFile << "\nVECTORS j2 DOUBLE"<<endl;
     for (int j = 0; j < ysize; j++)
@@ -417,13 +409,17 @@ void write_vtk_output(const Lattice& l, int iterNum)
             ColSet rho = tmp.getRho();
             VTKFile << u[1].x * rho[1] << " " << u[1].y * rho[1] << " 0 ";
         }
-        VTKFile << "0 0 0 "; // last  column empty to match number of points
     }
-    for (int i = 0; i < xsize+1; i++)
-        {
-            VTKFile << "0 0 0 " ; // last line empty to match number of points
-        }
 
+    VTKFile << "\nVECTORS gradient DOUBLE"<<endl;
+    for (int j = 0; j < ysize; j++)
+    {
+        for (int i = 0; i < xsize; i++)
+        {
+            Vector gradient = l.getGradient(i, j);    
+            VTKFile << gradient.x << " " << gradient.y  << " 0 ";
+        }
+    }
 
     VTKFile.close();
 }
