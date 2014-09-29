@@ -314,6 +314,13 @@ void write_techplot_output_alternative(const Lattice& l, const string& filename)
     PsiFile.close();
 }
 
+
+
+
+
+
+
+
 void write_vtk_output(const Lattice& l, int iterNum)
 {
     ofstream VTKFile;
@@ -326,13 +333,152 @@ void write_vtk_output(const Lattice& l, int iterNum)
     stringstream name;
     name <<"test_"<< iterNum<<".vtk";
 
-    VTKFile.open( name.str().c_str() );
+    VTKFile.open( name.str().c_str());
     VTKFile << "# vtk DataFile Version 3.1" << endl;
     VTKFile << "Lattice Boltzmann data" << endl;
     VTKFile << "ASCII" << endl;
     VTKFile << "DATASET UNSTRUCTURED_GRID" << endl;
 
-    VTKFile << "POINTS "<< (xsize+1) * (ysize+1)  <<" INT "<< endl;
+    VTKFile << "POINTS "<< (xsize+1) * (ysize+1)  <<" INT \n";
+
+    for (int j = 0; j <= ysize; j++)
+    {
+        for (int i = 0; i <= xsize; i++)
+        {
+            VTKFile << i << " " << j << " 0 " ;
+            // int z(0);
+            // VTKFile.write(reinterpret_cast<char*> (&i), sizeof(int));
+            // VTKFile.write(reinterpret_cast<char*> (&j), sizeof(int));
+            // VTKFile.write(reinterpret_cast<char*> (&z), sizeof(int));
+        }
+        // VTKFile<<endl;
+    }
+
+    // VTKFile << "\nCELLS " << (xsize) * (ysize) << " " << (xsize) * (ysize) * 5 << "\n";
+    
+    // for (int j = 0; j < ysize; j++)
+    // {
+    //     for (int i = 0; i < xsize; i++)
+    //     {
+    //         e = i+(xsize+1)*j;
+    //         // int four(4);
+    //         // int e1(e+1);
+    //         // int e2(e + xsize +1);
+    //         // int e3(e + xsize + 2);
+
+    //         // VTKFile.write(reinterpret_cast<char*> (&four), sizeof(int));
+    //         // VTKFile.write(reinterpret_cast<char*> (&e), sizeof(int));
+    //         // VTKFile.write(reinterpret_cast<char*> (&e1), sizeof(int));
+    //         // VTKFile.write(reinterpret_cast<char*> (&e2), sizeof(int));
+    //         // VTKFile.write(reinterpret_cast<char*> (&e3), sizeof(int));
+
+    //         VTKFile <<"4 "<< e << " " << e+1 << " "<< e + xsize +1 << " " << e + xsize + 2 << " ";
+    //     }
+    //     VTKFile<< endl;
+    // }
+    // VTKFile << "\nCELL_TYPES "<< (xsize) * (ysize) << "\n";
+    // for (int q = 0; q < (xsize * ysize); q++)
+    // {
+    //     VTKFile <<"8 ";
+    //     // int eight(8);
+    //     // VTKFile.write(reinterpret_cast<char*> (&eight), sizeof(int));
+    // }
+
+    // VTKFile << "\nCELL_DATA "<< (xsize) * (ysize) << endl;
+
+    // VTKFile << "SCALARS Psi DOUBLE\nLOOKUP_TABLE default"<<endl;
+    // for (int j = 0; j < ysize; j++)
+    // {
+    //     for (int i = 0; i < xsize; i++)
+    //     {
+    //         tmp = l.getCell(i,j);
+    //         tmp.calcRho();
+    //         VTKFile << tmp.calcPsi() << " ";
+    //     }
+    // }
+
+    // VTKFile << "\nSCALARS Rho DOUBLE\nLOOKUP_TABLE default"<<endl;
+    // for (int j = 0; j < ysize; j++)
+    // {
+    //     for (int i = 0; i < xsize; i++)
+    //     {
+    //         tmp = l.getCell(i,j);
+    //         tmp.calcRho();
+    //         VTKFile << sum(tmp.getRho()) << " ";
+    //     }
+    // }
+
+    // VTKFile << "\nVECTORS j1 DOUBLE"<<endl;
+    // for (int j = 0; j < ysize; j++)
+    // {        
+    //     for (int i = 0; i < xsize; i++)
+    //     {
+    //         tmp = l.getCell(i,j);
+    //         tmp.calcRho();
+
+    //         VeloSet u = tmp.getU();
+    //         ColSet rho = tmp.getRho();
+    //         VTKFile << u[0].x * rho[0] << " " << u[0].y * rho[0] << " 0 ";
+    //     }
+    // }
+
+    // VTKFile << "\nVECTORS j2 DOUBLE"<<endl;
+    // for (int j = 0; j < ysize; j++)
+    // {
+    //     for (int i = 0; i < xsize; i++)
+    //     {
+    //         tmp = l.getCell(i,j);
+    //         tmp.calcRho();
+
+    //         VeloSet u = tmp.getU();
+    //         ColSet rho = tmp.getRho();
+    //         VTKFile << u[1].x * rho[1] << " " << u[1].y * rho[1] << " 0 ";
+    //     }
+    // }
+
+    // VTKFile << "\nVECTORS gradient DOUBLE"<<endl;
+    // for (int j = 0; j < ysize; j++)
+    // {
+    //     for (int i = 0; i < xsize; i++)
+    //     {
+    //         Vector gradient = l.getGradient(i, j);    
+    //         VTKFile << gradient.x << " " << gradient.y  << " 0 ";
+    //     }
+    // }
+
+    VTKFile.close();
+}
+
+
+
+
+
+
+
+
+
+
+
+
+void write_vtk_output_ascii(const Lattice& l, int iterNum)
+{
+    ofstream VTKFile;
+    Cell tmp;
+    int e;
+    ColSet extent = l.getSize();
+    int xsize = static_cast<int> (extent[0]);
+    int ysize = static_cast<int> (extent[1]);
+
+    stringstream name;
+    name <<"test_"<< iterNum<<".vtk";
+
+    VTKFile.open( name.str().c_str());
+    VTKFile << "# vtk DataFile Version 3.1" << endl;
+    VTKFile << "Lattice Boltzmann data" << endl;
+    VTKFile << "ASCII" << endl;
+    VTKFile << "DATASET UNSTRUCTURED_GRID" << endl;
+
+    VTKFile << "POINTS "<< (xsize+1) * (ysize+1)  <<" INT \n";
 
     for (int j = 0; j <= ysize; j++)
     {
@@ -343,17 +489,18 @@ void write_vtk_output(const Lattice& l, int iterNum)
         VTKFile<<endl;
     }
 
-    VTKFile << "\nCELLS " << (xsize) * (ysize) << " " << (xsize) * (ysize) * 5 << endl;
+    VTKFile << "\nCELLS " << (xsize) * (ysize) << " " << (xsize) * (ysize) * 5 << "\n";
+    
     for (int j = 0; j < ysize; j++)
     {
         for (int i = 0; i < xsize; i++)
         {
-            e = i+(xsize+1)*j;
+            e = i+(xsize+1)*j;            
             VTKFile <<"4 "<< e << " " << e+1 << " "<< e + xsize +1 << " " << e + xsize + 2 << " ";
         }
         VTKFile<< endl;
     }
-    VTKFile << "\nCELL_TYPES "<< (xsize) * (ysize) << endl;
+    VTKFile << "\nCELL_TYPES "<< (xsize) * (ysize) << "\n";
     for (int q = 0; q < (xsize * ysize); q++)
     {
         VTKFile <<"8 ";
