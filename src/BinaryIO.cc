@@ -321,146 +321,172 @@ void write_techplot_output_alternative(const Lattice& l, const string& filename)
 
 
 
-void write_vtk_output(const Lattice& l, int iterNum)
-{
-    ofstream VTKFile;
-    Cell tmp;
-    int e;
-    ColSet extent = l.getSize();
-    int xsize = static_cast<int> (extent[0]);
-    int ysize = static_cast<int> (extent[1]);
+// void write_vtk_output(const Lattice& l, int iterNum)
+// {
+//     ofstream VTKFile;
+//     Cell tmp;
+//     int e;
+//     ColSet extent = l.getSize();
+//     int xsize = static_cast<int> (extent[0]);
+//     int ysize = static_cast<int> (extent[1]);
 
-    stringstream name;
-    name <<"test_"<< iterNum<<".vtk";
+//     stringstream name;
+//     name <<"test_"<< iterNum<<".vtk";
 
-    VTKFile.open( name.str().c_str());
-    VTKFile << "# vtk DataFile Version 3.1" << endl;
-    VTKFile << "Lattice Boltzmann data" << endl;
-    VTKFile << "ASCII" << endl;
-    VTKFile << "DATASET UNSTRUCTURED_GRID" << endl;
+//     VTKFile.open( name.str().c_str(), std::ios::out | std::ios::trunc | std::ios::binary);
+//     VTKFile << "# vtk DataFile Version 3.1" << endl;
+//     VTKFile << "Lattice Boltzmann data" << endl;
+//     VTKFile << "BINARY" << endl;
+//     // VTKFile << "DATASET STRUCTURED_GRID" << endl;
+//     // VTKFile << "DIMENSIONS " << xsize << " " << ysize << " 1" << endl;
+//     VTKFile << "DATASET UNSTRUCTURED_GRID" << endl;
 
-    VTKFile << "POINTS "<< (xsize+1) * (ysize+1)  <<" INT \n";
+//     // stringstream header;
+//     // header << "# vtk DataFile Version 3.1\n";
+//     // header << "Lattice Boltzmann data\n";
+//     // header << "BINARY\n";
+//     // header << "DATASET UNSTRUCTURED_GRID\n";
 
-    for (int j = 0; j <= ysize; j++)
-    {
-        for (int i = 0; i <= xsize; i++)
-        {
-            VTKFile << i << " " << j << " 0 " ;
-            // int z(0);
-            // VTKFile.write(reinterpret_cast<char*> (&i), sizeof(int));
-            // VTKFile.write(reinterpret_cast<char*> (&j), sizeof(int));
-            // VTKFile.write(reinterpret_cast<char*> (&z), sizeof(int));
-        }
-        // VTKFile<<endl;
-    }
+//     // string head_string = header.str();
 
-    // VTKFile << "\nCELLS " << (xsize) * (ysize) << " " << (xsize) * (ysize) * 5 << "\n";
+//     // VTKFile.write(head_string.c_str(), head_string.size());
+
+//     VTKFile << "POINTS "<< (xsize+1) * (ysize+1)  <<" INT \n";
+//     VTKFile << "CELLS " << (xsize) * (ysize) << " " << (xsize) * (ysize) * 5 << "\n";
+//     VTKFile << "CELL_TYPES "<< (xsize) * (ysize) << "\n";
+
+//     for (int j = 0; j <= ysize; j++)
+//     {
+//         for (int i = 0; i <= xsize; i++)
+//         {
+//             // VTKFile << i << " " << j << " 0 " ;
+//             int z(0);
+//             VTKFile.write(reinterpret_cast<char*> (&i), sizeof(int));
+//             VTKFile.write(reinterpret_cast<char*> (&j), sizeof(int));
+//             VTKFile.write(reinterpret_cast<char*> (&z), sizeof(int));
+//         }
+//         // VTKFile<<endl;
+//     }
+
+//     // stringstream cells;
+//     // cells << "CELLS " << (xsize) * (ysize) << " " << (xsize) * (ysize) * 5 << "\n";
+//     // string cell_string = cells.str();
+
+//     // VTKFile.write(cell_string.c_str(), cell_string.size());
+//     // VTKFile << "CELLS " << (xsize) * (ysize) << " " << (xsize) * (ysize) * 5 << "\n";
     
-    // for (int j = 0; j < ysize; j++)
-    // {
-    //     for (int i = 0; i < xsize; i++)
-    //     {
-    //         e = i+(xsize+1)*j;
-    //         // int four(4);
-    //         // int e1(e+1);
-    //         // int e2(e + xsize +1);
-    //         // int e3(e + xsize + 2);
+//     for (int j = 0; j < ysize; j++)
+//     {
+//         for (int i = 0; i < xsize; i++)
+//         {
+//             e = i+(xsize+1)*j;
+//             int four(4);
+//             int e1(e+1);
+//             int e2(e + xsize +1);
+//             int e3(e + xsize + 2);
 
-    //         // VTKFile.write(reinterpret_cast<char*> (&four), sizeof(int));
-    //         // VTKFile.write(reinterpret_cast<char*> (&e), sizeof(int));
-    //         // VTKFile.write(reinterpret_cast<char*> (&e1), sizeof(int));
-    //         // VTKFile.write(reinterpret_cast<char*> (&e2), sizeof(int));
-    //         // VTKFile.write(reinterpret_cast<char*> (&e3), sizeof(int));
+//             VTKFile.write(reinterpret_cast<char*> (&four), sizeof(int));
+//             VTKFile.write(reinterpret_cast<char*> (&e), sizeof(int));
+//             VTKFile.write(reinterpret_cast<char*> (&e1), sizeof(int));
+//             VTKFile.write(reinterpret_cast<char*> (&e2), sizeof(int));
+//             VTKFile.write(reinterpret_cast<char*> (&e3), sizeof(int));
 
-    //         VTKFile <<"4 "<< e << " " << e+1 << " "<< e + xsize +1 << " " << e + xsize + 2 << " ";
-    //     }
-    //     VTKFile<< endl;
-    // }
-    // VTKFile << "\nCELL_TYPES "<< (xsize) * (ysize) << "\n";
-    // for (int q = 0; q < (xsize * ysize); q++)
-    // {
-    //     VTKFile <<"8 ";
-    //     // int eight(8);
-    //     // VTKFile.write(reinterpret_cast<char*> (&eight), sizeof(int));
-    // }
+//             // VTKFile <<"4 "<< e << " " << e+1 << " "<< e + xsize +1 << " " << e + xsize + 2 << " ";
+//         }
+//         // VTKFile<< endl;
+//     }
 
-    // VTKFile << "\nCELL_DATA "<< (xsize) * (ysize) << endl;
+//     // stringstream types;
+//     // types << "CELL_TYPES "<< (xsize) * (ysize) << "\n";
+//     // string type_string = types.str();
 
-    // VTKFile << "SCALARS Psi DOUBLE\nLOOKUP_TABLE default"<<endl;
-    // for (int j = 0; j < ysize; j++)
-    // {
-    //     for (int i = 0; i < xsize; i++)
-    //     {
-    //         tmp = l.getCell(i,j);
-    //         tmp.calcRho();
-    //         VTKFile << tmp.calcPsi() << " ";
-    //     }
-    // }
+//     // VTKFile.write(type_string.c_str(), type_string.size());
 
-    // VTKFile << "\nSCALARS Rho DOUBLE\nLOOKUP_TABLE default"<<endl;
-    // for (int j = 0; j < ysize; j++)
-    // {
-    //     for (int i = 0; i < xsize; i++)
-    //     {
-    //         tmp = l.getCell(i,j);
-    //         tmp.calcRho();
-    //         VTKFile << sum(tmp.getRho()) << " ";
-    //     }
-    // }
+//     // VTKFile << "CELL_TYPES "<< (xsize) * (ysize) << "\n";
+//     for (int q = 0; q < (xsize * ysize); q++)
+//     {
+//         // VTKFile <<"8 ";
+//         int eight(8);
+//         VTKFile.write(reinterpret_cast<char*> (&eight), sizeof(int));
+//     }
 
-    // VTKFile << "\nVECTORS j1 DOUBLE"<<endl;
-    // for (int j = 0; j < ysize; j++)
-    // {        
-    //     for (int i = 0; i < xsize; i++)
-    //     {
-    //         tmp = l.getCell(i,j);
-    //         tmp.calcRho();
+//     // VTKFile << "\nCELL_DATA "<< (xsize) * (ysize) << endl;
 
-    //         VeloSet u = tmp.getU();
-    //         ColSet rho = tmp.getRho();
-    //         VTKFile << u[0].x * rho[0] << " " << u[0].y * rho[0] << " 0 ";
-    //     }
-    // }
+//     // VTKFile << "SCALARS Psi DOUBLE\nLOOKUP_TABLE default"<<endl;
+//     // for (int j = 0; j < ysize; j++)
+//     // {
+//     //     for (int i = 0; i < xsize; i++)
+//     //     {
+//     //         tmp = l.getCell(i,j);
+//     //         tmp.calcRho();
+//     //         VTKFile << tmp.calcPsi() << " ";
+//     //     }
+//     // }
 
-    // VTKFile << "\nVECTORS j2 DOUBLE"<<endl;
-    // for (int j = 0; j < ysize; j++)
-    // {
-    //     for (int i = 0; i < xsize; i++)
-    //     {
-    //         tmp = l.getCell(i,j);
-    //         tmp.calcRho();
+//     // VTKFile << "\nSCALARS Rho DOUBLE\nLOOKUP_TABLE default"<<endl;
+//     // for (int j = 0; j < ysize; j++)
+//     // {
+//     //     for (int i = 0; i < xsize; i++)
+//     //     {
+//     //         tmp = l.getCell(i,j);
+//     //         tmp.calcRho();
+//     //         VTKFile << sum(tmp.getRho()) << " ";
+//     //     }
+//     // }
 
-    //         VeloSet u = tmp.getU();
-    //         ColSet rho = tmp.getRho();
-    //         VTKFile << u[1].x * rho[1] << " " << u[1].y * rho[1] << " 0 ";
-    //     }
-    // }
+//     // VTKFile << "\nVECTORS j1 DOUBLE"<<endl;
+//     // for (int j = 0; j < ysize; j++)
+//     // {        
+//     //     for (int i = 0; i < xsize; i++)
+//     //     {
+//     //         tmp = l.getCell(i,j);
+//     //         tmp.calcRho();
 
-    // VTKFile << "\nVECTORS gradient DOUBLE"<<endl;
-    // for (int j = 0; j < ysize; j++)
-    // {
-    //     for (int i = 0; i < xsize; i++)
-    //     {
-    //         Vector gradient = l.getGradient(i, j);    
-    //         VTKFile << gradient.x << " " << gradient.y  << " 0 ";
-    //     }
-    // }
+//     //         VeloSet u = tmp.getU();
+//     //         ColSet rho = tmp.getRho();
+//     //         VTKFile << u[0].x * rho[0] << " " << u[0].y * rho[0] << " 0 ";
+//     //     }
+//     // }
 
-    VTKFile.close();
-}
+//     // VTKFile << "\nVECTORS j2 DOUBLE"<<endl;
+//     // for (int j = 0; j < ysize; j++)
+//     // {
+//     //     for (int i = 0; i < xsize; i++)
+//     //     {
+//     //         tmp = l.getCell(i,j);
+//     //         tmp.calcRho();
 
+//     //         VeloSet u = tmp.getU();
+//     //         ColSet rho = tmp.getRho();
+//     //         VTKFile << u[1].x * rho[1] << " " << u[1].y * rho[1] << " 0 ";
+//     //     }
+//     // }
 
+//     // VTKFile << "\nVECTORS gradient DOUBLE"<<endl;
+//     // for (int j = 0; j < ysize; j++)
+//     // {
+//     //     for (int i = 0; i < xsize; i++)
+//     //     {
+//     //         Vector gradient = l.getGradient(i, j);    
+//     //         VTKFile << gradient.x << " " << gradient.y  << " 0 ";
+//     //     }
+//     // }
 
-
-
-
-
-
-
+//     VTKFile.close();
+// }
 
 
 
-void write_vtk_output_ascii(const Lattice& l, int iterNum)
+
+
+
+
+
+
+
+
+
+void write_vtk_output(const Lattice& l, int iterNum)
 {
     ofstream VTKFile;
     Cell tmp;
