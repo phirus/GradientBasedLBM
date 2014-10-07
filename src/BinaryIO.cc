@@ -201,7 +201,7 @@ const bool read_restart_file(Lattice& outL, Preprocess& p, Timetrack& t, const s
 
 //=========================== WRITE OUTPUT ===========================
 
-void write_techplot_output(const Lattice& l, int iterNum, bool verbose)
+void write_techplot_output(const Lattice& l, int iterNum)
 {
     ofstream PsiFile;
     Cell tmp;
@@ -218,43 +218,38 @@ void write_techplot_output(const Lattice& l, int iterNum, bool verbose)
     PsiFile << "\"y\""<<endl;
     PsiFile << "\"z\""<<endl;
     PsiFile << "\"psi\""<<endl;
-    if (verbose == true)
-    {
-        PsiFile << "\"rho\""<<endl;
-        PsiFile << "\"ux1\""<<endl;
-        PsiFile << "\"uy1\""<<endl;
-        PsiFile << "\"ux2\""<<endl;
-        PsiFile << "\"uy2\""<<endl;
-        PsiFile << "\"u_abs\""<<endl;
-        PsiFile << "\"grad_x\""<<endl;
-        PsiFile << "\"grad_y\""<<endl;
-    }
+    PsiFile << "\"rho\""<<endl;
+    PsiFile << "\"ux1\""<<endl;
+    PsiFile << "\"uy1\""<<endl;
+    PsiFile << "\"ux2\""<<endl;
+    PsiFile << "\"uy2\""<<endl;
+    PsiFile << "\"u_abs\""<<endl;
+    PsiFile << "\"grad_x\""<<endl;
+    PsiFile << "\"grad_y\""<<endl;
     PsiFile << "ZONE T=\" "<< iterNum << "\""<< endl;
     PsiFile << "I="<<xsize<<", J="<<ysize<<", K=1,F=POINT"<< endl;
-    if (verbose == true) PsiFile << "DT=(DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE)"<<endl;
-    else PsiFile << "DT=(DOUBLE DOUBLE DOUBLE DOUBLE)"<<endl;
 
+    PsiFile << "DT=(DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE)"<<endl;
+    
     for (int j=0; j<ysize; j++)
     {
         for (int i=0; i<xsize; i++)
         {
             tmp = l.getCell(i,j);
             tmp.calcRho();
-            PsiFile << i << "\t" << j << "\t" << "0 \t" << tmp.calcPsi() ;
-            if (verbose == true)
-            {
-                VeloSet u = tmp.getU();
-                ColSet rho = tmp.getRho();
-                Vector v;
-                Vector gradient = l.getGradient(i, j);
-                if(sum(rho) > 0) v = (u[0]*rho[0] + u[1]*rho[1]) * (1/sum(rho));
-                PsiFile << "\t" << sum(rho) << "\t" << u[0].x << "\t" << u[0].y << "\t" << u[1].x << "\t" << u[1].y << "\t" << v.Abs() << "\t" << gradient.x << "\t" << gradient.y;
-            }
-            PsiFile << endl;
+            
+            VeloSet u = tmp.getU();
+            ColSet rho = tmp.getRho();
+            Vector v;
+            Vector gradient = l.getGradient(i, j);
+            if(sum(rho) > 0) v = (u[0]*rho[0] + u[1]*rho[1]) * (1/sum(rho));
+
+            PsiFile << i << "\t" << j << "\t" << "0 \t" << tmp.calcPsi() << "\t" << sum(rho) << "\t" << u[0].x << "\t" << u[0].y << "\t" << u[1].x << "\t" << u[1].y << "\t" << v.Abs() << "\t" << gradient.x << "\t" << gradient.y << endl;
         }
     }
     PsiFile.close();
 }
+
 void write_techplot_output_alternative(const Lattice& l, const string& filename)
 {
     ofstream PsiFile;
@@ -314,179 +309,7 @@ void write_techplot_output_alternative(const Lattice& l, const string& filename)
     PsiFile.close();
 }
 
-
-
-
-
-
-
-
-// void write_vtk_output(const Lattice& l, int iterNum)
-// {
-//     ofstream VTKFile;
-//     Cell tmp;
-//     int e;
-//     ColSet extent = l.getSize();
-//     int xsize = static_cast<int> (extent[0]);
-//     int ysize = static_cast<int> (extent[1]);
-
-//     stringstream name;
-//     name <<"test_"<< iterNum<<".vtk";
-
-//     VTKFile.open( name.str().c_str(), std::ios::out | std::ios::trunc | std::ios::binary);
-//     VTKFile << "# vtk DataFile Version 3.1" << endl;
-//     VTKFile << "Lattice Boltzmann data" << endl;
-//     VTKFile << "BINARY" << endl;
-//     // VTKFile << "DATASET STRUCTURED_GRID" << endl;
-//     // VTKFile << "DIMENSIONS " << xsize << " " << ysize << " 1" << endl;
-//     VTKFile << "DATASET UNSTRUCTURED_GRID" << endl;
-
-//     // stringstream header;
-//     // header << "# vtk DataFile Version 3.1\n";
-//     // header << "Lattice Boltzmann data\n";
-//     // header << "BINARY\n";
-//     // header << "DATASET UNSTRUCTURED_GRID\n";
-
-//     // string head_string = header.str();
-
-//     // VTKFile.write(head_string.c_str(), head_string.size());
-
-//     VTKFile << "POINTS "<< (xsize+1) * (ysize+1)  <<" INT \n";
-//     VTKFile << "CELLS " << (xsize) * (ysize) << " " << (xsize) * (ysize) * 5 << "\n";
-//     VTKFile << "CELL_TYPES "<< (xsize) * (ysize) << "\n";
-
-//     for (int j = 0; j <= ysize; j++)
-//     {
-//         for (int i = 0; i <= xsize; i++)
-//         {
-//             // VTKFile << i << " " << j << " 0 " ;
-//             int z(0);
-//             VTKFile.write(reinterpret_cast<char*> (&i), sizeof(int));
-//             VTKFile.write(reinterpret_cast<char*> (&j), sizeof(int));
-//             VTKFile.write(reinterpret_cast<char*> (&z), sizeof(int));
-//         }
-//         // VTKFile<<endl;
-//     }
-
-//     // stringstream cells;
-//     // cells << "CELLS " << (xsize) * (ysize) << " " << (xsize) * (ysize) * 5 << "\n";
-//     // string cell_string = cells.str();
-
-//     // VTKFile.write(cell_string.c_str(), cell_string.size());
-//     // VTKFile << "CELLS " << (xsize) * (ysize) << " " << (xsize) * (ysize) * 5 << "\n";
-    
-//     for (int j = 0; j < ysize; j++)
-//     {
-//         for (int i = 0; i < xsize; i++)
-//         {
-//             e = i+(xsize+1)*j;
-//             int four(4);
-//             int e1(e+1);
-//             int e2(e + xsize +1);
-//             int e3(e + xsize + 2);
-
-//             VTKFile.write(reinterpret_cast<char*> (&four), sizeof(int));
-//             VTKFile.write(reinterpret_cast<char*> (&e), sizeof(int));
-//             VTKFile.write(reinterpret_cast<char*> (&e1), sizeof(int));
-//             VTKFile.write(reinterpret_cast<char*> (&e2), sizeof(int));
-//             VTKFile.write(reinterpret_cast<char*> (&e3), sizeof(int));
-
-//             // VTKFile <<"4 "<< e << " " << e+1 << " "<< e + xsize +1 << " " << e + xsize + 2 << " ";
-//         }
-//         // VTKFile<< endl;
-//     }
-
-//     // stringstream types;
-//     // types << "CELL_TYPES "<< (xsize) * (ysize) << "\n";
-//     // string type_string = types.str();
-
-//     // VTKFile.write(type_string.c_str(), type_string.size());
-
-//     // VTKFile << "CELL_TYPES "<< (xsize) * (ysize) << "\n";
-//     for (int q = 0; q < (xsize * ysize); q++)
-//     {
-//         // VTKFile <<"8 ";
-//         int eight(8);
-//         VTKFile.write(reinterpret_cast<char*> (&eight), sizeof(int));
-//     }
-
-//     // VTKFile << "\nCELL_DATA "<< (xsize) * (ysize) << endl;
-
-//     // VTKFile << "SCALARS Psi DOUBLE\nLOOKUP_TABLE default"<<endl;
-//     // for (int j = 0; j < ysize; j++)
-//     // {
-//     //     for (int i = 0; i < xsize; i++)
-//     //     {
-//     //         tmp = l.getCell(i,j);
-//     //         tmp.calcRho();
-//     //         VTKFile << tmp.calcPsi() << " ";
-//     //     }
-//     // }
-
-//     // VTKFile << "\nSCALARS Rho DOUBLE\nLOOKUP_TABLE default"<<endl;
-//     // for (int j = 0; j < ysize; j++)
-//     // {
-//     //     for (int i = 0; i < xsize; i++)
-//     //     {
-//     //         tmp = l.getCell(i,j);
-//     //         tmp.calcRho();
-//     //         VTKFile << sum(tmp.getRho()) << " ";
-//     //     }
-//     // }
-
-//     // VTKFile << "\nVECTORS j1 DOUBLE"<<endl;
-//     // for (int j = 0; j < ysize; j++)
-//     // {        
-//     //     for (int i = 0; i < xsize; i++)
-//     //     {
-//     //         tmp = l.getCell(i,j);
-//     //         tmp.calcRho();
-
-//     //         VeloSet u = tmp.getU();
-//     //         ColSet rho = tmp.getRho();
-//     //         VTKFile << u[0].x * rho[0] << " " << u[0].y * rho[0] << " 0 ";
-//     //     }
-//     // }
-
-//     // VTKFile << "\nVECTORS j2 DOUBLE"<<endl;
-//     // for (int j = 0; j < ysize; j++)
-//     // {
-//     //     for (int i = 0; i < xsize; i++)
-//     //     {
-//     //         tmp = l.getCell(i,j);
-//     //         tmp.calcRho();
-
-//     //         VeloSet u = tmp.getU();
-//     //         ColSet rho = tmp.getRho();
-//     //         VTKFile << u[1].x * rho[1] << " " << u[1].y * rho[1] << " 0 ";
-//     //     }
-//     // }
-
-//     // VTKFile << "\nVECTORS gradient DOUBLE"<<endl;
-//     // for (int j = 0; j < ysize; j++)
-//     // {
-//     //     for (int i = 0; i < xsize; i++)
-//     //     {
-//     //         Vector gradient = l.getGradient(i, j);    
-//     //         VTKFile << gradient.x << " " << gradient.y  << " 0 ";
-//     //     }
-//     // }
-
-//     VTKFile.close();
-// }
-
-
-
-
-
-
-
-
-
-
-
-
-void write_vtk_output(const Lattice& l, int iterNum)
+void write_vtk_output(const Lattice& l, const string& filename)
 {
     ofstream VTKFile;
     Cell tmp;
@@ -495,10 +318,12 @@ void write_vtk_output(const Lattice& l, int iterNum)
     int xsize = static_cast<int> (extent[0]);
     int ysize = static_cast<int> (extent[1]);
 
-    stringstream name;
-    name <<"test_"<< iterNum<<".vtk";
+    // stringstream name;
+    // name <<"test_"<< iterNum<<".vtk";
 
-    VTKFile.open( name.str().c_str());
+    // VTKFile.open( name.str().c_str());
+    VTKFile.open(filename.c_str());
+
     VTKFile << "# vtk DataFile Version 3.1" << endl;
     VTKFile << "Lattice Boltzmann data" << endl;
     VTKFile << "ASCII" << endl;
@@ -614,10 +439,7 @@ void write_data_plot(const std::vector<double> x, const std::vector<double> y1, 
 void write_data_plot(const std::vector<double> y, double del_x, const string& filename){
     ofstream RePlot;
 
-    stringstream name;
-    name << filename;
-
-    RePlot.open( name.str().c_str() );
+    RePlot.open( filename.c_str() );
     RePlot << "x" << "\t" << "y" << "\n";
     for(unsigned int i = 0; i< y.size(); i++){
         RePlot << i*del_x << "\t" << y.at(i) << "\n";
