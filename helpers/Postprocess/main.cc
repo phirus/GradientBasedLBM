@@ -81,8 +81,8 @@ int main(int argc, char** argv){
     }
     else if (vm.count("vtk")) {
         filename_out = vm["vtk"].as<string>();
-        // write_techplot_output_alternative(meins, filename_out);
-        write_vtk_output(meins, 0);
+        write_techplot_output_alternative(meins, filename_out);
+        // write_vtk_output(meins, 0);
         cout<<"\noutput written to "<< filename_out <<endl;
     }
     else {
