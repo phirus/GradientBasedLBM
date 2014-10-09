@@ -469,7 +469,6 @@ void write_param_log(const ParamSet& p){
     paramLog << "\n# surface tension [-]" << endl;
     paramLog << "sigma = "      << p.getSigma()              << endl; //TODO get SI units of sigma
     paramLog << "\n# discretisization [-]" << endl;
-    paramLog << "speedlimit = " << p.getSpeedlimit()         << endl; 
     paramLog << "dt = "         << p.getDeltaT()             << endl;
     paramLog << "dx = "         << p.getDeltaX()             << endl;
     paramLog << "gravity = "    << p.getG()                  << endl;
@@ -543,7 +542,6 @@ const ParamSet read_paramset_file(const string& filename){
         mm.insert(pair<string,double>("gamma",2));
         mm.insert(pair<string,double>("sigma",1e-4));
         mm.insert(pair<string,double>("gravity",1e-4));
-        mm.insert(pair<string,double>("speedlimit",1));
         mm.insert(pair<string,double>("dt",1e-3));
         mm.insert(pair<string,double>("dx",1e-3));
 
@@ -564,7 +562,7 @@ const ParamSet read_paramset_file(const string& filename){
 
     RelaxationPar rel(mm.at("s_2"),mm.at("s_3"),mm.at("s_5"));
 
-    ParamSet params(mm.at("omega_red"), mm.at("omega_blue"), mm.at("rho_red"), mm.at("gamma"), mm.at("sigma"), mm.at("gravity"), mm.at("speedlimit"), mm.at("dt"), mm.at("dx"), rel, mm.at("alpha_blue"), mm.at("delta"), mm.at("beta")); /// < consructor
+    ParamSet params(mm.at("omega_red"), mm.at("omega_blue"), mm.at("rho_red"), mm.at("gamma"), mm.at("sigma"), mm.at("gravity"), mm.at("dt"), mm.at("dx"), rel, mm.at("alpha_blue"), mm.at("delta"), mm.at("beta")); /// < consructor
     return params;
 }
 

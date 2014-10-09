@@ -14,13 +14,13 @@ class ParamSet
 {
 public:
     /// Lifecycle
-    ParamSet(double omR = 1, double omB = 1,double rhoR = 1, double gammaIni = 2,double sigmaIni = 1e-4, double g = 1e-4, double c_limit = 1, double t_step = 1e-3, double s_step = 1e-3, RelaxationPar rel = RelaxationPar(1,1,1), double alB = 0.2, double deltaIni = 0.1, double betaIni = 0.99); /// < consructor
+    ParamSet(double omR = 1, double omB = 1,double rhoR = 1, double gammaIni = 2,double sigmaIni = 1e-4, double g = 1e-4, double t_step = 1e-3, double s_step = 1e-3, RelaxationPar rel = RelaxationPar(1,1,1), double alB = 0.2, double deltaIni = 0.1, double betaIni = 0.99); /// < consructor
 
     /// get-methods, including calculations if necessary
     const DistributionSetType getPhi()const;                   /// < calculates phi, based on alpha_b and rho (density ratio)
     const double getOmega(double psi)const;          /// < return omega, based on inter and the color field
     const ColSet getAk(double omega)const;
-    const boost::array<double,13> getEverything()const;
+    const boost::array<double,12> getEverything()const;
 
     const double getBeta()const{return beta;};
     const double getG()const{return gravity;};
@@ -37,7 +37,6 @@ public:
     const double getGamma()const{return gamma;};
     const double getAlpha()const{return alphaBlue;};
     const double getSigma()const{return sigma;};
-    const double getSpeedlimit()const{return speedlimit;};
 
     /// set-methods, including calculations if necessary
     void setOmega(double omR, double omB, double d);
@@ -59,7 +58,6 @@ private:
     double sigma;               /// < dimensionless surface tension
     double gravity;             /// < dimensionless gravity 
     // drive through
-    double speedlimit;          /// < maximum allowed velocity
     double timestep;            /// < LB timestep
     double spacestep;            /// < LB timestep
 
