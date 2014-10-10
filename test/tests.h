@@ -703,6 +703,16 @@ TEST(ParamSet,inter)
     EXPECT_NEAR(9,inter.ny,1e-10);
 }
 
+TEST(ParamSet, Ak)
+{
+    double omega(1.2), sigma(1.5e-4);
+    ParamSet param(1, 1, 1, 2, sigma);
+    ColSet A_k = param.getAk(omega);
+    EXPECT_DOUBLE_EQ(sigma, param.getSigma());
+    EXPECT_DOUBLE_EQ(0.0004049999999999999, A_k[0]);
+    EXPECT_DOUBLE_EQ(0.0004049999999999999, A_k[1]);
+}
+
 TEST(ParamSet, equal){
     ParamSet one, two, three, four;
     EXPECT_TRUE(one == two);
