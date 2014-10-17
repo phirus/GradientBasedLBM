@@ -98,7 +98,7 @@ int main(int argc, char** argv){
     }
     else {      // vm.count("restart")
         initialSetUp(meins, prepro, xmax, ymax, params);
-        write_techplot_output(meins,0,true);
+        write_vtk_output(meins, 0);;
     }
 
     time_t start,end;
@@ -132,7 +132,7 @@ int main(int argc, char** argv){
 
         if(i%outputInterval == 0) 
         {
-            write_techplot_output(meins,i,true);
+            // write_techplot_output(meins,i,true);
             write_vtk_output(meins, i);
         } 
         
