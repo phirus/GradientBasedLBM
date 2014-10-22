@@ -10,4 +10,4 @@ for x in range(1, len(sys.argv)):
     r = LegacyVTKReader( FileNames= inputFile )
     w = XMLUnstructuredGridWriter()
     w.FileName = outputFile
-    w.UpdatePipeline()   
+    w.UpdatePipeline()
