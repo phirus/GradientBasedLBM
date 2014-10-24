@@ -11,3 +11,5 @@ for x in range(1, len(sys.argv)):
     w = XMLUnstructuredGridWriter()
     w.FileName = outputFile
     w.UpdatePipeline()
+    Delete(w)
+    Delete(r)    
