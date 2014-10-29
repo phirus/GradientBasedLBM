@@ -127,7 +127,7 @@ int main(int argc, char** argv){
         if(i%10 == 0) 
         {            
             reynolds_data.push_back(getReynolds(meins, prepro.getResolution()));
-            write_data_plot(reynolds_data, 10000, "ReynoldsPlot.dat");
+            write_data_plot(reynolds_data, 10, "ReynoldsPlot.dat");
         }
 
         if(i%outputInterval == 0) 
