@@ -240,8 +240,8 @@ void write_techplot_output(const Lattice& l, int iterNum)
             
             VeloSet u = tmp.getU();
             ColSet rho = tmp.getRho();
-            Vector v;
-            Vector gradient = l.getGradient(i, j);
+            Vector2D v;
+            Vector2D gradient = l.getGradient(i, j);
             if(sum(rho) > 0) v = (u[0]*rho[0] + u[1]*rho[1]) * (1/sum(rho));
 
             PsiFile << i << "\t" << j << "\t" << "0 \t" << tmp.calcPsi() << "\t" << sum(rho) << "\t" << u[0].x << "\t" << u[0].y << "\t" << u[1].x << "\t" << u[1].y << "\t" << v.Abs() << "\t" << gradient.x << "\t" << gradient.y << endl;
@@ -291,8 +291,8 @@ void write_techplot_output_alternative(const Lattice& l, const string& filename)
             
             VeloSet u = tmp.getU();
             ColSet rho = tmp.getRho();
-            Vector v;
-            Vector gradient = l.getGradient(i, j);
+            Vector2D v;
+            Vector2D gradient = l.getGradient(i, j);
             if(sum(rho) > 0) v = (u[0]*rho[0] + u[1]*rho[1]) * (1/sum(rho));
             if(psi < 1) {
                 u[0].x = 0;
@@ -414,7 +414,7 @@ void write_vtk_output(const Lattice& l, const string& filename)
     {
         for (int i = 0; i < xsize; i++)
         {
-            Vector gradient = l.getGradient(i, j);    
+            Vector2D gradient = l.getGradient(i, j);    
             VTKFile << gradient.x << " " << gradient.y  << " 0 ";
         }
     }

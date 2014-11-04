@@ -1,10 +1,10 @@
-#include"Vector.h"
+#include"Vector2D.h"
 
 ///////////////////////////// PUBLIC /////////////////////////////
 
 //=========================== OPERATIONS ===========================
 
-const double Vector::Angle(const Vector& other)const
+const double Vector2D::Angle(const Vector2D& other)const
 {
     double av1 = Abs();
     double av2 = other.Abs();

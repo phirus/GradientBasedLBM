@@ -3,7 +3,7 @@
 
 #include"gtest/gtest.h"
 #include"../src/Lattice.h"
-#include"../src/Vector.h"
+#include"../src/2D/Vector2D.h"
 #include"../src/BinaryIO.h"
 
 using namespace std;
@@ -175,7 +175,7 @@ TEST(Cell,Velo)
     ColSet rho = cell.getRho();
     VeloSet v = cell.getU();
 
-    Vector u = (v[0]*rho[0] + v[1]*rho[1]) * (1/sum(rho));
+    Vector2D u = (v[0]*rho[0] + v[1]*rho[1]) * (1/sum(rho));
 
     usqr = u*u;
 
@@ -506,7 +506,7 @@ TEST(Lattice, Gradient)
         }
 
     }
-    Vector grad = lattice.getGradient(2,2);
+    Vector2D grad = lattice.getGradient(2,2);
     double abs = grad.Abs();
     grad.x /= abs;
     grad.y /= abs;
@@ -805,16 +805,16 @@ TEST(timetrack,FileInput){
     EXPECT_DOUBLE_EQ(10000,newTimetrack.getRestartInt());
 }
 
-TEST(Vector,scalar){
-    Vector v0, v1(1,2), v2(3,4);
+TEST(Vector2D,scalar){
+    Vector2D v0, v1(1,2), v2(3,4);
     EXPECT_DOUBLE_EQ(0, v0*v1);
     EXPECT_DOUBLE_EQ(0, v2*v0);
     EXPECT_DOUBLE_EQ(11, v1*v2);
     EXPECT_DOUBLE_EQ(11, v2*v1);
 }
 
-TEST(Vector,angle){
-    Vector g(1,1);
+TEST(Vector2D,angle){
+    Vector2D g(1,1);
 
     EXPECT_DOUBLE_EQ(0, g.Angle(DIRECTION[0]));
     EXPECT_DOUBLE_EQ(cos(PI/4), g.Angle(DIRECTION[1]));
@@ -826,7 +826,7 @@ TEST(Vector,angle){
     EXPECT_DOUBLE_EQ(-cos(PI/4), g.Angle(DIRECTION[7]));
     EXPECT_DOUBLE_EQ(0, g.Angle(DIRECTION[8]));
 
-    Vector g1(1e-10, -1e-10), g2(1e-6, -1e-6);
+    Vector2D g1(1e-10, -1e-10), g2(1e-6, -1e-6);
     EXPECT_DOUBLE_EQ(1,g1.Angle(g2));
     EXPECT_DOUBLE_EQ(0,g1.Angle(DIRECTION[0]));
 }

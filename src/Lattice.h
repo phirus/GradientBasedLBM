@@ -26,7 +26,7 @@ public:
     void mass_balance(double& liquid_mass, double& gas_mass)const;
     void overallRho();
     direction directions(int x, int y)const; /// < calculates positions of neighboring sites (periodical)
-    const Vector getGradient(int x, int y)const; /// < calculates the color gradient on the position (y,x)
+    const Vector2D getGradient(int x, int y)const; /// < calculates the color gradient on the position (y,x)
         
     /// LB steps
     void streamAll(int threads = 1); /// < streaming step
@@ -65,6 +65,6 @@ private:
 /// calculates the equilibrium distribution based of a cell
 const DistributionSetType eqDistro(const ColSet& rho_k, const VeloSet& u, const DistributionSetType& phi);
 
-const DistributionSetType calculate_forcing_term(Vector G, VeloSet u);
+const DistributionSetType calculate_forcing_term(Vector2D G, VeloSet u);
 
 #endif // LATTICE_H

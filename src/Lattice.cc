@@ -127,9 +127,9 @@ direction Lattice::directions(int x, int y)const
     return dir;
 }
 
-const Vector Lattice::getGradient(int x, int y)const
+const Vector2D Lattice::getGradient(int x, int y)const
 {
-    Vector grad(0,0);
+    Vector2D grad(0,0);
     double tmpDelta;
 
     const direction dir = directions(x,y);
@@ -207,8 +207,8 @@ bool Lattice::collideAll(int threads, bool gravity, bool isLimitActive)
                 const ColSet rho_k = tmpCell.getRho();
                 const double rho = sum(rho_k);
 
-                const Vector G(0 ,  g*(rho - rho_k[0]));
-                // const Vector G(0 , - rho * g);
+                const Vector2D G(0 ,  g*(rho - rho_k[0]));
+                // const Vector2D G(0 , - rho * g);
 
                 VeloSet u = tmpCell.getU();
 
@@ -243,7 +243,7 @@ bool Lattice::collideAll(int threads, bool gravity, bool isLimitActive)
                 const DistributionSetType single_phase_col = INV_TRAFO_MATRIX * (relaxation_matrix * (TRAFO_MATRIX * diff));
                           
                 const ColSet A_k = param.getAk(omega);
-                const Vector grad = getGradient(x,y);
+                const Vector2D grad = getGradient(x,y);
                 const double av = grad.Abs();
 
                 double scal;
@@ -500,7 +500,7 @@ void Lattice::streamAndBouncePull(Cell& tCell, const direction& dir)const
 const DistributionSetType eqDistro(const ColSet& rho_k, const VeloSet& u, const DistributionSetType& phi)
 {
     DistributionSetType feq;
-    Vector velo = (u[0] * rho_k[0] + u[1] * rho_k[1]) * (1.0 / (rho_k[0]+rho_k[1])) ;
+    Vector2D velo = (u[0] * rho_k[0] + u[1] * rho_k[1]) * (1.0 / (rho_k[0]+rho_k[1])) ;
     double usqr = velo*velo;
    
     for (int i=0; i<9; i++)
@@ -514,7 +514,7 @@ const DistributionSetType eqDistro(const ColSet& rho_k, const VeloSet& u, const 
     return feq;
 }
 
-const DistributionSetType calculate_forcing_term(Vector G, VeloSet u)
+const DistributionSetType calculate_forcing_term(Vector2D G, VeloSet u)
 {
     DistributionSetType forcing_term;
     for (int i=0; i<9; i++)

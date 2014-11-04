@@ -8,7 +8,7 @@ const double getBubbleVelocity(const Lattice& l)
     Cell tmp_cell;
     VeloSet tmp_velo;
     ColSet tmp_rho;
-    Vector momentum(0,0);
+    Vector2D momentum(0,0);
     double rho_sum(0);
 
     for (int x = 0; x<extent[0];x++)
@@ -26,7 +26,7 @@ const double getBubbleVelocity(const Lattice& l)
         }
     }
 
-    Vector velocity = momentum * (1.0/ rho_sum);
+    Vector2D velocity = momentum * (1.0/ rho_sum);
 
     double upward_velo = velocity.y;
     return upward_velo;
