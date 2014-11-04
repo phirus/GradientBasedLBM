@@ -15,7 +15,7 @@ xsize(x_size)
     {
         for (int y=0; y<ysize; y++)
         {
-            (*data)[x][y] = Cell(fzero_dense,fzero_dilute);
+            (*data)[x][y] = Cell2D(fzero_dense,fzero_dilute);
         }
     }
 }
@@ -39,7 +39,7 @@ Lattice::~Lattice(){
 
 void Lattice::equilibriumIni()
 {
-    Cell tmp;
+    Cell2D tmp;
     DistributionSetType eqDis;
 
     for (int j=0; j<ysize; j++)
@@ -157,7 +157,7 @@ void Lattice::streamAll(int threads)
             int x,y;
             linearIndex(index,x,y);
             const direction dir = directions(x,y);
-            Cell tmpCell = (*data)[x][y];
+            Cell2D tmpCell = (*data)[x][y];
 
             if (tmpCell.getIsSolid() == false) streamAndBouncePull(tmpCell,dir);
 
@@ -197,7 +197,7 @@ bool Lattice::collideAll(int threads, bool gravity, bool isLimitActive)
         {
             int x,y;
             linearIndex(index,x,y);
-            Cell tmpCell = (*data)[x][y];
+            Cell2D tmpCell = (*data)[x][y];
 
             if (tmpCell.getIsSolid() == false)
             {
@@ -314,7 +314,7 @@ bool Lattice::collideAll(int threads, bool gravity, bool isLimitActive)
 
 void Lattice::closedBox()
 {
-    const Cell wall(0,0,true);
+    const Cell2D wall(0,0,true);
 
     for (int x=0; x<xsize; x++)
     {
@@ -338,7 +338,7 @@ void Lattice::closedBox()
 
 void Lattice::bottomWall()
 {
-    const Cell wall(0,0,true);
+    const Cell2D wall(0,0,true);
 
     for (int x=0; x<xsize; x++)
     {
@@ -369,7 +369,7 @@ void Lattice::setData(const field& ndata, int x, int y){
     ysize = y;
 }
 
-void Lattice::setCell(int x, int y, const Cell& ncell)
+void Lattice::setCell(int x, int y, const Cell2D& ncell)
 {
     if (y >= 0 && y < ysize && x >= 0 && x < xsize) (*data)[x][y] = ncell;
 }
@@ -434,7 +434,7 @@ inline void Lattice::linearIndex(int index, int& x, int& y)const
     y = (index)/xsize;
 }
 
-void Lattice::streamAndBouncePull(Cell& tCell, const direction& dir)const
+void Lattice::streamAndBouncePull(Cell2D& tCell, const direction& dir)const
 {
     const DistributionSetType f = tCell.getF();
     DistributionSetType ftmp;

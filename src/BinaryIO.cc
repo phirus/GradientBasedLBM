@@ -23,7 +23,7 @@ void write_binary(const Lattice& l, const string& filename){
 
     for (int x = 0; x<extent[0];x++){
         for (int y = 0; y<extent[1];y++){
-            file.write(reinterpret_cast<char*> (&data[x][y]), sizeof(Cell));
+            file.write(reinterpret_cast<char*> (&data[x][y]), sizeof(Cell2D));
         }
     }
     file.close();
@@ -45,11 +45,11 @@ const bool read_binary(Lattice& outL, const string& filename){
         ParamSet param;
         file.read((char*) &param, sizeof param);
 
-        Cell tmpCell;
+        Cell2D tmpCell;
         field data(boost::extents[extent[0]][extent[1]]);
         for(int x = 0; x<extent[0];x++){
             for(int y=0;y<extent[1];y++){
-                file.read((char*) &tmpCell, sizeof(Cell));
+                file.read((char*) &tmpCell, sizeof(Cell2D));
                 data[x][y] = tmpCell;
             }
         }
@@ -85,7 +85,7 @@ void write_restart_file(const Lattice& l, const Preprocess& p, const Timetrack t
     field data = l.getData();
     for (int x = 0; x<extent[0];x++){
         for (int y = 0; y<extent[1];y++){
-            file.write(reinterpret_cast<char*> (&data[x][y]), sizeof(Cell));
+            file.write(reinterpret_cast<char*> (&data[x][y]), sizeof(Cell2D));
         }
     }
 
@@ -146,11 +146,11 @@ const bool read_restart_file(Lattice& outL, Preprocess& p, Timetrack& t, const s
         ParamSet param;
         file.read((char*) &param, sizeof param);
 
-        Cell tmpCell;
+        Cell2D tmpCell;
         field data(boost::extents[extent[0]][extent[1]]);
         for(int x = 0; x<extent[0];x++){
             for(int y=0;y<extent[1];y++){
-                file.read((char*) &tmpCell, sizeof(Cell));
+                file.read((char*) &tmpCell, sizeof(Cell2D));
                 data[x][y] = tmpCell;
             }
         }
@@ -204,7 +204,7 @@ const bool read_restart_file(Lattice& outL, Preprocess& p, Timetrack& t, const s
 void write_techplot_output(const Lattice& l, int iterNum)
 {
     ofstream PsiFile;
-    Cell tmp;
+    Cell2D tmp;
     ColSet extent = l.getSize();
     int xsize = static_cast<int> (extent[0]);
     int ysize = static_cast<int> (extent[1]);
@@ -253,7 +253,7 @@ void write_techplot_output(const Lattice& l, int iterNum)
 void write_techplot_output_alternative(const Lattice& l, const string& filename)
 {
     ofstream PsiFile;
-    Cell tmp;
+    Cell2D tmp;
     ColSet extent = l.getSize();
     int xsize = static_cast<int> (extent[0]);
     int ysize = static_cast<int> (extent[1]);
@@ -312,7 +312,7 @@ void write_techplot_output_alternative(const Lattice& l, const string& filename)
 void write_vtk_output(const Lattice& l, const string& filename)
 {
     ofstream VTKFile;
-    Cell tmp;
+    Cell2D tmp;
     int e;
     ColSet extent = l.getSize();
     int xsize = static_cast<int> (extent[0]);

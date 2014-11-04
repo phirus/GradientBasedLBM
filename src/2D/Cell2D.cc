@@ -4,7 +4,7 @@
 
 //=========================== LIFECYCLE ===========================
 
-Cell::Cell(double fzero_dense, double fzero_dilute, bool solid):isSolid(solid),delta(0)
+Cell2D::Cell2D(double fzero_dense, double fzero_dilute, bool solid):isSolid(solid),delta(0)
 {
     f[0][0] = fzero_dense;
     f[1][0] = fzero_dilute;
@@ -25,7 +25,7 @@ Cell::Cell(double fzero_dense, double fzero_dilute, bool solid):isSolid(solid),d
 }
 
 // like a copy constructor for the bulk phase
-Cell::Cell(const array& finiDense, const array& finiDilute):isSolid(false),delta(0)
+Cell2D::Cell2D(const array& finiDense, const array& finiDilute):isSolid(false),delta(0)
 {
     f.at(0) = finiDense;
     f.at(1) = finiDilute;
@@ -39,7 +39,7 @@ Cell::Cell(const array& finiDense, const array& finiDilute):isSolid(false),delta
     u[1].y = 0;
 }
 
-Cell::Cell(const DistributionSetType& newF):isSolid(false),delta(0)
+Cell2D::Cell2D(const DistributionSetType& newF):isSolid(false),delta(0)
 {
     f.at(0) = newF.at(0);
     f.at(1) = newF.at(1);
@@ -56,7 +56,7 @@ Cell::Cell(const DistributionSetType& newF):isSolid(false),delta(0)
 
 //=========================== OPERATORS ===========================
 
-const bool Cell::operator==(const Cell& other)const {
+const bool Cell2D::operator==(const Cell2D& other)const {
     bool exit = true;
     if (isSolid != other.getIsSolid()) exit = false;
 
@@ -74,7 +74,7 @@ const bool Cell::operator==(const Cell& other)const {
 
 //=========================== OPERATIONS ===========================
 
-void Cell::calcRho()
+void Cell2D::calcRho()
 {
     // initialize
     rho[0] = 0;
@@ -111,7 +111,7 @@ void Cell::calcRho()
     }
 }
 
-const double Cell::calcPsi()const
+const double Cell2D::calcPsi()const
 {
     double rhoSum = sum(rho);
     if(rhoSum > 0) return (rho[0] - rho[1])/( rhoSum ); // < prevent division by 0

@@ -52,84 +52,84 @@ TEST(BinaryIO,restart){
     EXPECT_EQ(time, vergleichT);
 }
 
-TEST(Cell,constructor0)
+TEST(Cell2D,constructor0)
 {
     array f = {{1,0,0,0,0,0,0,0,0}};
-    Cell cell;
+    Cell2D cell;
     EXPECT_EQ(f,cell.getF()[0]);
     EXPECT_FALSE(cell.getIsSolid());
     EXPECT_EQ(f,cell.getF()[1]);
 }
 
-TEST(Cell,constructorRed1)
+TEST(Cell2D,constructorRed1)
 {
     array f = {{1,0,0,0,0,0,0,0,0}};
-    Cell cell(1,0);
+    Cell2D cell(1,0);
     EXPECT_EQ(f,cell.getF()[0]);
     EXPECT_FALSE(cell.getIsSolid());
-    Cell cell1(1,1);
-    Cell cell2(1,100);
+    Cell2D cell1(1,1);
+    Cell2D cell2(1,100);
     EXPECT_EQ(f,cell1.getF()[0]);
     EXPECT_EQ(f,cell2.getF()[0]);
 }
 
-TEST(Cell,constructorBlue1)
+TEST(Cell2D,constructorBlue1)
 {
     array f = {{1,0,0,0,0,0,0,0,0}};
-    Cell cell(0,1);
+    Cell2D cell(0,1);
     EXPECT_EQ(f,cell.getF()[1]);
     EXPECT_FALSE(cell.getIsSolid());
-    Cell cell1(1,1);
-    Cell cell2(100,1);
+    Cell2D cell1(1,1);
+    Cell2D cell2(100,1);
     EXPECT_EQ(f,cell1.getF()[1]);
     EXPECT_EQ(f,cell2.getF()[1]);
 }
 
-TEST(Cell,constructorRed2)
+TEST(Cell2D,constructorRed2)
 {
     array f = {{0,0,0,0,0,0,0,0,0}};
-    Cell cell(0,0);
+    Cell2D cell(0,0);
     EXPECT_EQ(f,cell.getF()[0]);
     EXPECT_FALSE(cell.getIsSolid());
-    Cell cell1(0,1);
-    Cell cell2(0,100);
+    Cell2D cell1(0,1);
+    Cell2D cell2(0,100);
     EXPECT_EQ(f,cell1.getF()[0]);
     EXPECT_EQ(f,cell2.getF()[0]);
 }
 
-TEST(Cell,constructorBlue2)
+TEST(Cell2D,constructorBlue2)
 {
     array f = {{0,0,0,0,0,0,0,0,0}};
-    Cell cell(0,0);
+    Cell2D cell(0,0);
     EXPECT_EQ(f,cell.getF()[1]);
     EXPECT_FALSE(cell.getIsSolid());
-    Cell cell1(1,0);
-    Cell cell2(100,0);
+    Cell2D cell1(1,0);
+    Cell2D cell2(100,0);
     EXPECT_EQ(f,cell1.getF()[1]);
     EXPECT_EQ(f,cell2.getF()[1]);
 }
 
-TEST(Cell,constructorSolid)
+TEST(Cell2D,constructorSolid)
 {
-    Cell cell(0,0,true);
+    Cell2D cell(0,0,true);
     EXPECT_EQ(true,cell.getIsSolid());
 }
 
-TEST(Cell,constructorIni)
+TEST(Cell2D,constructorIni)
 {
     array f1 = {{4,2,5.4,0,1,12,6,7,8}};
     array f2 = {{1,2,3,4,5,6,7,8,9}};
-    Cell cell(f1,f2);
+    Cell2D cell(f1,f2);
     EXPECT_EQ(f1,cell.getF()[0]);
     EXPECT_EQ(f2,cell.getF()[1]);
     EXPECT_FALSE(cell.getIsSolid());
 }
 
-TEST(Cell,rho)
+TEST(Cell2D,rho)
 {
     array f1 = {{10,20,30,40,50,60,70,80,90}};
     array f2 = {{1,2,3,4,5,6,7,8,9}};
-    Cell cell(f1,f2);
+    Cell2D cell(f1,f2);
     EXPECT_EQ(0,cell.getRho()[0]);
     EXPECT_EQ(0,cell.getRho()[1]);
     cell.calcRho();
@@ -141,36 +141,36 @@ TEST(Cell,rho)
     EXPECT_EQ(0,cell.getRho()[1]);
 }
 
-TEST(Cell,Psi1)
+TEST(Cell2D,Psi1)
 {
     array f1 = {{10,20,30,40,50,60,70,80,90}}; //450
     array f2 = {{1,2,3,4,10,6,7,8,9}}; //50
-    Cell cell(f1,f2);
+    Cell2D cell(f1,f2);
     EXPECT_DOUBLE_EQ(0,cell.calcPsi());
     cell.calcRho();
     EXPECT_DOUBLE_EQ(0.8, cell.calcPsi());
 }
 
-TEST(Cell,Psi2)
+TEST(Cell2D,Psi2)
 {
     array f1 = {{10,20,30,40,50,60,70,80,90}}; //450
     array f2 = {{0,0,0,0,0,0,0,0,}}; //0
-    Cell cell(f1,f2);
+    Cell2D cell(f1,f2);
     cell.calcRho();
     EXPECT_DOUBLE_EQ(1, cell.calcPsi());
-    Cell cell2(f2,f1);
+    Cell2D cell2(f2,f1);
     cell2.calcRho();
     EXPECT_DOUBLE_EQ(-1, cell2.calcPsi());
 }
 
-TEST(Cell,Velo)
+TEST(Cell2D,Velo)
 {
     array fr = {{2,3,0,5,0,0,0,0,0}};
     array fb = {{0,0,1,0,0,4,1,4,0}};
 
     double usqr;
 
-    Cell cell(fr,fb);
+    Cell2D cell(fr,fb);
     cell.calcRho();
     ColSet rho = cell.getRho();
     VeloSet v = cell.getU();
@@ -184,8 +184,8 @@ TEST(Cell,Velo)
     EXPECT_DOUBLE_EQ(0.005,(usqr));
 }
 
-TEST(Cell,equal){
-    Cell one,two,three, four;
+TEST(Cell2D,equal){
+    Cell2D one,two,three, four;
     EXPECT_EQ(one,two);
     three.setIsSolid(true);
     EXPECT_FALSE(one == three);
@@ -341,8 +341,8 @@ TEST(Lattice,bounceClosed)
 {
     Lattice lattice(5,5,0,0);
     lattice.closedBox();
-    lattice.setCell(2,2,Cell(0,0,true));
-    Cell tmp = lattice.getCell(2,2);
+    lattice.setCell(2,2,Cell2D(0,0,true));
+    Cell2D tmp = lattice.getCell(2,2);
     EXPECT_EQ(true,tmp.getIsSolid());
 
     const array f1 = {{0,1,0,0,0,0,0,0,0}};
@@ -428,7 +428,7 @@ TEST(Lattice,periodic)
 
 TEST(Lattice,streamRho)
 {
-    Cell tmp;
+    Cell2D tmp;
 
     Lattice lattice(5,5,0,0);
     lattice.closedBox();
@@ -458,7 +458,7 @@ TEST(Lattice,collideSingle)
     lattice.closedBox();
 
     lattice.collideAll();
-    Cell cell = lattice.getCell(2,2);
+    Cell2D cell = lattice.getCell(2,2);
     double rho,usqr;
     cell.calcRho();
     rho = sum(cell.getRho());
@@ -495,7 +495,7 @@ TEST(Lattice, Gradient)
         lattice.setF(3,i,0,f);
         lattice.setF(4,i,0,f);
     }
-    Cell cell;
+    Cell2D cell;
     for (int i = 0; i<5; i++)
     {
         for (int j = 0; j<5; j++)
@@ -633,7 +633,7 @@ TEST(MRT,trafo){
     ParamSet param;
     DistributionSetType phi = param.getPhi();
     const array f = {{1,2,3,4,5,6,7,8,9}};
-    Cell testCell(f,f);
+    Cell2D testCell(f,f);
     testCell.calcRho();
     ColSet rho = testCell.getRho();
 
@@ -661,7 +661,7 @@ TEST(MRT,mass){
     ParamSet param;
     DistributionSetType phi = param.getPhi();
     const array f = {{1,2,3,4,5,6,7,8,9}};
-    Cell testCell(f,f);
+    Cell2D testCell(f,f);
     testCell.calcRho();
     ColSet rho = testCell.getRho();
     VeloSet u = testCell.getU();

@@ -3,12 +3,12 @@
 #include<iostream>
 #include<omp.h>
 
-#include"Cell2D.h"
+#include"2D/Cell2D.h"
 #include"ParamSet.h"
 // #include"Timetrack.h"
 
 /// custom typedef for the whole field of cells
-typedef boost::multi_array<Cell,2> field;
+typedef boost::multi_array<Cell2D,2> field;
 
 /// contains the domain of the simulation with LB operators
 class Lattice
@@ -39,12 +39,12 @@ public:
     /// accessors
     const ColSet getSize()const; /// < get the extend of the Lattice
     const field getData()const{return *data;}; /// < get the data field
-    const Cell getCell(int x, int y)const{return (*data)[x][y];};  /// < get a Cell
+    const Cell2D getCell(int x, int y)const{return (*data)[x][y];};  /// < get a Cell
     const ParamSet getParams()const{return param;}; /// < get the paramter set
     const DistributionSetType getF(int x, int y)const{return (*data)[x][y].getF();};          /// < get F
 
     void setData(const field& ndata, int x, int y); /// < set the data field (and size)
-    void setCell(int y, int x, const Cell& ncell);    /// < set a Cell
+    void setCell(int y, int x, const Cell2D& ncell);    /// < set a Cell
     void setF(int x, int y, int color, const array& nf);
     void setF(int x, int y, int color, int index, double value);
     void setParams(const ParamSet& newParam){param = newParam;}; /// < set a new parameter set
@@ -59,7 +59,7 @@ private:
     ParamSet param;     /// < set of parameters used during the simulation
 
     inline void linearIndex(int index, int& x, int& y)const;
-    void streamAndBouncePull(Cell& tCell, const direction& dir)const; /// < internal streaming mechanism with bounce back
+    void streamAndBouncePull(Cell2D& tCell, const direction& dir)const; /// < internal streaming mechanism with bounce back
 };
 
 /// calculates the equilibrium distribution based of a cell

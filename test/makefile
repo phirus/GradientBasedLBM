@@ -41,8 +41,8 @@ $(OBJ_DIR)/BinaryIO.o: $(SRC)/BinaryIO.cc
 $(OBJ_DIR)/Constants.o: $(SRC)/Constants.cc
 	$(CXX) $(CFLAGS) $(INC) -c $(SRC)/Constants.cc -o $(OBJ_DIR)/Constants.o
 
-$(OBJ_DIR)/Cell2D.o: $(SRC)/Cell2D.cc
-	$(CXX) $(CFLAGS) $(INC) -c $(SRC)/Cell2D.cc -o $(OBJ_DIR)/Cell2D.o
+$(OBJ_DIR)/Cell2D.o: $(SRC)/2D/Cell2D.cc
+	$(CXX) $(CFLAGS) $(INC) -c $(SRC)/2D/Cell2D.cc -o $(OBJ_DIR)/Cell2D.o
 
 $(OBJ_DIR)/Definitions.o: $(SRC)/Definitions.cc
 	$(CXX) $(CFLAGS) $(INC) -c $(SRC)/Definitions.cc -o $(OBJ_DIR)/Definitions.o	

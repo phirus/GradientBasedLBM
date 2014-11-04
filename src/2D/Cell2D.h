@@ -6,19 +6,19 @@
 #ifndef CELL2D_H
 #define CELL2D_H
 
-#include"Constants.h"
+#include"../Constants.h"
 using namespace std;
 
-class Cell
+class Cell2D
 {
 public:
     /// Lifecylce
-    Cell(double fzero_dense=1, double fzero_dilute=1, bool solid = false); /// < construcor
-    Cell(const array& finiDense,const array& finiDilute); // constr
-    Cell(const DistributionSetType& newF); // constr
+    Cell2D(double fzero_dense=1, double fzero_dilute=1, bool solid = false); /// < construcor
+    Cell2D(const array& finiDense,const array& finiDilute); // constr
+    Cell2D(const DistributionSetType& newF); // constr
 
     /// operators
-    const bool operator==(const Cell& other)const;
+    const bool operator==(const Cell2D& other)const;
 
     /// operations
     void calcRho();                                         /// < calculates both densities, the velocity and delta rho
