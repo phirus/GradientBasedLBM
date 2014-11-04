@@ -3,8 +3,8 @@
 * when calculating rho or values like the color field or deltaRho
 */
 
-#ifndef CELL_H
-#define CELL_H
+#ifndef CELL2D_H
+#define CELL2D_H
 
 #include"Constants.h"
 using namespace std;
@@ -43,4 +43,4 @@ private:
     double delta;
 };
 
-#endif // CELL_H
+#endif // CELL2D_H
