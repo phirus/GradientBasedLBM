@@ -125,9 +125,16 @@ int main(int argc, char** argv){
         }
         
         if(i%10 == 0) 
-        {            
-            reynolds_data.push_back(getReynolds(meins, prepro.getResolution()));
+        {
+            const double reynolds_tmp = getReynolds(meins, prepro.getResolution());            
+            // reynolds_data.push_back(getReynolds(meins, prepro.getResolution()));
+            reynolds_data.push_back(reynolds_tmp);
             write_data_plot(reynolds_data, 10, "ReynoldsPlot.dat");
+            if(reynolds_tmp < 0) 
+            {
+                cout <<"\nReynolds < 0, probably reached the top "<<endl;
+                break;
+            }
         }
 
         if(i%outputInterval == 0) 
