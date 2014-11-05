@@ -552,7 +552,7 @@ TEST(Lattice, assign){
     EXPECT_EQ(lBig,tmp);
 }
 
-TEST(Matrix,trafo){
+TEST(Matrix2D,trafo){
     const array2D verteilung = {{1,2,3,4,5,6,7,8,9}};
     const array2D vergleich = {{45,24,-12,-4,8,-12,0,-4,-4}};
 
@@ -561,7 +561,7 @@ TEST(Matrix,trafo){
     EXPECT_EQ(vergleich, trafo);
 }
 
-TEST(Matrix,backtrafo){
+TEST(Matrix2D,backtrafo){
     const array2D vergleich = {{1,2,3,4,5,6,7,8,9}};
     const array2D verteilung = {{45,24,-12,-4,8,-12,0,-4,-4}};
 
@@ -573,8 +573,8 @@ TEST(Matrix,backtrafo){
     }
 }
 
-TEST(Matrix,multiply){
-    const Matrix S(RelaxationPar(1,10,100));
+TEST(Matrix2D,multiply){
+    const Matrix2D S(RelaxationPar(1,10,100));
     const array2D f = {{1,2,3,4,5,6,7,8,9}};
     // const array2D vergleich = {{ -48, -382, 194, 18, -206, 418, -206, 18, 194}};
     const array2D vergleich = {{ 1, 2, 30, 4, 500, 6, 700, 8, 9}};
@@ -587,8 +587,8 @@ TEST(Matrix,multiply){
     }
 }
 
-TEST(Matrix,multiply_linewise){
-    const Matrix S(RelaxationPar(1,10,100));
+TEST(Matrix2D,multiply_linewise){
+    const Matrix2D S(RelaxationPar(1,10,100));
     const array2D f = {{1,2,3,4,5,6,7,8,9}};
     // const array2D vergleich = {{ -48, -382, 194, 18, -206, 418, -206, 18, 194}};
     const array2D vergleich = {{ 1, 2, 30, 4, 500, 6, 700, 8, 9}};
@@ -602,12 +602,12 @@ TEST(Matrix,multiply_linewise){
     }
 }
 
-TEST(Matrix,identity){
+TEST(Matrix2D,identity){
     const array2D f = {{1,2,3,4,5,6,7,8,9}};
     const array2D f0 = {{0,0,0,0,0,0,0,0,0}};
 
-    const Matrix Identity = Matrix(true);
-    const Matrix Zeros = Matrix();
+    const Matrix2D Identity = Matrix2D(true);
+    const Matrix2D Zeros = Matrix2D();
     array2D test;
 
     EXPECT_EQ(f, Identity * f);
@@ -619,8 +619,8 @@ TEST(Matrix,identity){
     EXPECT_EQ(f, test);
 }
 
-TEST(Matrix,plus_times){
-    const Matrix Identity = Matrix(true);
+TEST(Matrix2D,plus_times){
+    const Matrix2D Identity = Matrix2D(true);
     
     EXPECT_EQ(Identity+Identity, Identity*2);
 

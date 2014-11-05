@@ -4,7 +4,7 @@
 
 //=========================== LIFECYCLE ===========================
 
-Matrix::Matrix(bool identity):matrix(boost::extents[9][9])
+Matrix2D::Matrix2D(bool identity):matrix(boost::extents[9][9])
 {
     if (identity == true) {
         for(int i = 0;i<9;i++){
@@ -22,7 +22,7 @@ Matrix::Matrix(bool identity):matrix(boost::extents[9][9])
     }
 }
 
-Matrix::Matrix(const boost::multi_array<double,2> &m):matrix(boost::extents[9][9])
+Matrix2D::Matrix2D(const boost::multi_array<double,2> &m):matrix(boost::extents[9][9])
 {
     for(int i = 0;i<9;i++){
         for(int j=0;j<9;j++){
@@ -32,7 +32,7 @@ Matrix::Matrix(const boost::multi_array<double,2> &m):matrix(boost::extents[9][9
 }
 
 
-Matrix::Matrix(const RelaxationPar &relax, double omega):matrix(boost::extents[9][9])
+Matrix2D::Matrix2D(const RelaxationPar &relax, double omega):matrix(boost::extents[9][9])
 {
     for(int i = 0;i<9;i++){
         for(int j=0;j<9;j++){
@@ -50,14 +50,14 @@ Matrix::Matrix(const RelaxationPar &relax, double omega):matrix(boost::extents[9
     matrix[8][8] = omega;
 }
 
-Matrix::Matrix(const Matrix &other):matrix(boost::extents[9][9])
+Matrix2D::Matrix2D(const Matrix2D &other):matrix(boost::extents[9][9])
 {
     matrix = other.getData();
 }
 
 //=========================== OPERATORS ===========================
 
-const array2D Matrix::operator*(const array2D &other)const {
+const array2D Matrix2D::operator*(const array2D &other)const {
     array2D a;
 
     for (int i= 0; i<9;i++){
@@ -70,7 +70,7 @@ const array2D Matrix::operator*(const array2D &other)const {
     return a;
 }
 
-const DistributionSetType2D Matrix::operator*(const DistributionSetType2D &other)const {
+const DistributionSetType2D Matrix2D::operator*(const DistributionSetType2D &other)const {
     DistributionSetType2D a;
 
     a[0] = *this * other[0];
@@ -79,7 +79,7 @@ const DistributionSetType2D Matrix::operator*(const DistributionSetType2D &other
     return a;
 }
 
-const Matrix Matrix::operator*(double other)const{
+const Matrix2D Matrix2D::operator*(double other)const{
     boost::multi_array<double,2> m(boost::extents[9][9]);
 
     for(int i = 0;i<9;i++){
@@ -87,10 +87,10 @@ const Matrix Matrix::operator*(double other)const{
             m[i][j] = matrix[i][j] * other;
         }
     }
-    return Matrix(m);
+    return Matrix2D(m);
 }
 
-const Matrix Matrix::operator+(const Matrix &other)const{
+const Matrix2D Matrix2D::operator+(const Matrix2D &other)const{
     boost::multi_array<double,2> m(boost::extents[9][9]); 
     boost::multi_array<double,2> mother = other.getData();
 
@@ -99,10 +99,10 @@ const Matrix Matrix::operator+(const Matrix &other)const{
             m[i][j] = matrix[i][j] + mother[i][j];
         }
     }
-    return Matrix(m);
+    return Matrix2D(m);
 }
 
-const Matrix Matrix::operator-(const Matrix &other)const{
+const Matrix2D Matrix2D::operator-(const Matrix2D &other)const{
     boost::multi_array<double,2> m(boost::extents[9][9]); 
     boost::multi_array<double,2> mother = other.getData();
 
@@ -111,10 +111,10 @@ const Matrix Matrix::operator-(const Matrix &other)const{
             m[i][j] = matrix[i][j] - mother[i][j];
         }
     }
-    return Matrix(m);
+    return Matrix2D(m);
 }
 
-const bool Matrix::operator==(const Matrix &other)const{
+const bool Matrix2D::operator==(const Matrix2D &other)const{
     boost::multi_array<double,2> mother = other.getData();
     bool equal = false;
     if (matrix == mother) equal = true;
@@ -124,7 +124,7 @@ const bool Matrix::operator==(const Matrix &other)const{
 
 //=========================== OPERATIONS ===========================
 
-const double Matrix::linewise(const array2D &other, int line)const{
+const double Matrix2D::linewise(const array2D &other, int line)const{
     double sum = 0;
     for(int j = 0; j<9;j++){
         sum += other[j] * matrix[line][j];
@@ -134,7 +134,7 @@ const double Matrix::linewise(const array2D &other, int line)const{
 
 //=========================== ACCESSORS ===========================
 
-void Matrix::resetOmega(double omega){
+void Matrix2D::resetOmega(double omega){
     matrix[7][7] = omega;
     matrix[8][8] = omega;
 }
