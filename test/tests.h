@@ -173,7 +173,7 @@ TEST(Cell2D,Velo)
     Cell2D cell(fr,fb);
     cell.calcRho();
     ColSet rho = cell.getRho();
-    VeloSet v = cell.getU();
+    VeloSet2D v = cell.getU();
 
     Vector2D u = (v[0]*rho[0] + v[1]*rho[1]) * (1/sum(rho));
 
@@ -462,7 +462,7 @@ TEST(Lattice,collideSingle)
     double rho,usqr;
     cell.calcRho();
     rho = sum(cell.getRho());
-    VeloSet u = cell.getU();
+    VeloSet2D u = cell.getU();
     usqr = u[0]*u[0];
 
     EXPECT_DOUBLE_EQ(2.0,rho);
@@ -637,7 +637,7 @@ TEST(MRT,trafo){
     testCell.calcRho();
     ColSet rho = testCell.getRho();
 
-    VeloSet u = testCell.getU();
+    VeloSet2D u = testCell.getU();
     DistributionSetType2D fEq  = eqDistro(rho,u,phi);
     DistributionSetType2D vergleich;
     vergleich[0] = array2D_diff(f, fEq[0]);
@@ -664,7 +664,7 @@ TEST(MRT,mass){
     Cell2D testCell(f,f);
     testCell.calcRho();
     ColSet rho = testCell.getRho();
-    VeloSet u = testCell.getU();
+    VeloSet2D u = testCell.getU();
     DistributionSetType2D fEq  = eqDistro(rho,u,phi);
     array2D m = TRAFO_MATRIX * f;
     array2D mEq = TRAFO_MATRIX * fEq[0];

@@ -238,7 +238,7 @@ void write_techplot_output(const Lattice& l, int iterNum)
             tmp = l.getCell(i,j);
             tmp.calcRho();
             
-            VeloSet u = tmp.getU();
+            VeloSet2D u = tmp.getU();
             ColSet rho = tmp.getRho();
             Vector2D v;
             Vector2D gradient = l.getGradient(i, j);
@@ -289,7 +289,7 @@ void write_techplot_output_alternative(const Lattice& l, const string& filename)
             double psi = tmp.calcPsi();
             PsiFile << i << "\t" << j << "\t" << "0 \t" << psi ;
             
-            VeloSet u = tmp.getU();
+            VeloSet2D u = tmp.getU();
             ColSet rho = tmp.getRho();
             Vector2D v;
             Vector2D gradient = l.getGradient(i, j);
@@ -389,7 +389,7 @@ void write_vtk_output(const Lattice& l, const string& filename)
             tmp = l.getCell(i,j);
             tmp.calcRho();
 
-            VeloSet u = tmp.getU();
+            VeloSet2D u = tmp.getU();
             ColSet rho = tmp.getRho();
             VTKFile << u[0].x * rho[0] << " " << u[0].y * rho[0] << " 0 ";
         }
@@ -403,7 +403,7 @@ void write_vtk_output(const Lattice& l, const string& filename)
             tmp = l.getCell(i,j);
             tmp.calcRho();
 
-            VeloSet u = tmp.getU();
+            VeloSet2D u = tmp.getU();
             ColSet rho = tmp.getRho();
             VTKFile << u[1].x * rho[1] << " " << u[1].y * rho[1] << " 0 ";
         }

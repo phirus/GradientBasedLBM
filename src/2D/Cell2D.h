@@ -31,14 +31,14 @@ public:
     inline const DistributionSetType2D getF()const{return f;};
     inline const ColSet getRho()const{return rho;};
     inline const bool getIsSolid()const{return isSolid;};
-    inline const VeloSet getU()const{return u;};
+    inline const VeloSet2D getU()const{return u;};
     inline const double getDeltaRho()const{return delta;};  /// < returns rho_red - rho_blue
    
 
 private:
     DistributionSetType2D f;         /// < set of two distributions
     ColSet rho;                    /// < rho_r = rho[0], rho_b = rho[1]
-    VeloSet u;                      /// < velocity vector resultińg from the distribution
+    VeloSet2D u;                      /// < velocity vector resultińg from the distribution
     bool isSolid;                  /// < used to mark solid cells
     double delta;
 };

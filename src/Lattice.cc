@@ -49,7 +49,7 @@ void Lattice::equilibriumIni()
             tmp = (*data)[i][j];
             tmp.calcRho();
             ColSet rho = tmp.getRho();
-            VeloSet u = tmp.getU();
+            VeloSet2D u = tmp.getU();
             eqDis = eqDistro(rho,u,param.getPhi());
             tmp.setF(eqDis);
             (*data)[i][j] = tmp;
@@ -59,7 +59,7 @@ void Lattice::equilibriumIni()
 
 void Lattice::balance(double& mass, double& momentum)const
 {
-    VeloSet u;
+    VeloSet2D u;
     double rho;
 
     mass = 0;
@@ -210,7 +210,7 @@ bool Lattice::collideAll(int threads, bool gravity, bool isLimitActive)
                 const Vector2D G(0 ,  g*(rho - rho_k[0]));
                 // const Vector2D G(0 , - rho * g);
 
-                VeloSet u = tmpCell.getU();
+                VeloSet2D u = tmpCell.getU();
 
                 // if (isLimitActive == true)
                 // {
@@ -497,7 +497,7 @@ void Lattice::streamAndBouncePull(Cell2D& tCell, const direction2D& dir)const
 
 //=========================== OPERATIONS ===========================
 
-const DistributionSetType2D eqDistro(const ColSet& rho_k, const VeloSet& u, const DistributionSetType2D& phi)
+const DistributionSetType2D eqDistro(const ColSet& rho_k, const VeloSet2D& u, const DistributionSetType2D& phi)
 {
     DistributionSetType2D feq;
     Vector2D velo = (u[0] * rho_k[0] + u[1] * rho_k[1]) * (1.0 / (rho_k[0]+rho_k[1])) ;
@@ -514,7 +514,7 @@ const DistributionSetType2D eqDistro(const ColSet& rho_k, const VeloSet& u, cons
     return feq;
 }
 
-const DistributionSetType2D calculate_forcing_term(Vector2D G, VeloSet u)
+const DistributionSetType2D calculate_forcing_term(Vector2D G, VeloSet2D u)
 {
     DistributionSetType2D forcing_term;
     for (int i=0; i<9; i++)

@@ -63,8 +63,8 @@ private:
 };
 
 /// calculates the equilibrium distribution based of a cell
-const DistributionSetType2D eqDistro(const ColSet& rho_k, const VeloSet& u, const DistributionSetType2D& phi);
+const DistributionSetType2D eqDistro(const ColSet& rho_k, const VeloSet2D& u, const DistributionSetType2D& phi);
 
-const DistributionSetType2D calculate_forcing_term(Vector2D G, VeloSet u);
+const DistributionSetType2D calculate_forcing_term(Vector2D G, VeloSet2D u);
 
 #endif // LATTICE_H

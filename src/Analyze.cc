@@ -6,7 +6,7 @@ const double getBubbleVelocity(const Lattice& l)
     ColSet extent = l.getSize();
 
     Cell2D tmp_cell;
-    VeloSet tmp_velo;
+    VeloSet2D tmp_velo;
     ColSet tmp_rho;
     Vector2D momentum(0,0);
     double rho_sum(0);
