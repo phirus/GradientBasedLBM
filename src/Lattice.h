@@ -25,7 +25,7 @@ public:
     void balance(double& mass, double& momentum)const; /// < monitor overall mass and momentum
     void mass_balance(double& liquid_mass, double& gas_mass)const;
     void overallRho();
-    direction directions(int x, int y)const; /// < calculates positions of neighboring sites (periodical)
+    direction2D directions(int x, int y)const; /// < calculates positions of neighboring sites (periodical)
     const Vector2D getGradient(int x, int y)const; /// < calculates the color gradient on the position (y,x)
         
     /// LB steps
@@ -59,7 +59,7 @@ private:
     ParamSet param;     /// < set of parameters used during the simulation
 
     inline void linearIndex(int index, int& x, int& y)const;
-    void streamAndBouncePull(Cell2D& tCell, const direction& dir)const; /// < internal streaming mechanism with bounce back
+    void streamAndBouncePull(Cell2D& tCell, const direction2D& dir)const; /// < internal streaming mechanism with bounce back
 };
 
 /// calculates the equilibrium distribution based of a cell

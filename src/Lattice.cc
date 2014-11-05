@@ -108,9 +108,9 @@ void Lattice::overallRho()
     }
 }
 
-direction Lattice::directions(int x, int y)const
+direction2D Lattice::directions(int x, int y)const
 {
-    direction dir;
+    direction2D dir;
     int tmp;
     for (int q=0; q<13; q++)
     {
@@ -132,7 +132,7 @@ const Vector2D Lattice::getGradient(int x, int y)const
     Vector2D grad(0,0);
     double tmpDelta;
 
-    const direction dir = directions(x,y);
+    const direction2D dir = directions(x,y);
     for (int q=0;q<13;q++)
     {
         tmpDelta = GRAD_WEIGHTS[q] * (*data)[ dir[q].x ][ dir[q].y ].getDeltaRho();
@@ -156,7 +156,7 @@ void Lattice::streamAll(int threads)
         {
             int x,y;
             linearIndex(index,x,y);
-            const direction dir = directions(x,y);
+            const direction2D dir = directions(x,y);
             Cell2D tmpCell = (*data)[x][y];
 
             if (tmpCell.getIsSolid() == false) streamAndBouncePull(tmpCell,dir);
@@ -434,7 +434,7 @@ inline void Lattice::linearIndex(int index, int& x, int& y)const
     y = (index)/xsize;
 }
 
-void Lattice::streamAndBouncePull(Cell2D& tCell, const direction& dir)const
+void Lattice::streamAndBouncePull(Cell2D& tCell, const direction2D& dir)const
 {
     const DistributionSetType f = tCell.getF();
     DistributionSetType ftmp;

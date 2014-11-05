@@ -472,7 +472,7 @@ TEST(Lattice,collideSingle)
 TEST(Lattice, directions)
 {
     Lattice lattice(5,5);
-    direction dir = lattice.directions(0,0);
+    direction2D dir = lattice.directions(0,0);
 
     boost::array<int,13> x = {{0,1,1,0,4,4,4,0,1,2,0,3,0}};
     boost::array<int,13> y = {{0,0,1,1,1,0,4,4,4,0,2,0,3}};
