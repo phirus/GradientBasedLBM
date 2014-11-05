@@ -190,7 +190,7 @@ TEST(Cell2D,equal){
     three.setIsSolid(true);
     EXPECT_FALSE(one == three);
     array2D fr = {{2,3,0,5,0,0,0,0,0}};
-    DistributionSetType f = four.getF();
+    DistributionSetType2D f = four.getF();
     f[1] = fr;
     four.setF(f);
     EXPECT_FALSE(one == four);
@@ -233,13 +233,13 @@ TEST(Definitions,distro_add_array2D)
 {
     const array2D one = {{95, 4.9, -0.5, 0, -1.8, -100, 0.5, 0, 20}};
     const array2D zeros = {{0,0,0,0,0,0,0,0,0}};
-    DistributionSetType first = {{one, zeros}};
+    DistributionSetType2D first = {{one, zeros}};
 
     const array2D plus = {{5,   0.6, 1.9, -2, 1.8, 100, 0.5, 91.6, 25}};
     
     const array2D result = {{100, 5.5, 1.4, -2, 0, 0, 1, 91.6, 45}};
     
-    DistributionSetType vergleich = {{result, plus}};
+    DistributionSetType2D vergleich = {{result, plus}};
 
     EXPECT_EQ(vergleich, distro_add_array2D(first,plus));
 }
@@ -631,22 +631,22 @@ TEST(Matrix,plus_times){
 TEST(MRT,trafo){
     /// testet ob die Differenz im Geschw.-Raum gleich der Rücktransformierten Differenz im moment-Raum ist
     ParamSet param;
-    DistributionSetType phi = param.getPhi();
+    DistributionSetType2D phi = param.getPhi();
     const array2D f = {{1,2,3,4,5,6,7,8,9}};
     Cell2D testCell(f,f);
     testCell.calcRho();
     ColSet rho = testCell.getRho();
 
     VeloSet u = testCell.getU();
-    DistributionSetType fEq  = eqDistro(rho,u,phi);
-    DistributionSetType vergleich;
+    DistributionSetType2D fEq  = eqDistro(rho,u,phi);
+    DistributionSetType2D vergleich;
     vergleich[0] = array2D_diff(f, fEq[0]);
     vergleich[1] = array2D_diff(f, fEq[1]);
     array2D m = TRAFO_MATRIX * f;
-    DistributionSetType mEq;
+    DistributionSetType2D mEq;
     mEq[0] = TRAFO_MATRIX * fEq[0];
     mEq[1] = TRAFO_MATRIX * fEq[1];
-    DistributionSetType transformed;
+    DistributionSetType2D transformed;
     transformed[0] = INV_TRAFO_MATRIX * array2D_diff(m,mEq[0]);
     transformed[1] = INV_TRAFO_MATRIX * array2D_diff(m,mEq[1]);
 
@@ -659,13 +659,13 @@ TEST(MRT,trafo){
 
 TEST(MRT,mass){
     ParamSet param;
-    DistributionSetType phi = param.getPhi();
+    DistributionSetType2D phi = param.getPhi();
     const array2D f = {{1,2,3,4,5,6,7,8,9}};
     Cell2D testCell(f,f);
     testCell.calcRho();
     ColSet rho = testCell.getRho();
     VeloSet u = testCell.getU();
-    DistributionSetType fEq  = eqDistro(rho,u,phi);
+    DistributionSetType2D fEq  = eqDistro(rho,u,phi);
     array2D m = TRAFO_MATRIX * f;
     array2D mEq = TRAFO_MATRIX * fEq[0];
 
@@ -677,7 +677,7 @@ TEST(MRT,mass){
 TEST(ParamSet,Phi)
 {
     ParamSet param(1,1,1,1000);
-    DistributionSetType phi;
+    DistributionSetType2D phi;
     phi = param.getPhi();
 
     array2D phiR = {{0.9992, 1.6e-4, 4e-5, 1.6e-4, 4e-5, 1.6e-4, 4e-5, 1.6e-4, 4e-5}};

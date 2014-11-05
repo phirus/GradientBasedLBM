@@ -70,8 +70,8 @@ const array2D Matrix::operator*(const array2D &other)const {
     return a;
 }
 
-const DistributionSetType Matrix::operator*(const DistributionSetType &other)const {
-    DistributionSetType a;
+const DistributionSetType2D Matrix::operator*(const DistributionSetType2D &other)const {
+    DistributionSetType2D a;
 
     a[0] = *this * other[0];
     a[1] = *this * other[1];

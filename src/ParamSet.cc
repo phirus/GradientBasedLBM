@@ -24,9 +24,9 @@ relax(rel)
 
 //=========================== OPERATIONS ===========================
 
-const DistributionSetType ParamSet::getPhi()const
+const DistributionSetType2D ParamSet::getPhi()const
 {
-    DistributionSetType phi;
+    DistributionSetType2D phi;
     phi.at(0).at(0) = alphaRed;
     phi.at(1).at(0) = alphaBlue;
     for (int i = 1;i<9; i+=2)

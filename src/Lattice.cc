@@ -40,7 +40,7 @@ Lattice::~Lattice(){
 void Lattice::equilibriumIni()
 {
     Cell2D tmp;
-    DistributionSetType eqDis;
+    DistributionSetType2D eqDis;
 
     for (int j=0; j<ysize; j++)
     {
@@ -178,7 +178,7 @@ bool Lattice::collideAll(int threads, bool gravity, bool isLimitActive)
     omp_set_num_threads (threads);
 
     const double beta = param.getBeta();
-    const DistributionSetType phi = param.getPhi();
+    const DistributionSetType2D phi = param.getPhi();
     const int range = xsize * ysize;
     // const double rhoRedFixed = param.getRhoR();
     const RelaxationPar relax = param.getRelaxation();
@@ -201,8 +201,8 @@ bool Lattice::collideAll(int threads, bool gravity, bool isLimitActive)
 
             if (tmpCell.getIsSolid() == false)
             {
-                DistributionSetType  fTmp;
-                const DistributionSetType fCell = tmpCell.getF();
+                DistributionSetType2D  fTmp;
+                const DistributionSetType2D fCell = tmpCell.getF();
 
                 const ColSet rho_k = tmpCell.getRho();
                 const double rho = sum(rho_k);
@@ -230,17 +230,17 @@ bool Lattice::collideAll(int threads, bool gravity, bool isLimitActive)
                 u[1] = u[1] + G *  (dt/(2* rho)) ;
                 }
 
-                const DistributionSetType fEq = eqDistro(rho_k, u, phi);
-                const DistributionSetType diff = distro_diff(fCell, fEq);
+                const DistributionSetType2D fEq = eqDistro(rho_k, u, phi);
+                const DistributionSetType2D diff = distro_diff(fCell, fEq);
             
                 const double omega = param.getOmega(tmpCell.calcPsi());
                 const Matrix relaxation_matrix(relax,omega);
                 
                 const Matrix forcing_factor = Matrix(true) - (relaxation_matrix*0.5);    // (I - 0.5 S) -> ( 1 - 0.5 omega)
-                const DistributionSetType first_forcing_term = forcing_factor * (TRAFO_MATRIX * calculate_forcing_term(G,u)); // F' = (I - 0.5 S) M F
-                const DistributionSetType second_forcing_term = INV_TRAFO_MATRIX * first_forcing_term;    // M^{-1} F'
+                const DistributionSetType2D first_forcing_term = forcing_factor * (TRAFO_MATRIX * calculate_forcing_term(G,u)); // F' = (I - 0.5 S) M F
+                const DistributionSetType2D second_forcing_term = INV_TRAFO_MATRIX * first_forcing_term;    // M^{-1} F'
 
-                const DistributionSetType single_phase_col = INV_TRAFO_MATRIX * (relaxation_matrix * (TRAFO_MATRIX * diff));
+                const DistributionSetType2D single_phase_col = INV_TRAFO_MATRIX * (relaxation_matrix * (TRAFO_MATRIX * diff));
                           
                 const ColSet A_k = param.getAk(omega);
                 const Vector2D grad = getGradient(x,y);
@@ -376,14 +376,14 @@ void Lattice::setCell(int x, int y, const Cell2D& ncell)
 
 void Lattice::setF(int x, int y, int color, const array2D& nf)
 {
-    DistributionSetType f = (*data)[x][y].getF();
+    DistributionSetType2D f = (*data)[x][y].getF();
     f[color] = nf;
     (*data)[x][y].setF(f);
 }
 
 void Lattice::setF(int x, int y, int color, int pos, double value)
 {
-    DistributionSetType f = (*data)[x][y].getF();
+    DistributionSetType2D f = (*data)[x][y].getF();
     f[color][pos] = value;
     (*data)[x][y].setF(f);
 }
@@ -436,8 +436,8 @@ inline void Lattice::linearIndex(int index, int& x, int& y)const
 
 void Lattice::streamAndBouncePull(Cell2D& tCell, const direction2D& dir)const
 {
-    const DistributionSetType f = tCell.getF();
-    DistributionSetType ftmp;
+    const DistributionSetType2D f = tCell.getF();
+    DistributionSetType2D ftmp;
     for (int color = 0; color<=1;color++)
     {
         ftmp[color][0] = (*data)[ dir[0].x ][ dir[0].y ].getF()[color][0];
@@ -497,9 +497,9 @@ void Lattice::streamAndBouncePull(Cell2D& tCell, const direction2D& dir)const
 
 //=========================== OPERATIONS ===========================
 
-const DistributionSetType eqDistro(const ColSet& rho_k, const VeloSet& u, const DistributionSetType& phi)
+const DistributionSetType2D eqDistro(const ColSet& rho_k, const VeloSet& u, const DistributionSetType2D& phi)
 {
-    DistributionSetType feq;
+    DistributionSetType2D feq;
     Vector2D velo = (u[0] * rho_k[0] + u[1] * rho_k[1]) * (1.0 / (rho_k[0]+rho_k[1])) ;
     double usqr = velo*velo;
    
@@ -514,9 +514,9 @@ const DistributionSetType eqDistro(const ColSet& rho_k, const VeloSet& u, const 
     return feq;
 }
 
-const DistributionSetType calculate_forcing_term(Vector2D G, VeloSet u)
+const DistributionSetType2D calculate_forcing_term(Vector2D G, VeloSet u)
 {
-    DistributionSetType forcing_term;
+    DistributionSetType2D forcing_term;
     for (int i=0; i<9; i++)
     {
         forcing_term[0][i] = 0;

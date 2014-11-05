@@ -39,7 +39,7 @@ Cell2D::Cell2D(const array2D& finiDense, const array2D& finiDilute):isSolid(fals
     u[1].y = 0;
 }
 
-Cell2D::Cell2D(const DistributionSetType& newF):isSolid(false),delta(0)
+Cell2D::Cell2D(const DistributionSetType2D& newF):isSolid(false),delta(0)
 {
     f.at(0) = newF.at(0);
     f.at(1) = newF.at(1);
@@ -63,7 +63,7 @@ const bool Cell2D::operator==(const Cell2D& other)const {
     ColSet rhoOther = other.getRho();
     if(rho[0] != rhoOther[0] || rho[1] != rhoOther[1]) exit = false;
 
-    DistributionSetType fOther = other.getF();
+    DistributionSetType2D fOther = other.getF();
     for(int color=0; color <2; color++){
         for(int q=0;q<9;q++){
             if(f[color][q] != fOther[color][q]) exit = false;

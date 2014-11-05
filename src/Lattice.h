@@ -41,7 +41,7 @@ public:
     const field getData()const{return *data;}; /// < get the data field
     const Cell2D getCell(int x, int y)const{return (*data)[x][y];};  /// < get a Cell
     const ParamSet getParams()const{return param;}; /// < get the paramter set
-    const DistributionSetType getF(int x, int y)const{return (*data)[x][y].getF();};          /// < get F
+    const DistributionSetType2D getF(int x, int y)const{return (*data)[x][y].getF();};          /// < get F
 
     void setData(const field& ndata, int x, int y); /// < set the data field (and size)
     void setCell(int y, int x, const Cell2D& ncell);    /// < set a Cell
@@ -63,8 +63,8 @@ private:
 };
 
 /// calculates the equilibrium distribution based of a cell
-const DistributionSetType eqDistro(const ColSet& rho_k, const VeloSet& u, const DistributionSetType& phi);
+const DistributionSetType2D eqDistro(const ColSet& rho_k, const VeloSet& u, const DistributionSetType2D& phi);
 
-const DistributionSetType calculate_forcing_term(Vector2D G, VeloSet u);
+const DistributionSetType2D calculate_forcing_term(Vector2D G, VeloSet u);
 
 #endif // LATTICE_H
