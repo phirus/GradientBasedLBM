@@ -6,7 +6,7 @@
 #ifndef CELL2D_H
 #define CELL2D_H
 
-#include"../Constants.h"
+#include"Constants2D.h"
 using namespace std;
 
 class Cell2D

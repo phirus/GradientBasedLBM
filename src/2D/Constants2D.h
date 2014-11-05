@@ -1,8 +1,8 @@
-#ifndef CONSTANTS_H
-#define CONSTANTS_H
+#ifndef CONSTANTS2D_H
+#define CONSTANTS2D_H
 
-#include"2D/Matrix2D.h"
-#include"2D/Definitions2D.h"
+#include"Matrix2D.h"
+#include"Definitions2D.h"
 
 /// contains constants
 
