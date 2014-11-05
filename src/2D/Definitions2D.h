@@ -1,9 +1,9 @@
-#ifndef DEFINITIONS_H
-#define DEFINITIONS_H
+#ifndef DEFINITIONS2D_H
+#define DEFINITIONS2D_H
 
 #include<boost/array.hpp>
 #include<boost/multi_array.hpp>
-#include"2D/Vector2D.h"
+#include"Vector2D.h"
 
 /// contains custom typedefs
 //=========================== TYPES ===========================

@@ -4,7 +4,7 @@
 #ifndef MATRIX_H
 #define MATRIX_H
 
-#include"Definitions.h"
+#include"2D/Definitions2D.h"
 
 class Matrix
 {
