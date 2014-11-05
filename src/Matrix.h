@@ -16,7 +16,7 @@ class Matrix
         Matrix(const Matrix &other);
 
          /// operators
-        const array operator*(const array &other) const;
+        const array2D operator*(const array2D &other) const;
         const DistributionSetType operator*(const DistributionSetType &other) const;
         const Matrix operator*(double other)const;
         const Matrix operator+(const Matrix &other)const;
@@ -24,7 +24,7 @@ class Matrix
         const bool operator==(const Matrix &other)const;       
         
         /// operations
-        const double linewise(const array &oher, int line) const;
+        const double linewise(const array2D &other, int line) const;
         
         /// accessors
         inline const boost::multi_array<double,2> getData()const{return matrix;};

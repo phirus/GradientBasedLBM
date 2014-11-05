@@ -45,7 +45,7 @@ public:
 
     void setData(const field& ndata, int x, int y); /// < set the data field (and size)
     void setCell(int y, int x, const Cell2D& ncell);    /// < set a Cell
-    void setF(int x, int y, int color, const array& nf);
+    void setF(int x, int y, int color, const array2D& nf);
     void setF(int x, int y, int color, int index, double value);
     void setParams(const ParamSet& newParam){param = newParam;}; /// < set a new parameter set
     

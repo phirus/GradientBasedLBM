@@ -374,7 +374,7 @@ void Lattice::setCell(int x, int y, const Cell2D& ncell)
     if (y >= 0 && y < ysize && x >= 0 && x < xsize) (*data)[x][y] = ncell;
 }
 
-void Lattice::setF(int x, int y, int color, const array& nf)
+void Lattice::setF(int x, int y, int color, const array2D& nf)
 {
     DistributionSetType f = (*data)[x][y].getF();
     f[color] = nf;

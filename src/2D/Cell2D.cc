@@ -25,7 +25,7 @@ Cell2D::Cell2D(double fzero_dense, double fzero_dilute, bool solid):isSolid(soli
 }
 
 // like a copy constructor for the bulk phase
-Cell2D::Cell2D(const array& finiDense, const array& finiDilute):isSolid(false),delta(0)
+Cell2D::Cell2D(const array2D& finiDense, const array2D& finiDilute):isSolid(false),delta(0)
 {
     f.at(0) = finiDense;
     f.at(1) = finiDilute;

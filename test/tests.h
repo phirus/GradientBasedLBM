@@ -54,7 +54,7 @@ TEST(BinaryIO,restart){
 
 TEST(Cell2D,constructor0)
 {
-    array f = {{1,0,0,0,0,0,0,0,0}};
+    array2D f = {{1,0,0,0,0,0,0,0,0}};
     Cell2D cell;
     EXPECT_EQ(f,cell.getF()[0]);
     EXPECT_FALSE(cell.getIsSolid());
@@ -63,7 +63,7 @@ TEST(Cell2D,constructor0)
 
 TEST(Cell2D,constructorRed1)
 {
-    array f = {{1,0,0,0,0,0,0,0,0}};
+    array2D f = {{1,0,0,0,0,0,0,0,0}};
     Cell2D cell(1,0);
     EXPECT_EQ(f,cell.getF()[0]);
     EXPECT_FALSE(cell.getIsSolid());
@@ -75,7 +75,7 @@ TEST(Cell2D,constructorRed1)
 
 TEST(Cell2D,constructorBlue1)
 {
-    array f = {{1,0,0,0,0,0,0,0,0}};
+    array2D f = {{1,0,0,0,0,0,0,0,0}};
     Cell2D cell(0,1);
     EXPECT_EQ(f,cell.getF()[1]);
     EXPECT_FALSE(cell.getIsSolid());
@@ -87,7 +87,7 @@ TEST(Cell2D,constructorBlue1)
 
 TEST(Cell2D,constructorRed2)
 {
-    array f = {{0,0,0,0,0,0,0,0,0}};
+    array2D f = {{0,0,0,0,0,0,0,0,0}};
     Cell2D cell(0,0);
     EXPECT_EQ(f,cell.getF()[0]);
     EXPECT_FALSE(cell.getIsSolid());
@@ -99,7 +99,7 @@ TEST(Cell2D,constructorRed2)
 
 TEST(Cell2D,constructorBlue2)
 {
-    array f = {{0,0,0,0,0,0,0,0,0}};
+    array2D f = {{0,0,0,0,0,0,0,0,0}};
     Cell2D cell(0,0);
     EXPECT_EQ(f,cell.getF()[1]);
     EXPECT_FALSE(cell.getIsSolid());
@@ -117,8 +117,8 @@ TEST(Cell2D,constructorSolid)
 
 TEST(Cell2D,constructorIni)
 {
-    array f1 = {{4,2,5.4,0,1,12,6,7,8}};
-    array f2 = {{1,2,3,4,5,6,7,8,9}};
+    array2D f1 = {{4,2,5.4,0,1,12,6,7,8}};
+    array2D f2 = {{1,2,3,4,5,6,7,8,9}};
     Cell2D cell(f1,f2);
     EXPECT_EQ(f1,cell.getF()[0]);
     EXPECT_EQ(f2,cell.getF()[1]);
@@ -127,8 +127,8 @@ TEST(Cell2D,constructorIni)
 
 TEST(Cell2D,rho)
 {
-    array f1 = {{10,20,30,40,50,60,70,80,90}};
-    array f2 = {{1,2,3,4,5,6,7,8,9}};
+    array2D f1 = {{10,20,30,40,50,60,70,80,90}};
+    array2D f2 = {{1,2,3,4,5,6,7,8,9}};
     Cell2D cell(f1,f2);
     EXPECT_EQ(0,cell.getRho()[0]);
     EXPECT_EQ(0,cell.getRho()[1]);
@@ -143,8 +143,8 @@ TEST(Cell2D,rho)
 
 TEST(Cell2D,Psi1)
 {
-    array f1 = {{10,20,30,40,50,60,70,80,90}}; //450
-    array f2 = {{1,2,3,4,10,6,7,8,9}}; //50
+    array2D f1 = {{10,20,30,40,50,60,70,80,90}}; //450
+    array2D f2 = {{1,2,3,4,10,6,7,8,9}}; //50
     Cell2D cell(f1,f2);
     EXPECT_DOUBLE_EQ(0,cell.calcPsi());
     cell.calcRho();
@@ -153,8 +153,8 @@ TEST(Cell2D,Psi1)
 
 TEST(Cell2D,Psi2)
 {
-    array f1 = {{10,20,30,40,50,60,70,80,90}}; //450
-    array f2 = {{0,0,0,0,0,0,0,0,}}; //0
+    array2D f1 = {{10,20,30,40,50,60,70,80,90}}; //450
+    array2D f2 = {{0,0,0,0,0,0,0,0,}}; //0
     Cell2D cell(f1,f2);
     cell.calcRho();
     EXPECT_DOUBLE_EQ(1, cell.calcPsi());
@@ -165,8 +165,8 @@ TEST(Cell2D,Psi2)
 
 TEST(Cell2D,Velo)
 {
-    array fr = {{2,3,0,5,0,0,0,0,0}};
-    array fb = {{0,0,1,0,0,4,1,4,0}};
+    array2D fr = {{2,3,0,5,0,0,0,0,0}};
+    array2D fb = {{0,0,1,0,0,4,1,4,0}};
 
     double usqr;
 
@@ -189,7 +189,7 @@ TEST(Cell2D,equal){
     EXPECT_EQ(one,two);
     three.setIsSolid(true);
     EXPECT_FALSE(one == three);
-    array fr = {{2,3,0,5,0,0,0,0,0}};
+    array2D fr = {{2,3,0,5,0,0,0,0,0}};
     DistributionSetType f = four.getF();
     f[1] = fr;
     four.setF(f);
@@ -218,37 +218,37 @@ TEST(Constants,Xi)
     EXPECT_DOUBLE_EQ(1,GRAD_WEIGHTS.at(9)*120);
 }
 
-TEST(Definitions,array_diff_add)
+TEST(Definitions,array2D_diff_add)
 {
-    const array one = {{100, 5.5, 1.4, -2, 0, 0, 1, 91.6, 45}};
-    const array two = {{5,   0.6, 1.9, -2, 1.8, 100, 0.5, 91.6, 25}};
-    const array vergleich = {{95, 4.9, -0.5, 0, -1.8, -100, 0.5, 0, 20}};
+    const array2D one = {{100, 5.5, 1.4, -2, 0, 0, 1, 91.6, 45}};
+    const array2D two = {{5,   0.6, 1.9, -2, 1.8, 100, 0.5, 91.6, 25}};
+    const array2D vergleich = {{95, 4.9, -0.5, 0, -1.8, -100, 0.5, 0, 20}};
 
-    EXPECT_EQ (vergleich, array_diff(one, two));
-    EXPECT_EQ (one, array_add(vergleich, two));
-    EXPECT_EQ (one, array_add(two, vergleich));
+    EXPECT_EQ (vergleich, array2D_diff(one, two));
+    EXPECT_EQ (one, array2D_add(vergleich, two));
+    EXPECT_EQ (one, array2D_add(two, vergleich));
 }
 
-TEST(Definitions,distro_add_array)
+TEST(Definitions,distro_add_array2D)
 {
-    const array one = {{95, 4.9, -0.5, 0, -1.8, -100, 0.5, 0, 20}};
-    const array zeros = {{0,0,0,0,0,0,0,0,0}};
+    const array2D one = {{95, 4.9, -0.5, 0, -1.8, -100, 0.5, 0, 20}};
+    const array2D zeros = {{0,0,0,0,0,0,0,0,0}};
     DistributionSetType first = {{one, zeros}};
 
-    const array plus = {{5,   0.6, 1.9, -2, 1.8, 100, 0.5, 91.6, 25}};
+    const array2D plus = {{5,   0.6, 1.9, -2, 1.8, 100, 0.5, 91.6, 25}};
     
-    const array result = {{100, 5.5, 1.4, -2, 0, 0, 1, 91.6, 45}};
+    const array2D result = {{100, 5.5, 1.4, -2, 0, 0, 1, 91.6, 45}};
     
     DistributionSetType vergleich = {{result, plus}};
 
-    EXPECT_EQ(vergleich, distro_add_array(first,plus));
+    EXPECT_EQ(vergleich, distro_add_array2D(first,plus));
 }
 
-TEST(Definitions,array_times)
+TEST(Definitions,array2D_times)
 {
-    const array one = {{100, 5, 14, -2, 0, 0, 1, 916, 45}};
-    const array vergleich = {{110, 5.5, 15.4, -2.2, 0, 0, 1.1, 1007.6, 49.5}};
-    const array result = array_times(one, 1.1);
+    const array2D one = {{100, 5, 14, -2, 0, 0, 1, 916, 45}};
+    const array2D vergleich = {{110, 5.5, 15.4, -2.2, 0, 0, 1.1, 1007.6, 49.5}};
+    const array2D result = array2D_times(one, 1.1);
 
     for(int i=0;i<9;i++){
         EXPECT_DOUBLE_EQ (vergleich[i], result[i]);
@@ -267,14 +267,14 @@ TEST(Lattice,stream)
 {
     Lattice lattice(3,3,0,0);
 
-    array f1 = {{0,1,0,0,0,0,0,0,0}};
-    array f2 = {{0,0,1,0,0,0,0,0,0}};
-    array f3 = {{0,0,0,1,0,0,0,0,0}};
-    array f4 = {{0,0,0,0,1,0,0,0,0}};
-    array f5 = {{0,0,0,0,0,1,0,0,0}};
-    array f6 = {{0,0,0,0,0,0,1,0,0}};
-    array f7 = {{0,0,0,0,0,0,0,1,0}};
-    array f8 = {{0,0,0,0,0,0,0,0,1}};
+    array2D f1 = {{0,1,0,0,0,0,0,0,0}};
+    array2D f2 = {{0,0,1,0,0,0,0,0,0}};
+    array2D f3 = {{0,0,0,1,0,0,0,0,0}};
+    array2D f4 = {{0,0,0,0,1,0,0,0,0}};
+    array2D f5 = {{0,0,0,0,0,1,0,0,0}};
+    array2D f6 = {{0,0,0,0,0,0,1,0,0}};
+    array2D f7 = {{0,0,0,0,0,0,0,1,0}};
+    array2D f8 = {{0,0,0,0,0,0,0,0,1}};
 
     lattice.setF(0,0,0,f2);
     lattice.setF(1,0,0,f3);
@@ -285,7 +285,7 @@ TEST(Lattice,stream)
     lattice.setF(1,2,0,f7);
     lattice.setF(2,2,0,f6);
 
-    array fcenter = {{0,1,1,1,1,1,1,1,1}};
+    array2D fcenter = {{0,1,1,1,1,1,1,1,1}};
     lattice.setF(1,1,1,fcenter);
 
     lattice.streamAll();
@@ -307,8 +307,8 @@ TEST(Lattice,bounceSmall)
     Lattice lattice(3,3,0,0);
     lattice.closedBox();
 
-    array fcenter = {{0,1,1,1,1,1,1,1,1}};
-    array fzero = {{0,0,0,0,0,0,0,0,0}};
+    array2D fcenter = {{0,1,1,1,1,1,1,1,1}};
+    array2D fzero = {{0,0,0,0,0,0,0,0,0}};
 
     lattice.setF(1,1,0,fcenter);
     lattice.setF(1,1,1,fcenter);
@@ -345,14 +345,14 @@ TEST(Lattice,bounceClosed)
     Cell2D tmp = lattice.getCell(2,2);
     EXPECT_EQ(true,tmp.getIsSolid());
 
-    const array f1 = {{0,1,0,0,0,0,0,0,0}};
-    const array f2 = {{0,0,1,0,0,0,0,0,0}};
-    const array f3 = {{0,0,0,1,0,0,0,0,0}};
-    const array f4 = {{0,0,0,0,1,0,0,0,0}};
-    const array f5 = {{0,0,0,0,0,1,0,0,0}};
-    const array f6 = {{0,0,0,0,0,0,1,0,0}};
-    const array f7 = {{0,0,0,0,0,0,0,1,0}};
-    const array f8 = {{0,0,0,0,0,0,0,0,1}};
+    const array2D f1 = {{0,1,0,0,0,0,0,0,0}};
+    const array2D f2 = {{0,0,1,0,0,0,0,0,0}};
+    const array2D f3 = {{0,0,0,1,0,0,0,0,0}};
+    const array2D f4 = {{0,0,0,0,1,0,0,0,0}};
+    const array2D f5 = {{0,0,0,0,0,1,0,0,0}};
+    const array2D f6 = {{0,0,0,0,0,0,1,0,0}};
+    const array2D f7 = {{0,0,0,0,0,0,0,1,0}};
+    const array2D f8 = {{0,0,0,0,0,0,0,0,1}};
 
     lattice.setF(1,1,0,f2);
     lattice.setF(2,1,0,f3);
@@ -397,7 +397,7 @@ TEST(Lattice,bounceClosed2)
 {
     Lattice lattice(5,5,0,0);
     lattice.closedBox();
-    array fcenter = {{0,1,1,1,1,1,1,1,1}};
+    array2D fcenter = {{0,1,1,1,1,1,1,1,1}};
     lattice.setF(2,2,0,fcenter);
     lattice.setF(2,2,1,fcenter);
     lattice.streamAll();
@@ -411,7 +411,7 @@ TEST(Lattice,bounceClosed2)
 TEST(Lattice,periodic)
 {
     Lattice lattice(5,5,0,0);
-    array fcenter = {{0,1,1,1,1,1,1,1,1}};
+    array2D fcenter = {{0,1,1,1,1,1,1,1,1}};
     lattice.setF(2,2,0,fcenter);
     lattice.setF(2,2,1,fcenter);
 
@@ -433,7 +433,7 @@ TEST(Lattice,streamRho)
     Lattice lattice(5,5,0,0);
     lattice.closedBox();
 
-    array fcenter = {{0,1,1,1,1,1,1,1,1}};
+    array2D fcenter = {{0,1,1,1,1,1,1,1,1}};
     lattice.setF(2,2,0,fcenter);
     lattice.setF(2,2,1,fcenter);
     lattice.streamAll();
@@ -485,7 +485,7 @@ TEST(Lattice, directions)
 TEST(Lattice, Gradient)
 {
     Lattice lattice(5,5,0,0);
-    array f = {{1,0,0,0,0,0,0,0,0}};
+    array2D f = {{1,0,0,0,0,0,0,0,0}};
 
     for (int i=0; i<5; i++)
     {
@@ -553,19 +553,19 @@ TEST(Lattice, assign){
 }
 
 TEST(Matrix,trafo){
-    const array verteilung = {{1,2,3,4,5,6,7,8,9}};
-    const array vergleich = {{45,24,-12,-4,8,-12,0,-4,-4}};
+    const array2D verteilung = {{1,2,3,4,5,6,7,8,9}};
+    const array2D vergleich = {{45,24,-12,-4,8,-12,0,-4,-4}};
 
-    array trafo = TRAFO_MATRIX * verteilung;
+    array2D trafo = TRAFO_MATRIX * verteilung;
 
     EXPECT_EQ(vergleich, trafo);
 }
 
 TEST(Matrix,backtrafo){
-    const array vergleich = {{1,2,3,4,5,6,7,8,9}};
-    const array verteilung = {{45,24,-12,-4,8,-12,0,-4,-4}};
+    const array2D vergleich = {{1,2,3,4,5,6,7,8,9}};
+    const array2D verteilung = {{45,24,-12,-4,8,-12,0,-4,-4}};
 
-    array backtrafo = INV_TRAFO_MATRIX * verteilung;
+    array2D backtrafo = INV_TRAFO_MATRIX * verteilung;
 
     for(int i = 0; i<9;i++)
     {
@@ -575,11 +575,11 @@ TEST(Matrix,backtrafo){
 
 TEST(Matrix,multiply){
     const Matrix S(RelaxationPar(1,10,100));
-    const array f = {{1,2,3,4,5,6,7,8,9}};
-    // const array vergleich = {{ -48, -382, 194, 18, -206, 418, -206, 18, 194}};
-    const array vergleich = {{ 1, 2, 30, 4, 500, 6, 700, 8, 9}};
+    const array2D f = {{1,2,3,4,5,6,7,8,9}};
+    // const array2D vergleich = {{ -48, -382, 194, 18, -206, 418, -206, 18, 194}};
+    const array2D vergleich = {{ 1, 2, 30, 4, 500, 6, 700, 8, 9}};
 
-    array test = S*f;
+    array2D test = S*f;
 
     for(int i = 0; i<9;i++)
     {
@@ -589,11 +589,11 @@ TEST(Matrix,multiply){
 
 TEST(Matrix,multiply_linewise){
     const Matrix S(RelaxationPar(1,10,100));
-    const array f = {{1,2,3,4,5,6,7,8,9}};
-    // const array vergleich = {{ -48, -382, 194, 18, -206, 418, -206, 18, 194}};
-    const array vergleich = {{ 1, 2, 30, 4, 500, 6, 700, 8, 9}};
+    const array2D f = {{1,2,3,4,5,6,7,8,9}};
+    // const array2D vergleich = {{ -48, -382, 194, 18, -206, 418, -206, 18, 194}};
+    const array2D vergleich = {{ 1, 2, 30, 4, 500, 6, 700, 8, 9}};
 
-    array test;
+    array2D test;
 
     for(int i = 0; i<9;i++)
     {
@@ -603,12 +603,12 @@ TEST(Matrix,multiply_linewise){
 }
 
 TEST(Matrix,identity){
-    const array f = {{1,2,3,4,5,6,7,8,9}};
-    const array f0 = {{0,0,0,0,0,0,0,0,0}};
+    const array2D f = {{1,2,3,4,5,6,7,8,9}};
+    const array2D f0 = {{0,0,0,0,0,0,0,0,0}};
 
     const Matrix Identity = Matrix(true);
     const Matrix Zeros = Matrix();
-    array test;
+    array2D test;
 
     EXPECT_EQ(f, Identity * f);
     EXPECT_EQ(f0, Zeros * f);
@@ -632,7 +632,7 @@ TEST(MRT,trafo){
     /// testet ob die Differenz im Geschw.-Raum gleich der Rücktransformierten Differenz im moment-Raum ist
     ParamSet param;
     DistributionSetType phi = param.getPhi();
-    const array f = {{1,2,3,4,5,6,7,8,9}};
+    const array2D f = {{1,2,3,4,5,6,7,8,9}};
     Cell2D testCell(f,f);
     testCell.calcRho();
     ColSet rho = testCell.getRho();
@@ -640,15 +640,15 @@ TEST(MRT,trafo){
     VeloSet u = testCell.getU();
     DistributionSetType fEq  = eqDistro(rho,u,phi);
     DistributionSetType vergleich;
-    vergleich[0] = array_diff(f, fEq[0]);
-    vergleich[1] = array_diff(f, fEq[1]);
-    array m = TRAFO_MATRIX * f;
+    vergleich[0] = array2D_diff(f, fEq[0]);
+    vergleich[1] = array2D_diff(f, fEq[1]);
+    array2D m = TRAFO_MATRIX * f;
     DistributionSetType mEq;
     mEq[0] = TRAFO_MATRIX * fEq[0];
     mEq[1] = TRAFO_MATRIX * fEq[1];
     DistributionSetType transformed;
-    transformed[0] = INV_TRAFO_MATRIX * array_diff(m,mEq[0]);
-    transformed[1] = INV_TRAFO_MATRIX * array_diff(m,mEq[1]);
+    transformed[0] = INV_TRAFO_MATRIX * array2D_diff(m,mEq[0]);
+    transformed[1] = INV_TRAFO_MATRIX * array2D_diff(m,mEq[1]);
 
     for(int i = 0; i<9;i++)
     {
@@ -660,14 +660,14 @@ TEST(MRT,trafo){
 TEST(MRT,mass){
     ParamSet param;
     DistributionSetType phi = param.getPhi();
-    const array f = {{1,2,3,4,5,6,7,8,9}};
+    const array2D f = {{1,2,3,4,5,6,7,8,9}};
     Cell2D testCell(f,f);
     testCell.calcRho();
     ColSet rho = testCell.getRho();
     VeloSet u = testCell.getU();
     DistributionSetType fEq  = eqDistro(rho,u,phi);
-    array m = TRAFO_MATRIX * f;
-    array mEq = TRAFO_MATRIX * fEq[0];
+    array2D m = TRAFO_MATRIX * f;
+    array2D mEq = TRAFO_MATRIX * fEq[0];
 
     EXPECT_DOUBLE_EQ(m[0],mEq[0]);
     EXPECT_DOUBLE_EQ(m[3],mEq[3]);
@@ -680,8 +680,8 @@ TEST(ParamSet,Phi)
     DistributionSetType phi;
     phi = param.getPhi();
 
-    array phiR = {{0.9992, 1.6e-4, 4e-5, 1.6e-4, 4e-5, 1.6e-4, 4e-5, 1.6e-4, 4e-5}};
-    array phiB = {{0.2,0.16,0.04,0.16,0.04,0.16,0.04,0.16,0.04}};
+    array2D phiR = {{0.9992, 1.6e-4, 4e-5, 1.6e-4, 4e-5, 1.6e-4, 4e-5, 1.6e-4, 4e-5}};
+    array2D phiB = {{0.2,0.16,0.04,0.16,0.04,0.16,0.04,0.16,0.04}};
 
     for(int q=0;q<9;q++)
     {

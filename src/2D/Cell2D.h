@@ -14,7 +14,7 @@ class Cell2D
 public:
     /// Lifecylce
     Cell2D(double fzero_dense=1, double fzero_dilute=1, bool solid = false); /// < construcor
-    Cell2D(const array& finiDense,const array& finiDilute); // constr
+    Cell2D(const array2D& finiDense,const array2D& finiDilute); // constr
     Cell2D(const DistributionSetType& newF); // constr
 
     /// operators

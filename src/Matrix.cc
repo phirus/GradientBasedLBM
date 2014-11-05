@@ -57,8 +57,8 @@ Matrix::Matrix(const Matrix &other):matrix(boost::extents[9][9])
 
 //=========================== OPERATORS ===========================
 
-const array Matrix::operator*(const array &other)const {
-    array a;
+const array2D Matrix::operator*(const array2D &other)const {
+    array2D a;
 
     for (int i= 0; i<9;i++){
         double sum = 0;
@@ -124,7 +124,7 @@ const bool Matrix::operator==(const Matrix &other)const{
 
 //=========================== OPERATIONS ===========================
 
-const double Matrix::linewise(const array &other, int line)const{
+const double Matrix::linewise(const array2D &other, int line)const{
     double sum = 0;
     for(int j = 0; j<9;j++){
         sum += other[j] * matrix[line][j];
