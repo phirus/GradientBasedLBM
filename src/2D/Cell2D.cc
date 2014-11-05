@@ -92,10 +92,10 @@ void Cell2D::calcRho()
         {
             rho[0] += f[0][i];
             rho[1] += f[1][i];
-            u[0].x += ( f[0][i]) * DIRECTION[i].x;
-            u[0].y += ( f[0][i]) * DIRECTION[i].y;
-            u[1].x += ( f[1][i] ) * DIRECTION[i].x;
-            u[1].y += ( f[1][i] ) * DIRECTION[i].y;
+            u[0].x += ( f[0][i]) * DIRECTION_2D[i].x;
+            u[0].y += ( f[0][i]) * DIRECTION_2D[i].y;
+            u[1].x += ( f[1][i] ) * DIRECTION_2D[i].x;
+            u[1].y += ( f[1][i] ) * DIRECTION_2D[i].y;
         }
 
         delta = rho[0]-rho[1];

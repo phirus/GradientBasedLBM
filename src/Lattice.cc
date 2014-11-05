@@ -114,12 +114,12 @@ direction2D Lattice::directions(int x, int y)const
     int tmp;
     for (int q=0; q<13; q++)
     {
-        tmp = x + DIRECTION[q].x;
+        tmp = x + DIRECTION_2D[q].x;
         if (tmp<0) tmp += xsize;
         if (tmp>= xsize) tmp -= xsize;
         dir[q].x = tmp;
 
-        tmp = y + DIRECTION[q].y;
+        tmp = y + DIRECTION_2D[q].y;
         if (tmp<0) tmp += ysize;
         if (tmp>= ysize) tmp -= ysize;
         dir[q].y = tmp;
@@ -135,9 +135,9 @@ const Vector2D Lattice::getGradient(int x, int y)const
     const direction2D dir = directions(x,y);
     for (int q=0;q<13;q++)
     {
-        tmpDelta = GRAD_WEIGHTS[q] * (*data)[ dir[q].x ][ dir[q].y ].getDeltaRho();
-        grad.x += DIRECTION[q].x * tmpDelta;
-        grad.y += DIRECTION[q].y * tmpDelta;
+        tmpDelta = GRAD_WEIGHTS_2D[q] * (*data)[ dir[q].x ][ dir[q].y ].getDeltaRho();
+        grad.x += DIRECTION_2D[q].x * tmpDelta;
+        grad.y += DIRECTION_2D[q].y * tmpDelta;
     }
     return grad;
 }
@@ -254,10 +254,10 @@ bool Lattice::collideAll(int threads, bool gravity, bool isLimitActive)
                 for (int q=0; q<9; q++)
                 {
                     // gradient based two phase
-                    scal = grad*DIRECTION[q];
+                    scal = grad*DIRECTION_2D[q];
 
                     double gradient_collision(0);
-                    if (av > 0 ) gradient_collision = av/2 * (WEIGHTS[q] * ( scal*scal )/(av*av) - B[q]);
+                    if (av > 0 ) gradient_collision = av/2 * (WEIGHTS_2D[q] * ( scal*scal )/(av*av) - B_2D[q]);
 
                     for (int color=0;color<=1; color++)
                     {
@@ -275,7 +275,7 @@ bool Lattice::collideAll(int threads, bool gravity, bool isLimitActive)
                     fges = fTmp[0][q]+fTmp[1][q];
 
                     // recoloring
-                    if (rho > 0) recolor = beta * (rho_k[0] * rho_k[1])/(rho*rho) *  grad.Angle(DIRECTION[q])   * (rho_k[0] * phi.at(0).at(q) + rho_k[1] * phi.at(1).at(q)); 
+                    if (rho > 0) recolor = beta * (rho_k[0] * rho_k[1])/(rho*rho) *  grad.Angle(DIRECTION_2D[q])   * (rho_k[0] * phi.at(0).at(q) + rho_k[1] * phi.at(1).at(q)); 
                     else recolor = 0;
 
                     if (rho > 0)
@@ -505,10 +505,10 @@ const DistributionSetType2D eqDistro(const ColSet& rho_k, const VeloSet2D& u, co
    
     for (int i=0; i<9; i++)
     {
-        double scal = velo*DIRECTION[i];
+        double scal = velo*DIRECTION_2D[i];
         for (int color = 0; color<=1; color++)
         {
-            feq[color][i] = rho_k[color] * ( phi[color][i] + WEIGHTS[i] * ( 3 * scal + 4.5 * (scal*scal) - 1.5 * usqr));
+            feq[color][i] = rho_k[color] * ( phi[color][i] + WEIGHTS_2D[i] * ( 3 * scal + 4.5 * (scal*scal) - 1.5 * usqr));
         }
     }
     return feq;
@@ -520,7 +520,7 @@ const DistributionSetType2D calculate_forcing_term(Vector2D G, VeloSet2D u)
     for (int i=0; i<9; i++)
     {
         forcing_term[0][i] = 0;
-        forcing_term[1][i] = WEIGHTS[i] * (G * ( DIRECTION[i] * (DIRECTION[i] * u[1]) + DIRECTION[i] - u[1])) ;
+        forcing_term[1][i] = WEIGHTS_2D[i] * (G * ( DIRECTION_2D[i] * (DIRECTION_2D[i] * u[1]) + DIRECTION_2D[i] - u[1])) ;
     }
     return forcing_term;
 }
