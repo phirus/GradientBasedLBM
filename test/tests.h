@@ -6,6 +6,8 @@
 #include"../src/2D/Vector2D.h"
 #include"../src/BinaryIO.h"
 
+#include"../src/3D/Vector3D.h"
+
 using namespace std;
 
 TEST(BinaryIO,output){
@@ -830,5 +832,32 @@ TEST(Vector2D,angle){
     EXPECT_DOUBLE_EQ(1,g1.Angle(g2));
     EXPECT_DOUBLE_EQ(0,g1.Angle(DIRECTION_2D[0]));
 }
+
+TEST(Vector3D,scalar){
+    Vector3D v0, v1(1,2,3), v2(4,5,6), v3(-1,-20,100);
+    EXPECT_DOUBLE_EQ(0, v0*v1);
+    EXPECT_DOUBLE_EQ(0, v2*v0);
+    EXPECT_DOUBLE_EQ(32, v1*v2);
+    EXPECT_DOUBLE_EQ(32, v2*v1);
+    EXPECT_DOUBLE_EQ(259, v1*v3);
+}
+
+// TEST(Vector2D,angle){
+//     Vector2D g(1,1);
+
+//     EXPECT_DOUBLE_EQ(0, g.Angle(DIRECTION_2D[0]));
+//     EXPECT_DOUBLE_EQ(cos(PI/4), g.Angle(DIRECTION_2D[1]));
+//     EXPECT_DOUBLE_EQ(1, g.Angle(DIRECTION_2D[2]));
+//     EXPECT_DOUBLE_EQ(cos(PI/4), g.Angle(DIRECTION_2D[3]));
+//     EXPECT_DOUBLE_EQ(0, g.Angle(DIRECTION_2D[4]));
+//     EXPECT_DOUBLE_EQ(-cos(PI/4), g.Angle(DIRECTION_2D[5]));
+//     EXPECT_DOUBLE_EQ(-1, g.Angle(DIRECTION_2D[6]));
+//     EXPECT_DOUBLE_EQ(-cos(PI/4), g.Angle(DIRECTION_2D[7]));
+//     EXPECT_DOUBLE_EQ(0, g.Angle(DIRECTION_2D[8]));
+
+//     Vector2D g1(1e-10, -1e-10), g2(1e-6, -1e-6);
+//     EXPECT_DOUBLE_EQ(1,g1.Angle(g2));
+//     EXPECT_DOUBLE_EQ(0,g1.Angle(DIRECTION_2D[0]));
+// }
 
 #endif

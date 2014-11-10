@@ -4,7 +4,7 @@
 
 //=========================== OPERATIONS ===========================
 
-const double Vector::Angle(const Vector& other)const
+const double Vector3D::Angle(const Vector3D& other)const
 {
     double av1 = Abs();
     double av2 = other.Abs();
