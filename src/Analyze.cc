@@ -1,6 +1,6 @@
 #include"Analyze.h"
 
-const double getBubbleVelocity(const Lattice& l)
+const double getBubbleVelocity(const Lattice2D& l)
 {
     field2D data = l.getData();
     ColSet extent = l.getSize();
@@ -69,7 +69,7 @@ const double getReynolds(const ParamSet& params, double velocity, double resolut
     return reynolds;
 }
 
-const double getReynolds(const Lattice& l, double resolution)
+const double getReynolds(const Lattice2D& l, double resolution)
 {
     const ParamSet params = l.getParams();
     const double velocity = getBubbleVelocity(l);

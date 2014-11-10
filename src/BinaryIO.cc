@@ -2,7 +2,7 @@
 
 //=========================== BINARY DUMP ===========================
 
-void write_binary(const Lattice& l, const string& filename){
+void write_binary(const Lattice2D& l, const string& filename){
 
     // setting up the file name
     stringstream name;
@@ -29,7 +29,7 @@ void write_binary(const Lattice& l, const string& filename){
     file.close();
 }
 
-const bool read_binary(Lattice& outL, const string& filename){
+const bool read_binary(Lattice2D& outL, const string& filename){
     bool success;
 
     // setting up file
@@ -64,7 +64,7 @@ const bool read_binary(Lattice& outL, const string& filename){
 
 //=========================== RESTART FILES ===========================
 
-void write_restart_file(const Lattice& l, const Preprocess& p, const Timetrack time, const string& filename){
+void write_restart_file(const Lattice2D& l, const Preprocess& p, const Timetrack time, const string& filename){
 
     // setting up the file name
     stringstream name;
@@ -129,7 +129,7 @@ void write_restart_file(const Lattice& l, const Preprocess& p, const Timetrack t
     file.close();
 }
 
-const bool read_restart_file(Lattice& outL, Preprocess& p, Timetrack& t, const string& filename)
+const bool read_restart_file(Lattice2D& outL, Preprocess& p, Timetrack& t, const string& filename)
 {
     bool success;
 
@@ -201,7 +201,7 @@ const bool read_restart_file(Lattice& outL, Preprocess& p, Timetrack& t, const s
 
 //=========================== WRITE OUTPUT ===========================
 
-void write_techplot_output(const Lattice& l, int iterNum)
+void write_techplot_output(const Lattice2D& l, int iterNum)
 {
     ofstream PsiFile;
     Cell2D tmp;
@@ -250,7 +250,7 @@ void write_techplot_output(const Lattice& l, int iterNum)
     PsiFile.close();
 }
 
-void write_techplot_output_alternative(const Lattice& l, const string& filename)
+void write_techplot_output_alternative(const Lattice2D& l, const string& filename)
 {
     ofstream PsiFile;
     Cell2D tmp;
@@ -309,7 +309,7 @@ void write_techplot_output_alternative(const Lattice& l, const string& filename)
     PsiFile.close();
 }
 
-void write_vtk_output(const Lattice& l, const string& filename)
+void write_vtk_output(const Lattice2D& l, const string& filename)
 {
     ofstream VTKFile;
     Cell2D tmp;
@@ -325,7 +325,7 @@ void write_vtk_output(const Lattice& l, const string& filename)
     VTKFile.open(filename.c_str());
 
     VTKFile << "# vtk DataFile Version 3.1" << endl;
-    VTKFile << "Lattice Boltzmann data" << endl;
+    VTKFile << "Lattice2D Boltzmann data" << endl;
     VTKFile << "ASCII" << endl;
     VTKFile << "DATASET UNSTRUCTURED_GRID" << endl;
 

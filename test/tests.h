@@ -2,16 +2,16 @@
 #define TESTS_H
 
 #include"gtest/gtest.h"
-#include"../src/Lattice.h"
+#include"../src/2D/Lattice2D.h"
 #include"../src/2D/Vector2D.h"
 #include"../src/BinaryIO.h"
 
 using namespace std;
 
 TEST(BinaryIO,output){
-    Lattice lattice(150,150);
+    Lattice2D lattice(150,150);
     write_binary(lattice);
-    Lattice vergleich;
+    Lattice2D vergleich;
     EXPECT_FALSE(read_binary(vergleich,"existiertnicht.txt"));
     EXPECT_TRUE(read_binary(vergleich));
     EXPECT_EQ(lattice,vergleich);
@@ -35,7 +35,7 @@ TEST(BinaryIO,queryTest){
 }
 
 TEST(BinaryIO,restart){
-    Lattice lattice(150,150);
+    Lattice2D lattice(150,150);
 
     Timetrack time(2e5,100,1000);
     time.timestep();
@@ -43,7 +43,7 @@ TEST(BinaryIO,restart){
     Preprocess newProcess = read_preprocess_file("preprocessFile");
     write_restart_file(lattice, newProcess,time);
     
-    Lattice vergleichL;
+    Lattice2D vergleichL;
     Preprocess vergleichP;
     Timetrack vergleichT;
     EXPECT_TRUE(read_restart_file(vergleichL,vergleichP,vergleichT));
@@ -255,17 +255,17 @@ TEST(Definitions,array2D_times)
     }    
 }
 
-TEST(Lattice,constructor)
+TEST(Lattice2D,constructor)
 {
-    const Lattice lattice;
+    const Lattice2D lattice;
     EXPECT_EQ(10, lattice.getSize()[1]);
     EXPECT_EQ(10, lattice.getSize()[0]);
     EXPECT_EQ(1,lattice.getF(1,1)[0][0]);
 }
 
-TEST(Lattice,stream)
+TEST(Lattice2D,stream)
 {
-    Lattice lattice(3,3,0,0);
+    Lattice2D lattice(3,3,0,0);
 
     array2D f1 = {{0,1,0,0,0,0,0,0,0}};
     array2D f2 = {{0,0,1,0,0,0,0,0,0}};
@@ -302,9 +302,9 @@ TEST(Lattice,stream)
     EXPECT_EQ(f2,lattice.getF(2,2)[1]);
 }
 
-TEST(Lattice,bounceSmall)
+TEST(Lattice2D,bounceSmall)
 {
-    Lattice lattice(3,3,0,0);
+    Lattice2D lattice(3,3,0,0);
     lattice.closedBox();
 
     array2D fcenter = {{0,1,1,1,1,1,1,1,1}};
@@ -337,9 +337,9 @@ TEST(Lattice,bounceSmall)
     EXPECT_EQ(fcenter,lattice.getF(1,1)[1]);
 }
 
-TEST(Lattice,bounceClosed)
+TEST(Lattice2D,bounceClosed)
 {
-    Lattice lattice(5,5,0,0);
+    Lattice2D lattice(5,5,0,0);
     lattice.closedBox();
     lattice.setCell(2,2,Cell2D(0,0,true));
     Cell2D tmp = lattice.getCell(2,2);
@@ -393,9 +393,9 @@ TEST(Lattice,bounceClosed)
     EXPECT_EQ(f2,lattice.getF(3,3)[1]);
 }
 
-TEST(Lattice,bounceClosed2)
+TEST(Lattice2D,bounceClosed2)
 {
-    Lattice lattice(5,5,0,0);
+    Lattice2D lattice(5,5,0,0);
     lattice.closedBox();
     array2D fcenter = {{0,1,1,1,1,1,1,1,1}};
     lattice.setF(2,2,0,fcenter);
@@ -408,9 +408,9 @@ TEST(Lattice,bounceClosed2)
     EXPECT_EQ(fcenter,lattice.getF(2,2)[1]);
 }
 
-TEST(Lattice,periodic)
+TEST(Lattice2D,periodic)
 {
-    Lattice lattice(5,5,0,0);
+    Lattice2D lattice(5,5,0,0);
     array2D fcenter = {{0,1,1,1,1,1,1,1,1}};
     lattice.setF(2,2,0,fcenter);
     lattice.setF(2,2,1,fcenter);
@@ -426,11 +426,11 @@ TEST(Lattice,periodic)
     EXPECT_EQ(fcenter,lattice.getF(2,2)[1]);
 }
 
-TEST(Lattice,streamRho)
+TEST(Lattice2D,streamRho)
 {
     Cell2D tmp;
 
-    Lattice lattice(5,5,0,0);
+    Lattice2D lattice(5,5,0,0);
     lattice.closedBox();
 
     array2D fcenter = {{0,1,1,1,1,1,1,1,1}};
@@ -452,9 +452,9 @@ TEST(Lattice,streamRho)
     EXPECT_EQ(1,tmp.getRho()[1]);
 }
 
-TEST(Lattice,collideSingle)
+TEST(Lattice2D,collideSingle)
 {
-    Lattice lattice(5,5,1,1);
+    Lattice2D lattice(5,5,1,1);
     lattice.closedBox();
 
     lattice.collideAll();
@@ -469,9 +469,9 @@ TEST(Lattice,collideSingle)
     EXPECT_NEAR(0,usqr,1e-10);
 }
 
-TEST(Lattice, directions)
+TEST(Lattice2D, directions)
 {
-    Lattice lattice(5,5);
+    Lattice2D lattice(5,5);
     direction2D dir = lattice.directions(0,0);
 
     boost::array<int,13> x = {{0,1,1,0,4,4,4,0,1,2,0,3,0}};
@@ -482,9 +482,9 @@ TEST(Lattice, directions)
     }
 }
 
-TEST(Lattice, Gradient)
+TEST(Lattice2D, Gradient)
 {
-    Lattice lattice(5,5,0,0);
+    Lattice2D lattice(5,5,0,0);
     array2D f = {{1,0,0,0,0,0,0,0,0}};
 
     for (int i=0; i<5; i++)
@@ -515,9 +515,9 @@ TEST(Lattice, Gradient)
     EXPECT_DOUBLE_EQ(0,grad.y); // x-Richung
 }
 
-TEST(Lattice,collisionBalanceAll)
+TEST(Lattice2D,collisionBalanceAll)
 {
-    Lattice lattice(5,5,1,1);
+    Lattice2D lattice(5,5,1,1);
     lattice.closedBox();
     double mass, momentum;
 
@@ -539,15 +539,15 @@ TEST(Lattice,collisionBalanceAll)
     EXPECT_NEAR(0,momentum,1e-10);
 }
 
-TEST(Lattice, copy_constr){
-    Lattice lBig(100,20);
-    Lattice tmp(lBig);
+TEST(Lattice2D, copy_constr){
+    Lattice2D lBig(100,20);
+    Lattice2D tmp(lBig);
     EXPECT_EQ(lBig,tmp);
 }
 
-TEST(Lattice, assign){ 
-    Lattice lBig(100,20);
-    Lattice tmp;
+TEST(Lattice2D, assign){ 
+    Lattice2D lBig(100,20);
+    Lattice2D tmp;
     tmp = lBig;
     EXPECT_EQ(lBig,tmp);
 }

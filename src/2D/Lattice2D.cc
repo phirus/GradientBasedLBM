@@ -1,10 +1,10 @@
-#include"Lattice.h"
+#include"Lattice2D.h"
 
 ///////////////////////////// PUBLIC /////////////////////////////
 
 //=========================== LIFECYCLE ===========================
 
-Lattice::Lattice(int x_size, int y_size,double fzero_dense, double fzero_dilute):
+Lattice2D::Lattice2D(int x_size, int y_size,double fzero_dense, double fzero_dilute):
 
 xsize(x_size)
 ,ysize(y_size)
@@ -20,7 +20,7 @@ xsize(x_size)
     }
 }
 
-Lattice::Lattice(const Lattice& other):
+Lattice2D::Lattice2D(const Lattice2D& other):
 xsize(other.getSize()[0])
 ,ysize(other.getSize()[1])
 ,data(new field2D(boost::extents[xsize][ysize]))
@@ -30,14 +30,14 @@ xsize(other.getSize()[0])
 }
 
 
-Lattice::~Lattice(){
+Lattice2D::~Lattice2D(){
     delete data;
     data = NULL;
 }
 
 //=========================== OPERATIONS ===========================
 
-void Lattice::equilibriumIni()
+void Lattice2D::equilibriumIni()
 {
     Cell2D tmp;
     DistributionSetType2D eqDis;
@@ -57,7 +57,7 @@ void Lattice::equilibriumIni()
     }
 }
 
-void Lattice::balance(double& mass, double& momentum)const
+void Lattice2D::balance(double& mass, double& momentum)const
 {
     VeloSet2D u;
     double rho;
@@ -79,7 +79,7 @@ void Lattice::balance(double& mass, double& momentum)const
     }
 }
 
-void Lattice::mass_balance(double& liquid_mass, double& gas_mass)const
+void Lattice2D::mass_balance(double& liquid_mass, double& gas_mass)const
 {
     ColSet rho;
     liquid_mass = 0;
@@ -97,7 +97,7 @@ void Lattice::mass_balance(double& liquid_mass, double& gas_mass)const
     }
 }
 
-void Lattice::overallRho()
+void Lattice2D::overallRho()
 {
     for (int j=0; j<ysize; j++)
     {
@@ -108,7 +108,7 @@ void Lattice::overallRho()
     }
 }
 
-direction2D Lattice::directions(int x, int y)const
+direction2D Lattice2D::directions(int x, int y)const
 {
     direction2D dir;
     int tmp;
@@ -127,7 +127,7 @@ direction2D Lattice::directions(int x, int y)const
     return dir;
 }
 
-const Vector2D Lattice::getGradient(int x, int y)const
+const Vector2D Lattice2D::getGradient(int x, int y)const
 {
     Vector2D grad(0,0);
     double tmpDelta;
@@ -142,7 +142,7 @@ const Vector2D Lattice::getGradient(int x, int y)const
     return grad;
 }
 
-void Lattice::streamAll(int threads)
+void Lattice2D::streamAll(int threads)
 {
     field2D *newData = new field2D(boost::extents[xsize][ysize]);
 
@@ -170,7 +170,7 @@ void Lattice::streamAll(int threads)
     data = newData;
 }
 
-bool Lattice::collideAll(int threads, bool gravity, bool isLimitActive)
+bool Lattice2D::collideAll(int threads, bool gravity, bool isLimitActive)
 {
     bool success(true);
     field2D *newData = new field2D(boost::extents[xsize][ysize]);
@@ -312,7 +312,7 @@ bool Lattice::collideAll(int threads, bool gravity, bool isLimitActive)
     return success;
 }
 
-void Lattice::closedBox()
+void Lattice2D::closedBox()
 {
     const Cell2D wall(0,0,true);
 
@@ -336,7 +336,7 @@ void Lattice::closedBox()
     }
 }
 
-void Lattice::bottomWall()
+void Lattice2D::bottomWall()
 {
     const Cell2D wall(0,0,true);
 
@@ -356,32 +356,32 @@ void Lattice::bottomWall()
 
 //=========================== ACCESSORS ===========================
 
-const ColSet Lattice::getSize()const
+const ColSet Lattice2D::getSize()const
 {
     ColSet pony = {{xsize, ysize}};
     return pony;
 }
 
-void Lattice::setData(const field2D& ndata, int x, int y){
+void Lattice2D::setData(const field2D& ndata, int x, int y){
     data->resize(boost::extents[x][y]);
     *data = ndata;
     xsize = x;
     ysize = y;
 }
 
-void Lattice::setCell(int x, int y, const Cell2D& ncell)
+void Lattice2D::setCell(int x, int y, const Cell2D& ncell)
 {
     if (y >= 0 && y < ysize && x >= 0 && x < xsize) (*data)[x][y] = ncell;
 }
 
-void Lattice::setF(int x, int y, int color, const array2D& nf)
+void Lattice2D::setF(int x, int y, int color, const array2D& nf)
 {
     DistributionSetType2D f = (*data)[x][y].getF();
     f[color] = nf;
     (*data)[x][y].setF(f);
 }
 
-void Lattice::setF(int x, int y, int color, int pos, double value)
+void Lattice2D::setF(int x, int y, int color, int pos, double value)
 {
     DistributionSetType2D f = (*data)[x][y].getF();
     f[color][pos] = value;
@@ -390,14 +390,14 @@ void Lattice::setF(int x, int y, int color, int pos, double value)
 
 //=========================== OPERATOR ===========================
 
-Lattice& Lattice::operator=(const Lattice& other){
+Lattice2D& Lattice2D::operator=(const Lattice2D& other){
     this->setData(other.getData(), other.getSize()[0], other.getSize()[1]);
     this->setParams(other.getParams());
 
     return *this;
 }
 
-const bool Lattice::operator==(const Lattice& other)const
+const bool Lattice2D::operator==(const Lattice2D& other)const
 {
     bool exit = true;
     ColSet extent = other.getSize();
@@ -428,13 +428,13 @@ const bool Lattice::operator==(const Lattice& other)const
 
 //=========================== OPERATIONS ===========================
 
-inline void Lattice::linearIndex(int index, int& x, int& y)const
+inline void Lattice2D::linearIndex(int index, int& x, int& y)const
 {
     x = (index)%xsize;
     y = (index)/xsize;
 }
 
-void Lattice::streamAndBouncePull(Cell2D& tCell, const direction2D& dir)const
+void Lattice2D::streamAndBouncePull(Cell2D& tCell, const direction2D& dir)const
 {
     const DistributionSetType2D f = tCell.getF();
     DistributionSetType2D ftmp;
