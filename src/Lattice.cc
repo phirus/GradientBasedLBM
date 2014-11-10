@@ -8,7 +8,7 @@ Lattice::Lattice(int x_size, int y_size,double fzero_dense, double fzero_dilute)
 
 xsize(x_size)
 ,ysize(y_size)
-,data(new field(boost::extents[xsize][ysize]))
+,data(new field2D(boost::extents[xsize][ysize]))
 ,param()
 {
     for (int x = 0; x<xsize; x++)
@@ -23,7 +23,7 @@ xsize(x_size)
 Lattice::Lattice(const Lattice& other):
 xsize(other.getSize()[0])
 ,ysize(other.getSize()[1])
-,data(new field(boost::extents[xsize][ysize]))
+,data(new field2D(boost::extents[xsize][ysize]))
 ,param(other.getParams())
 {
     (*data) = other.getData();
@@ -144,7 +144,7 @@ const Vector2D Lattice::getGradient(int x, int y)const
 
 void Lattice::streamAll(int threads)
 {
-    field *newData = new field(boost::extents[xsize][ysize]);
+    field2D *newData = new field2D(boost::extents[xsize][ysize]);
 
     omp_set_num_threads (threads);
     const int range = xsize * ysize;
@@ -173,7 +173,7 @@ void Lattice::streamAll(int threads)
 bool Lattice::collideAll(int threads, bool gravity, bool isLimitActive)
 {
     bool success(true);
-    field *newData = new field(boost::extents[xsize][ysize]);
+    field2D *newData = new field2D(boost::extents[xsize][ysize]);
 
     omp_set_num_threads (threads);
 
@@ -362,7 +362,7 @@ const ColSet Lattice::getSize()const
     return pony;
 }
 
-void Lattice::setData(const field& ndata, int x, int y){
+void Lattice::setData(const field2D& ndata, int x, int y){
     data->resize(boost::extents[x][y]);
     *data = ndata;
     xsize = x;
@@ -406,7 +406,7 @@ const bool Lattice::operator==(const Lattice& other)const
         ParamSet pOther = other.getParams();
         if (!(param == pOther)) exit = false;
 
-        field otherData = other.getData();
+        field2D otherData = other.getData();
         for (int x = 0; x< xsize;x++)
         {
             for (int y = 0; y<ysize;y++)

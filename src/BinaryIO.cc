@@ -19,7 +19,7 @@ void write_binary(const Lattice& l, const string& filename){
     ParamSet param = l.getParams();
     file.write(reinterpret_cast<char*> (&param), sizeof param);
 
-    field data = l.getData();
+    field2D data = l.getData();
 
     for (int x = 0; x<extent[0];x++){
         for (int y = 0; y<extent[1];y++){
@@ -46,7 +46,7 @@ const bool read_binary(Lattice& outL, const string& filename){
         file.read((char*) &param, sizeof param);
 
         Cell2D tmpCell;
-        field data(boost::extents[extent[0]][extent[1]]);
+        field2D data(boost::extents[extent[0]][extent[1]]);
         for(int x = 0; x<extent[0];x++){
             for(int y=0;y<extent[1];y++){
                 file.read((char*) &tmpCell, sizeof(Cell2D));
@@ -82,7 +82,7 @@ void write_restart_file(const Lattice& l, const Preprocess& p, const Timetrack t
     file.write(reinterpret_cast<char*> (&param), sizeof param);
 
     // write the velocity distributions
-    field data = l.getData();
+    field2D data = l.getData();
     for (int x = 0; x<extent[0];x++){
         for (int y = 0; y<extent[1];y++){
             file.write(reinterpret_cast<char*> (&data[x][y]), sizeof(Cell2D));
@@ -147,7 +147,7 @@ const bool read_restart_file(Lattice& outL, Preprocess& p, Timetrack& t, const s
         file.read((char*) &param, sizeof param);
 
         Cell2D tmpCell;
-        field data(boost::extents[extent[0]][extent[1]]);
+        field2D data(boost::extents[extent[0]][extent[1]]);
         for(int x = 0; x<extent[0];x++){
             for(int y=0;y<extent[1];y++){
                 file.read((char*) &tmpCell, sizeof(Cell2D));
