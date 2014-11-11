@@ -1,7 +1,6 @@
 #ifndef DEFINITIONS2D_H
 #define DEFINITIONS2D_H
 
-#include<boost/array.hpp>
 #include<boost/multi_array.hpp>
 #include"Vector2D.h"
 #include"../Constants_basic.h"
@@ -29,32 +28,32 @@ struct Interpol
 //=========================== FUNCTIONS ===========================
 
 /// functions handling basic operations on arrays
-const array2D array2D_diff(const array2D &one, const array2D &two);
-const array2D array2D_add(const array2D &one, const array2D &two);
-const array2D array2D_times(const array2D &foo, double factor);
+const array2D array_diff_2D(const array2D &one, const array2D &two);
+const array2D array_add_2D(const array2D &one, const array2D &two);
+const array2D array_times_2D(const array2D &foo, double factor);
 
 /// translating array functions to distribution sets 
-inline const DistributionSetType2D distro_diff(const DistributionSetType2D &one, const DistributionSetType2D &two)
+inline const DistributionSetType2D distro_diff_2D(const DistributionSetType2D &one, const DistributionSetType2D &two)
 {
-    const DistributionSetType2D diff = {{array2D_diff(one[0],two[0]), array2D_diff(one[1],two[1])}};
+    const DistributionSetType2D diff = {{array_diff_2D(one[0],two[0]), array_diff_2D(one[1],two[1])}};
     return diff;
 };
 
-inline const DistributionSetType2D distro_add(const DistributionSetType2D &one, const DistributionSetType2D &two)
+inline const DistributionSetType2D distro_add_2D(const DistributionSetType2D &one, const DistributionSetType2D &two)
 {
-    const DistributionSetType2D foo = {{array2D_add(one[0],two[0]),array2D_add(one[1],two[1])}};
+    const DistributionSetType2D foo = {{array_add_2D(one[0],two[0]),array_add_2D(one[1],two[1])}};
     return foo;
 };
 
-inline const DistributionSetType2D distro_add_array2D(const DistributionSetType2D &one, const array2D &two)
+inline const DistributionSetType2D distro_add_array_2D(const DistributionSetType2D &one, const array2D &two)
 {
-    const DistributionSetType2D foo = {{array2D_add(one[0],two), array2D_add(one[1],two)}};
+    const DistributionSetType2D foo = {{array_add_2D(one[0],two), array_add_2D(one[1],two)}};
     return foo;
 };
 
-inline const DistributionSetType2D distro_times(const DistributionSetType2D &one, double factor)
+inline const DistributionSetType2D distro_times_2D(const DistributionSetType2D &one, double factor)
 {
-    const DistributionSetType2D foo = {{array2D_times(one[0],factor), array2D_times(one[1],factor)}};    
+    const DistributionSetType2D foo = {{array_times_2D(one[0],factor), array_times_2D(one[1],factor)}};    
     return foo;
 };
 

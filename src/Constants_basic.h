@@ -1,6 +1,7 @@
 #ifndef CONSTANTSBASIC_H
 #define CONSTANTSBASIC_H
 
+#include<boost/array.hpp>
 
 //=========================== CONSTANTS ===========================
 
@@ -18,6 +19,5 @@ typedef boost::array<double,2> ColSet;         /// < simple 2d vector
 
 /// sums up all elements
 inline const double sum(const ColSet& vector){return vector[0] + vector[1] ;};
-
 
 #endif

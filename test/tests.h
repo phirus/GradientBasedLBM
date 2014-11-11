@@ -226,9 +226,9 @@ TEST(Definitions,array2D_diff_add)
     const array2D two = {{5,   0.6, 1.9, -2, 1.8, 100, 0.5, 91.6, 25}};
     const array2D vergleich = {{95, 4.9, -0.5, 0, -1.8, -100, 0.5, 0, 20}};
 
-    EXPECT_EQ (vergleich, array2D_diff(one, two));
-    EXPECT_EQ (one, array2D_add(vergleich, two));
-    EXPECT_EQ (one, array2D_add(two, vergleich));
+    EXPECT_EQ (vergleich, array_diff_2D(one, two));
+    EXPECT_EQ (one, array_add_2D(vergleich, two));
+    EXPECT_EQ (one, array_add_2D(two, vergleich));
 }
 
 TEST(Definitions,distro_add_array2D)
@@ -243,14 +243,14 @@ TEST(Definitions,distro_add_array2D)
     
     DistributionSetType2D vergleich = {{result, plus}};
 
-    EXPECT_EQ(vergleich, distro_add_array2D(first,plus));
+    EXPECT_EQ(vergleich, distro_add_array_2D(first,plus));
 }
 
 TEST(Definitions,array2D_times)
 {
     const array2D one = {{100, 5, 14, -2, 0, 0, 1, 916, 45}};
     const array2D vergleich = {{110, 5.5, 15.4, -2.2, 0, 0, 1.1, 1007.6, 49.5}};
-    const array2D result = array2D_times(one, 1.1);
+    const array2D result = array_times_2D(one, 1.1);
 
     for(int i=0;i<9;i++){
         EXPECT_DOUBLE_EQ (vergleich[i], result[i]);
@@ -642,15 +642,15 @@ TEST(MRT,trafo){
     VeloSet2D u = testCell.getU();
     DistributionSetType2D fEq  = eqDistro(rho,u,phi);
     DistributionSetType2D vergleich;
-    vergleich[0] = array2D_diff(f, fEq[0]);
-    vergleich[1] = array2D_diff(f, fEq[1]);
+    vergleich[0] = array_diff_2D(f, fEq[0]);
+    vergleich[1] = array_diff_2D(f, fEq[1]);
     array2D m = TRAFO_MATRIX * f;
     DistributionSetType2D mEq;
     mEq[0] = TRAFO_MATRIX * fEq[0];
     mEq[1] = TRAFO_MATRIX * fEq[1];
     DistributionSetType2D transformed;
-    transformed[0] = INV_TRAFO_MATRIX * array2D_diff(m,mEq[0]);
-    transformed[1] = INV_TRAFO_MATRIX * array2D_diff(m,mEq[1]);
+    transformed[0] = INV_TRAFO_MATRIX * array_diff_2D(m,mEq[0]);
+    transformed[1] = INV_TRAFO_MATRIX * array_diff_2D(m,mEq[1]);
 
     for(int i = 0; i<9;i++)
     {

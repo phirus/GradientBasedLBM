@@ -231,7 +231,7 @@ bool Lattice2D::collideAll(int threads, bool gravity, bool isLimitActive)
                 }
 
                 const DistributionSetType2D fEq = eqDistro(rho_k, u, phi);
-                const DistributionSetType2D diff = distro_diff(fCell, fEq);
+                const DistributionSetType2D diff = distro_diff_2D(fCell, fEq);
             
                 const double omega = param.getOmega(tmpCell.calcPsi());
                 const Matrix2D relaxation_matrix(relax,omega);
