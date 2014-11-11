@@ -6,7 +6,7 @@
 #include"../src/2D/Vector2D.h"
 #include"../src/BinaryIO.h"
 
-#include"../src/3D/Vector3D.h"
+#include"../src/3D/Definitions3D.h"
 
 using namespace std;
 
@@ -220,7 +220,7 @@ TEST(Constants,Xi)
     EXPECT_DOUBLE_EQ(1,GRAD_WEIGHTS_2D.at(9)*120);
 }
 
-TEST(Definitions,array2D_diff_add)
+TEST(Definitions2D,array2D_diff_add)
 {
     const array2D one = {{100, 5.5, 1.4, -2, 0, 0, 1, 91.6, 45}};
     const array2D two = {{5,   0.6, 1.9, -2, 1.8, 100, 0.5, 91.6, 25}};
@@ -231,7 +231,7 @@ TEST(Definitions,array2D_diff_add)
     EXPECT_EQ (one, array_add_2D(two, vergleich));
 }
 
-TEST(Definitions,distro_add_array2D)
+TEST(Definitions2D,distro_add_array2D)
 {
     const array2D one = {{95, 4.9, -0.5, 0, -1.8, -100, 0.5, 0, 20}};
     const array2D zeros = {{0,0,0,0,0,0,0,0,0}};
@@ -246,13 +246,50 @@ TEST(Definitions,distro_add_array2D)
     EXPECT_EQ(vergleich, distro_add_array_2D(first,plus));
 }
 
-TEST(Definitions,array2D_times)
+TEST(Definitions2D,array2D_times)
 {
     const array2D one = {{100, 5, 14, -2, 0, 0, 1, 916, 45}};
     const array2D vergleich = {{110, 5.5, 15.4, -2.2, 0, 0, 1.1, 1007.6, 49.5}};
     const array2D result = array_times_2D(one, 1.1);
 
     for(int i=0;i<9;i++){
+        EXPECT_DOUBLE_EQ (vergleich[i], result[i]);
+    }    
+}
+
+TEST(Definitions3D,array3D_diff_add)
+{
+    const array3D one = {{100, 5.5, 1.4, -2, 0, 0, 1, 91.6, 45, 10, 11, 12, 13, 14, 15, 16, 17, 18,19}};
+    const array3D two = {{5,   0.6, 1.9, -2, 1.8, 100, 0.5, 91.6, 25, 19, 18, 17, 16, 15, 14, 13, 12, 11, 10}};
+    const array3D vergleich = {{95, 4.9, -0.5, 0, -1.8, -100, 0.5, 0, 20, -9, -7, -5, -3, -1, 1, 3, 5, 7, 9}};
+
+    EXPECT_EQ (vergleich, array_diff_3D(one, two));
+    EXPECT_EQ (one, array_add_3D(vergleich, two));
+    EXPECT_EQ (one, array_add_3D(two, vergleich));
+}
+
+TEST(Definitions3D,distro_add_array3D)
+{
+    const array3D one = {{95, 4.9, -0.5, 0, -1.8, -100, 0.5, 0, 20, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19}};
+    const array3D zeros = {{0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0,0}};
+    DistributionSetType3D first = {{one, zeros}};
+
+    const array3D plus = {{5,   0.6, 1.9, -2, 1.8, 100, 0.5, 91.6, 25,  19, 18, 17, 16, 15, 14, 13, 12, 11, 10}};
+    
+    const array3D result = {{100, 5.5, 1.4, -2, 0, 0, 1, 91.6, 45, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29}};
+    
+    DistributionSetType3D vergleich = {{result, plus}};
+
+    EXPECT_EQ(vergleich, distro_add_array_3D(first,plus));
+}
+
+TEST(Definitions3D,array_times_3D)
+{
+    const array3D one = {{100, 5, 14, -2, 0, 0, 1, 916, 45, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19}};
+    const array3D vergleich = {{110, 5.5, 15.4, -2.2, 0, 0, 1.1, 1007.6, 49.5, 11, 12.1, 13.2, 14.3, 15.4, 16.5, 17.6, 18.7, 19.8, 20.9}};
+    const array3D result = array_times_3D(one, 1.1);
+
+    for(int i=0;i<19;i++){
         EXPECT_DOUBLE_EQ (vergleich[i], result[i]);
     }    
 }
