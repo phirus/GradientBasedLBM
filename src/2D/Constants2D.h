@@ -6,9 +6,6 @@
 
 /// contains constants
 
-/// Pi
-const double PI = 3.14159265358979323846264338327950288419716939937510;
-
 /// B from Reis et al.
 const array2D B_2D = {{-0.1481481481481481, 0.07407407407407407, 0.04629629629629629, 0.07407407407407407, 0.04629629629629629, 0.07407407407407407, 0.04629629629629629, 0.07407407407407407, 0.04629629629629629}};
 
@@ -28,8 +25,5 @@ const boost::multi_array<double,2> define_inverse_trafo_matrix_2D();
 
 const Matrix2D TRAFO_MATRIX(define_trafo_matrix_2D());
 const Matrix2D INV_TRAFO_MATRIX(define_inverse_trafo_matrix_2D());
-
-/// arbitrary  definition
-const double MACH_MAX = 0.1; // maximal erlaubte Mach-Zahl
 
 #endif

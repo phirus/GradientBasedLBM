@@ -4,6 +4,7 @@
 #include<boost/array.hpp>
 #include<boost/multi_array.hpp>
 #include"Vector2D.h"
+#include"../Constants_basic.h"
 
 /// contains custom typedefs
 //=========================== TYPES ===========================
@@ -11,7 +12,6 @@
 typedef boost::array<double,9> array2D;       /// < used to describe single distributions
 typedef boost::array<array2D,2> DistributionSetType2D;         /// < merge two distributions into a single variable
 typedef boost::array<Vector2D,13> direction2D ; /// < collection of 13 direction vectors (D2Q13)
-typedef boost::array<double,2> ColSet;         /// < simple 2d vector, y = vec[0], x = vec[1]
 typedef boost::array<Vector2D,2> VeloSet2D;
 
 struct RelaxationPar
@@ -27,9 +27,6 @@ struct Interpol
 };
 
 //=========================== FUNCTIONS ===========================
-
-/// sums up all elements
-inline const double sum(const ColSet& vector){return vector[0] + vector[1] ;};
 
 /// functions handling basic operations on arrays
 const array2D array2D_diff(const array2D &one, const array2D &two);
