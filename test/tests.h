@@ -7,6 +7,7 @@
 #include"../src/BinaryIO.h"
 
 #include"../src/3D/Definitions3D.h"
+#include"../src/3D/Constants3D.h"
 
 using namespace std;
 
@@ -198,21 +199,33 @@ TEST(Cell2D,equal){
     EXPECT_FALSE(one == four);
 }
 
-TEST(Constants,BReis)
+TEST(Constants2D,BReis)
 {
     EXPECT_DOUBLE_EQ(-4,B_2D[0]*27);
     EXPECT_DOUBLE_EQ(2,B_2D[1]*27);
     EXPECT_DOUBLE_EQ(5,B_2D[2]*108);
 }
 
-TEST(Constants,W)
+TEST(Constants2D,W)
 {
     EXPECT_DOUBLE_EQ(4,WEIGHTS_2D.at(0)*9);
     EXPECT_DOUBLE_EQ(1,WEIGHTS_2D.at(1)*9);
     EXPECT_DOUBLE_EQ(1,WEIGHTS_2D.at(2)*36);
 }
 
-TEST(Constants,Xi)
+TEST(Constants3D,W)
+{
+    EXPECT_DOUBLE_EQ(1,WEIGHTS_3D.at(0)*3);
+    EXPECT_DOUBLE_EQ(1,WEIGHTS_3D.at(1)*18);
+    EXPECT_DOUBLE_EQ(1,WEIGHTS_3D.at(2)*36);
+
+    EXPECT_DOUBLE_EQ(1,WEIGHTS_3D.at(9)*18);
+    EXPECT_DOUBLE_EQ(1,WEIGHTS_3D.at(14)*18);
+    EXPECT_DOUBLE_EQ(1,WEIGHTS_3D.at(13)*36);
+    EXPECT_DOUBLE_EQ(1,WEIGHTS_3D.at(12)*36);
+}
+
+TEST(Constants2D,Xi)
 {
     EXPECT_DOUBLE_EQ(0,GRAD_WEIGHTS_2D.at(0));
     EXPECT_DOUBLE_EQ(32,GRAD_WEIGHTS_2D.at(1)*120);
