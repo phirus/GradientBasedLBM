@@ -8,6 +8,7 @@
 
 #include"../src/3D/Definitions3D.h"
 #include"../src/3D/Constants3D.h"
+#include"../src/3D/Cell3D.h"
 
 using namespace std;
 
@@ -157,7 +158,7 @@ TEST(Cell2D,Psi1)
 TEST(Cell2D,Psi2)
 {
     array2D f1 = {{10,20,30,40,50,60,70,80,90}}; //450
-    array2D f2 = {{0,0,0,0,0,0,0,0,}}; //0
+    array2D f2 = {{0,0,0,0,0,0,0,0,0}}; //0
     Cell2D cell(f1,f2);
     cell.calcRho();
     EXPECT_DOUBLE_EQ(1, cell.calcPsi());
@@ -199,6 +200,151 @@ TEST(Cell2D,equal){
     EXPECT_FALSE(one == four);
 }
 
+TEST(Cell3D,constructor0)
+{
+    array3D f = {{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}};
+    Cell3D cell;
+    EXPECT_EQ(f,cell.getF()[0]);
+    EXPECT_EQ(f,cell.getF()[1]);
+    EXPECT_FALSE(cell.getIsSolid());    
+}
+
+TEST(Cell3D,constructorRed1)
+{
+    array3D f = {{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}};
+    Cell3D cell(1,0);
+    EXPECT_EQ(f,cell.getF()[0]);
+    EXPECT_FALSE(cell.getIsSolid());
+    Cell3D cell1(1,1);
+    Cell3D cell2(1,100);
+    EXPECT_EQ(f,cell1.getF()[0]);
+    EXPECT_EQ(f,cell2.getF()[0]);
+}
+
+TEST(Cell3D,constructorBlue1)
+{
+    array3D f = {{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}};
+    Cell3D cell(0,1);
+    EXPECT_EQ(f,cell.getF()[1]);
+    EXPECT_FALSE(cell.getIsSolid());
+    Cell3D cell1(1,1);
+    Cell3D cell2(100,1);
+    EXPECT_EQ(f,cell1.getF()[1]);
+    EXPECT_EQ(f,cell2.getF()[1]);
+}
+
+TEST(Cell3D,constructorRed2)
+{
+    array3D f = {{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}};
+    Cell3D cell(0,0);
+    EXPECT_EQ(f,cell.getF()[0]);
+    EXPECT_FALSE(cell.getIsSolid());
+    Cell3D cell1(0,1);
+    Cell3D cell2(0,100);
+    EXPECT_EQ(f,cell1.getF()[0]);
+    EXPECT_EQ(f,cell2.getF()[0]);
+}
+
+TEST(Cell3D,constructorBlue2)
+{
+    array3D f = {{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}};
+    Cell3D cell(0,0);
+    EXPECT_EQ(f,cell.getF()[1]);
+    EXPECT_FALSE(cell.getIsSolid());
+    Cell3D cell1(1,0);
+    Cell3D cell2(100,0);
+    EXPECT_EQ(f,cell1.getF()[1]);
+    EXPECT_EQ(f,cell2.getF()[1]);
+}
+
+TEST(Cell3D,constructorSolid)
+{
+    Cell3D cell(0,0,true);
+    EXPECT_EQ(true,cell.getIsSolid());
+}
+
+TEST(Cell3D,constructorIni)
+{
+    array3D f1 = {{4,2,5.4,0,1,12,6,7,8,10,12,13,14,15,16,17,18,19}};
+    array3D f2 = {{1,2,3,4,5,6,7,8,9,19,18,17,16,15,14,13,12,11,10}};
+    Cell3D cell(f1,f2);
+    EXPECT_EQ(f1,cell.getF()[0]);
+    EXPECT_EQ(f2,cell.getF()[1]);
+    EXPECT_FALSE(cell.getIsSolid());
+}
+
+TEST(Cell3D,rho)
+{
+    array3D f1 = {{10,20,30,40,50,60,70,80,90,100,90,80,70,60,50,40,30,20,10}};
+    array3D f2 = {{1,2,3,4,5,6,7,8,9,10,9,8,7,6,5,4,3,2,1}};
+    Cell3D cell(f1,f2);
+    EXPECT_EQ(0,cell.getRho()[0]);
+    EXPECT_EQ(0,cell.getRho()[1]);
+    cell.calcRho();
+    EXPECT_EQ(1000,cell.getRho()[0]);
+    EXPECT_EQ(100,cell.getRho()[1]);
+    cell.setIsSolid(true);
+    cell.calcRho();
+    EXPECT_EQ(0,cell.getRho()[0]);
+    EXPECT_EQ(0,cell.getRho()[1]);
+}
+
+TEST(Cell3D,Psi1)
+{
+    array3D f1 = {{10,20,30,40,50,60,70,80,90,100,90,80,70,60,50,40,30,20,10}}; // 1000
+    array3D f2 = {{1,2,3,4,10,6,7,8,9,10,9,8,7,6,10,4,3,2,1}}; //110
+    Cell3D cell(f1,f2);
+    EXPECT_DOUBLE_EQ(0,cell.calcPsi());
+    cell.calcRho();
+    EXPECT_DOUBLE_EQ(0.8018018018018018, cell.calcPsi());
+}
+
+TEST(Cell3D,Psi2)
+{
+    array3D f1 = {{10,20,30,40,50,60,70,80,90,100,90,80,70,60,50,40,30,20,10}}; // 1000
+    array3D f2 = {{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}}; //0
+    Cell3D cell(f1,f2);
+    cell.calcRho();
+    EXPECT_DOUBLE_EQ(1, cell.calcPsi());
+    Cell3D cell2(f2,f1);
+    cell2.calcRho();
+    EXPECT_DOUBLE_EQ(-1, cell2.calcPsi());
+}
+
+TEST(Cell3D,Velo)
+{
+    array3D fr = {{2,3,0,5,0,0,0,1,0,1,0,0,2,0,0,0,1,0,1}};
+    array3D fb = {{0,0,0,1,2,0,3,1,0,0,4,1,0,0,1,0,2,0,0}};
+
+    double usqr;
+
+    Cell3D cell(fr,fb);
+    cell.calcRho();
+    ColSet rho = cell.getRho();
+    VeloSet3D v = cell.getU();
+
+    Vector3D u = (v[0]*rho[0] + v[1]*rho[1]) * (1/sum(rho));
+
+    usqr = u*u;
+
+    EXPECT_DOUBLE_EQ(6.0/31.0,u.y);
+    EXPECT_DOUBLE_EQ(0,u.x);
+    EXPECT_DOUBLE_EQ(3.0/31.0,u.z);
+    EXPECT_DOUBLE_EQ(0.046826222684703434,(usqr));
+}
+
+TEST(Cell3D,equal){
+    Cell3D one,two,three, four;
+    EXPECT_EQ(one,two);
+    three.setIsSolid(true);
+    EXPECT_FALSE(one == three);
+    array3D fr = {{2,3,0,5,0,0,0,0,0,9,5,4,7,3,2,1,1,6,8}};
+    DistributionSetType3D f = four.getF();
+    f[1] = fr;
+    four.setF(f);
+    EXPECT_FALSE(one == four);
+}
+
 TEST(Constants2D,BReis)
 {
     EXPECT_DOUBLE_EQ(-4,B_2D[0]*27);
@@ -213,6 +359,14 @@ TEST(Constants2D,W)
     EXPECT_DOUBLE_EQ(1,WEIGHTS_2D.at(2)*36);
 }
 
+TEST(Constants2D,Xi)
+{
+    EXPECT_DOUBLE_EQ(0,GRAD_WEIGHTS_2D.at(0));
+    EXPECT_DOUBLE_EQ(32,GRAD_WEIGHTS_2D.at(1)*120);
+    EXPECT_DOUBLE_EQ(12,GRAD_WEIGHTS_2D.at(2)*120);
+    EXPECT_DOUBLE_EQ(1,GRAD_WEIGHTS_2D.at(9)*120);
+}
+
 TEST(Constants3D,W)
 {
     EXPECT_DOUBLE_EQ(1,WEIGHTS_3D.at(0)*3);
@@ -223,14 +377,6 @@ TEST(Constants3D,W)
     EXPECT_DOUBLE_EQ(1,WEIGHTS_3D.at(14)*18);
     EXPECT_DOUBLE_EQ(1,WEIGHTS_3D.at(13)*36);
     EXPECT_DOUBLE_EQ(1,WEIGHTS_3D.at(12)*36);
-}
-
-TEST(Constants2D,Xi)
-{
-    EXPECT_DOUBLE_EQ(0,GRAD_WEIGHTS_2D.at(0));
-    EXPECT_DOUBLE_EQ(32,GRAD_WEIGHTS_2D.at(1)*120);
-    EXPECT_DOUBLE_EQ(12,GRAD_WEIGHTS_2D.at(2)*120);
-    EXPECT_DOUBLE_EQ(1,GRAD_WEIGHTS_2D.at(9)*120);
 }
 
 TEST(Definitions2D,array2D_diff_add)
