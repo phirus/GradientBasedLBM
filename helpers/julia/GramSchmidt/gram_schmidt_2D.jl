@@ -9,29 +9,9 @@ phi_7 = [0 0 2  1  2  0 -2 -1 -2]
 phi_8 = [0 1 0 -1  0  1  0 -1  0]
 phi_9 = [0 0 1  0 -1  0  1  0 -1]
 
-show(phi_1)
-println("\n")
-show(phi_2)
-println("\n")
-show(phi_3)
-println("\n")
-show(phi_4)
-println("\n")
-show(phi_5)
-println("\n")
-show(phi_6)
-println("\n")
-show(phi_7)
-println("\n")
-show(phi_8)
-println("\n")
-show(phi_9)
-println("\n")
-
 w = [phi_1 , phi_2 , phi_3 , phi_4 , phi_5 , phi_6 , phi_7 , phi_8 , phi_9]
 show(w)
 println("\n")
-
 
 v = zeros(size(w));
 show(v)
@@ -69,7 +49,6 @@ for n = 2 : 9
         v[7,:] = round(v[7,:] * 3)
     end
 end
-
 
  
 v_inv = inv(v)
