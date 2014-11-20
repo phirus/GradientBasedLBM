@@ -750,6 +750,57 @@ TEST(Lattice2D, assign){
     EXPECT_EQ(lBig,tmp);
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 TEST(Matrix2D,trafo){
     const array2D verteilung = {{1,2,3,4,5,6,7,8,9}};
     const array2D vergleich = {{45,24,-12,-4,8,-12,0,-4,-4}};
@@ -825,6 +876,121 @@ TEST(Matrix2D,plus_times){
     EXPECT_EQ(TRAFO_MATRIX+TRAFO_MATRIX+TRAFO_MATRIX, TRAFO_MATRIX*3);
     EXPECT_EQ(TRAFO_MATRIX+TRAFO_MATRIX, (TRAFO_MATRIX*3)-TRAFO_MATRIX);
 }
+
+
+
+
+
+
+
+
+
+
+
+// TEST(Matrix2D,trafo){
+//     const array2D verteilung = {{1,2,3,4,5,6,7,8,9}};
+//     const array2D vergleich = {{45,24,-12,-4,8,-12,0,-4,-4}};
+
+//     array2D trafo = TRAFO_MATRIX * verteilung;
+
+//     EXPECT_EQ(vergleich, trafo);
+// }
+
+// TEST(Matrix2D,backtrafo){
+//     const array2D vergleich = {{1,2,3,4,5,6,7,8,9}};
+//     const array2D verteilung = {{45,24,-12,-4,8,-12,0,-4,-4}};
+
+//     array2D backtrafo = INV_TRAFO_MATRIX * verteilung;
+
+//     for(int i = 0; i<9;i++)
+//     {
+//         EXPECT_DOUBLE_EQ(vergleich[i],backtrafo[i]);
+//     }
+// }
+
+// TEST(Matrix2D,multiply){
+//     const Matrix2D S(RelaxationPar(1,10,100));
+//     const array2D f = {{1,2,3,4,5,6,7,8,9}};
+//     // const array2D vergleich = {{ -48, -382, 194, 18, -206, 418, -206, 18, 194}};
+//     const array2D vergleich = {{ 1, 2, 30, 4, 500, 6, 700, 8, 9}};
+
+//     array2D test = S*f;
+
+//     for(int i = 0; i<9;i++)
+//     {
+//         EXPECT_DOUBLE_EQ(vergleich[i],test[i])<<"i = "<<i ;
+//     }
+// }
+
+// TEST(Matrix2D,multiply_linewise){
+//     const Matrix2D S(RelaxationPar(1,10,100));
+//     const array2D f = {{1,2,3,4,5,6,7,8,9}};
+//     // const array2D vergleich = {{ -48, -382, 194, 18, -206, 418, -206, 18, 194}};
+//     const array2D vergleich = {{ 1, 2, 30, 4, 500, 6, 700, 8, 9}};
+
+//     array2D test;
+
+//     for(int i = 0; i<9;i++)
+//     {
+//         test[i] = S.linewise(f,i);
+//         EXPECT_DOUBLE_EQ(vergleich[i],test[i])<<"i = "<<i ;
+//     }
+// }
+
+// TEST(Matrix2D,identity){
+//     const array2D f = {{1,2,3,4,5,6,7,8,9}};
+//     const array2D f0 = {{0,0,0,0,0,0,0,0,0}};
+
+//     const Matrix2D Identity = Matrix2D(true);
+//     const Matrix2D Zeros = Matrix2D();
+//     array2D test;
+
+//     EXPECT_EQ(f, Identity * f);
+//     EXPECT_EQ(f0, Zeros * f);
+//     for(int i = 0; i<9;i++)
+//     {
+//         test[i] = Identity.linewise(f,i);
+//     }
+//     EXPECT_EQ(f, test);
+// }
+
+// TEST(Matrix2D,plus_times){
+//     const Matrix2D Identity = Matrix2D(true);
+    
+//     EXPECT_EQ(Identity+Identity, Identity*2);
+
+//     EXPECT_EQ(TRAFO_MATRIX+TRAFO_MATRIX+TRAFO_MATRIX, TRAFO_MATRIX*3);
+//     EXPECT_EQ(TRAFO_MATRIX+TRAFO_MATRIX, (TRAFO_MATRIX*3)-TRAFO_MATRIX);
+// }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 TEST(MRT,trafo){
     /// testet ob die Differenz im Geschw.-Raum gleich der Rücktransformierten Differenz im moment-Raum ist

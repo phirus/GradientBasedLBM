@@ -13,11 +13,11 @@ typedef boost::array<array3D,2> DistributionSetType3D;         /// < merge two d
 typedef boost::array<Vector3D,19> direction3D ; /// < collection of 13 direction vectors (D2Q13)
 typedef boost::array<Vector3D,2> VeloSet3D;
 
-// struct RelaxationPar
-// {
-//     double s_2,s_3,s_5;
-//     RelaxationPar(double s2=1, double s3=1, double s5=1):s_2(s2),s_3(s3),s_5(s5){};
-// };
+struct RelaxationPar3D
+{
+    double s_2,s_3,s_5,s_11,s_17;
+    RelaxationPar3D(double s2=1, double s3=1, double s5=1, double s11=1, double s17=1):s_2(s2),s_3(s3),s_5(s5),s_11(s11),s_17(s17){};
+};
 
 // /// structure for interpolation paramters
 // struct Interpol
