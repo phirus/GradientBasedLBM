@@ -12,7 +12,7 @@ class Matrix2D
         /// Lifecylce
         Matrix2D(bool identity = false);
         Matrix2D(const boost::multi_array<double,2> &m);
-        Matrix2D(const RelaxationPar &relax, double omega = 1);
+        Matrix2D(const RelaxationPar2D &relax, double omega = 1);
         Matrix2D(const Matrix2D &other);
 
          /// operators

@@ -32,7 +32,7 @@ Matrix2D::Matrix2D(const boost::multi_array<double,2> &m):matrix(boost::extents[
 }
 
 
-Matrix2D::Matrix2D(const RelaxationPar &relax, double omega):matrix(boost::extents[9][9])
+Matrix2D::Matrix2D(const RelaxationPar2D &relax, double omega):matrix(boost::extents[9][9])
 {
     for(int i = 0;i<9;i++){
         for(int j=0;j<9;j++){

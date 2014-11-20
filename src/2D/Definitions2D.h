@@ -13,10 +13,10 @@ typedef boost::array<array2D,2> DistributionSetType2D;         /// < merge two d
 typedef boost::array<Vector2D,13> direction2D ; /// < collection of 13 direction vectors (D2Q13)
 typedef boost::array<Vector2D,2> VeloSet2D;
 
-struct RelaxationPar
+struct RelaxationPar2D
 {
     double s_2,s_3,s_5;
-    RelaxationPar(double s2=1, double s3=1, double s5=1):s_2(s2),s_3(s3),s_5(s5){};
+    RelaxationPar2D(double s2=1, double s3=1, double s5=1):s_2(s2),s_3(s3),s_5(s5){};
 };
 
 /// structure for interpolation paramters

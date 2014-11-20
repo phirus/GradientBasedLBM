@@ -22,7 +22,7 @@ TEST(BinaryIO,output){
 }
 
 TEST(BinaryIO,paramLog){
-    RelaxationPar rel = RelaxationPar(0.8,1.2,1.2);
+    RelaxationPar2D rel = RelaxationPar2D(0.8,1.2,1.2);
     ParamSet params(1.1, 0.9, 1.1, 5, 2e-4, 2e-4, 1e-4, 1e-3,rel, 0.21, 0.11, 0.98);   
     EXPECT_NO_THROW(write_param_log(params));
 
@@ -823,7 +823,7 @@ TEST(Matrix2D,backtrafo){
 }
 
 TEST(Matrix2D,multiply){
-    const Matrix2D S(RelaxationPar(1,10,100));
+    const Matrix2D S(RelaxationPar2D(1,10,100));
     const array2D f = {{1,2,3,4,5,6,7,8,9}};
     // const array2D vergleich = {{ -48, -382, 194, 18, -206, 418, -206, 18, 194}};
     const array2D vergleich = {{ 1, 2, 30, 4, 500, 6, 700, 8, 9}};
@@ -837,7 +837,7 @@ TEST(Matrix2D,multiply){
 }
 
 TEST(Matrix2D,multiply_linewise){
-    const Matrix2D S(RelaxationPar(1,10,100));
+    const Matrix2D S(RelaxationPar2D(1,10,100));
     const array2D f = {{1,2,3,4,5,6,7,8,9}};
     // const array2D vergleich = {{ -48, -382, 194, 18, -206, 418, -206, 18, 194}};
     const array2D vergleich = {{ 1, 2, 30, 4, 500, 6, 700, 8, 9}};
@@ -909,7 +909,7 @@ TEST(Matrix2D,plus_times){
 // }
 
 // TEST(Matrix2D,multiply){
-//     const Matrix2D S(RelaxationPar(1,10,100));
+//     const Matrix2D S(RelaxationPar2D(1,10,100));
 //     const array2D f = {{1,2,3,4,5,6,7,8,9}};
 //     // const array2D vergleich = {{ -48, -382, 194, 18, -206, 418, -206, 18, 194}};
 //     const array2D vergleich = {{ 1, 2, 30, 4, 500, 6, 700, 8, 9}};
@@ -923,7 +923,7 @@ TEST(Matrix2D,plus_times){
 // }
 
 // TEST(Matrix2D,multiply_linewise){
-//     const Matrix2D S(RelaxationPar(1,10,100));
+//     const Matrix2D S(RelaxationPar2D(1,10,100));
 //     const array2D f = {{1,2,3,4,5,6,7,8,9}};
 //     // const array2D vergleich = {{ -48, -382, 194, 18, -206, 418, -206, 18, 194}};
 //     const array2D vergleich = {{ 1, 2, 30, 4, 500, 6, 700, 8, 9}};

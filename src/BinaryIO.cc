@@ -473,7 +473,7 @@ void write_param_log(const ParamSet& p){
     paramLog << "dx = "         << p.getDeltaX()             << endl;
     paramLog << "gravity = "    << p.getG()                  << endl;
 
-    RelaxationPar relax = p.getRelaxation();
+    RelaxationPar2D relax = p.getRelaxation();
     paramLog << "\n# MRT parameters [-]" << endl;
     paramLog << "s_2 = " << relax.s_2 << endl;
     paramLog << "s_3 = " << relax.s_3 << endl;
@@ -560,7 +560,7 @@ const ParamSet read_paramset_file(const string& filename){
             if( input_query(filename,it->first,tmp) == true ) it->second = tmp;
         }
 
-    RelaxationPar rel(mm.at("s_2"),mm.at("s_3"),mm.at("s_5"));
+    RelaxationPar2D rel(mm.at("s_2"),mm.at("s_3"),mm.at("s_5"));
 
     ParamSet params(mm.at("omega_red"), mm.at("omega_blue"), mm.at("rho_red"), mm.at("gamma"), mm.at("sigma"), mm.at("gravity"), mm.at("dt"), mm.at("dx"), rel, mm.at("alpha_blue"), mm.at("delta"), mm.at("beta")); /// < consructor
     return params;

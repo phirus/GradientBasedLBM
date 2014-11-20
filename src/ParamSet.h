@@ -14,7 +14,7 @@ class ParamSet
 {
 public:
     /// Lifecycle
-    ParamSet(double omR = 1, double omB = 1,double rhoR = 1, double gammaIni = 2,double sigmaIni = 1e-4, double g = 1e-4, double t_step = 1e-3, double s_step = 1e-3, RelaxationPar rel = RelaxationPar(1,1,1), double alB = 0.2, double deltaIni = 0.1, double betaIni = 0.99); /// < consructor
+    ParamSet(double omR = 1, double omB = 1,double rhoR = 1, double gammaIni = 2,double sigmaIni = 1e-4, double g = 1e-4, double t_step = 1e-3, double s_step = 1e-3, RelaxationPar2D rel = RelaxationPar2D(1,1,1), double alB = 0.2, double deltaIni = 0.1, double betaIni = 0.99); /// < consructor
 
     /// get-methods, including calculations if necessary
     const DistributionSetType2D getPhi()const;                   /// < calculates phi, based on alpha_b and rho (density ratio)
@@ -26,7 +26,7 @@ public:
     const double getG()const{return gravity;};
     const double getRhoR()const{return rhoRed;};
     const Interpol getInter()const{return inter;};
-    const RelaxationPar getRelaxation()const{return relax;};
+    const RelaxationPar2D getRelaxation()const{return relax;};
     const double getDeltaT()const{return timestep;};
     const double getDeltaX()const{return spacestep;};
 
@@ -62,7 +62,7 @@ private:
     double spacestep;            /// < LB timestep
 
     // deduced
-    RelaxationPar relax;
+    RelaxationPar2D relax;
     Interpol inter;             /// < interpolation parameters for finding omega, relevant for equilibrium distribution
 
     /// operations

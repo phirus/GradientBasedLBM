@@ -4,7 +4,7 @@
 
 //=========================== LIFECYCLE ===========================
 
-ParamSet::ParamSet(double omR, double omB, double rhoR ,double gammaIni, double sigmaIni, double g, double t_step, double s_step,RelaxationPar rel, double alB, double deltaIni, double betaIni):
+ParamSet::ParamSet(double omR, double omB, double rhoR ,double gammaIni, double sigmaIni, double g, double t_step, double s_step,RelaxationPar2D rel, double alB, double deltaIni, double betaIni):
 omegaRed(omR),
 omegaBlue(omB),
 rhoRed(rhoR),
@@ -147,7 +147,7 @@ const bool ParamSet::operator==(const ParamSet& other)const{
         if(finter.ny != binter.ny) control = false;
     }
     {
-        RelaxationPar frelax,brelax;
+        RelaxationPar2D frelax,brelax;
         frelax = getRelaxation();
         brelax = other.getRelaxation();
 
