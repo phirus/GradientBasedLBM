@@ -17,7 +17,7 @@ BIN_DIR = bin
 OUTPUT = $(BIN_DIR)/GradientBased
 
 # creating OBJs
-OBJ_DEBUG = $(OBJ_DIR)/Analyze.o $(OBJ_DIR)/BinaryIO.o $(OBJ_DIR)/Constants2D.o $(OBJ_DIR)/Cell2D.o $(OBJ_DIR)/Cell3D.o $(OBJ_DIR)/Definitions2D.o $(OBJ_DIR)/Definitions3D.o $(OBJ_DIR)/Lattice2D.o $(OBJ_DIR)/main.o $(OBJ_DIR)/Matrix2D.o $(OBJ_DIR)/ParamSet.o $(OBJ_DIR)/Preprocess.o $(OBJ_DIR)/Timetrack.o $(OBJ_DIR)/Vector2D.o $(OBJ_DIR)/Vector3D.o
+OBJ_DEBUG = $(OBJ_DIR)/Analyze.o $(OBJ_DIR)/BinaryIO.o $(OBJ_DIR)/Constants2D.o $(OBJ_DIR)/Cell2D.o $(OBJ_DIR)/Cell3D.o $(OBJ_DIR)/Definitions2D.o $(OBJ_DIR)/Definitions3D.o $(OBJ_DIR)/Lattice2D.o $(OBJ_DIR)/main.o $(OBJ_DIR)/Matrix2D.o $(OBJ_DIR)/Matrix3D.o $(OBJ_DIR)/ParamSet.o $(OBJ_DIR)/Preprocess.o $(OBJ_DIR)/Timetrack.o $(OBJ_DIR)/Vector2D.o $(OBJ_DIR)/Vector3D.o
 
 all: build run
 
@@ -61,6 +61,9 @@ $(OBJ_DIR)/main.o: main.cc
 
 $(OBJ_DIR)/Matrix2D.o: $(SRC)/2D/Matrix2D.cc
 	$(CXX) $(CFLAGS) $(INC) -c $(SRC)/2D/Matrix2D.cc -o $(OBJ_DIR)/Matrix2D.o
+
+$(OBJ_DIR)/Matrix3D.o: $(SRC)/3D/Matrix3D.cc
+	$(CXX) $(CFLAGS) $(INC) -c $(SRC)/3D/Matrix3D.cc -o $(OBJ_DIR)/Matrix3D.o
 
 $(OBJ_DIR)/ParamSet.o: $(SRC)/ParamSet.cc
 	$(CXX) $(CFLAGS) $(INC) -c $(SRC)/ParamSet.cc -o $(OBJ_DIR)/ParamSet.o
