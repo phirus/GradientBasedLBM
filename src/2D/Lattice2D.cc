@@ -237,10 +237,10 @@ bool Lattice2D::collideAll(int threads, bool gravity, bool isLimitActive)
                 const Matrix2D relaxation_matrix(relax,omega);
                 
                 const Matrix2D forcing_factor = Matrix2D(true) - (relaxation_matrix*0.5);    // (I - 0.5 S) -> ( 1 - 0.5 omega)
-                const DistributionSetType2D first_forcing_term = forcing_factor * (TRAFO_MATRIX * calculate_forcing_term(G,u)); // F' = (I - 0.5 S) M F
-                const DistributionSetType2D second_forcing_term = INV_TRAFO_MATRIX * first_forcing_term;    // M^{-1} F'
+                const DistributionSetType2D first_forcing_term = forcing_factor * (TRAFO_MATRIX2D * calculate_forcing_term(G,u)); // F' = (I - 0.5 S) M F
+                const DistributionSetType2D second_forcing_term = INV_TRAFO_MATRIX2D * first_forcing_term;    // M^{-1} F'
 
-                const DistributionSetType2D single_phase_col = INV_TRAFO_MATRIX * (relaxation_matrix * (TRAFO_MATRIX * diff));
+                const DistributionSetType2D single_phase_col = INV_TRAFO_MATRIX2D * (relaxation_matrix * (TRAFO_MATRIX2D * diff));
                           
                 const ColSet A_k = param.getAk(omega);
                 const Vector2D grad = getGradient(x,y);

@@ -23,7 +23,7 @@ const boost::array<Vector2D,13> DIRECTION_2D = {{e0,e1,e2,e3,e4,e5,e6,e7,e8,e9,e
 const boost::multi_array<double,2> define_trafo_matrix_2D();
 const boost::multi_array<double,2> define_inverse_trafo_matrix_2D();
 
-const Matrix2D TRAFO_MATRIX(define_trafo_matrix_2D());
-const Matrix2D INV_TRAFO_MATRIX(define_inverse_trafo_matrix_2D());
+const Matrix2D TRAFO_MATRIX2D(define_trafo_matrix_2D());
+const Matrix2D INV_TRAFO_MATRIX2D(define_inverse_trafo_matrix_2D());
 
 #endif

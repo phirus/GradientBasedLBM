@@ -1,4 +1,5 @@
 require("Humieres.jl")
+require("writeMatrix.jl")
 
 
 phi_1  = [1 1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1]
@@ -73,6 +74,8 @@ end
 
 show(v)
 println("\n") 
+
+# createMatrixFile(v)
  
 test = v - vergleich
 
@@ -81,4 +84,11 @@ println("\n")
 
 v_inv = inv(v)
 show(round(v_inv *47880))
+# createMatrixFile(round(v_inv *47880))
 println("\n") 
+
+
+test_2 = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17,18, 19]
+
+show(test_2)
+show(v * test_2)

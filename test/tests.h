@@ -750,62 +750,11 @@ TEST(Lattice2D, assign){
     EXPECT_EQ(lBig,tmp);
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 TEST(Matrix2D,trafo){
     const array2D verteilung = {{1,2,3,4,5,6,7,8,9}};
     const array2D vergleich = {{45,24,-12,-4,8,-12,0,-4,-4}};
 
-    array2D trafo = TRAFO_MATRIX * verteilung;
+    array2D trafo = TRAFO_MATRIX2D * verteilung;
 
     EXPECT_EQ(vergleich, trafo);
 }
@@ -814,7 +763,7 @@ TEST(Matrix2D,backtrafo){
     const array2D vergleich = {{1,2,3,4,5,6,7,8,9}};
     const array2D verteilung = {{45,24,-12,-4,8,-12,0,-4,-4}};
 
-    array2D backtrafo = INV_TRAFO_MATRIX * verteilung;
+    array2D backtrafo = INV_TRAFO_MATRIX2D * verteilung;
 
     for(int i = 0; i<9;i++)
     {
@@ -873,124 +822,84 @@ TEST(Matrix2D,plus_times){
     
     EXPECT_EQ(Identity+Identity, Identity*2);
 
-    EXPECT_EQ(TRAFO_MATRIX+TRAFO_MATRIX+TRAFO_MATRIX, TRAFO_MATRIX*3);
-    EXPECT_EQ(TRAFO_MATRIX+TRAFO_MATRIX, (TRAFO_MATRIX*3)-TRAFO_MATRIX);
+    EXPECT_EQ(TRAFO_MATRIX2D+TRAFO_MATRIX2D+TRAFO_MATRIX2D, TRAFO_MATRIX2D*3);
+    EXPECT_EQ(TRAFO_MATRIX2D+TRAFO_MATRIX2D, (TRAFO_MATRIX2D*3)-TRAFO_MATRIX2D);
 }
 
+TEST(Matrix3D,trafo){
+    const array3D verteilung = {{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19}};
+    const array3D vergleich = {{190.0,627.0,-24.0,-8.0,12.0,-16.0,4.0,-25.0,0.0,-63.0,0.0,-47.0,-8.0,-4.0,0.0,0.0,4.0,4.0,0.0}};
 
+    array3D trafo = TRAFO_MATRIX3D * verteilung;
 
+    EXPECT_EQ(vergleich, trafo);
+}
 
+TEST(Matrix3D,backtrafo){
+    const array3D vergleich = {{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19}};
+    const array3D verteilung = {{190.0,627.0,-24.0,-8.0,12.0,-16.0,4.0,-25.0,0.0,-63.0,0.0,-47.0,-8.0,-4.0,0.0,0.0,4.0,4.0,0.0}};
 
+    array3D backtrafo = INV_TRAFO_MATRIX3D * verteilung;
 
+    for(int i = 0; i<19;i++)
+    {
+        EXPECT_NEAR(vergleich[i],backtrafo[i],1e-10);
+    }
+}
 
+TEST(Matrix3D,multiply){
+    const Matrix3D S(RelaxationPar3D(1,10,100,200,500));
+    const array3D f = {{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19}};
+    const array3D vergleich = {{ 1, 2, 30, 4, 500, 6, 700, 8, 900, 10, 2200, 12, 2600, 14,15,16,8500,9000,9500}};
 
+    array3D test = S*f;
 
+    for(int i = 0; i<19;i++)
+    {
+        EXPECT_DOUBLE_EQ(vergleich[i],test[i])<<"i = "<<i ;
+    }
+}
 
+TEST(Matrix3D,multiply_linewise){
+    const Matrix3D S(RelaxationPar3D(1,10,100,200,500));
+    const array3D f = {{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19}};
+    // const array2D vergleich = {{ -48, -382, 194, 18, -206, 418, -206, 18, 194}};
+    const array3D vergleich = {{ 1, 2, 30, 4, 500, 6, 700, 8, 900, 10, 2200, 12, 2600, 14,15,16,8500,9000,9500}};
 
-// TEST(Matrix2D,trafo){
-//     const array2D verteilung = {{1,2,3,4,5,6,7,8,9}};
-//     const array2D vergleich = {{45,24,-12,-4,8,-12,0,-4,-4}};
+    array3D test;
 
-//     array2D trafo = TRAFO_MATRIX * verteilung;
+    for(int i = 0; i<9;i++)
+    {
+        test[i] = S.linewise(f,i);
+        EXPECT_DOUBLE_EQ(vergleich[i],test[i])<<"i = "<<i ;
+    }
+}
 
-//     EXPECT_EQ(vergleich, trafo);
-// }
+TEST(Matrix3D,identity){
+    const array3D f = {{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19}};
+    const array3D f0 = {{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}};
 
-// TEST(Matrix2D,backtrafo){
-//     const array2D vergleich = {{1,2,3,4,5,6,7,8,9}};
-//     const array2D verteilung = {{45,24,-12,-4,8,-12,0,-4,-4}};
+    const Matrix3D Identity = Matrix3D(true);
+    const Matrix3D Zeros = Matrix3D();
+    array3D test;
 
-//     array2D backtrafo = INV_TRAFO_MATRIX * verteilung;
+    EXPECT_EQ(f, Identity * f);
+    EXPECT_EQ(f0, Zeros * f);
+    for(int i = 0; i<19;i++)
+    {
+        test[i] = Identity.linewise(f,i);
+    }
+    EXPECT_EQ(f, test);
+}
 
-//     for(int i = 0; i<9;i++)
-//     {
-//         EXPECT_DOUBLE_EQ(vergleich[i],backtrafo[i]);
-//     }
-// }
-
-// TEST(Matrix2D,multiply){
-//     const Matrix2D S(RelaxationPar2D(1,10,100));
-//     const array2D f = {{1,2,3,4,5,6,7,8,9}};
-//     // const array2D vergleich = {{ -48, -382, 194, 18, -206, 418, -206, 18, 194}};
-//     const array2D vergleich = {{ 1, 2, 30, 4, 500, 6, 700, 8, 9}};
-
-//     array2D test = S*f;
-
-//     for(int i = 0; i<9;i++)
-//     {
-//         EXPECT_DOUBLE_EQ(vergleich[i],test[i])<<"i = "<<i ;
-//     }
-// }
-
-// TEST(Matrix2D,multiply_linewise){
-//     const Matrix2D S(RelaxationPar2D(1,10,100));
-//     const array2D f = {{1,2,3,4,5,6,7,8,9}};
-//     // const array2D vergleich = {{ -48, -382, 194, 18, -206, 418, -206, 18, 194}};
-//     const array2D vergleich = {{ 1, 2, 30, 4, 500, 6, 700, 8, 9}};
-
-//     array2D test;
-
-//     for(int i = 0; i<9;i++)
-//     {
-//         test[i] = S.linewise(f,i);
-//         EXPECT_DOUBLE_EQ(vergleich[i],test[i])<<"i = "<<i ;
-//     }
-// }
-
-// TEST(Matrix2D,identity){
-//     const array2D f = {{1,2,3,4,5,6,7,8,9}};
-//     const array2D f0 = {{0,0,0,0,0,0,0,0,0}};
-
-//     const Matrix2D Identity = Matrix2D(true);
-//     const Matrix2D Zeros = Matrix2D();
-//     array2D test;
-
-//     EXPECT_EQ(f, Identity * f);
-//     EXPECT_EQ(f0, Zeros * f);
-//     for(int i = 0; i<9;i++)
-//     {
-//         test[i] = Identity.linewise(f,i);
-//     }
-//     EXPECT_EQ(f, test);
-// }
-
-// TEST(Matrix2D,plus_times){
-//     const Matrix2D Identity = Matrix2D(true);
+TEST(Matrix3D,plus_times){
+    const Matrix3D Identity = Matrix3D(true);
     
-//     EXPECT_EQ(Identity+Identity, Identity*2);
+    EXPECT_EQ(Identity+Identity, Identity*2);
 
-//     EXPECT_EQ(TRAFO_MATRIX+TRAFO_MATRIX+TRAFO_MATRIX, TRAFO_MATRIX*3);
-//     EXPECT_EQ(TRAFO_MATRIX+TRAFO_MATRIX, (TRAFO_MATRIX*3)-TRAFO_MATRIX);
-// }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    EXPECT_EQ(TRAFO_MATRIX3D+TRAFO_MATRIX3D+TRAFO_MATRIX3D, TRAFO_MATRIX3D*3);
+    EXPECT_EQ(TRAFO_MATRIX3D+TRAFO_MATRIX3D, (TRAFO_MATRIX3D*3)-TRAFO_MATRIX3D);
+}
 
 TEST(MRT,trafo){
     /// testet ob die Differenz im Geschw.-Raum gleich der Rücktransformierten Differenz im moment-Raum ist
@@ -1006,13 +915,13 @@ TEST(MRT,trafo){
     DistributionSetType2D vergleich;
     vergleich[0] = array_diff_2D(f, fEq[0]);
     vergleich[1] = array_diff_2D(f, fEq[1]);
-    array2D m = TRAFO_MATRIX * f;
+    array2D m = TRAFO_MATRIX2D * f;
     DistributionSetType2D mEq;
-    mEq[0] = TRAFO_MATRIX * fEq[0];
-    mEq[1] = TRAFO_MATRIX * fEq[1];
+    mEq[0] = TRAFO_MATRIX2D * fEq[0];
+    mEq[1] = TRAFO_MATRIX2D * fEq[1];
     DistributionSetType2D transformed;
-    transformed[0] = INV_TRAFO_MATRIX * array_diff_2D(m,mEq[0]);
-    transformed[1] = INV_TRAFO_MATRIX * array_diff_2D(m,mEq[1]);
+    transformed[0] = INV_TRAFO_MATRIX2D * array_diff_2D(m,mEq[0]);
+    transformed[1] = INV_TRAFO_MATRIX2D * array_diff_2D(m,mEq[1]);
 
     for(int i = 0; i<9;i++)
     {
@@ -1030,8 +939,8 @@ TEST(MRT,mass){
     ColSet rho = testCell.getRho();
     VeloSet2D u = testCell.getU();
     DistributionSetType2D fEq  = eqDistro(rho,u,phi);
-    array2D m = TRAFO_MATRIX * f;
-    array2D mEq = TRAFO_MATRIX * fEq[0];
+    array2D m = TRAFO_MATRIX2D * f;
+    array2D mEq = TRAFO_MATRIX2D * fEq[0];
 
     EXPECT_DOUBLE_EQ(m[0],mEq[0]);
     EXPECT_DOUBLE_EQ(m[3],mEq[3]);

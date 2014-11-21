@@ -1,7 +1,7 @@
 #ifndef CONSTANTS3D_H
 #define CONSTANTS3D_H
 
-// #include"Matrix2D.h"
+#include"Matrix3D.h"
 #include"Definitions3D.h"
 
 /// contains constants
@@ -19,11 +19,11 @@ const array3D WEIGHTS_3D = {{0.3333333333333333, 0.05555555555555555, 0.02777777
 const Vector3D d0(0,0,0), d1(1,0,0), d2(1,1,0), d3(0,1,0), d4(-1,1,0), d5(-1,0,0), d6(-1,-1,0), d7(0,-1,0), d8(1,-1,0), d9(0,0,1), d10(1,0,1), d11(0,1,1), d12(-1,0,1), d13(0,-1,1), d14(0,0,-1), d15(1,0,-1), d16(0,1,-1), d17(-1,0,-1), d18(0,-1,-1);
 const boost::array<Vector3D,19> DIRECTION_3D = {{d0,d1,d2,d3,d4,d5,d6,d7,d8,d9,d10,d11,d12,d13,d14,d15,d16,d17,d18}};
 
-// /// Transformation-Matrix2D
-// const boost::multi_array<double,2> define_trafo_matrix_2D();
-// const boost::multi_array<double,2> define_inverse_trafo_matrix_2D();
+/// Transformation-Matrix2D
+const boost::multi_array<double,2> define_trafo_matrix_3D();
+const boost::multi_array<double,2> define_inverse_trafo_matrix_3D();
 
-// const Matrix2D TRAFO_MATRIX(define_trafo_matrix_2D());
-// const Matrix2D INV_TRAFO_MATRIX(define_inverse_trafo_matrix_2D());
+const Matrix3D TRAFO_MATRIX3D(define_trafo_matrix_3D());
+const Matrix3D INV_TRAFO_MATRIX3D(define_inverse_trafo_matrix_3D());
 
 #endif

@@ -54,3 +54,12 @@ end
 v_inv = inv(v)
 show(round(v_inv * 36))
 println("\n") 
+
+# test_1 = [1 2 3 4 5 6 7 8 9]
+# show(test_1)
+# show(v * test_1)
+
+test_2 = [1, 2, 3, 4, 5, 6, 7, 8, 9]
+
+show(test_2)
+show(v * test_2)
