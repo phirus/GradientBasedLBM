@@ -4,10 +4,10 @@
 
 //=========================== LIFECYCLE ===========================
 
-Preprocess::Preprocess(double Re, double Mo, double Eo, double res, double rhol, double gamma_ini, double mu_rate, double s_three, double s_five, int width_ini, int height_ini):
+Preprocess::Preprocess(double Re, double Mo, double Eo, double res, double rhol, double gamma_ini, double mu_rate, double s3, double s5, double s11, double s17, int width_ini, int height_ini):
 ReynoldsMax(Re), Morton(Mo), Eotvos(Eo),
 resolution(res), rho_l(rhol), gamma(gamma_ini), 
-muRatio(mu_rate), s_3(s_three), s_5(s_five),
+muRatio(mu_rate), s_3(s3), s_5(s5), s_11(s11), s_17(s17),
 width(width_ini), height(height_ini)
 {
     deduceAll();
@@ -18,7 +18,7 @@ width(width_ini), height(height_ini)
 const ParamSet Preprocess::getParamSet()const{
     const double omega = 1/tau;
     const double rho_r = 1;  // normalized
-    const RelaxationPar2D relax(s_2,s_3,s_5);
+    const RelaxationPar3D relax(s_2,s_3,s_5,s_11,s_17);
     ParamSet param(omega, omega, rho_r, gamma, convertSigma(), g, timestep, spacestep, relax);
     return param;
 }
@@ -37,6 +37,8 @@ const bool Preprocess::operator==(const Preprocess& other)const
     if(muRatio != other.getMuRatio()) exit = false;
     if(s_3 != other.getS_3()) exit = false;
     if(s_5 != other.getS_5()) exit = false;
+    if(s_11 != other.getS_11()) exit = false;
+    if(s_17 != other.getS_17()) exit = false;
     if(spacestep != other.getSpacestep()) exit = false;
     if(timestep != other.getTimestep()) exit = false;   
     if(tau != other.getTau()) exit = false;

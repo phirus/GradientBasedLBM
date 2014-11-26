@@ -22,7 +22,7 @@ TEST(BinaryIO,output){
 }
 
 TEST(BinaryIO,paramLog){
-    RelaxationPar2D rel = RelaxationPar2D(0.8,1.2,1.2);
+    RelaxationPar3D rel = RelaxationPar3D(0.8,1.2,1.2,1.1,1.3);
     ParamSet params(1.1, 0.9, 1.1, 5, 2e-4, 2e-4, 1e-4, 1e-3,rel, 0.21, 0.11, 0.98);   
     EXPECT_NO_THROW(write_param_log(params));
 
@@ -902,7 +902,7 @@ TEST(Matrix3D,plus_times){
 }
 
 TEST(MRT,trafo){
-    /// testet ob die Differenz im Geschw.-Raum gleich der Rücktransformierten Differenz im moment-Raum ist
+    /// testet ob die Differenz im Geschw.-Raum gleich der RÃ¼cktransformierten Differenz im moment-Raum ist
     ParamSet param;
     DistributionSetType2D phi = param.getPhi();
     const array2D f = {{1,2,3,4,5,6,7,8,9}};

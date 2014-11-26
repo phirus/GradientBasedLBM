@@ -19,12 +19,6 @@ struct RelaxationPar2D
     RelaxationPar2D(double s2=1, double s3=1, double s5=1):s_2(s2),s_3(s3),s_5(s5){};
 };
 
-/// structure for interpolation paramters
-struct Interpol
-{
-    double chi, eta, kappa, lambda, ny;
-};
-
 //=========================== FUNCTIONS ===========================
 
 /// functions handling basic operations on arrays

@@ -181,7 +181,7 @@ bool Lattice2D::collideAll(int threads, bool gravity, bool isLimitActive)
     const DistributionSetType2D phi = param.getPhi();
     const int range = xsize * ysize;
     // const double rhoRedFixed = param.getRhoR();
-    const RelaxationPar2D relax = param.getRelaxation();
+    const RelaxationPar2D relax = param.getRelaxation2D();
     const double dt = param.getDeltaT();
     // const double speedlimit = param.getSpeedlimit();
 

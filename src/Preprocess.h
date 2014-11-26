@@ -12,7 +12,7 @@ class Preprocess
 {
 public: 
 	/// Lifecycle
-	Preprocess(double Re = 10, double Mo = 100, double Eo = 10, double res = 30, double rhol = 1, double gamma_ini = 2, double mu_rate = 2, double s_three = 1, double s_five = 1, int width_ini = 120, int height_ini = 360);
+	Preprocess(double Re = 10, double Mo = 100, double Eo = 10, double res = 30, double rhol = 1, double gamma_ini = 2, double mu_rate = 2, double s3 = 1, double s5 = 1, double s11 = 1, double s17 = 1, int width_ini = 120, int height_ini = 360);
 
 	/// operations
 
@@ -31,6 +31,8 @@ public:
 	inline const double getMuRatio()const{return muRatio;};
 	inline const double getS_3()const{return s_3;};
 	inline const double getS_5()const{return s_5;};
+	inline const double getS_11()const{return s_11;};
+	inline const double getS_17()const{return s_17;};
 	
 	inline const double getSpacestep()const{return spacestep;};
 	inline const double getTimestep()const{return timestep;};
@@ -59,7 +61,7 @@ private:
 	double rho_l ;			/// < liquid density
   	double gamma; 			/// < density ratio
   	double muRatio;		/// ratio of second to first viscosity mu'/mu
-	double s_3, s_5;
+	double s_3, s_5, s_11, s_17;
 
 	// stored
 	int width;

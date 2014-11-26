@@ -4,7 +4,7 @@
 
 //=========================== LIFECYCLE ===========================
 
-ParamSet::ParamSet(double omR, double omB, double rhoR ,double gammaIni, double sigmaIni, double g, double t_step, double s_step,RelaxationPar2D rel, double alB, double deltaIni, double betaIni):
+ParamSet::ParamSet(double omR, double omB, double rhoR ,double gammaIni, double sigmaIni, double g, double t_step, double s_step,RelaxationPar3D rel, double alB, double deltaIni, double betaIni):
 omegaRed(omR),
 omegaBlue(omB),
 rhoRed(rhoR),
@@ -78,6 +78,12 @@ const ColSet ParamSet::getAk(double omega)const
     return Ak;
 }
 
+const RelaxationPar2D ParamSet::getRelaxation2D()const
+{
+    const RelaxationPar2D rel = RelaxationPar2D(relax.s_2, relax.s_3, relax.s_5);
+    return rel;
+}
+
 const boost::array<double,12> ParamSet::getEverything()const{
     boost::array<double,12> pinkie;
     pinkie[0] = omegaRed;
@@ -147,9 +153,9 @@ const bool ParamSet::operator==(const ParamSet& other)const{
         if(finter.ny != binter.ny) control = false;
     }
     {
-        RelaxationPar2D frelax,brelax;
-        frelax = getRelaxation();
-        brelax = other.getRelaxation();
+        RelaxationPar3D frelax,brelax;
+        frelax = getRelaxation3D();
+        brelax = other.getRelaxation3D();
 
         if(frelax.s_2 != brelax.s_2 || frelax.s_3 != brelax.s_3 || frelax.s_5 != brelax.s_5) control = false;
     }

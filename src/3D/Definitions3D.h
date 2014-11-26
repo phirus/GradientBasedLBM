@@ -19,13 +19,7 @@ struct RelaxationPar3D
     RelaxationPar3D(double s2=1, double s3=1, double s5=1, double s11=1, double s17=1):s_2(s2),s_3(s3),s_5(s5),s_11(s11),s_17(s17){};
 };
 
-// /// structure for interpolation paramters
-// struct Interpol
-// {
-//     double chi, eta, kappa, lambda, ny;
-// };
-
-// //=========================== FUNCTIONS ===========================
+//=========================== FUNCTIONS ===========================
 
 /// functions handling basic operations on arrays
 const array3D array_diff_3D(const array3D &one, const array3D &two);

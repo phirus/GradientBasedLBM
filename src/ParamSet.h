@@ -4,31 +4,31 @@
 #include<cmath>
 
 #include"2D/Definitions2D.h"
+#include"3D/Definitions3D.h"
 #include<string.h>
 
 using namespace std;
 
-
-/// collection of all parameters used during the simulation
 class ParamSet
 {
 public:
     /// Lifecycle
-    ParamSet(double omR = 1, double omB = 1,double rhoR = 1, double gammaIni = 2,double sigmaIni = 1e-4, double g = 1e-4, double t_step = 1e-3, double s_step = 1e-3, RelaxationPar2D rel = RelaxationPar2D(1,1,1), double alB = 0.2, double deltaIni = 0.1, double betaIni = 0.99); /// < consructor
+    ParamSet(double omR = 1, double omB = 1,double rhoR = 1, double gammaIni = 2,double sigmaIni = 1e-4, double g = 1e-4, double t_step = 1e-3, double s_step = 1e-3, RelaxationPar3D rel = RelaxationPar3D(1,1,1,1,1), double alB = 0.2, double deltaIni = 0.1, double betaIni = 0.99); /// < consructor
 
     /// get-methods, including calculations if necessary
     const DistributionSetType2D getPhi()const;                   /// < calculates phi, based on alpha_b and rho (density ratio)
     const double getOmega(double psi)const;          /// < return omega, based on inter and the color field
     const ColSet getAk(double omega)const;
+    const RelaxationPar2D getRelaxation2D()const;
     const boost::array<double,12> getEverything()const;
 
     const double getBeta()const{return beta;};
     const double getG()const{return gravity;};
     const double getRhoR()const{return rhoRed;};
-    const Interpol getInter()const{return inter;};
-    const RelaxationPar2D getRelaxation()const{return relax;};
+    const Interpol getInter()const{return inter;};    
     const double getDeltaT()const{return timestep;};
     const double getDeltaX()const{return spacestep;};
+    const RelaxationPar3D getRelaxation3D()const{return relax;};
 
     // needed only for output
     const double getOmegaRed()const{return omegaRed;};
@@ -62,7 +62,7 @@ private:
     double spacestep;            /// < LB timestep
 
     // deduced
-    RelaxationPar2D relax;
+    RelaxationPar3D relax;
     Interpol inter;             /// < interpolation parameters for finding omega, relevant for equilibrium distribution
 
     /// operations

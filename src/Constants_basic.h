@@ -15,6 +15,14 @@ const double MACH_MAX = 0.1; // maximal erlaubte Mach-Zahl
 
 typedef boost::array<double,2> ColSet;         /// < simple 2d vector
 
+//=========================== STRUCTS ===========================
+
+/// structure for interpolation paramters
+struct Interpol
+{
+    double chi, eta, kappa, lambda, ny;
+};
+
 //=========================== FUNCTIONS ===========================
 
 /// sums up all elements

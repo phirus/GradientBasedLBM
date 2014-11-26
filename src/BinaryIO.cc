@@ -111,6 +111,8 @@ void write_restart_file(const Lattice2D& l, const Preprocess& p, const Timetrack
     double mu_ratio = p.getMuRatio();
     double s_3 = p.getS_3();
     double s_5 = p.getS_5();
+    double s_11 = p.getS_11();
+    double s_17 = p.getS_17();
     int width = p.getWidth();
     int height = p.getHeight();
 
@@ -123,6 +125,8 @@ void write_restart_file(const Lattice2D& l, const Preprocess& p, const Timetrack
     file.write(reinterpret_cast<char*> (&mu_ratio), sizeof(double));    
     file.write(reinterpret_cast<char*> (&s_3), sizeof(double));
     file.write(reinterpret_cast<char*> (&s_5), sizeof(double));
+    file.write(reinterpret_cast<char*> (&s_11), sizeof(double));
+    file.write(reinterpret_cast<char*> (&s_17), sizeof(double));
     file.write(reinterpret_cast<char*> (&width), sizeof(int));
     file.write(reinterpret_cast<char*> (&height), sizeof(int));
 
@@ -170,7 +174,7 @@ const bool read_restart_file(Lattice2D& outL, Preprocess& p, Timetrack& t, const
 
         double ReynoldsMax, Morton, Eotvos;
         double resolution, rho_l, gamma;
-        double mu_ratio, s_3, s_5; 
+        double mu_ratio, s_3, s_5, s_11, s_17; 
         int width, height;
 
         file.read((char*) &ReynoldsMax, sizeof(double));
@@ -182,11 +186,13 @@ const bool read_restart_file(Lattice2D& outL, Preprocess& p, Timetrack& t, const
         file.read((char*) &mu_ratio, sizeof(double));
         file.read((char*) &s_3, sizeof(double));
         file.read((char*) &s_5, sizeof(double));
+        file.read((char*) &s_11, sizeof(double));
+        file.read((char*) &s_17, sizeof(double));
 
         file.read((char*) &width, sizeof(int));
         file.read((char*) &height, sizeof(int));
 
-        Preprocess prepro(ReynoldsMax, Morton, Eotvos, resolution, rho_l, gamma, mu_ratio, s_3, s_5, width, height);
+        Preprocess prepro(ReynoldsMax, Morton, Eotvos, resolution, rho_l, gamma, mu_ratio, s_3, s_5, s_11, s_17, width, height);
         
         file.close();
         outL.setParams(param);
@@ -473,11 +479,13 @@ void write_param_log(const ParamSet& p){
     paramLog << "dx = "         << p.getDeltaX()             << endl;
     paramLog << "gravity = "    << p.getG()                  << endl;
 
-    RelaxationPar2D relax = p.getRelaxation();
+    RelaxationPar3D relax = p.getRelaxation3D();
     paramLog << "\n# MRT parameters [-]" << endl;
     paramLog << "s_2 = " << relax.s_2 << endl;
     paramLog << "s_3 = " << relax.s_3 << endl;
     paramLog << "s_5 = " << relax.s_5 << endl;
+    paramLog << "s_11 = " << relax.s_11 << endl;
+    paramLog << "s_17 = " << relax.s_17 << endl;
 
 
     paramLog.close();
@@ -499,6 +507,8 @@ const Preprocess read_preprocess_file(const string& filename){
         mm.insert(pair<string,double>("mu_ratio",2));
         mm.insert(pair<string,double>("s_3",1));
         mm.insert(pair<string,double>("s_5",1));
+        mm.insert(pair<string,double>("s_11",1));
+        mm.insert(pair<string,double>("s_17",1));
         mm.insert(pair<string,double>("width",120));
         mm.insert(pair<string,double>("height",360));
 
@@ -507,7 +517,7 @@ const Preprocess read_preprocess_file(const string& filename){
         for(map<string,double>::iterator it = mm.begin(); it != mm.end(); it++){            
             if( input_query(filename,it->first,tmp) == true ) it->second = tmp;
         }
-    Preprocess prepro(mm.at("Reynolds"),mm.at("Morton"),mm.at("Eotvos"),mm.at("resolution"),mm.at("rho_l"),mm.at("gamma"), mm.at("mu_ratio"), mm.at("s_3"), mm.at("s_5"), mm.at("width"), mm.at("height"));
+    Preprocess prepro(mm.at("Reynolds"),mm.at("Morton"),mm.at("Eotvos"),mm.at("resolution"),mm.at("rho_l"),mm.at("gamma"), mm.at("mu_ratio"), mm.at("s_3"), mm.at("s_5"), mm.at("s_11"), mm.at("s_17"), mm.at("width"), mm.at("height"));
     return prepro;
 }
 
@@ -548,6 +558,8 @@ const ParamSet read_paramset_file(const string& filename){
         mm.insert(pair<string,double>("s_2",1));
         mm.insert(pair<string,double>("s_3",1));
         mm.insert(pair<string,double>("s_5",1));
+        mm.insert(pair<string,double>("s_11",1));
+        mm.insert(pair<string,double>("s_17",1));
 
         mm.insert(pair<string,double>("alpha_blue",0.2));
         mm.insert(pair<string,double>("delta",0.1));
@@ -560,7 +572,7 @@ const ParamSet read_paramset_file(const string& filename){
             if( input_query(filename,it->first,tmp) == true ) it->second = tmp;
         }
 
-    RelaxationPar2D rel(mm.at("s_2"),mm.at("s_3"),mm.at("s_5"));
+    const RelaxationPar3D rel(mm.at("s_2"),mm.at("s_3"),mm.at("s_5"),mm.at("s_11"),mm.at("s_17"));
 
     ParamSet params(mm.at("omega_red"), mm.at("omega_blue"), mm.at("rho_red"), mm.at("gamma"), mm.at("sigma"), mm.at("gravity"), mm.at("dt"), mm.at("dx"), rel, mm.at("alpha_blue"), mm.at("delta"), mm.at("beta")); /// < consructor
     return params;
