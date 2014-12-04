@@ -367,6 +367,13 @@ TEST(Constants2D,Xi)
     EXPECT_DOUBLE_EQ(1,GRAD_WEIGHTS_2D.at(9)*120);
 }
 
+TEST(Constants3D,BReis)
+{
+    EXPECT_DOUBLE_EQ(-4,B_3D[0]*27);
+    EXPECT_DOUBLE_EQ(2,B_3D[1]*27);
+    EXPECT_DOUBLE_EQ(5,B_3D[2]*108);
+}
+
 TEST(Constants3D,W)
 {
     EXPECT_DOUBLE_EQ(1,WEIGHTS_3D.at(0)*3);
@@ -1113,22 +1120,22 @@ TEST(Vector3D,scalar){
     EXPECT_DOUBLE_EQ(259, v1*v3);
 }
 
-// TEST(Vector2D,angle){
-//     Vector2D g(1,1);
+TEST(Vector3D,angle){
+    Vector3D g(1,1,0);
 
-//     EXPECT_DOUBLE_EQ(0, g.Angle(DIRECTION_2D[0]));
-//     EXPECT_DOUBLE_EQ(cos(PI/4), g.Angle(DIRECTION_2D[1]));
-//     EXPECT_DOUBLE_EQ(1, g.Angle(DIRECTION_2D[2]));
-//     EXPECT_DOUBLE_EQ(cos(PI/4), g.Angle(DIRECTION_2D[3]));
-//     EXPECT_DOUBLE_EQ(0, g.Angle(DIRECTION_2D[4]));
-//     EXPECT_DOUBLE_EQ(-cos(PI/4), g.Angle(DIRECTION_2D[5]));
-//     EXPECT_DOUBLE_EQ(-1, g.Angle(DIRECTION_2D[6]));
-//     EXPECT_DOUBLE_EQ(-cos(PI/4), g.Angle(DIRECTION_2D[7]));
-//     EXPECT_DOUBLE_EQ(0, g.Angle(DIRECTION_2D[8]));
+    EXPECT_DOUBLE_EQ(0, g.Angle(DIRECTION_3D[0]));
+    EXPECT_DOUBLE_EQ(cos(PI/4), g.Angle(DIRECTION_3D[1]));
+    EXPECT_DOUBLE_EQ(1, g.Angle(DIRECTION_3D[2]));
+    EXPECT_DOUBLE_EQ(cos(PI/4), g.Angle(DIRECTION_3D[3]));
+    EXPECT_DOUBLE_EQ(0, g.Angle(DIRECTION_3D[4]));
+    EXPECT_DOUBLE_EQ(-cos(PI/4), g.Angle(DIRECTION_3D[5]));
+    EXPECT_DOUBLE_EQ(-1, g.Angle(DIRECTION_3D[6]));
+    EXPECT_DOUBLE_EQ(-cos(PI/4), g.Angle(DIRECTION_3D[7]));
+    EXPECT_DOUBLE_EQ(0, g.Angle(DIRECTION_3D[8]));
 
-//     Vector2D g1(1e-10, -1e-10), g2(1e-6, -1e-6);
-//     EXPECT_DOUBLE_EQ(1,g1.Angle(g2));
-//     EXPECT_DOUBLE_EQ(0,g1.Angle(DIRECTION_2D[0]));
-// }
+    Vector3D g1(1e-10, -1e-10, -1e-10), g2(1e-6, -1e-6, -1e-6);
+    EXPECT_DOUBLE_EQ(1,g1.Angle(g2));
+    EXPECT_DOUBLE_EQ(0,g1.Angle(DIRECTION_3D[0]));
+}
 
 #endif
