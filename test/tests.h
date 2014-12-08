@@ -369,9 +369,9 @@ TEST(Constants2D,Xi)
 
 TEST(Constants3D,BReis)
 {
-    EXPECT_DOUBLE_EQ(-4,B_3D[0]*27);
-    EXPECT_DOUBLE_EQ(2,B_3D[1]*27);
-    EXPECT_DOUBLE_EQ(5,B_3D[2]*108);
+    EXPECT_DOUBLE_EQ(-1,B_3D[0]*3);
+    EXPECT_DOUBLE_EQ(1,B_3D[1]*18);
+    EXPECT_DOUBLE_EQ(1,B_3D[2]*36);
 }
 
 TEST(Constants3D,W)
