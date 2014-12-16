@@ -5,7 +5,6 @@
 //=========================== LIFECYCLE ===========================
 
 Lattice2D::Lattice2D(int x_size, int y_size,double fzero_dense, double fzero_dilute):
-
 xsize(x_size)
 ,ysize(y_size)
 ,data(new field2D(boost::extents[xsize][ysize]))

@@ -67,4 +67,4 @@ const DistributionSetType2D eqDistro(const ColSet& rho_k, const VeloSet2D& u, co
 
 const DistributionSetType2D calculate_forcing_term(Vector2D G, VeloSet2D u);
 
-#endif // LATTICE_H
+#endif // LATTICE2D_H
