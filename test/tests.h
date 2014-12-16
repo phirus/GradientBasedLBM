@@ -386,6 +386,18 @@ TEST(Constants3D,W)
     EXPECT_DOUBLE_EQ(1,WEIGHTS_3D.at(12)*36);
 }
 
+TEST(Constants3D,Xi)
+{
+    for(int i = 0; i<33; i++)
+    {
+        if (i == 0) EXPECT_DOUBLE_EQ(0,GRAD_WEIGHTS_3D[i]);
+        if (i == 1 || i == 3 || i == 5 || i == 7 || i == 9 || i == 14) EXPECT_DOUBLE_EQ(2,GRAD_WEIGHTS_3D[i]*15);
+        if (i == 2 || i == 4 || i == 6 || i == 8 || i == 10 || i == 11 || i == 12 || i == 13 || i == 15 || i == 16 || i == 17 || i == 18 ) EXPECT_DOUBLE_EQ(1,GRAD_WEIGHTS_3D[i]*15);
+        if( i >= 19 && i <= 26 ) EXPECT_DOUBLE_EQ(1,GRAD_WEIGHTS_3D[i]*60);
+        if( i > 26) EXPECT_DOUBLE_EQ(1,GRAD_WEIGHTS_3D[i]*120);
+    }
+}
+
 TEST(Definitions2D,array2D_diff_add)
 {
     const array2D one = {{100, 5.5, 1.4, -2, 0, 0, 1, 91.6, 45}};
