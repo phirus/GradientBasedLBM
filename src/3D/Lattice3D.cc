@@ -380,41 +380,44 @@ void Lattice3D::setF(int x, int y, int z, int color, int pos, double value)
     (*data)[x][y][z].setF(f);
 }
 
-// //=========================== OPERATOR ===========================
+//=========================== OPERATOR ===========================
 
-// Lattice2D& Lattice2D::operator=(const Lattice2D& other){
-//     this->setData(other.getData(), other.getSize()[0], other.getSize()[1]);
-//     this->setParams(other.getParams());
+Lattice3D& Lattice3D::operator=(const Lattice3D& other){
+    this->setData(other.getData(), other.getSize()[0], other.getSize()[1], other.getSize()[2]);
+    this->setParams(other.getParams());
 
-//     return *this;
-// }
+    return *this;
+}
 
-// const bool Lattice2D::operator==(const Lattice2D& other)const
-// {
-//     bool exit = true;
-//     ColSet extent = other.getSize();
-//     if (xsize == extent[0] && ysize == extent[1])
-//     {
-//         ParamSet pOther = other.getParams();
-//         if (!(param == pOther)) exit = false;
+const bool Lattice3D::operator==(const Lattice3D& other)const
+{
+    bool exit = true;
+    DimSet3D extent = other.getSize();
+    if (xsize == extent[0] && ysize == extent[1] && zsize == extent[2])
+    {
+        ParamSet pOther = other.getParams();
+        if (!(param == pOther)) exit = false;
 
-//         field2D otherData = other.getData();
-//         for (int x = 0; x< xsize;x++)
-//         {
-//             for (int y = 0; y<ysize;y++)
-//             {
-//                 if (!((*data)[x][y]==otherData[x][y]))
-//                 {
-//                     exit = false;
-//                     break;
-//                 }
-//             }
-//         }
-//     }
-//     else exit = false;
+        field3D otherData = other.getData();
+        for (int x = 0; x< xsize;x++)
+        {
+            for (int y = 0; y<ysize;y++)
+            {
+                for (int z = 0; z<zsize;z++)
+                {
+                    if (!((*data)[x][y][z]==otherData[x][y][z]))
+                        {
+                            exit = false;
+                            break;
+                        } // endif
+                } // endfor z
+            } // endfor y
+        } //endfor x
+    } // endif
+    else exit = false;
    
-//     return exit;
-// }
+    return exit;
+}
 
 // ///////////////////////////// PRIVATE /////////////////////////////
 

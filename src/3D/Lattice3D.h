@@ -49,9 +49,9 @@ public:
     void setF(int x, int y, int z, int color, int index, double value);
     void setParams(const ParamSet& newParam){param = newParam;}; /// < set a new parameter set
     
-//     /// operators
-//     Lattice2D& operator=(const Lattice2D& other);
-//     const bool operator==(const Lattice2D& other)const;
+    /// operators
+    Lattice3D& operator=(const Lattice3D& other);
+    const bool operator==(const Lattice3D& other)const;
 
 private:
     int xsize, ysize, zsize;   /// < extent of the Lattice3D
