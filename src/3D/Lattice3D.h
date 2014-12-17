@@ -16,7 +16,7 @@ class Lattice3D
 public:
     /// Lifecycle
     Lattice3D(int x_size=10, int y_size=10, int z_size=10, double fzero_red=1, double fzero_blue=1);
-    // Lattice3D(const Lattice3D& other);
+    Lattice3D(const Lattice3D& other);
     ~Lattice3D();
 
 //     /// operations
@@ -36,18 +36,18 @@ public:
 //     void closedBox(); /// < initialize the Lattice2D (set up walls and calculate rho)
 //     void bottomWall(); /// < initialize the Lattice2D (set up walls and calculate rho)
 
-//     /// accessors
-//     const ColSet getSize()const; /// < get the extend of the Lattice2D
-//     const field2D getData()const{return *data;}; /// < get the data field2D
-//     const Cell2D getCell(int x, int y)const{return (*data)[x][y];};  /// < get a Cell
-//     const ParamSet getParams()const{return param;}; /// < get the paramter set
-//     const DistributionSetType2D getF(int x, int y)const{return (*data)[x][y].getF();};          /// < get F
+    /// accessors
+    const DimSet3D getSize()const; /// < get the extend of the Lattice3D
+    const field3D getData()const{return *data;}; /// < get the data field3D
+    const Cell3D getCell(int x, int y, int z)const{return (*data)[x][y][z];};  /// < get a Cell
+    const ParamSet getParams()const{return param;}; /// < get the paramter set
+    const DistributionSetType3D getF(int x, int y, int z)const{return (*data)[x][y][z].getF();};          /// < get F
 
-//     void setData(const field2D& ndata, int x, int y); /// < set the data field2D (and size)
-//     void setCell(int y, int x, const Cell2D& ncell);    /// < set a Cell
-//     void setF(int x, int y, int color, const array2D& nf);
-//     void setF(int x, int y, int color, int index, double value);
-//     void setParams(const ParamSet& newParam){param = newParam;}; /// < set a new parameter set
+    void setData(const field3D& ndata, int x, int y, int z); /// < set the data field3D (and size)
+    void setCell(int x, int y, int z, const Cell3D& ncell);    /// < set a Cell
+    void setF(int x, int y, int z, int color, const array3D& nf);
+    void setF(int x, int y, int z, int color, int index, double value);
+    void setParams(const ParamSet& newParam){param = newParam;}; /// < set a new parameter set
     
 //     /// operators
 //     Lattice2D& operator=(const Lattice2D& other);

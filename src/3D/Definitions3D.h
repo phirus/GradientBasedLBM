@@ -9,6 +9,7 @@
 //=========================== TYPES ===========================
 
 typedef boost::array<double,19> array3D;       /// < used to describe single distributions
+typedef boost::array<double,3> DimSet3D;         /// < simple 3d vector
 typedef boost::array<array3D,2> DistributionSetType3D;         /// < merge two distributions into a single variable
 typedef boost::array<Vector3D,19> direction3D ; /// < collection of 13 direction vectors (D2Q13)
 typedef boost::array<Vector3D,2> VeloSet3D;

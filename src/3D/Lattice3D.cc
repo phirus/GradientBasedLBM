@@ -23,15 +23,15 @@ xsize(x_size)
     }
 }
 
-// Lattice3D::Lattice3D(const Lattice3D& other):
-// xsize(other.getSize()[0])
-// ,ysize(other.getSize()[1])
-// ,zsize(other.getSize()[2])
-// ,data(new field3D(boost::extents[xsize][ysize][zsize]))
-// ,param(other.getParams())
-// {
-//     (*data) = other.getData();
-// }
+Lattice3D::Lattice3D(const Lattice3D& other):
+xsize(other.getSize()[0])
+,ysize(other.getSize()[1])
+,zsize(other.getSize()[2])
+,data(new field3D(boost::extents[xsize][ysize][zsize]))
+,param(other.getParams())
+{
+    (*data) = other.getData();
+}
 
 
 Lattice3D::~Lattice3D(){
@@ -345,39 +345,40 @@ Lattice3D::~Lattice3D(){
 //     }
 // }
 
-// //=========================== ACCESSORS ===========================
+//=========================== ACCESSORS ===========================
 
-// const ColSet Lattice2D::getSize()const
-// {
-//     ColSet pony = {{xsize, ysize}};
-//     return pony;
-// }
+const DimSet3D Lattice3D::getSize()const
+{
+    DimSet3D pony = {{xsize, ysize,zsize}};
+    return pony;
+}
 
-// void Lattice2D::setData(const field2D& ndata, int x, int y){
-//     data->resize(boost::extents[x][y]);
-//     *data = ndata;
-//     xsize = x;
-//     ysize = y;
-// }
+void Lattice3D::setData(const field3D& ndata, int x, int y, int z){
+    data->resize(boost::extents[x][y][z]);
+    *data = ndata;
+    xsize = x;
+    ysize = y;
+    zsize = z;
+}
 
-// void Lattice2D::setCell(int x, int y, const Cell2D& ncell)
-// {
-//     if (y >= 0 && y < ysize && x >= 0 && x < xsize) (*data)[x][y] = ncell;
-// }
+void Lattice3D::setCell(int x, int y, int z, const Cell3D& ncell)
+{
+    if (y >= 0 && y < ysize && x >= 0 && x < xsize && z >= 0 && z < zsize) (*data)[x][y][z] = ncell;
+}
 
-// void Lattice2D::setF(int x, int y, int color, const array2D& nf)
-// {
-//     DistributionSetType2D f = (*data)[x][y].getF();
-//     f[color] = nf;
-//     (*data)[x][y].setF(f);
-// }
+void Lattice3D::setF(int x, int y, int z, int color, const array3D& nf)
+{
+    DistributionSetType3D f = (*data)[x][y][z].getF();
+    f[color] = nf;
+    (*data)[x][y][z].setF(f);
+}
 
-// void Lattice2D::setF(int x, int y, int color, int pos, double value)
-// {
-//     DistributionSetType2D f = (*data)[x][y].getF();
-//     f[color][pos] = value;
-//     (*data)[x][y].setF(f);
-// }
+void Lattice3D::setF(int x, int y, int z, int color, int pos, double value)
+{
+    DistributionSetType3D f = (*data)[x][y][z].getF();
+    f[color][pos] = value;
+    (*data)[x][y][z].setF(f);
+}
 
 // //=========================== OPERATOR ===========================
 
