@@ -61,27 +61,30 @@ Lattice3D::~Lattice3D(){
 //     }
 // }
 
-// void Lattice2D::balance(double& mass, double& momentum)const
-// {
-//     VeloSet2D u;
-//     double rho;
+void Lattice3D::balance(double& mass, double& momentum)const
+{
+    VeloSet3D u;
+    double rho;
 
-//     mass = 0;
-//     momentum = 0;
+    mass = 0;
+    momentum = 0;
 
-//     for (int j=0; j<ysize; j++)
-//     {
-//         for (int i=0; i<xsize; i++)
-//         {
-//             (*data)[i][j].calcRho();
-//             rho = sum((*data)[i][j].getRho());
-//             u = (*data)[i][j].getU();
+    for (int j=0; j<ysize; j++)
+    {
+        for (int i=0; i<xsize; i++)
+        {
+            for (int k=0;k<zsize; k++)
+            {
+                (*data)[i][j][k].calcRho();
+                rho = sum((*data)[i][j][k].getRho());
+                u = (*data)[i][j][k].getU();
 
-//             mass += rho;
-//             momentum += rho * sqrt(u[0]*u[0]);
-//         }
-//     }
-// }
+                mass += rho;
+                momentum += rho * sqrt(u[0]*u[0]);
+            }
+        }
+    }
+}
 
 // void Lattice2D::mass_balance(double& liquid_mass, double& gas_mass)const
 // {
@@ -101,16 +104,19 @@ Lattice3D::~Lattice3D(){
 //     }
 // }
 
-// void Lattice2D::overallRho()
-// {
-//     for (int j=0; j<ysize; j++)
-//     {
-//         for (int i=0; i<xsize; i++)
-//         {
-//             (*data)[i][j].calcRho();
-//         }
-//     }
-// }
+void Lattice3D::overallRho()
+{
+    for (int i=0; i<xsize; i++)
+    {
+        for (int j=0; j<ysize; j++)
+        {
+            for (int k = 0; k<zsize; k++)
+            {
+                (*data)[i][j][k].calcRho();
+            } // end for z
+        } // end for y
+    } // end for x
+}
 
 direction3D Lattice3D::directions(int x, int y, int z)const
 {
