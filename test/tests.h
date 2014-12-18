@@ -9,6 +9,7 @@
 #include"../src/3D/Definitions3D.h"
 #include"../src/3D/Constants3D.h"
 #include"../src/3D/Cell3D.h"
+#include"../src/3D/Lattice3D.h"
 
 using namespace std;
 
@@ -765,6 +766,309 @@ TEST(Lattice2D, copy_constr){
 TEST(Lattice2D, assign){ 
     Lattice2D lBig(100,20);
     Lattice2D tmp;
+    tmp = lBig;
+    EXPECT_EQ(lBig,tmp);
+}
+
+
+
+
+
+
+TEST(Lattice3D,constructor)
+{
+    const Lattice3D lattice;
+    EXPECT_EQ(10, lattice.getSize()[2]);
+    EXPECT_EQ(10, lattice.getSize()[1]);
+    EXPECT_EQ(10, lattice.getSize()[0]);
+    EXPECT_EQ(1,lattice.getF(1,1,1)[0][0]);
+}
+
+// TEST(Lattice2D,stream)
+// {
+//     Lattice2D lattice(3,3,0,0);
+
+//     array2D f1 = {{0,1,0,0,0,0,0,0,0}};
+//     array2D f2 = {{0,0,1,0,0,0,0,0,0}};
+//     array2D f3 = {{0,0,0,1,0,0,0,0,0}};
+//     array2D f4 = {{0,0,0,0,1,0,0,0,0}};
+//     array2D f5 = {{0,0,0,0,0,1,0,0,0}};
+//     array2D f6 = {{0,0,0,0,0,0,1,0,0}};
+//     array2D f7 = {{0,0,0,0,0,0,0,1,0}};
+//     array2D f8 = {{0,0,0,0,0,0,0,0,1}};
+
+//     lattice.setF(0,0,0,f2);
+//     lattice.setF(1,0,0,f3);
+//     lattice.setF(2,0,0,f4);
+//     lattice.setF(0,1,0,f1);
+//     lattice.setF(2,1,0,f5);
+//     lattice.setF(0,2,0,f8);
+//     lattice.setF(1,2,0,f7);
+//     lattice.setF(2,2,0,f6);
+
+//     array2D fcenter = {{0,1,1,1,1,1,1,1,1}};
+//     lattice.setF(1,1,1,fcenter);
+
+//     lattice.streamAll();
+
+//     EXPECT_EQ(fcenter,lattice.getF(1,1)[0]);
+
+//     EXPECT_EQ(f6,lattice.getF(0,0)[1]);
+//     EXPECT_EQ(f7,lattice.getF(1,0)[1]);
+//     EXPECT_EQ(f8,lattice.getF(2,0)[1]);
+//     EXPECT_EQ(f5,lattice.getF(0,1)[1]);
+//     EXPECT_EQ(f1,lattice.getF(2,1)[1]);
+//     EXPECT_EQ(f4,lattice.getF(0,2)[1]);
+//     EXPECT_EQ(f3,lattice.getF(1,2)[1]);
+//     EXPECT_EQ(f2,lattice.getF(2,2)[1]);
+// }
+
+// TEST(Lattice2D,bounceSmall)
+// {
+//     Lattice2D lattice(3,3,0,0);
+//     lattice.closedBox();
+
+//     array2D fcenter = {{0,1,1,1,1,1,1,1,1}};
+//     array2D fzero = {{0,0,0,0,0,0,0,0,0}};
+
+//     lattice.setF(1,1,0,fcenter);
+//     lattice.setF(1,1,1,fcenter);
+
+//     lattice.streamAll();
+
+//     EXPECT_EQ(fzero,lattice.getF(0,0)[1]);
+//     EXPECT_EQ(fzero,lattice.getF(0,1)[1]);
+//     EXPECT_EQ(fzero,lattice.getF(0,1)[1]);
+//     EXPECT_EQ(fzero,lattice.getF(1,0)[1]);
+//     EXPECT_EQ(fzero,lattice.getF(1,2)[1]);
+//     EXPECT_EQ(fzero,lattice.getF(2,0)[1]);
+//     EXPECT_EQ(fzero,lattice.getF(2,1)[1]);
+//     EXPECT_EQ(fzero,lattice.getF(2,2)[1]);
+
+//     EXPECT_EQ(fzero,lattice.getF(0,0)[1]);
+//     EXPECT_EQ(fzero,lattice.getF(0,1)[1]);
+//     EXPECT_EQ(fzero,lattice.getF(0,1)[1]);
+//     EXPECT_EQ(fzero,lattice.getF(1,0)[1]);
+//     EXPECT_EQ(fzero,lattice.getF(1,2)[1]);
+//     EXPECT_EQ(fzero,lattice.getF(2,0)[1]);
+//     EXPECT_EQ(fzero,lattice.getF(2,1)[1]);
+//     EXPECT_EQ(fzero,lattice.getF(2,2)[1]);
+
+//     EXPECT_EQ(fcenter,lattice.getF(1,1)[0]);
+//     EXPECT_EQ(fcenter,lattice.getF(1,1)[1]);
+// }
+
+// TEST(Lattice2D,bounceClosed)
+// {
+//     Lattice2D lattice(5,5,0,0);
+//     lattice.closedBox();
+//     lattice.setCell(2,2,Cell2D(0,0,true));
+//     Cell2D tmp = lattice.getCell(2,2);
+//     EXPECT_EQ(true,tmp.getIsSolid());
+
+//     const array2D f1 = {{0,1,0,0,0,0,0,0,0}};
+//     const array2D f2 = {{0,0,1,0,0,0,0,0,0}};
+//     const array2D f3 = {{0,0,0,1,0,0,0,0,0}};
+//     const array2D f4 = {{0,0,0,0,1,0,0,0,0}};
+//     const array2D f5 = {{0,0,0,0,0,1,0,0,0}};
+//     const array2D f6 = {{0,0,0,0,0,0,1,0,0}};
+//     const array2D f7 = {{0,0,0,0,0,0,0,1,0}};
+//     const array2D f8 = {{0,0,0,0,0,0,0,0,1}};
+
+//     lattice.setF(1,1,0,f2);
+//     lattice.setF(2,1,0,f3);
+//     lattice.setF(3,1,0,f4);
+//     lattice.setF(1,2,0,f1);
+//     lattice.setF(3,2,0,f5);
+//     lattice.setF(1,3,0,f8);
+//     lattice.setF(2,3,0,f7);
+//     lattice.setF(3,3,0,f6);
+
+//     lattice.setF(1,1,1,f2);
+//     lattice.setF(2,1,1,f3);
+//     lattice.setF(3,1,1,f4);
+//     lattice.setF(1,2,1,f1);
+//     lattice.setF(3,2,1,f5);
+//     lattice.setF(1,3,1,f8);
+//     lattice.setF(2,3,1,f7);
+//     lattice.setF(3,3,1,f6);
+
+//     lattice.streamAll();
+
+//     EXPECT_EQ(f6,lattice.getF(1,1)[0]);
+//     EXPECT_EQ(f7,lattice.getF(2,1)[0]);
+//     EXPECT_EQ(f8,lattice.getF(3,1)[0]);
+//     EXPECT_EQ(f5,lattice.getF(1,2)[0]);
+//     EXPECT_EQ(f1,lattice.getF(3,2)[0]);
+//     EXPECT_EQ(f4,lattice.getF(1,3)[0]);
+//     EXPECT_EQ(f3,lattice.getF(2,3)[0]);
+//     EXPECT_EQ(f2,lattice.getF(3,3)[0]);
+
+//     EXPECT_EQ(f6,lattice.getF(1,1)[1]);
+//     EXPECT_EQ(f7,lattice.getF(2,1)[1]);
+//     EXPECT_EQ(f8,lattice.getF(3,1)[1]);
+//     EXPECT_EQ(f5,lattice.getF(1,2)[1]);
+//     EXPECT_EQ(f1,lattice.getF(3,2)[1]);
+//     EXPECT_EQ(f4,lattice.getF(1,3)[1]);
+//     EXPECT_EQ(f3,lattice.getF(2,3)[1]);
+//     EXPECT_EQ(f2,lattice.getF(3,3)[1]);
+// }
+
+// TEST(Lattice2D,bounceClosed2)
+// {
+//     Lattice2D lattice(5,5,0,0);
+//     lattice.closedBox();
+//     array2D fcenter = {{0,1,1,1,1,1,1,1,1}};
+//     lattice.setF(2,2,0,fcenter);
+//     lattice.setF(2,2,1,fcenter);
+//     lattice.streamAll();
+//     lattice.streamAll();
+//     lattice.streamAll();
+
+//     EXPECT_EQ(fcenter,lattice.getF(2,2)[0]);
+//     EXPECT_EQ(fcenter,lattice.getF(2,2)[1]);
+// }
+
+// TEST(Lattice2D,periodic)
+// {
+//     Lattice2D lattice(5,5,0,0);
+//     array2D fcenter = {{0,1,1,1,1,1,1,1,1}};
+//     lattice.setF(2,2,0,fcenter);
+//     lattice.setF(2,2,1,fcenter);
+
+//     // 5 mal
+//     lattice.streamAll();
+//     lattice.streamAll();
+//     lattice.streamAll();
+//     lattice.streamAll();
+//     lattice.streamAll();
+
+//     EXPECT_EQ(fcenter,lattice.getF(2,2)[0]);
+//     EXPECT_EQ(fcenter,lattice.getF(2,2)[1]);
+// }
+
+// TEST(Lattice2D,streamRho)
+// {
+//     Cell2D tmp;
+
+//     Lattice2D lattice(5,5,0,0);
+//     lattice.closedBox();
+
+//     array2D fcenter = {{0,1,1,1,1,1,1,1,1}};
+//     lattice.setF(2,2,0,fcenter);
+//     lattice.setF(2,2,1,fcenter);
+//     lattice.streamAll();
+
+//     tmp = lattice.getCell(2,2);
+//     EXPECT_EQ(0,tmp.getRho()[1]);
+//     tmp = lattice.getCell(1,2);
+//     EXPECT_EQ(1,tmp.getRho()[1]);
+//     tmp = lattice.getCell(3,2);
+//     EXPECT_EQ(1,tmp.getRho()[1]);
+
+//     lattice.streamAll();
+//     tmp = lattice.getCell(1,2);
+//     EXPECT_EQ(1,tmp.getRho()[1]);
+//     tmp = lattice.getCell(3,2);
+//     EXPECT_EQ(1,tmp.getRho()[1]);
+// }
+
+// TEST(Lattice2D,collideSingle)
+// {
+//     Lattice2D lattice(5,5,1,1);
+//     lattice.closedBox();
+
+//     lattice.collideAll();
+//     Cell2D cell = lattice.getCell(2,2);
+//     double rho,usqr;
+//     cell.calcRho();
+//     rho = sum(cell.getRho());
+//     VeloSet2D u = cell.getU();
+//     usqr = u[0]*u[0];
+
+//     EXPECT_DOUBLE_EQ(2.0,rho);
+//     EXPECT_NEAR(0,usqr,1e-10);
+// }
+
+// TEST(Lattice2D, directions)
+// {
+//     Lattice2D lattice(5,5);
+//     direction2D dir = lattice.directions(0,0);
+
+//     boost::array<int,13> x = {{0,1,1,0,4,4,4,0,1,2,0,3,0}};
+//     boost::array<int,13> y = {{0,0,1,1,1,0,4,4,4,0,2,0,3}};
+//     for(int q=0; q<13;q++){
+//     EXPECT_EQ(y[q],dir[q].y);
+//     EXPECT_EQ(x[q],dir[q].x);
+//     }
+// }
+
+// TEST(Lattice2D, Gradient)
+// {
+//     Lattice2D lattice(5,5,0,0);
+//     array2D f = {{1,0,0,0,0,0,0,0,0}};
+
+//     for (int i=0; i<5; i++)
+//     {
+//         lattice.setF(0,i,1,f);
+//         lattice.setF(1,i,1,f);
+//         lattice.setF(2,i,1,f);
+//         lattice.setF(3,i,0,f);
+//         lattice.setF(4,i,0,f);
+//     }
+//     Cell2D cell;
+//     for (int i = 0; i<5; i++)
+//     {
+//         for (int j = 0; j<5; j++)
+//         {
+//             cell = lattice.getCell(j,i);
+//             cell.calcRho();
+//             lattice.setCell(j,i,cell);
+//         }
+
+//     }
+//     Vector2D grad = lattice.getGradient(2,2);
+//     double abs = grad.Abs();
+//     grad.x /= abs;
+//     grad.y /= abs;
+
+//     EXPECT_DOUBLE_EQ(1,grad.x); // y-Richtung
+//     EXPECT_DOUBLE_EQ(0,grad.y); // x-Richung
+// }
+
+// TEST(Lattice2D,collisionBalanceAll)
+// {
+//     Lattice2D lattice(5,5,1,1);
+//     lattice.closedBox();
+//     double mass, momentum;
+
+//     lattice.balance(mass, momentum);
+//     EXPECT_DOUBLE_EQ(18,mass);
+//     EXPECT_DOUBLE_EQ(0,momentum);
+
+//     lattice.collideAll();
+//     lattice.streamAll();
+//     lattice.balance(mass, momentum);
+//     EXPECT_DOUBLE_EQ(18,mass);
+//     EXPECT_NEAR(0,momentum,1e-10);
+
+//     lattice.collideAll();
+//     lattice.streamAll();
+
+//     lattice.balance(mass, momentum);
+//     EXPECT_DOUBLE_EQ(18,mass);
+//     EXPECT_NEAR(0,momentum,1e-10);
+// }
+
+TEST(Lattice3D, copy_constr){
+    Lattice3D lBig(100,20,15);
+    Lattice3D tmp(lBig);
+    EXPECT_EQ(lBig,tmp);
+}
+
+TEST(Lattice3D, assign){ 
+    Lattice3D lBig(100,20,15);
+    Lattice3D tmp;
     tmp = lBig;
     EXPECT_EQ(lBig,tmp);
 }
