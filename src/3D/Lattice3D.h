@@ -25,7 +25,7 @@ public:
 //     void balance(double& mass, double& momentum)const; /// < monitor overall mass and momentum
 //     void mass_balance(double& liquid_mass, double& gas_mass)const;
 //     void overallRho();
-//     direction2D directions(int x, int y)const; /// < calculates positions of neighboring sites (periodical)
+    direction3D directions(int x, int y, int z)const; /// < calculates positions of neighboring sites (periodical)
 //     const Vector2D getGradient(int x, int y)const; /// < calculates the color gradient on the position (y,x)
         
 //     /// LB steps

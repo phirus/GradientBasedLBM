@@ -112,24 +112,29 @@ Lattice3D::~Lattice3D(){
 //     }
 // }
 
-// direction2D Lattice2D::directions(int x, int y)const
-// {
-//     direction2D dir;
-//     int tmp;
-//     for (int q=0; q<13; q++)
-//     {
-//         tmp = x + DIRECTION_2D[q].x;
-//         if (tmp<0) tmp += xsize;
-//         if (tmp>= xsize) tmp -= xsize;
-//         dir[q].x = tmp;
+direction3D Lattice3D::directions(int x, int y, int z)const
+{
+    direction3D dir;
+    int tmp;
+    for (int q=0; q<33; q++)
+    {
+        tmp = x + DIRECTION_3D[q].x;
+        if (tmp<0) tmp += xsize;
+        if (tmp>= xsize) tmp -= xsize;
+        dir[q].x = tmp;
 
-//         tmp = y + DIRECTION_2D[q].y;
-//         if (tmp<0) tmp += ysize;
-//         if (tmp>= ysize) tmp -= ysize;
-//         dir[q].y = tmp;
-//     }
-//     return dir;
-// }
+        tmp = y + DIRECTION_3D[q].y;
+        if (tmp<0) tmp += ysize;
+        if (tmp>= ysize) tmp -= ysize;
+        dir[q].y = tmp;
+
+        tmp = z + DIRECTION_3D[q].z;
+        if (tmp<0) tmp += zsize;
+        if (tmp>= zsize) tmp -= zsize;
+        dir[q].z = tmp;
+    }
+    return dir;
+}
 
 // const Vector2D Lattice2D::getGradient(int x, int y)const
 // {
@@ -421,7 +426,7 @@ const bool Lattice3D::operator==(const Lattice3D& other)const
 
 // ///////////////////////////// PRIVATE /////////////////////////////
 
-// //=========================== OPERATIONS ===========================
+//=========================== OPERATIONS ===========================
 
 void Lattice3D::linearIndex(int index, int& x, int& y, int& z)const
 {

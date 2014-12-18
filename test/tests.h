@@ -990,18 +990,21 @@ TEST(Lattice3D,constructor)
 //     EXPECT_NEAR(0,usqr,1e-10);
 // }
 
-// TEST(Lattice2D, directions)
-// {
-//     Lattice2D lattice(5,5);
-//     direction2D dir = lattice.directions(0,0);
+TEST(Lattice3D, directions)
+{
+    Lattice3D lattice(10,9,8);
+    direction3D dir = lattice.directions(1,2,0);
 
-//     boost::array<int,13> x = {{0,1,1,0,4,4,4,0,1,2,0,3,0}};
-//     boost::array<int,13> y = {{0,0,1,1,1,0,4,4,4,0,2,0,3}};
-//     for(int q=0; q<13;q++){
-//     EXPECT_EQ(y[q],dir[q].y);
-//     EXPECT_EQ(x[q],dir[q].x);
-//     }
-// }
+    boost::array<int,33> x = {{1,2,2,1,0,0,0,1,2,1,2,1,0,1,1,2,1,0,1,2,0,0,2,2,0,0,2,3,9,1,1,1,1}};
+    boost::array<int,33> y = {{2,2,3,3,3,2,1,1,1,2,2,3,2,1,2,2,3,2,1,3,3,1,1,3,3,1,1,2,2,4,0,2,2}};
+    boost::array<int,33> z = {{0,0,0,0,0,0,0,0,0,1,1,1,1,1,7,7,7,7,7,1,1,1,1,7,7,7,7,0,0,0,0,2,6}};
+    
+    for(int q=0; q<33;q++){
+    EXPECT_EQ(x[q],dir[q].x);
+    EXPECT_EQ(y[q],dir[q].y);
+    EXPECT_EQ(z[q],dir[q].z);
+    }
+}
 
 // TEST(Lattice2D, Gradient)
 // {
