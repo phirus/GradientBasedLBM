@@ -58,7 +58,7 @@ private:
     field3D * data;    
     ParamSet param;     /// < set of parameters used during the simulation
 
-    // inline void linearIndex(int index, int& x, int& y)const;
+    void linearIndex(int index, int& x, int& y, int& z)const;
     // void streamAndBouncePull(Cell2D& tCell, const direction2D& dir)const; /// < internal streaming mechanism with bounce back
 };
 

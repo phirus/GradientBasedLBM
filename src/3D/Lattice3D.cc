@@ -423,11 +423,12 @@ const bool Lattice3D::operator==(const Lattice3D& other)const
 
 // //=========================== OPERATIONS ===========================
 
-// inline void Lattice2D::linearIndex(int index, int& x, int& y)const
-// {
-//     x = (index)%xsize;
-//     y = (index)/xsize;
-// }
+void Lattice3D::linearIndex(int index, int& x, int& y, int& z)const
+{
+    x = (index)%xsize;
+    y = ((index)/xsize)%ysize;
+    z = (index)/(xsize * ysize);
+}
 
 // void Lattice2D::streamAndBouncePull(Cell2D& tCell, const direction2D& dir)const
 // {
