@@ -62,9 +62,9 @@ private:
     // void streamAndBouncePull(Cell2D& tCell, const direction2D& dir)const; /// < internal streaming mechanism with bounce back
 };
 
-// /// calculates the equilibrium distribution based of a cell
-// const DistributionSetType2D eqDistro(const ColSet& rho_k, const VeloSet2D& u, const DistributionSetType2D& phi);
+/// calculates the equilibrium distribution based of a cell
+const DistributionSetType2D eqDistro(const ColSet& rho_k, const VeloSet2D& u, const DistributionSetType2D& phi);
 
-// const DistributionSetType2D calculate_forcing_term(Vector2D G, VeloSet2D u);
+const DistributionSetType3D calculate_forcing_term(Vector3D G, VeloSet3D u);
 
 #endif // LATTICE3D_H

@@ -528,34 +528,34 @@ void Lattice3D::linearIndex(int index, int& x, int& y, int& z)const
 //     tCell.setF(ftmp);
 // }
 
-// ///////////////////////////// C-STYLE /////////////////////////////
+///////////////////////////// C-STYLE /////////////////////////////
 
-// //=========================== OPERATIONS ===========================
+//=========================== OPERATIONS ===========================
 
-// const DistributionSetType2D eqDistro(const ColSet& rho_k, const VeloSet2D& u, const DistributionSetType2D& phi)
-// {
-//     DistributionSetType2D feq;
-//     Vector2D velo = (u[0] * rho_k[0] + u[1] * rho_k[1]) * (1.0 / (rho_k[0]+rho_k[1])) ;
-//     double usqr = velo*velo;
+const DistributionSetType3D eqDistro(const ColSet& rho_k, const VeloSet3D& u, const DistributionSetType3D& phi)
+{
+    DistributionSetType3D feq;
+    Vector3D velo = (u[0] * rho_k[0] + u[1] * rho_k[1]) * (1.0 / (rho_k[0]+rho_k[1])) ;
+    double usqr = velo*velo;
    
-//     for (int i=0; i<9; i++)
-//     {
-//         double scal = velo*DIRECTION_2D[i];
-//         for (int color = 0; color<=1; color++)
-//         {
-//             feq[color][i] = rho_k[color] * ( phi[color][i] + WEIGHTS_2D[i] * ( 3 * scal + 4.5 * (scal*scal) - 1.5 * usqr));
-//         }
-//     }
-//     return feq;
-// }
+    for (int i=0; i<19; i++)
+    {
+        double scal = velo*DIRECTION_3D[i];
+        for (int color = 0; color<=1; color++)
+        {
+            feq[color][i] = rho_k[color] * ( phi[color][i] + WEIGHTS_3D[i] * ( 3 * scal + 4.5 * (scal*scal) - 1.5 * usqr));
+        }
+    }
+    return feq;
+}
 
-// const DistributionSetType2D calculate_forcing_term(Vector2D G, VeloSet2D u)
-// {
-//     DistributionSetType2D forcing_term;
-//     for (int i=0; i<9; i++)
-//     {
-//         forcing_term[0][i] = 0;
-//         forcing_term[1][i] = WEIGHTS_2D[i] * (G * ( DIRECTION_2D[i] * (DIRECTION_2D[i] * u[1]) + DIRECTION_2D[i] - u[1])) ;
-//     }
-//     return forcing_term;
-// }
+const DistributionSetType3D calculate_forcing_term(Vector3D G, VeloSet3D u)
+{
+    DistributionSetType3D forcing_term;
+    for (int i=0; i<19; i++)
+    {
+        forcing_term[0][i] = 0;
+        forcing_term[1][i] = WEIGHTS_3D[i] * (G * ( DIRECTION_3D[i] * (DIRECTION_3D[i] * u[1]) + DIRECTION_3D[i] - u[1])) ;
+    }
+    return forcing_term;
+}
