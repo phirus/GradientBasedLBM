@@ -19,8 +19,8 @@ public:
     Lattice3D(const Lattice3D& other);
     ~Lattice3D();
 
-//     /// operations
-//     /// calculations
+    /// operations
+    /// calculations
 //     void equilibriumIni(); /// < replace all distribution functions with the equilibrium distribution
     void balance(double& mass, double& momentum)const; /// < monitor overall mass and momentum
 //     void mass_balance(double& liquid_mass, double& gas_mass)const;
@@ -32,9 +32,9 @@ public:
 //     void streamAll(int threads = 1); /// < streaming step
 //     bool collideAll(int threads = 1, bool gravity = false, bool isLimitActive = true); /// < collision step
 
-//     /// walls
-//     void closedBox(); /// < initialize the Lattice2D (set up walls and calculate rho)
-//     void bottomWall(); /// < initialize the Lattice2D (set up walls and calculate rho)
+    /// walls
+    void closedBox(); /// < initialize the Lattice2D (set up walls and calculate rho)
+    void bottomWall(); /// < turns the bottom Cells into walls (set up walls and calculate rho)
 
     /// accessors
     const DimSet3D getSize()const; /// < get the extend of the Lattice3D

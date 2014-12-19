@@ -314,47 +314,75 @@ direction3D Lattice3D::directions(int x, int y, int z)const
 //     return success;
 // }
 
-// void Lattice2D::closedBox()
-// {
-//     const Cell2D wall(0,0,true);
+void Lattice3D::closedBox()
+{
+    const Cell3D wall(0,0,true);
 
-//     for (int x=0; x<xsize; x++)
-//     {
-//         (*data)[x][0] = wall;
-//         (*data)[x][ysize-1] = wall;
-//     }
-//     for (int y=0; y<ysize; y++)
-//     {
-//         (*data)[0][y] = wall;
-//         (*data)[xsize-1][y] = wall;
-//     }
+    // top and bootom wall
+    for (int x=0; x<xsize; x++)
+    {
+        for (int y=0; y<ysize; y++)
+        {
+            (*data)[x][y][0] = wall;
+            (*data)[x][y][zsize-1] = wall;
+        }
+    }
 
-//     for (int y=0; y<ysize; y++)
-//     {
-//         for (int x=0; x<xsize; x++)
-//         {
-//             (*data)[x][y].calcRho();
-//         }
-//     }
-// }
+    // left and right wall
+    for (int z=0; z<zsize; z++)
+    {
+        for (int y=0; y<ysize; y++)
+        {
+            (*data)[0][y][z] = wall;
+            (*data)[xsize-1][y][z] = wall;
+        }
+    }
 
-// void Lattice2D::bottomWall()
-// {
-//     const Cell2D wall(0,0,true);
+    // back and front wall
+    for (int z=0; z<zsize; z++)
+    {
+        for (int x=0; x<xsize; x++)
+        {
+            (*data)[x][0][z] = wall;
+            (*data)[x][ysize-1][z] = wall;
+        }
+    }
 
-//     for (int x=0; x<xsize; x++)
-//     {
-//         (*data)[x][0] = wall;
-//     }
+    for (int y=0; y<ysize; y++)
+    {
+        for (int x=0; x<xsize; x++)
+        {
+            for (int z=0; z<zsize; z++)
+            {
+                (*data)[x][y][z].calcRho();
+            }
+        }
+    }
+}
 
-//     for (int y=0; y<ysize; y++)
-//     {
-//         for (int x=0; x<xsize; x++)
-//         {
-//             (*data)[x][y].calcRho();
-//         }
-//     }
-// }
+void Lattice3D::bottomWall()
+{
+    const Cell3D wall(0,0,true);
+
+    for (int x=0; x<xsize; x++)
+    {
+        for (int y=0; y<ysize; y++)
+        {
+            (*data)[x][y][0] = wall;
+        }
+    }
+
+    for (int y=0; y<ysize; y++)
+    {
+        for (int x=0; x<xsize; x++)
+        {
+            for (int z=0; z<zsize; z++)
+            {
+                (*data)[x][y][z].calcRho();
+            }
+        }
+    }
+}
 
 //=========================== ACCESSORS ===========================
 
