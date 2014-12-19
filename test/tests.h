@@ -1230,7 +1230,7 @@ TEST(Matrix3D,plus_times){
 TEST(MRT,trafo){
     /// testet ob die Differenz im Geschw.-Raum gleich der Rücktransformierten Differenz im moment-Raum ist
     ParamSet param;
-    DistributionSetType2D phi = param.getPhi();
+    DistributionSetType2D phi = param.getPhi2D();
     const array2D f = {{1,2,3,4,5,6,7,8,9}};
     Cell2D testCell(f,f);
     testCell.calcRho();
@@ -1258,7 +1258,7 @@ TEST(MRT,trafo){
 
 TEST(MRT,mass){
     ParamSet param;
-    DistributionSetType2D phi = param.getPhi();
+    DistributionSetType2D phi = param.getPhi2D();
     const array2D f = {{1,2,3,4,5,6,7,8,9}};
     Cell2D testCell(f,f);
     testCell.calcRho();
@@ -1277,7 +1277,7 @@ TEST(ParamSet,Phi)
 {
     ParamSet param(1,1,1,1000);
     DistributionSetType2D phi;
-    phi = param.getPhi();
+    phi = param.getPhi2D();
 
     array2D phiR = {{0.9992, 1.6e-4, 4e-5, 1.6e-4, 4e-5, 1.6e-4, 4e-5, 1.6e-4, 4e-5}};
     array2D phiB = {{0.2,0.16,0.04,0.16,0.04,0.16,0.04,0.16,0.04}};

@@ -39,24 +39,27 @@ Lattice3D::~Lattice3D(){
     data = NULL;
 }
 
-// //=========================== OPERATIONS ===========================
+//=========================== OPERATIONS ===========================
 
-// void Lattice2D::equilibriumIni()
+// void Lattice3D::equilibriumIni()
 // {
-//     Cell2D tmp;
-//     DistributionSetType2D eqDis;
+//     Cell3D tmp;
+//     DistributionSetType3D eqDis;
 
 //     for (int j=0; j<ysize; j++)
 //     {
 //         for (int i=0; i<xsize; i++)
 //         {
-//             tmp = (*data)[i][j];
-//             tmp.calcRho();
-//             ColSet rho = tmp.getRho();
-//             VeloSet2D u = tmp.getU();
-//             eqDis = eqDistro(rho,u,param.getPhi());
-//             tmp.setF(eqDis);
-//             (*data)[i][j] = tmp;
+//             for (int k=0; k<zsize; k++)
+//             {
+//                 tmp = (*data)[i][j][k];
+//                 tmp.calcRho();
+//                 ColSet rho = tmp.getRho();
+//                 VeloSet3D u = tmp.getU();
+//                 eqDis = eqDistro(rho,u,param.getPhi2D());
+//                 tmp.setF(eqDis);
+//                 (*data)[i][j][k] = tmp;
+//             }
 //         }
 //     }
 // }
@@ -86,23 +89,26 @@ void Lattice3D::balance(double& mass, double& momentum)const
     }
 }
 
-// void Lattice2D::mass_balance(double& liquid_mass, double& gas_mass)const
-// {
-//     ColSet rho;
-//     liquid_mass = 0;
-//     gas_mass = 0;
+void Lattice3D::mass_balance(double& liquid_mass, double& gas_mass)const
+{
+    ColSet rho;
+    liquid_mass = 0;
+    gas_mass = 0;
 
-//     for (int j=0; j<ysize; j++)
-//     {
-//         for (int i=0; i<xsize; i++)
-//         {
-//             (*data)[i][j].calcRho();
-//             rho = (*data)[i][j].getRho();
-//             liquid_mass += rho[0];
-//             gas_mass += rho[1];
-//         }
-//     }
-// }
+    for (int j=0; j<ysize; j++)
+    {
+        for (int i=0; i<xsize; i++)
+        {
+            for (int k=0; k<zsize; k++)
+            {
+                (*data)[i][j][k].calcRho();
+                rho = (*data)[i][j][k].getRho();
+                liquid_mass += rho[0];
+                gas_mass += rho[1];
+            }
+        }
+    }
+}
 
 void Lattice3D::overallRho()
 {
@@ -194,7 +200,7 @@ const Vector3D Lattice3D::getGradient(int x, int y, int z)const
 //     omp_set_num_threads (threads);
 
 //     const double beta = param.getBeta();
-//     const DistributionSetType2D phi = param.getPhi();
+//     const DistributionSetType2D phi = param.getPhi2D();
 //     const int range = xsize * ysize;
 //     // const double rhoRedFixed = param.getRhoR();
 //     const RelaxationPar2D relax = param.getRelaxation2D();

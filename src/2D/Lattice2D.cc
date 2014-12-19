@@ -49,7 +49,7 @@ void Lattice2D::equilibriumIni()
             tmp.calcRho();
             ColSet rho = tmp.getRho();
             VeloSet2D u = tmp.getU();
-            eqDis = eqDistro(rho,u,param.getPhi());
+            eqDis = eqDistro(rho,u,param.getPhi2D());
             tmp.setF(eqDis);
             (*data)[i][j] = tmp;
         }
@@ -177,7 +177,7 @@ bool Lattice2D::collideAll(int threads, bool gravity, bool isLimitActive)
     omp_set_num_threads (threads);
 
     const double beta = param.getBeta();
-    const DistributionSetType2D phi = param.getPhi();
+    const DistributionSetType2D phi = param.getPhi2D();
     const int range = xsize * ysize;
     // const double rhoRedFixed = param.getRhoR();
     const RelaxationPar2D relax = param.getRelaxation2D();

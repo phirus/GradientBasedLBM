@@ -21,9 +21,9 @@ public:
 
     /// operations
     /// calculations
-//     void equilibriumIni(); /// < replace all distribution functions with the equilibrium distribution
+    // void equilibriumIni(); /// < replace all distribution functions with the equilibrium distribution
     void balance(double& mass, double& momentum)const; /// < monitor overall mass and momentum
-//     void mass_balance(double& liquid_mass, double& gas_mass)const;
+    void mass_balance(double& liquid_mass, double& gas_mass)const;
     void overallRho();
     direction3D directions(int x, int y, int z)const; /// < calculates positions of neighboring sites (periodical)
     const Vector3D getGradient(int x, int y, int z)const; /// < calculates the color gradient on the position (x,y,z)
@@ -63,7 +63,7 @@ private:
 };
 
 /// calculates the equilibrium distribution based of a cell
-const DistributionSetType2D eqDistro(const ColSet& rho_k, const VeloSet2D& u, const DistributionSetType2D& phi);
+const DistributionSetType3D eqDistro(const ColSet& rho_k, const VeloSet3D& u, const DistributionSetType3D& phi);
 
 const DistributionSetType3D calculate_forcing_term(Vector3D G, VeloSet3D u);
 

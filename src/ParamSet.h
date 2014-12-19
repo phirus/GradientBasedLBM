@@ -16,7 +16,7 @@ public:
     ParamSet(double omR = 1, double omB = 1,double rhoR = 1, double gammaIni = 2,double sigmaIni = 1e-4, double g = 1e-4, double t_step = 1e-3, double s_step = 1e-3, RelaxationPar3D rel = RelaxationPar3D(1,1,1,1,1), double alB = 0.2, double deltaIni = 0.1, double betaIni = 0.99); /// < consructor
 
     /// get-methods, including calculations if necessary
-    const DistributionSetType2D getPhi()const;                   /// < calculates phi, based on alpha_b and rho (density ratio)
+    const DistributionSetType2D getPhi2D()const;                   /// < calculates phi, based on alpha_b and rho (density ratio)
     const double getOmega(double psi)const;          /// < return omega, based on inter and the color field
     const ColSet getAk(double omega)const;
     const RelaxationPar2D getRelaxation2D()const;
