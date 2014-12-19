@@ -26,7 +26,7 @@ public:
 //     void mass_balance(double& liquid_mass, double& gas_mass)const;
     void overallRho();
     direction3D directions(int x, int y, int z)const; /// < calculates positions of neighboring sites (periodical)
-//     const Vector2D getGradient(int x, int y)const; /// < calculates the color gradient on the position (y,x)
+    const Vector3D getGradient(int x, int y, int z)const; /// < calculates the color gradient on the position (x,y,z)
         
 //     /// LB steps
 //     void streamAll(int threads = 1); /// < streaming step

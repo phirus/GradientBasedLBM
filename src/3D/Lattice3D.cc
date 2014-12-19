@@ -142,20 +142,21 @@ direction3D Lattice3D::directions(int x, int y, int z)const
     return dir;
 }
 
-// const Vector2D Lattice2D::getGradient(int x, int y)const
-// {
-//     Vector2D grad(0,0);
-//     double tmpDelta;
+const Vector3D Lattice3D::getGradient(int x, int y, int z)const
+{
+    Vector3D grad(0,0,0);
+    double tmpDelta;
 
-//     const direction2D dir = directions(x,y);
-//     for (int q=0;q<13;q++)
-//     {
-//         tmpDelta = GRAD_WEIGHTS_2D[q] * (*data)[ dir[q].x ][ dir[q].y ].getDeltaRho();
-//         grad.x += DIRECTION_2D[q].x * tmpDelta;
-//         grad.y += DIRECTION_2D[q].y * tmpDelta;
-//     }
-//     return grad;
-// }
+    const direction3D dir = directions(x,y,z);
+    for (int q=0;q<33;q++)
+    {
+        tmpDelta = GRAD_WEIGHTS_3D[q] * (*data)[ dir[q].x ][ dir[q].y ][ dir[q].z ].getDeltaRho();
+        grad.x += DIRECTION_3D[q].x * tmpDelta;
+        grad.y += DIRECTION_3D[q].y * tmpDelta;
+        grad.z += DIRECTION_3D[q].z * tmpDelta;
+    }
+    return grad;
+}
 
 // void Lattice2D::streamAll(int threads)
 // {
