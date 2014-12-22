@@ -443,11 +443,11 @@ void Lattice2D::streamAndBouncePull(Cell2D& tCell, const direction2D& dir)const
 
         for (int i=1;i<9;i++)
         {
-            if ((*data)[ dir[PULL_INDEX[i]].x ][ dir[PULL_INDEX[i]].y ].getIsSolid() == false)
+            if ((*data)[ dir[PULL_INDEX_2D[i]].x ][ dir[PULL_INDEX_2D[i]].y ].getIsSolid() == false)
             {
-                ftmp[color][i] = (*data)[ dir[PULL_INDEX[i]].x ][ dir[PULL_INDEX[i]].y ].getF()[color][i];    // if(neighbor not solid?) -> stream
+                ftmp[color][i] = (*data)[ dir[PULL_INDEX_2D[i]].x ][ dir[PULL_INDEX_2D[i]].y ].getF()[color][i];    // if(neighbor not solid?) -> stream
             }
-            else ftmp[color][i] = f[color][PULL_INDEX[i]]; // else -> bounce back
+            else ftmp[color][i] = f[color][PULL_INDEX_2D[i]]; // else -> bounce back
         } // end for i
     } // end for color
     tCell.setF(ftmp);

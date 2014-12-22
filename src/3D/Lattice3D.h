@@ -59,7 +59,7 @@ private:
     ParamSet param;     /// < set of parameters used during the simulation
 
     void linearIndex(int index, int& x, int& y, int& z)const;
-    // void streamAndBouncePull(Cell2D& tCell, const direction2D& dir)const; /// < internal streaming mechanism with bounce back
+    void streamAndBouncePull(Cell3D& tCell, const direction3D& dir)const; /// < internal streaming mechanism with bounce back
 };
 
 /// calculates the equilibrium distribution based of a cell
