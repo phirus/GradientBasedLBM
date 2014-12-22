@@ -441,54 +441,15 @@ void Lattice2D::streamAndBouncePull(Cell2D& tCell, const direction2D& dir)const
     {
         ftmp[color][0] = (*data)[ dir[0].x ][ dir[0].y ].getF()[color][0];
 
-        if ((*data)[ dir[5].x ][ dir[5].y ].getIsSolid() == false)
+        for (int i=1;i<9;i++)
         {
-            ftmp[color][1] = (*data)[ dir[5].x ][ dir[5].y ].getF()[color][1];    // if(neighbor not solid?) -> stream
-        }
-        else ftmp[color][1] = f[color][5];                                                                                            // else -> bounce back
-
-        if ((*data)[ dir[6].x ][ dir[6].y ].getIsSolid() == false)
-        {
-            ftmp[color][2] = (*data)[ dir[6].x ][ dir[6].y ].getF()[color][2];
-        }
-        else ftmp[color][2] = f[color][6];
-
-        if ((*data)[ dir[7].x ][ dir[7].y ].getIsSolid() == false)
-        {
-            ftmp[color][3] = (*data)[ dir[7].x ][ dir[7].y ].getF()[color][3];
-        }
-        else ftmp[color][3] = f[color][7];
-
-        if ((*data)[ dir[8].x ][ dir[8].y ].getIsSolid() == false)
-        {
-            ftmp[color][4] = (*data)[ dir[8].x ][ dir[8].y ].getF()[color][4];
-        }
-        else ftmp[color][4] = f[color][8];
-
-        if ((*data)[ dir[1].x ][ dir[1].y ].getIsSolid() == false)
-        {
-            ftmp[color][5] = (*data)[ dir[1].x ][ dir[1].y ].getF()[color][5];
-        }
-        else ftmp[color][5] = f[color][1];
-
-        if ((*data)[ dir[2].x ][ dir[2].y ].getIsSolid() == false)
-        {
-            ftmp[color][6] = (*data)[ dir[2].x ][ dir[2].y ].getF()[color][6];
-        }
-        else ftmp[color][6] = f[color][2];
-
-        if ((*data)[ dir[3].x ][ dir[3].y ].getIsSolid() == false)
-        {
-            ftmp[color][7] = (*data)[ dir[3].x ][ dir[3].y ].getF()[color][7];
-        }
-        else ftmp[color][7] = f[color][3];
-
-        if ((*data)[ dir[4].x ][ dir[4].y ].getIsSolid() == false)
-        {
-            ftmp[color][8] = (*data)[ dir[4].x ][ dir[4].y ].getF()[color][8];
-        }
-        else ftmp[color][8] = f[color][4];
-    }
+            if ((*data)[ dir[PULL_INDEX[i]].x ][ dir[PULL_INDEX[i]].y ].getIsSolid() == false)
+            {
+                ftmp[color][i] = (*data)[ dir[PULL_INDEX[i]].x ][ dir[PULL_INDEX[i]].y ].getF()[color][i];    // if(neighbor not solid?) -> stream
+            }
+            else ftmp[color][i] = f[color][PULL_INDEX[i]]; // else -> bounce back
+        } // end for i
+    } // end for color
     tCell.setF(ftmp);
 }
 
