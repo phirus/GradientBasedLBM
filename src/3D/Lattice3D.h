@@ -28,8 +28,8 @@ public:
     direction3D directions(int x, int y, int z)const; /// < calculates positions of neighboring sites (periodical)
     const Vector3D getGradient(int x, int y, int z)const; /// < calculates the color gradient on the position (x,y,z)
         
-//     /// LB steps
-//     void streamAll(int threads = 1); /// < streaming step
+    /// LB steps
+    void streamAll(int threads = 1); /// < streaming step
 //     bool collideAll(int threads = 1, bool gravity = false, bool isLimitActive = true); /// < collision step
 
     /// walls

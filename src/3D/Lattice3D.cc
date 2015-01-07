@@ -164,33 +164,33 @@ const Vector3D Lattice3D::getGradient(int x, int y, int z)const
     return grad;
 }
 
-// void Lattice2D::streamAll(int threads)
-// {
-//     field2D *newData = new field2D(boost::extents[xsize][ysize]);
+void Lattice3D::streamAll(int threads)
+{
+    field3D *newData = new field3D(boost::extents[xsize][ysize][zsize]);
 
-//     omp_set_num_threads (threads);
-//     const int range = xsize * ysize;
+    omp_set_num_threads (threads);
+    const int range = xsize * ysize * zsize;
 
-//     #pragma omp parallel
-//     {
-//         #pragma omp for        
-//         for (int index = 0;  index < range; index++)
-//         {
-//             int x,y;
-//             linearIndex(index,x,y);
-//             const direction2D dir = directions(x,y);
-//             Cell2D tmpCell = (*data)[x][y];
+    #pragma omp parallel
+    {
+        #pragma omp for        
+        for (int index = 0;  index < range; index++)
+        {
+            int x,y,z;
+            linearIndex(index,x,y,z);
+            const direction3D dir = directions(x,y,z);
+            Cell3D tmpCell = (*data)[x][y][z];
 
-//             if (tmpCell.getIsSolid() == false) streamAndBouncePull(tmpCell,dir);
+            if (tmpCell.getIsSolid() == false) streamAndBouncePull(tmpCell,dir);
 
-//             tmpCell.calcRho();
-//             #pragma omp critical(Zuweisung)
-//             (*newData)[x][y] = tmpCell;
-//         }
-//     }
-//     delete data;
-//     data = newData;
-// }
+            tmpCell.calcRho();
+            #pragma omp critical(Zuweisung)
+            (*newData)[x][y][z] = tmpCell;
+        }
+    }
+    delete data;
+    data = newData;
+}
 
 // bool Lattice2D::collideAll(int threads, bool gravity, bool isLimitActive)
 // {
