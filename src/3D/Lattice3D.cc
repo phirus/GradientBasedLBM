@@ -41,28 +41,28 @@ Lattice3D::~Lattice3D(){
 
 //=========================== OPERATIONS ===========================
 
-// void Lattice3D::equilibriumIni()
-// {
-//     Cell3D tmp;
-//     DistributionSetType3D eqDis;
+void Lattice3D::equilibriumIni()
+{
+    Cell3D tmp;
+    DistributionSetType3D eqDis;
 
-//     for (int j=0; j<ysize; j++)
-//     {
-//         for (int i=0; i<xsize; i++)
-//         {
-//             for (int k=0; k<zsize; k++)
-//             {
-//                 tmp = (*data)[i][j][k];
-//                 tmp.calcRho();
-//                 ColSet rho = tmp.getRho();
-//                 VeloSet3D u = tmp.getU();
-//                 eqDis = eqDistro(rho,u,param.getPhi2D());
-//                 tmp.setF(eqDis);
-//                 (*data)[i][j][k] = tmp;
-//             }
-//         }
-//     }
-// }
+    for (int j=0; j<ysize; j++)
+    {
+        for (int i=0; i<xsize; i++)
+        {
+            for (int k=0; k<zsize; k++)
+            {
+                tmp = (*data)[i][j][k];
+                tmp.calcRho();
+                ColSet rho = tmp.getRho();
+                VeloSet3D u = tmp.getU();
+                eqDis = eqDistro(rho,u,param.getPhi3D());
+                tmp.setF(eqDis);
+                (*data)[i][j][k] = tmp;
+            }
+        }
+    }
+}
 
 void Lattice3D::balance(double& mass, double& momentum)const
 {

@@ -21,7 +21,7 @@ public:
 
     /// operations
     /// calculations
-    // void equilibriumIni(); /// < replace all distribution functions with the equilibrium distribution
+    void equilibriumIni(); /// < replace all distribution functions with the equilibrium distribution
     void balance(double& mass, double& momentum)const; /// < monitor overall mass and momentum
     void mass_balance(double& liquid_mass, double& gas_mass)const;
     void overallRho();

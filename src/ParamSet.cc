@@ -43,6 +43,27 @@ const DistributionSetType2D ParamSet::getPhi2D()const
     return phi;
 }
 
+const DistributionSetType3D ParamSet::getPhi3D()const
+{
+    DistributionSetType3D phi;
+    phi.at(0).at(0) = alphaRed;
+    phi.at(1).at(0) = alphaBlue;
+    for (int i = 1;i<19; i+=1)
+    {
+        if(i == 1 || i == 3 || i == 5 || i == 7 || i == 9 || i == 14)
+        {
+            phi.at(0).at(i) = (1-alphaRed)/12;
+            phi.at(1).at(i) = (1-alphaBlue)/12;
+        }
+        else 
+        {
+            phi.at(0).at(i) = (1-alphaRed)/24;
+            phi.at(1).at(i) = (1-alphaBlue)/24;
+        }        
+    }
+    return phi;
+}
+
 const double ParamSet::getOmega(double psi)const
 {
     if (psi > delta)

@@ -17,6 +17,7 @@ public:
 
     /// get-methods, including calculations if necessary
     const DistributionSetType2D getPhi2D()const;                   /// < calculates phi, based on alpha_b and rho (density ratio)
+    const DistributionSetType3D getPhi3D()const;                   /// < calculates phi, based on alpha_b and rho (density ratio)
     const double getOmega(double psi)const;          /// < return omega, based on inter and the color field
     const ColSet getAk(double omega)const;
     const RelaxationPar2D getRelaxation2D()const;
