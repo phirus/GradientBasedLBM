@@ -483,6 +483,8 @@ TEST(Lattice2D,constructor)
 
 TEST(Lattice2D,stream)
 {
+    // Phase 0: Distributions stream towards the center
+    // Phase 1: Distribution stream from the center to the neighbouring sites
     Lattice2D lattice(3,3,0,0);
 
     array2D f1 = {{0,1,0,0,0,0,0,0,0}};
@@ -494,15 +496,15 @@ TEST(Lattice2D,stream)
     array2D f7 = {{0,0,0,0,0,0,0,1,0}};
     array2D f8 = {{0,0,0,0,0,0,0,0,1}};
 
+    lattice.setF(0,1,0,f1);
     lattice.setF(0,0,0,f2);
     lattice.setF(1,0,0,f3);
     lattice.setF(2,0,0,f4);
-    lattice.setF(0,1,0,f1);
     lattice.setF(2,1,0,f5);
-    lattice.setF(0,2,0,f8);
-    lattice.setF(1,2,0,f7);
     lattice.setF(2,2,0,f6);
-
+    lattice.setF(1,2,0,f7);
+    lattice.setF(0,2,0,f8);
+        
     array2D fcenter = {{0,1,1,1,1,1,1,1,1}};
     lattice.setF(1,1,1,fcenter);
 
@@ -770,11 +772,6 @@ TEST(Lattice2D, assign){
     EXPECT_EQ(lBig,tmp);
 }
 
-
-
-
-
-
 TEST(Lattice3D,constructor)
 {
     const Lattice3D lattice;
@@ -784,44 +781,76 @@ TEST(Lattice3D,constructor)
     EXPECT_EQ(1,lattice.getF(1,1,1)[0][0]);
 }
 
-// TEST(Lattice2D,stream)
-// {
-//     Lattice2D lattice(3,3,0,0);
+TEST(Lattice3D,stream)
+{
+    // Phase 0: Distributions stream towards the center
+    // Phase 1: Distribution stream from the center to the neighbouring sites
+    Lattice3D lattice(3,3,3,0,0);
 
-//     array2D f1 = {{0,1,0,0,0,0,0,0,0}};
-//     array2D f2 = {{0,0,1,0,0,0,0,0,0}};
-//     array2D f3 = {{0,0,0,1,0,0,0,0,0}};
-//     array2D f4 = {{0,0,0,0,1,0,0,0,0}};
-//     array2D f5 = {{0,0,0,0,0,1,0,0,0}};
-//     array2D f6 = {{0,0,0,0,0,0,1,0,0}};
-//     array2D f7 = {{0,0,0,0,0,0,0,1,0}};
-//     array2D f8 = {{0,0,0,0,0,0,0,0,1}};
+    array3D f1  = {{0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}};
+    array3D f2  = {{0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}};
+    array3D f3  = {{0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}};
+    array3D f4  = {{0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0}};
+    array3D f5  = {{0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0}};
+    array3D f6  = {{0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0}};
+    array3D f7  = {{0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0}};
+    array3D f8  = {{0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0}};
+    array3D f9  = {{0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0}};
+    array3D f10 = {{0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0}};
+    array3D f11 = {{0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0}};
+    array3D f12 = {{0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0}};
+    array3D f13 = {{0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0}};
+    array3D f14 = {{0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0}};
+    array3D f15 = {{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0}};
+    array3D f16 = {{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0}};
+    array3D f17 = {{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0}};
+    array3D f18 = {{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1}};
 
-//     lattice.setF(0,0,0,f2);
-//     lattice.setF(1,0,0,f3);
-//     lattice.setF(2,0,0,f4);
-//     lattice.setF(0,1,0,f1);
-//     lattice.setF(2,1,0,f5);
-//     lattice.setF(0,2,0,f8);
-//     lattice.setF(1,2,0,f7);
-//     lattice.setF(2,2,0,f6);
+    lattice.setF(0,1,1,0,f1);
+    lattice.setF(0,0,1,0,f2);
+    lattice.setF(1,0,1,0,f3);
+    lattice.setF(2,0,1,0,f4);
+    lattice.setF(2,1,1,0,f5);
+    lattice.setF(2,2,1,0,f6);
+    lattice.setF(1,2,1,0,f7);
+    lattice.setF(0,2,1,0,f8);
+    lattice.setF(1,1,0,0,f9);
+    lattice.setF(0,1,0,0,f10);
+    lattice.setF(1,0,0,0,f11);
+    lattice.setF(2,1,0,0,f12);
+    lattice.setF(1,2,0,0,f13);
+    lattice.setF(1,1,2,0,f14);
+    lattice.setF(0,1,2,0,f15);
+    lattice.setF(1,0,2,0,f16);
+    lattice.setF(2,1,2,0,f17);
+    lattice.setF(1,2,2,0,f18);
+        
+    array3D fcenter = {{0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}};
+    lattice.setF(1,1,1,1,fcenter);
 
-//     array2D fcenter = {{0,1,1,1,1,1,1,1,1}};
-//     lattice.setF(1,1,1,fcenter);
+    lattice.streamAll();
 
-//     lattice.streamAll();
+    EXPECT_EQ(fcenter,lattice.getF(1,1,1)[0]);
 
-//     EXPECT_EQ(fcenter,lattice.getF(1,1)[0]);
-
-//     EXPECT_EQ(f6,lattice.getF(0,0)[1]);
-//     EXPECT_EQ(f7,lattice.getF(1,0)[1]);
-//     EXPECT_EQ(f8,lattice.getF(2,0)[1]);
-//     EXPECT_EQ(f5,lattice.getF(0,1)[1]);
-//     EXPECT_EQ(f1,lattice.getF(2,1)[1]);
-//     EXPECT_EQ(f4,lattice.getF(0,2)[1]);
-//     EXPECT_EQ(f3,lattice.getF(1,2)[1]);
-//     EXPECT_EQ(f2,lattice.getF(2,2)[1]);
-// }
+    EXPECT_EQ(f1, lattice.getF(2,1,1)[1]);
+    EXPECT_EQ(f2, lattice.getF(2,2,1)[1]);
+    EXPECT_EQ(f3, lattice.getF(1,2,1)[1]);
+    EXPECT_EQ(f4, lattice.getF(0,2,1)[1]);
+    EXPECT_EQ(f5, lattice.getF(0,1,1)[1]);
+    EXPECT_EQ(f6, lattice.getF(0,0,1)[1]);
+    EXPECT_EQ(f7, lattice.getF(1,0,1)[1]);
+    EXPECT_EQ(f8, lattice.getF(2,0,1)[1]);
+    EXPECT_EQ(f9, lattice.getF(1,1,2)[1]);
+    EXPECT_EQ(f10,lattice.getF(2,1,2)[1]);
+    EXPECT_EQ(f11,lattice.getF(1,2,2)[1]);
+    EXPECT_EQ(f12,lattice.getF(0,1,2)[1]);
+    EXPECT_EQ(f13,lattice.getF(1,0,2)[1]);
+    EXPECT_EQ(f14,lattice.getF(1,1,0)[1]);
+    EXPECT_EQ(f15,lattice.getF(2,1,0)[1]);
+    EXPECT_EQ(f16,lattice.getF(1,2,0)[1]);
+    EXPECT_EQ(f17,lattice.getF(0,1,0)[1]);
+    EXPECT_EQ(f18,lattice.getF(1,0,0)[1]); 
+}
 
 // TEST(Lattice2D,bounceSmall)
 // {
