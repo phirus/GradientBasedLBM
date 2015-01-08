@@ -535,14 +535,14 @@ TEST(Lattice2D,bounceSmall)
 
     lattice.streamAll();
 
-    EXPECT_EQ(fzero,lattice.getF(0,0)[1]);
-    EXPECT_EQ(fzero,lattice.getF(0,1)[1]);
-    EXPECT_EQ(fzero,lattice.getF(0,1)[1]);
-    EXPECT_EQ(fzero,lattice.getF(1,0)[1]);
-    EXPECT_EQ(fzero,lattice.getF(1,2)[1]);
-    EXPECT_EQ(fzero,lattice.getF(2,0)[1]);
-    EXPECT_EQ(fzero,lattice.getF(2,1)[1]);
-    EXPECT_EQ(fzero,lattice.getF(2,2)[1]);
+    EXPECT_EQ(fzero,lattice.getF(0,0)[0]);
+    EXPECT_EQ(fzero,lattice.getF(0,1)[0]);
+    EXPECT_EQ(fzero,lattice.getF(0,1)[0]);
+    EXPECT_EQ(fzero,lattice.getF(1,0)[0]);
+    EXPECT_EQ(fzero,lattice.getF(1,2)[0]);
+    EXPECT_EQ(fzero,lattice.getF(2,0)[0]);
+    EXPECT_EQ(fzero,lattice.getF(2,1)[0]);
+    EXPECT_EQ(fzero,lattice.getF(2,2)[0]);
 
     EXPECT_EQ(fzero,lattice.getF(0,0)[1]);
     EXPECT_EQ(fzero,lattice.getF(0,1)[1]);
@@ -852,40 +852,60 @@ TEST(Lattice3D,stream)
     EXPECT_EQ(f18,lattice.getF(1,0,0)[1]); 
 }
 
-// TEST(Lattice2D,bounceSmall)
-// {
-//     Lattice2D lattice(3,3,0,0);
-//     lattice.closedBox();
+TEST(Lattice3D,bounceSmall)
+{
+    Lattice3D lattice(3,3,3,0,0);
+    lattice.closedBox();
 
-//     array2D fcenter = {{0,1,1,1,1,1,1,1,1}};
-//     array2D fzero = {{0,0,0,0,0,0,0,0,0}};
+    array3D fcenter = {{0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}};
+    array3D fzero =   {{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}};
 
-//     lattice.setF(1,1,0,fcenter);
-//     lattice.setF(1,1,1,fcenter);
+    lattice.setF(1,1,1,0,fcenter);
+    lattice.setF(1,1,1,1,fcenter);
 
-//     lattice.streamAll();
+    lattice.streamAll();
 
-//     EXPECT_EQ(fzero,lattice.getF(0,0)[1]);
-//     EXPECT_EQ(fzero,lattice.getF(0,1)[1]);
-//     EXPECT_EQ(fzero,lattice.getF(0,1)[1]);
-//     EXPECT_EQ(fzero,lattice.getF(1,0)[1]);
-//     EXPECT_EQ(fzero,lattice.getF(1,2)[1]);
-//     EXPECT_EQ(fzero,lattice.getF(2,0)[1]);
-//     EXPECT_EQ(fzero,lattice.getF(2,1)[1]);
-//     EXPECT_EQ(fzero,lattice.getF(2,2)[1]);
+    EXPECT_EQ(fzero,lattice.getF(2,1,1)[0]);
+    EXPECT_EQ(fzero,lattice.getF(2,2,1)[0]);
+    EXPECT_EQ(fzero,lattice.getF(1,2,1)[0]);
+    EXPECT_EQ(fzero,lattice.getF(0,2,1)[0]);
+    EXPECT_EQ(fzero,lattice.getF(0,1,1)[0]);
+    EXPECT_EQ(fzero,lattice.getF(0,0,1)[0]);
+    EXPECT_EQ(fzero,lattice.getF(1,0,1)[0]);
+    EXPECT_EQ(fzero,lattice.getF(2,0,1)[0]);
+    EXPECT_EQ(fzero,lattice.getF(1,1,2)[0]);
+    EXPECT_EQ(fzero,lattice.getF(2,1,2)[0]);
+    EXPECT_EQ(fzero,lattice.getF(1,2,2)[0]);
+    EXPECT_EQ(fzero,lattice.getF(0,1,2)[0]);
+    EXPECT_EQ(fzero,lattice.getF(1,0,2)[0]);
+    EXPECT_EQ(fzero,lattice.getF(1,1,0)[0]);
+    EXPECT_EQ(fzero,lattice.getF(2,1,0)[0]);
+    EXPECT_EQ(fzero,lattice.getF(1,2,0)[0]);
+    EXPECT_EQ(fzero,lattice.getF(0,1,0)[0]);
+    EXPECT_EQ(fzero,lattice.getF(1,0,0)[0]);
 
-//     EXPECT_EQ(fzero,lattice.getF(0,0)[1]);
-//     EXPECT_EQ(fzero,lattice.getF(0,1)[1]);
-//     EXPECT_EQ(fzero,lattice.getF(0,1)[1]);
-//     EXPECT_EQ(fzero,lattice.getF(1,0)[1]);
-//     EXPECT_EQ(fzero,lattice.getF(1,2)[1]);
-//     EXPECT_EQ(fzero,lattice.getF(2,0)[1]);
-//     EXPECT_EQ(fzero,lattice.getF(2,1)[1]);
-//     EXPECT_EQ(fzero,lattice.getF(2,2)[1]);
+    EXPECT_EQ(fzero,lattice.getF(2,1,1)[1]);
+    EXPECT_EQ(fzero,lattice.getF(2,2,1)[1]);
+    EXPECT_EQ(fzero,lattice.getF(1,2,1)[1]);
+    EXPECT_EQ(fzero,lattice.getF(0,2,1)[1]);
+    EXPECT_EQ(fzero,lattice.getF(0,1,1)[1]);
+    EXPECT_EQ(fzero,lattice.getF(0,0,1)[1]);
+    EXPECT_EQ(fzero,lattice.getF(1,0,1)[1]);
+    EXPECT_EQ(fzero,lattice.getF(2,0,1)[1]);
+    EXPECT_EQ(fzero,lattice.getF(1,1,2)[1]);
+    EXPECT_EQ(fzero,lattice.getF(2,1,2)[1]);
+    EXPECT_EQ(fzero,lattice.getF(1,2,2)[1]);
+    EXPECT_EQ(fzero,lattice.getF(0,1,2)[1]);
+    EXPECT_EQ(fzero,lattice.getF(1,0,2)[1]);
+    EXPECT_EQ(fzero,lattice.getF(1,1,0)[1]);
+    EXPECT_EQ(fzero,lattice.getF(2,1,0)[1]);
+    EXPECT_EQ(fzero,lattice.getF(1,2,0)[1]);
+    EXPECT_EQ(fzero,lattice.getF(0,1,0)[1]);
+    EXPECT_EQ(fzero,lattice.getF(1,0,0)[1]);
 
-//     EXPECT_EQ(fcenter,lattice.getF(1,1)[0]);
-//     EXPECT_EQ(fcenter,lattice.getF(1,1)[1]);
-// }
+    EXPECT_EQ(fcenter,lattice.getF(1,1,1)[0]);
+    EXPECT_EQ(fcenter,lattice.getF(1,1,1)[1]);
+}
 
 // TEST(Lattice2D,bounceClosed)
 // {

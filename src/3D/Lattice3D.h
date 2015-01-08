@@ -33,7 +33,7 @@ public:
 //     bool collideAll(int threads = 1, bool gravity = false, bool isLimitActive = true); /// < collision step
 
     /// walls
-    void closedBox(); /// < initialize the Lattice2D (set up walls and calculate rho)
+    void closedBox(); /// < initialize the Lattice3D (set up walls and calculate rho)
     void bottomWall(); /// < turns the bottom Cells into walls (set up walls and calculate rho)
 
     /// accessors
