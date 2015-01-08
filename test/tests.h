@@ -487,14 +487,14 @@ TEST(Lattice2D,stream)
     // Phase 1: Distribution stream from the center to the neighbouring sites
     Lattice2D lattice(3,3,0,0);
 
-    array2D f1 = {{0,1,0,0,0,0,0,0,0}};
-    array2D f2 = {{0,0,1,0,0,0,0,0,0}};
-    array2D f3 = {{0,0,0,1,0,0,0,0,0}};
-    array2D f4 = {{0,0,0,0,1,0,0,0,0}};
-    array2D f5 = {{0,0,0,0,0,1,0,0,0}};
-    array2D f6 = {{0,0,0,0,0,0,1,0,0}};
-    array2D f7 = {{0,0,0,0,0,0,0,1,0}};
-    array2D f8 = {{0,0,0,0,0,0,0,0,1}};
+    const array2D f1 = {{0,1,0,0,0,0,0,0,0}};
+    const array2D f2 = {{0,0,1,0,0,0,0,0,0}};
+    const array2D f3 = {{0,0,0,1,0,0,0,0,0}};
+    const array2D f4 = {{0,0,0,0,1,0,0,0,0}};
+    const array2D f5 = {{0,0,0,0,0,1,0,0,0}};
+    const array2D f6 = {{0,0,0,0,0,0,1,0,0}};
+    const array2D f7 = {{0,0,0,0,0,0,0,1,0}};
+    const array2D f8 = {{0,0,0,0,0,0,0,0,1}};
 
     lattice.setF(0,1,0,f1);
     lattice.setF(0,0,0,f2);
@@ -527,8 +527,8 @@ TEST(Lattice2D,bounceSmall)
     Lattice2D lattice(3,3,0,0);
     lattice.closedBox();
 
-    array2D fcenter = {{0,1,1,1,1,1,1,1,1}};
-    array2D fzero = {{0,0,0,0,0,0,0,0,0}};
+    const array2D fcenter = {{0,1,1,1,1,1,1,1,1}};
+    const array2D fzero = {{0,0,0,0,0,0,0,0,0}};
 
     lattice.setF(1,1,0,fcenter);
     lattice.setF(1,1,1,fcenter);
@@ -787,24 +787,24 @@ TEST(Lattice3D,stream)
     // Phase 1: Distribution stream from the center to the neighbouring sites
     Lattice3D lattice(3,3,3,0,0);
 
-    array3D f1  = {{0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}};
-    array3D f2  = {{0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}};
-    array3D f3  = {{0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}};
-    array3D f4  = {{0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0}};
-    array3D f5  = {{0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0}};
-    array3D f6  = {{0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0}};
-    array3D f7  = {{0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0}};
-    array3D f8  = {{0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0}};
-    array3D f9  = {{0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0}};
-    array3D f10 = {{0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0}};
-    array3D f11 = {{0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0}};
-    array3D f12 = {{0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0}};
-    array3D f13 = {{0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0}};
-    array3D f14 = {{0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0}};
-    array3D f15 = {{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0}};
-    array3D f16 = {{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0}};
-    array3D f17 = {{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0}};
-    array3D f18 = {{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1}};
+    const array3D f1  = {{0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}};
+    const array3D f2  = {{0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}};
+    const array3D f3  = {{0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}};
+    const array3D f4  = {{0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0}};
+    const array3D f5  = {{0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0}};
+    const array3D f6  = {{0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0}};
+    const array3D f7  = {{0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0}};
+    const array3D f8  = {{0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0}};
+    const array3D f9  = {{0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0}};
+    const array3D f10 = {{0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0}};
+    const array3D f11 = {{0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0}};
+    const array3D f12 = {{0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0}};
+    const array3D f13 = {{0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0}};
+    const array3D f14 = {{0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0}};
+    const array3D f15 = {{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0}};
+    const array3D f16 = {{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0}};
+    const array3D f17 = {{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0}};
+    const array3D f18 = {{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1}};
 
     lattice.setF(0,1,1,0,f1);
     lattice.setF(0,0,1,0,f2);
@@ -825,7 +825,7 @@ TEST(Lattice3D,stream)
     lattice.setF(2,1,2,0,f17);
     lattice.setF(1,2,2,0,f18);
         
-    array3D fcenter = {{0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}};
+    const array3D fcenter = {{0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}};
     lattice.setF(1,1,1,1,fcenter);
 
     lattice.streamAll();
@@ -857,8 +857,8 @@ TEST(Lattice3D,bounceSmall)
     Lattice3D lattice(3,3,3,0,0);
     lattice.closedBox();
 
-    array3D fcenter = {{0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}};
-    array3D fzero =   {{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}};
+    const array3D fcenter = {{0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}};
+    const array3D fzero =   {{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}};
 
     lattice.setF(1,1,1,0,fcenter);
     lattice.setF(1,1,1,1,fcenter);
@@ -907,120 +907,66 @@ TEST(Lattice3D,bounceSmall)
     EXPECT_EQ(fcenter,lattice.getF(1,1,1)[1]);
 }
 
-// TEST(Lattice2D,bounceClosed)
-// {
-//     Lattice2D lattice(5,5,0,0);
-//     lattice.closedBox();
-//     lattice.setCell(2,2,Cell2D(0,0,true));
-//     Cell2D tmp = lattice.getCell(2,2);
-//     EXPECT_EQ(true,tmp.getIsSolid());
+TEST(Lattice3D,bounceClosed)
+{
+    // resembles 2D bounceClosed2
 
-//     const array2D f1 = {{0,1,0,0,0,0,0,0,0}};
-//     const array2D f2 = {{0,0,1,0,0,0,0,0,0}};
-//     const array2D f3 = {{0,0,0,1,0,0,0,0,0}};
-//     const array2D f4 = {{0,0,0,0,1,0,0,0,0}};
-//     const array2D f5 = {{0,0,0,0,0,1,0,0,0}};
-//     const array2D f6 = {{0,0,0,0,0,0,1,0,0}};
-//     const array2D f7 = {{0,0,0,0,0,0,0,1,0}};
-//     const array2D f8 = {{0,0,0,0,0,0,0,0,1}};
+    Lattice3D lattice(5,5,5,0,0);
+    lattice.closedBox();
+    const array3D fcenter = {{0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}};
+    lattice.setF(2,2,2,0,fcenter);
+    lattice.setF(2,2,2,1,fcenter);
+    lattice.streamAll();
+    lattice.streamAll();
+    lattice.streamAll();
 
-//     lattice.setF(1,1,0,f2);
-//     lattice.setF(2,1,0,f3);
-//     lattice.setF(3,1,0,f4);
-//     lattice.setF(1,2,0,f1);
-//     lattice.setF(3,2,0,f5);
-//     lattice.setF(1,3,0,f8);
-//     lattice.setF(2,3,0,f7);
-//     lattice.setF(3,3,0,f6);
+    EXPECT_EQ(fcenter,lattice.getF(2,2,2)[0]);
+    EXPECT_EQ(fcenter,lattice.getF(2,2,2)[1]);
+}
 
-//     lattice.setF(1,1,1,f2);
-//     lattice.setF(2,1,1,f3);
-//     lattice.setF(3,1,1,f4);
-//     lattice.setF(1,2,1,f1);
-//     lattice.setF(3,2,1,f5);
-//     lattice.setF(1,3,1,f8);
-//     lattice.setF(2,3,1,f7);
-//     lattice.setF(3,3,1,f6);
+TEST(Lattice3D,periodic)
+{
+    Lattice3D lattice(5,5,5,0,0);
+    const array3D fcenter = {{0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}};
+    lattice.setF(2,2,2,0,fcenter);
+    lattice.setF(2,2,2,1,fcenter);
 
-//     lattice.streamAll();
+    // 5 mal
+    lattice.streamAll();
+    lattice.streamAll();
+    lattice.streamAll();
+    lattice.streamAll();
+    lattice.streamAll();
 
-//     EXPECT_EQ(f6,lattice.getF(1,1)[0]);
-//     EXPECT_EQ(f7,lattice.getF(2,1)[0]);
-//     EXPECT_EQ(f8,lattice.getF(3,1)[0]);
-//     EXPECT_EQ(f5,lattice.getF(1,2)[0]);
-//     EXPECT_EQ(f1,lattice.getF(3,2)[0]);
-//     EXPECT_EQ(f4,lattice.getF(1,3)[0]);
-//     EXPECT_EQ(f3,lattice.getF(2,3)[0]);
-//     EXPECT_EQ(f2,lattice.getF(3,3)[0]);
+    EXPECT_EQ(fcenter,lattice.getF(2,2,2)[0]);
+    EXPECT_EQ(fcenter,lattice.getF(2,2,2)[1]);
+}
 
-//     EXPECT_EQ(f6,lattice.getF(1,1)[1]);
-//     EXPECT_EQ(f7,lattice.getF(2,1)[1]);
-//     EXPECT_EQ(f8,lattice.getF(3,1)[1]);
-//     EXPECT_EQ(f5,lattice.getF(1,2)[1]);
-//     EXPECT_EQ(f1,lattice.getF(3,2)[1]);
-//     EXPECT_EQ(f4,lattice.getF(1,3)[1]);
-//     EXPECT_EQ(f3,lattice.getF(2,3)[1]);
-//     EXPECT_EQ(f2,lattice.getF(3,3)[1]);
-// }
+TEST(Lattice3D,streamRho)
+{
+    Cell3D tmp;
 
-// TEST(Lattice2D,bounceClosed2)
-// {
-//     Lattice2D lattice(5,5,0,0);
-//     lattice.closedBox();
-//     array2D fcenter = {{0,1,1,1,1,1,1,1,1}};
-//     lattice.setF(2,2,0,fcenter);
-//     lattice.setF(2,2,1,fcenter);
-//     lattice.streamAll();
-//     lattice.streamAll();
-//     lattice.streamAll();
+    Lattice3D lattice(5,5,5,0,0);
+    lattice.closedBox();
 
-//     EXPECT_EQ(fcenter,lattice.getF(2,2)[0]);
-//     EXPECT_EQ(fcenter,lattice.getF(2,2)[1]);
-// }
+    const array3D fcenter = {{0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}};
+    lattice.setF(2,2,2,0,fcenter);
+    lattice.setF(2,2,2,1,fcenter);
+    lattice.streamAll();
 
-// TEST(Lattice2D,periodic)
-// {
-//     Lattice2D lattice(5,5,0,0);
-//     array2D fcenter = {{0,1,1,1,1,1,1,1,1}};
-//     lattice.setF(2,2,0,fcenter);
-//     lattice.setF(2,2,1,fcenter);
+    tmp = lattice.getCell(2,2,2);
+    EXPECT_EQ(0,tmp.getRho()[1]);
+    tmp = lattice.getCell(1,2,2);
+    EXPECT_EQ(1,tmp.getRho()[1]);
+    tmp = lattice.getCell(3,2,2);
+    EXPECT_EQ(1,tmp.getRho()[1]);
 
-//     // 5 mal
-//     lattice.streamAll();
-//     lattice.streamAll();
-//     lattice.streamAll();
-//     lattice.streamAll();
-//     lattice.streamAll();
-
-//     EXPECT_EQ(fcenter,lattice.getF(2,2)[0]);
-//     EXPECT_EQ(fcenter,lattice.getF(2,2)[1]);
-// }
-
-// TEST(Lattice2D,streamRho)
-// {
-//     Cell2D tmp;
-
-//     Lattice2D lattice(5,5,0,0);
-//     lattice.closedBox();
-
-//     array2D fcenter = {{0,1,1,1,1,1,1,1,1}};
-//     lattice.setF(2,2,0,fcenter);
-//     lattice.setF(2,2,1,fcenter);
-//     lattice.streamAll();
-
-//     tmp = lattice.getCell(2,2);
-//     EXPECT_EQ(0,tmp.getRho()[1]);
-//     tmp = lattice.getCell(1,2);
-//     EXPECT_EQ(1,tmp.getRho()[1]);
-//     tmp = lattice.getCell(3,2);
-//     EXPECT_EQ(1,tmp.getRho()[1]);
-
-//     lattice.streamAll();
-//     tmp = lattice.getCell(1,2);
-//     EXPECT_EQ(1,tmp.getRho()[1]);
-//     tmp = lattice.getCell(3,2);
-//     EXPECT_EQ(1,tmp.getRho()[1]);
-// }
+    lattice.streamAll();
+    tmp = lattice.getCell(1,2,2);
+    EXPECT_EQ(1,tmp.getRho()[1]);
+    tmp = lattice.getCell(3,2,2);
+    EXPECT_EQ(1,tmp.getRho()[1]);
+}
 
 // TEST(Lattice2D,collideSingle)
 // {
