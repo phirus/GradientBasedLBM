@@ -968,22 +968,22 @@ TEST(Lattice3D,streamRho)
     EXPECT_EQ(1,tmp.getRho()[1]);
 }
 
-// TEST(Lattice2D,collideSingle)
-// {
-//     Lattice2D lattice(5,5,1,1);
-//     lattice.closedBox();
+TEST(Lattice3D,collideSingle)
+{
+    Lattice3D lattice(5,5,5,1,1);
+    lattice.closedBox();
 
-//     lattice.collideAll();
-//     Cell2D cell = lattice.getCell(2,2);
-//     double rho,usqr;
-//     cell.calcRho();
-//     rho = sum(cell.getRho());
-//     VeloSet2D u = cell.getU();
-//     usqr = u[0]*u[0];
+    lattice.collideAll();
+    Cell3D cell = lattice.getCell(2,2,2);
+    double rho,usqr;
+    cell.calcRho();
+    rho = sum(cell.getRho());
+    VeloSet3D u = cell.getU();
+    usqr = u[0]*u[0];
 
-//     EXPECT_DOUBLE_EQ(2.0,rho);
-//     EXPECT_NEAR(0,usqr,1e-10);
-// }
+    EXPECT_DOUBLE_EQ(2.0,rho);
+    EXPECT_NEAR(0,usqr,1e-10);
+}
 
 TEST(Lattice3D, directions)
 {
@@ -1042,29 +1042,29 @@ TEST(Lattice3D, Gradient)
     EXPECT_NEAR(0,grad.z,1e-15); // z-Richung
 }
 
-// TEST(Lattice2D,collisionBalanceAll)
-// {
-//     Lattice2D lattice(5,5,1,1);
-//     lattice.closedBox();
-//     double mass, momentum;
+TEST(Lattice3D,collisionBalanceAll)
+{
+    Lattice3D lattice(5,5,5,1,1);
+    lattice.closedBox();
+    double mass, momentum;
 
-//     lattice.balance(mass, momentum);
-//     EXPECT_DOUBLE_EQ(18,mass);
-//     EXPECT_DOUBLE_EQ(0,momentum);
+    lattice.balance(mass, momentum);
+    EXPECT_DOUBLE_EQ(54,mass);
+    EXPECT_DOUBLE_EQ(0,momentum);
 
-//     lattice.collideAll();
-//     lattice.streamAll();
-//     lattice.balance(mass, momentum);
-//     EXPECT_DOUBLE_EQ(18,mass);
-//     EXPECT_NEAR(0,momentum,1e-10);
+    lattice.collideAll();
+    lattice.streamAll();
+    lattice.balance(mass, momentum);
+    EXPECT_DOUBLE_EQ(54,mass);
+    EXPECT_NEAR(0,momentum,1e-10);
 
-//     lattice.collideAll();
-//     lattice.streamAll();
+    lattice.collideAll();
+    lattice.streamAll();
 
-//     lattice.balance(mass, momentum);
-//     EXPECT_DOUBLE_EQ(18,mass);
-//     EXPECT_NEAR(0,momentum,1e-10);
-// }
+    lattice.balance(mass, momentum);
+    EXPECT_DOUBLE_EQ(54,mass);
+    EXPECT_NEAR(0,momentum,1e-10);
+}
 
 TEST(Lattice3D, copy_constr){
     Lattice3D lBig(100,20,15);
