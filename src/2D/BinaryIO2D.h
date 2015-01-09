@@ -1,13 +1,13 @@
-#ifndef BINARYIO_H
-#define BINARYIO_H
+#ifndef BINARYIO2D_H
+#define BINARYIO2D_H
 
 #include<fstream>
 #include<iostream>
 #include<map>
 
-#include"2D/Lattice2D.h"
-#include"Preprocess.h"
-#include"Timetrack.h"
+#include"Lattice2D.h"
+#include"../Preprocess.h"
+#include"../Timetrack.h"
 
 /// binary dump
 void write_binary(const Lattice2D& l, const string& filename = "data.bin");

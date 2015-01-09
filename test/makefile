@@ -17,7 +17,7 @@ BIN_DIR = bin
 OUTPUT = $(BIN_DIR)/GradientBased
 
 # creating OBJs
-OBJ_DEBUG = $(OBJ_DIR)/Analyze.o $(OBJ_DIR)/BinaryIO.o $(OBJ_DIR)/Constants2D.o $(OBJ_DIR)/Constants3D.o $(OBJ_DIR)/Cell2D.o $(OBJ_DIR)/Cell3D.o $(OBJ_DIR)/Definitions2D.o $(OBJ_DIR)/Definitions3D.o $(OBJ_DIR)/Lattice2D.o $(OBJ_DIR)/Lattice3D.o $(OBJ_DIR)/main.o $(OBJ_DIR)/Matrix2D.o $(OBJ_DIR)/Matrix3D.o $(OBJ_DIR)/ParamSet.o $(OBJ_DIR)/Preprocess.o $(OBJ_DIR)/Timetrack.o $(OBJ_DIR)/Vector2D.o $(OBJ_DIR)/Vector3D.o
+OBJ_DEBUG = $(OBJ_DIR)/Analyze.o $(OBJ_DIR)/BasicIO.o $(OBJ_DIR)/BinaryIO2D.o $(OBJ_DIR)/Constants2D.o $(OBJ_DIR)/Constants3D.o $(OBJ_DIR)/Cell2D.o $(OBJ_DIR)/Cell3D.o $(OBJ_DIR)/Definitions2D.o $(OBJ_DIR)/Definitions3D.o $(OBJ_DIR)/Lattice2D.o $(OBJ_DIR)/Lattice3D.o $(OBJ_DIR)/main.o $(OBJ_DIR)/Matrix2D.o $(OBJ_DIR)/Matrix3D.o $(OBJ_DIR)/ParamSet.o $(OBJ_DIR)/Preprocess.o $(OBJ_DIR)/Timetrack.o $(OBJ_DIR)/Vector2D.o $(OBJ_DIR)/Vector3D.o
 
 all: build run
 
@@ -35,8 +35,11 @@ out_debug: before_debug $(OBJ_DEBUG)
 $(OBJ_DIR)/Analyze.o: $(SRC)/Analyze.cc
 	$(CXX) $(CFLAGS) $(INC) -c $(SRC)/Analyze.cc -o $(OBJ_DIR)/Analyze.o
 
-$(OBJ_DIR)/BinaryIO.o: $(SRC)/BinaryIO.cc
-	$(CXX) $(CFLAGS) $(INC) -c $(SRC)/BinaryIO.cc -o $(OBJ_DIR)/BinaryIO.o
+$(OBJ_DIR)/BasicIO.o: $(SRC)/BasicIO.cc
+	$(CXX) $(CFLAGS) $(INC) -c $(SRC)/BasicIO.cc -o $(OBJ_DIR)/BasicIO.o
+
+$(OBJ_DIR)/BinaryIO2D.o: $(SRC)/2D/BinaryIO2D.cc
+	$(CXX) $(CFLAGS) $(INC) -c $(SRC)/2D/BinaryIO2D.cc -o $(OBJ_DIR)/BinaryIO2D.o
 
 $(OBJ_DIR)/Constants2D.o: $(SRC)/2D/Constants2D.cc
 	$(CXX) $(CFLAGS) $(INC) -c $(SRC)/2D/Constants2D.cc -o $(OBJ_DIR)/Constants2D.o

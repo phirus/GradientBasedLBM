@@ -4,7 +4,8 @@
 #include"gtest/gtest.h"
 #include"../src/2D/Lattice2D.h"
 #include"../src/2D/Vector2D.h"
-#include"../src/BinaryIO.h"
+#include"../src/2D/BinaryIO2D.h"
+#include"../src/BasicIO.h"
 
 #include"../src/3D/Definitions3D.h"
 #include"../src/3D/Constants3D.h"
