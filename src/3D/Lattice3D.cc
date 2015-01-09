@@ -192,134 +192,136 @@ void Lattice3D::streamAll(int threads)
     data = newData;
 }
 
-// bool Lattice2D::collideAll(int threads, bool gravity, bool isLimitActive)
-// {
-//     bool success(true);
-//     field2D *newData = new field2D(boost::extents[xsize][ysize]);
+bool Lattice3D::collideAll(int threads, bool gravity, bool isLimitActive)
+{
+    bool success(true);
+    field3D *newData = new field3D(boost::extents[xsize][ysize][zsize]);
 
-//     omp_set_num_threads (threads);
+     omp_set_num_threads (threads);
 
-//     const double beta = param.getBeta();
-//     const DistributionSetType2D phi = param.getPhi2D();
-//     const int range = xsize * ysize;
-//     // const double rhoRedFixed = param.getRhoR();
-//     const RelaxationPar2D relax = param.getRelaxation2D();
-//     const double dt = param.getDeltaT();
-//     // const double speedlimit = param.getSpeedlimit();
+    const double beta = param.getBeta();
+    const DistributionSetType3D phi = param.getPhi3D();
+    const int range = xsize * ysize * zsize;
+    // const double rhoRedFixed = param.getRhoR();
+    const RelaxationPar3D relax = param.getRelaxation3D();
+    const double dt = param.getDeltaT();
+    // const double speedlimit = param.getSpeedlimit();
 
-//     double g(0);
-//     if(gravity == true) g = param.getG();
-//     // if(gravity == true) g = 1e-1;
+    double g(0);
+    if(gravity == true) g = param.getG();
+    // if(gravity == true) g = 1e-1;
 
 
-//     #pragma omp parallel
-//     {
-//         #pragma omp for
-//         for (int index = 0;  index < range; index++)
-//         {
-//             int x,y;
-//             linearIndex(index,x,y);
-//             Cell2D tmpCell = (*data)[x][y];
+    #pragma omp parallel
+    {
+        #pragma omp for
+        for (int index = 0;  index < range; index++)
+        {
+            int x,y,z;
+            linearIndex(index,x,y,z);
+            Cell3D tmpCell = (*data)[x][y][z];
 
-//             if (tmpCell.getIsSolid() == false)
-//             {
-//                 DistributionSetType2D  fTmp;
-//                 const DistributionSetType2D fCell = tmpCell.getF();
+            if (tmpCell.getIsSolid() == false)
+            {
+                DistributionSetType3D  fTmp;
+                const DistributionSetType3D fCell = tmpCell.getF();
 
-//                 const ColSet rho_k = tmpCell.getRho();
-//                 const double rho = sum(rho_k);
+                const ColSet rho_k = tmpCell.getRho();
+                const double rho = sum(rho_k);
 
-//                 const Vector2D G(0 ,  g*(rho - rho_k[0]));
-//                 // const Vector2D G(0 , - rho * g);
+                const Vector3D G(0 , 0, g*(rho - rho_k[0]));
+                // const Vector2D G(0 , 0, - rho * g);
 
-//                 VeloSet2D u = tmpCell.getU();
+                VeloSet3D u = tmpCell.getU();
 
-//                 if(gravity == true){
-//                 u[0] = u[0] + G *  (dt/(2* rho)) ;
-//                 u[1] = u[1] + G *  (dt/(2* rho)) ;
-//                 }
+                if(gravity == true)
+                {
+                    u[0] = u[0] + G *  (dt/(2* rho)) ;
+                    u[1] = u[1] + G *  (dt/(2* rho)) ;
+                }
 
-//                 const DistributionSetType2D fEq = eqDistro(rho_k, u, phi);
-//                 const DistributionSetType2D diff = distro_diff_2D(fCell, fEq);
+                const DistributionSetType3D fEq = eqDistro(rho_k, u, phi);
+                const DistributionSetType3D diff = distro_diff_3D(fCell, fEq);
             
-//                 const double omega = param.getOmega(tmpCell.calcPsi());
-//                 const Matrix2D relaxation_matrix(relax,omega);
+                const double omega = param.getOmega(tmpCell.calcPsi());
+                const Matrix3D relaxation_matrix(relax,omega);
                 
-//                 const Matrix2D forcing_factor = Matrix2D(true) - (relaxation_matrix*0.5);    // (I - 0.5 S) -> ( 1 - 0.5 omega)
-//                 const DistributionSetType2D first_forcing_term = forcing_factor * (TRAFO_MATRIX2D * calculate_forcing_term(G,u)); // F' = (I - 0.5 S) M F
-//                 const DistributionSetType2D second_forcing_term = INV_TRAFO_MATRIX2D * first_forcing_term;    // M^{-1} F'
+                const Matrix3D forcing_factor = Matrix3D(true) - (relaxation_matrix*0.5);    // (I - 0.5 S) -> ( 1 - 0.5 omega)
+                const DistributionSetType3D first_forcing_term = forcing_factor * (TRAFO_MATRIX3D * calculate_forcing_term(G,u)); // F' = (I - 0.5 S) M F
+                const DistributionSetType3D second_forcing_term = INV_TRAFO_MATRIX3D * first_forcing_term;    // M^{-1} F'
 
-//                 const DistributionSetType2D single_phase_col = INV_TRAFO_MATRIX2D * (relaxation_matrix * (TRAFO_MATRIX2D * diff));
+                const DistributionSetType3D single_phase_col = INV_TRAFO_MATRIX3D * (relaxation_matrix * (TRAFO_MATRIX3D * diff));
                           
-//                 const ColSet A_k = param.getAk(omega);
-//                 const Vector2D grad = getGradient(x,y);
-//                 const double av = grad.Abs();
+                const ColSet A_k = param.getAk(omega);
+                const Vector3D grad = getGradient(x,y,z);
+                const double av = grad.Abs();
 
-//                 double scal;
-//                 double fges;
-//                 double recolor;
-//                 // double final_forcing_term(0);                
+                double scal;
+                double fges;
+                double recolor;
+                // double final_forcing_term(0);                
 
-//                 for (int q=0; q<9; q++)
-//                 {
-//                     // gradient based two phase
-//                     scal = grad*DIRECTION_2D[q];
+                for (int q=0; q<19; q++)
+                {
+                    // gradient based two phase
+                    scal = grad*DIRECTION_3D[q];
 
-//                     double gradient_collision(0);
-//                     if (av > 0 ) gradient_collision = av/2 * (WEIGHTS_2D[q] * ( scal*scal )/(av*av) - B_2D[q]);
+                    double gradient_collision(0);
+                    if (av > 0 ) gradient_collision = av/2 * (WEIGHTS_3D[q] * ( scal*scal )/(av*av) - B_3D[q]);
 
-//                     for (int color=0;color<=1; color++)
-//                     {
-//                         // if (gravity == true) final_forcing_term = second_forcing_term[color][q] ;
-//                         // fTmp[color][q] =  fCell[color][q] - single_phase_col[color][q] + dt * final_forcing_term + A_k[color] * gradient_collision;
-//                         fTmp[color][q] =  fCell[color][q] - single_phase_col[color][q];// + dt * final_forcing_term;
-//                         if (gravity == true) fTmp[color][q] +=  dt * second_forcing_term[color][q];
-//                     }
+                    for (int color=0;color<=1; color++)
+                    {
+                        // if (gravity == true) final_forcing_term = second_forcing_term[color][q] ;
+                        // fTmp[color][q] =  fCell[color][q] - single_phase_col[color][q] + dt * final_forcing_term + A_k[color] * gradient_collision;
+                        fTmp[color][q] =  fCell[color][q] - single_phase_col[color][q];// + dt * final_forcing_term;
+                        if (gravity == true) fTmp[color][q] +=  dt * second_forcing_term[color][q];
+                    }
                     
-//                     for (int color=0;color<=1; color++)
-//                     {
-//                         fTmp[color][q] += A_k[color] * gradient_collision;
-//                     }
+                    for (int color=0;color<=1; color++)
+                    {
+                        fTmp[color][q] += A_k[color] * gradient_collision;
+                    }
 
-//                     fges = fTmp[0][q]+fTmp[1][q];
+                    fges = fTmp[0][q]+fTmp[1][q];
 
-//                     // recoloring
-//                     if (rho > 0) recolor = beta * (rho_k[0] * rho_k[1])/(rho*rho) *  grad.Angle(DIRECTION_2D[q])   * (rho_k[0] * phi.at(0).at(q) + rho_k[1] * phi.at(1).at(q)); 
-//                     else recolor = 0;
+                    // recoloring
+                    if (rho > 0) recolor = beta * (rho_k[0] * rho_k[1])/(rho*rho) *  grad.Angle(DIRECTION_3D[q])   * (rho_k[0] * phi.at(0).at(q) + rho_k[1] * phi.at(1).at(q)); 
+                    else recolor = 0;
 
-//                     if (rho > 0)
-//                     {
-//                         fTmp[0][q] = rho_k[0]/rho  * fges + recolor;
-//                         fTmp[1][q] = rho_k[1]/rho * fges - recolor;
-//                     }
+                    if (rho > 0)
+                    {
+                        fTmp[0][q] = rho_k[0]/rho  * fges + recolor;
+                        fTmp[1][q] = rho_k[1]/rho * fges - recolor;
+                    }
 
-//                     if (gravity == true){
-//                         fTmp[0][q] +=  dt * second_forcing_term[0][q];
-//                         fTmp[1][q] +=  dt * second_forcing_term[1][q];
-//                     } 
+                    if (gravity == true){
+                        fTmp[0][q] +=  dt * second_forcing_term[0][q];
+                        fTmp[1][q] +=  dt * second_forcing_term[1][q];
+                    } 
 
-//                     // if (fTmp[0][q] < 0) fTmp[0][q] = 0;
-//                     // if (fTmp[1][q] < 0) fTmp[1][q] = 0;
+                    // if (fTmp[0][q] < 0) fTmp[0][q] = 0;
+                    // if (fTmp[1][q] < 0) fTmp[1][q] = 0;
 
-//                 } // end for 
+                } // end for 
 
-//                 tmpCell.setF(fTmp);
-//                 tmpCell.calcRho();
-//             }
-//             #pragma omp critical(Zuweisung2)
-//             (*newData)[x][y] = tmpCell;
-//         }
-//     }
-//     if(success == true){
-//         delete data;
-//         data = newData;
-//     }
-//     else{
-//         delete newData;
-//     }     
+                tmpCell.setF(fTmp);
+                tmpCell.calcRho();
+            } // end if(solid)
+            #pragma omp critical(Zuweisung2)
+            (*newData)[x][y][z] = tmpCell;
+        } // end for(index) 
+    } // end #pragma parallel 
+    if(success == true){
+        delete data;
+        data = newData;
+    }
+    else
+    {
+        delete newData;
+    }  
 
-//     return success;
-// }
+    return success;
+}
 
 void Lattice3D::closedBox()
 {
