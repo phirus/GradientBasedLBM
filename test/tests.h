@@ -1001,38 +1001,46 @@ TEST(Lattice3D, directions)
     }
 }
 
-// TEST(Lattice2D, Gradient)
-// {
-//     Lattice2D lattice(5,5,0,0);
-//     array2D f = {{1,0,0,0,0,0,0,0,0}};
+TEST(Lattice3D, Gradient)
+{
+    Lattice3D lattice(5,5,5,0,0);
+    array3D f = {{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}};
 
-//     for (int i=0; i<5; i++)
-//     {
-//         lattice.setF(0,i,1,f);
-//         lattice.setF(1,i,1,f);
-//         lattice.setF(2,i,1,f);
-//         lattice.setF(3,i,0,f);
-//         lattice.setF(4,i,0,f);
-//     }
-//     Cell2D cell;
-//     for (int i = 0; i<5; i++)
-//     {
-//         for (int j = 0; j<5; j++)
-//         {
-//             cell = lattice.getCell(j,i);
-//             cell.calcRho();
-//             lattice.setCell(j,i,cell);
-//         }
+    for (int i=0; i<5; i++)
+    {
+        for (int j = 0; j<5; j++)
+        {
+            lattice.setF(0,i,j,1,f);
+            lattice.setF(1,i,j,1,f);
+            lattice.setF(2,i,j,1,f);
+            lattice.setF(3,i,j,0,f);
+            lattice.setF(4,i,j,0,f);
+        }
+    }
+    Cell3D cell;
+    for (int i = 0; i<5; i++)
+    {
+        for (int j = 0; j<5; j++)
+        {
+            for (int k = 0; k<5; k++)
+            {
+                cell = lattice.getCell(i,j,k);
+                cell.calcRho();
+                lattice.setCell(i,j,k,cell);
+            }
+        }
 
-//     }
-//     Vector2D grad = lattice.getGradient(2,2);
-//     double abs = grad.Abs();
-//     grad.x /= abs;
-//     grad.y /= abs;
+    }
+    Vector3D grad = lattice.getGradient(2,2,2);
+    double abs = grad.Abs();
+    grad.x /= abs;
+    grad.y /= abs;
+    grad.z /=abs;
 
-//     EXPECT_DOUBLE_EQ(1,grad.x); // y-Richtung
-//     EXPECT_DOUBLE_EQ(0,grad.y); // x-Richung
-// }
+    EXPECT_DOUBLE_EQ(1,grad.x); // x-Richtung
+    EXPECT_DOUBLE_EQ(0,grad.y); // y-Richung
+    EXPECT_NEAR(0,grad.z,1e-15); // z-Richung
+}
 
 // TEST(Lattice2D,collisionBalanceAll)
 // {
