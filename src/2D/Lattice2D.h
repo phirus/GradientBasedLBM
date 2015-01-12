@@ -1,5 +1,6 @@
 #ifndef LATTICE2D_H
 #define LATTICE2D_H
+
 #include<iostream>
 #include<omp.h>
 
