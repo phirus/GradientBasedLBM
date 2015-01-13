@@ -225,115 +225,136 @@ const bool read_restart_file(Lattice3D& outL, Preprocess& p, Timetrack& t, const
     return success;
 }
 
-// //=========================== WRITE OUTPUT ===========================
+//=========================== WRITE OUTPUT ===========================
 
-// void write_techplot_output(const Lattice2D& l, int iterNum)
-// {
-//     ofstream PsiFile;
-//     Cell2D tmp;
-//     ColSet extent = l.getSize();
-//     int xsize = static_cast<int> (extent[0]);
-//     int ysize = static_cast<int> (extent[1]);
+void write_techplot_output3D(const Lattice3D& l, int iterNum)
+{
+    ofstream PsiFile;
+    Cell3D tmp;
+    DimSet3D extent = l.getSize();
+    int xsize = static_cast<int> (extent[0]);
+    int ysize = static_cast<int> (extent[1]);
+    int zsize = static_cast<int> (extent[2]);
 
-//     stringstream name;
-//     name <<"psi_"<< iterNum<<".dat";
+    stringstream name;
+    name <<"psi_"<< iterNum<<".dat";
 
-//     PsiFile.open( name.str().c_str() );
-//     PsiFile << "TITLE = \" NewDataSet \" "<<endl;
-//     PsiFile << "Variables = \" x \" "<<endl;
-//     PsiFile << "\"y\""<<endl;
-//     PsiFile << "\"z\""<<endl;
-//     PsiFile << "\"psi\""<<endl;
-//     PsiFile << "\"rho\""<<endl;
-//     PsiFile << "\"ux1\""<<endl;
-//     PsiFile << "\"uy1\""<<endl;
-//     PsiFile << "\"ux2\""<<endl;
-//     PsiFile << "\"uy2\""<<endl;
-//     PsiFile << "\"u_abs\""<<endl;
-//     PsiFile << "\"grad_x\""<<endl;
-//     PsiFile << "\"grad_y\""<<endl;
-//     PsiFile << "ZONE T=\" "<< iterNum << "\""<< endl;
-//     PsiFile << "I="<<xsize<<", J="<<ysize<<", K=1,F=POINT"<< endl;
+    PsiFile.open( name.str().c_str() );
+    PsiFile << "TITLE = \" NewDataSet \" "<<endl;
+    PsiFile << "Variables = \" x \" "<<endl;
+    PsiFile << "\"y\""<<endl;
+    PsiFile << "\"z\""<<endl;
+    PsiFile << "\"psi\""<<endl;
+    PsiFile << "\"rho\""<<endl;
+    PsiFile << "\"ux1\""<<endl;
+    PsiFile << "\"uy1\""<<endl;
+    PsiFile << "\"uz1\""<<endl;
+    PsiFile << "\"ux2\""<<endl;
+    PsiFile << "\"uy2\""<<endl;
+    PsiFile << "\"uz2\""<<endl;
+    PsiFile << "\"u_abs\""<<endl;
+    PsiFile << "\"grad_x\""<<endl;
+    PsiFile << "\"grad_y\""<<endl;
+    PsiFile << "\"grad_z\""<<endl;
+    PsiFile << "ZONE T=\" "<< iterNum << "\""<< endl;
+    PsiFile << "I="<<xsize<<", J="<<ysize<<", K="<<zsize<<", F=POINT"<< endl;
 
-//     PsiFile << "DT=(DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE)"<<endl;
+    PsiFile << "DT=(DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE)"<<endl;
     
-//     for (int j=0; j<ysize; j++)
-//     {
-//         for (int i=0; i<xsize; i++)
-//         {
-//             tmp = l.getCell(i,j);
-//             tmp.calcRho();
-            
-//             VeloSet2D u = tmp.getU();
-//             ColSet rho = tmp.getRho();
-//             Vector2D v;
-//             Vector2D gradient = l.getGradient(i, j);
-//             if(sum(rho) > 0) v = (u[0]*rho[0] + u[1]*rho[1]) * (1/sum(rho));
+    for (int j=0; j<ysize; j++)
+    {
+        for (int i=0; i<xsize; i++)
+        {
+            for (int k=0; k<zsize; k++)
+            {
+                tmp = l.getCell(i,j,k);
+                tmp.calcRho();
 
-//             PsiFile << i << "\t" << j << "\t" << "0 \t" << tmp.calcPsi() << "\t" << sum(rho) << "\t" << u[0].x << "\t" << u[0].y << "\t" << u[1].x << "\t" << u[1].y << "\t" << v.Abs() << "\t" << gradient.x << "\t" << gradient.y << endl;
-//         }
-//     }
-//     PsiFile.close();
-// }
+                VeloSet3D u = tmp.getU();
+                ColSet rho = tmp.getRho();
+                Vector3D v;
+                Vector3D gradient = l.getGradient(i, j, k);
+                if(sum(rho) > 0) v = (u[0]*rho[0] + u[1]*rho[1]) * (1/sum(rho));
 
-// void write_techplot_output_alternative(const Lattice2D& l, const string& filename)
-// {
-//     ofstream PsiFile;
-//     Cell2D tmp;
-//     ColSet extent = l.getSize();
-//     int xsize = static_cast<int> (extent[0]);
-//     int ysize = static_cast<int> (extent[1]);
+                PsiFile << i << "\t" << j << "\t" << k <<"\t" << tmp.calcPsi() << "\t" << sum(rho) << "\t" << u[0].x << "\t" << u[0].y << "\t"<< u[0].z << "\t" << u[1].x << "\t" << u[1].y << "\t"<< u[1].z << "\t" << v.Abs() << "\t" << gradient.x << "\t" << gradient.y << "\t" << gradient.z << endl;
+            }
+         }
+    }
+    PsiFile.close();
+}
 
-//     stringstream name;
-//     name <<filename;
+void write_techplot_output_alternative3D(const Lattice3D& l, const string& filename)
+{
+    ofstream PsiFile;
+    Cell3D tmp;
+    DimSet3D extent = l.getSize();
+    int xsize = static_cast<int> (extent[0]);
+    int ysize = static_cast<int> (extent[1]);
+    int zsize = static_cast<int> (extent[2]);
 
-//     PsiFile.open( name.str().c_str() );
-//     PsiFile << "TITLE = \" NewDataSet \" "<<endl;
-//     PsiFile << "Variables = \" x \" "<<endl;
-//     PsiFile << "\"y\""<<endl;
-//     PsiFile << "\"z\""<<endl;
-//     PsiFile << "\"psi\""<<endl;
-//     PsiFile << "\"rho\""<<endl;
-//     PsiFile << "\"ux1\""<<endl;
-//     PsiFile << "\"uy1\""<<endl;
-//     PsiFile << "\"ux2\""<<endl;
-//     PsiFile << "\"uy2\""<<endl;
-//     PsiFile << "\"u_abs\""<<endl;
-//     PsiFile << "\"grad_x\""<<endl;
-//     PsiFile << "\"grad_y\""<<endl;
+    stringstream name;
+    name <<filename;
+
+    PsiFile.open( name.str().c_str() );
+    PsiFile << "TITLE = \" NewDataSet \" "<<endl;
+    PsiFile << "Variables = \" x \" "<<endl;
+    PsiFile << "\"y\""<<endl;
+    PsiFile << "\"z\""<<endl;
+    PsiFile << "\"psi\""<<endl;
+    PsiFile << "\"rho\""<<endl;
+    PsiFile << "\"ux1\""<<endl;
+    PsiFile << "\"uy1\""<<endl;
+    PsiFile << "\"uz1\""<<endl;
+    PsiFile << "\"ux2\""<<endl;
+    PsiFile << "\"uy2\""<<endl;
+    PsiFile << "\"uz2\""<<endl;
+    PsiFile << "\"u_abs\""<<endl;
+    PsiFile << "\"grad_x\""<<endl;
+    PsiFile << "\"grad_y\""<<endl;
+    PsiFile << "\"grad_z\""<<endl;
     
-//     PsiFile << "ZONE T=\"0\""<< endl;
-//     PsiFile << "I="<<xsize<<", J="<<ysize<<", K=1,F=POINT"<< endl;
-//     PsiFile << "DT=(DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE)"<<endl;
+    PsiFile << "ZONE T=\"0\""<< endl;
+    PsiFile << "I="<<xsize<<", J="<<ysize<<", K=" <<zsize<<",F=POINT"<< endl;
+    PsiFile << "DT=(DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE)"<<endl;
     
-//     for (int j=0; j<ysize; j++)
-//     {
-//         for (int i=0; i<xsize; i++)
-//         {
-//             tmp = l.getCell(i,j);
-//             tmp.calcRho();
-//             double psi = tmp.calcPsi();
-//             PsiFile << i << "\t" << j << "\t" << "0 \t" << psi ;
-            
-//             VeloSet2D u = tmp.getU();
-//             ColSet rho = tmp.getRho();
-//             Vector2D v;
-//             Vector2D gradient = l.getGradient(i, j);
-//             if(sum(rho) > 0) v = (u[0]*rho[0] + u[1]*rho[1]) * (1/sum(rho));
-//             if(psi < 1) {
-//                 u[0].x = 0;
-//                 u[0].y = 0;
-//             }
-//             if(psi > -0.99) {
-//                 u[1].x = 0;
-//                 u[1].y = 0;
-//             }
-//             PsiFile << "\t" << sum(rho) << "\t" << u[0].x*rho[0] << "\t" << u[0].y*rho[0] << "\t" << u[1].x*rho[1] << "\t" << u[1].y*rho[1] << "\t" << v.Abs() << "\t" << gradient.x << "\t" << gradient.y;
-//             PsiFile << endl;
-//         }
-//     }
-//     PsiFile.close();
-// }
+    for (int j=0; j<ysize; j++)
+    {
+        for (int i=0; i<xsize; i++)
+        {
+            for (int k=0; k<zsize; k++)
+            {
+                tmp = l.getCell(i,j,k);
+                tmp.calcRho();
+                double psi = tmp.calcPsi();
+                PsiFile << i << "\t" << j << "\t" << k << "\t" << psi ;
+
+                VeloSet3D u = tmp.getU();
+                ColSet rho = tmp.getRho();
+                Vector3D v;
+                Vector3D gradient = l.getGradient(i, j, k);
+                if(sum(rho) > 0) v = (u[0]*rho[0] + u[1]*rho[1]) * (1/sum(rho));
+
+                if(psi < 1) 
+                {
+                    u[0].x = 0;
+                    u[0].y = 0;
+                    u[0].z = 0;
+                }
+
+                if(psi > -0.99) 
+                {
+                    u[1].x = 0;
+                    u[1].y = 0;
+                    u[1].z = 0;
+                }
+
+                PsiFile << "\t" << sum(rho) << "\t" << u[0].x*rho[0] << "\t" << u[0].y*rho[0] << "\t" << u[0].z*rho[0] << "\t" << u[1].x*rho[1] << "\t" << u[1].y*rho[1]  << "\t" << u[1].z*rho[1] << "\t" << v.Abs() << "\t" << gradient.x << "\t" << gradient.y << "\t" << gradient.z;
+                PsiFile << endl;
+            }
+        }
+    }
+    PsiFile.close();
+}
 
 // void write_vtk_output(const Lattice2D& l, const string& filename)
 // {
