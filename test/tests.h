@@ -5,7 +5,6 @@
 #include"../src/2D/Lattice2D.h"
 #include"../src/2D/Vector2D.h"
 #include"../src/2D/BinaryIO2D.h"
-#include"../src/BasicIO.h"
 
 #include"../src/3D/Definitions3D.h"
 #include"../src/3D/Constants3D.h"
@@ -14,16 +13,7 @@
 
 using namespace std;
 
-TEST(BinaryIO,output){
-    Lattice2D lattice(150,150);
-    write_binary(lattice);
-    Lattice2D vergleich;
-    EXPECT_FALSE(read_binary(vergleich,"existiertnicht.txt"));
-    EXPECT_TRUE(read_binary(vergleich));
-    EXPECT_EQ(lattice,vergleich);
-}
-
-TEST(BinaryIO,paramLog){
+TEST(BasicIO,paramLog){
     RelaxationPar3D rel = RelaxationPar3D(0.8,1.2,1.2,1.1,1.3);
     ParamSet params(1.1, 0.9, 1.1, 5, 2e-4, 2e-4, 1e-4, 1e-3,rel, 0.21, 0.11, 0.98);   
     EXPECT_NO_THROW(write_param_log(params));
@@ -32,7 +22,7 @@ TEST(BinaryIO,paramLog){
     EXPECT_EQ(params, read_in);
 }
 
-TEST(BinaryIO,queryTest){
+TEST(BasicIO,queryTest){
     double value;
     EXPECT_FALSE( input_query("existiertnicht","test",value) );
     EXPECT_FALSE(input_query("queryTest","noflag",value));
@@ -40,19 +30,28 @@ TEST(BinaryIO,queryTest){
     EXPECT_DOUBLE_EQ(13.4, value); 
 }
 
-TEST(BinaryIO,restart){
+TEST(BinaryIO2D,output){
+    Lattice2D lattice(150,150);
+    write_binary2D(lattice);
+    Lattice2D vergleich;
+    EXPECT_FALSE(read_binary2D(vergleich,"existiertnicht.txt"));
+    EXPECT_TRUE(read_binary2D(vergleich));
+    EXPECT_EQ(lattice,vergleich);
+}
+
+TEST(BinaryIO2D,restart){
     Lattice2D lattice(150,150);
 
     Timetrack time(2e5,100,1000);
     time.timestep();
 
     Preprocess newProcess = read_preprocess_file("preprocessFile");
-    write_restart_file(lattice, newProcess,time);
+    write_restart_file2D(lattice, newProcess,time);
     
     Lattice2D vergleichL;
     Preprocess vergleichP;
     Timetrack vergleichT;
-    EXPECT_TRUE(read_restart_file(vergleichL,vergleichP,vergleichT));
+    EXPECT_TRUE(read_restart_file2D(vergleichL,vergleichP,vergleichT));
     EXPECT_EQ(lattice, vergleichL);
     EXPECT_EQ(newProcess, vergleichP);
     EXPECT_EQ(time, vergleichT);

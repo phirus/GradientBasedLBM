@@ -1,13 +1,13 @@
 #ifndef BINARYIO3D_H
 #define BINARYIO3D_H
 
-// #include<fstream>
-// #include<iostream>
-// #include<map>
+#include<fstream>
+#include<iostream>
+#include<map>
 
-// #include"Lattice2D.h"
+#include"Lattice3D.h"
 
-// #include"../BasicIO.h"
+#include"../BasicIO.h"
 
 // /// binary dump
 // void write_binary(const Lattice2D& l, const string& filename = "data.bin");
