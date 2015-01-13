@@ -1,66 +1,76 @@
 #include"BinaryIO3D.h"
 
-// //=========================== BINARY DUMP ===========================
+//=========================== BINARY DUMP ===========================
 
-// void write_binary(const Lattice2D& l, const string& filename){
+void write_binary3D(const Lattice3D& l, const string& filename){
 
-//     // setting up the file name
-//     stringstream name;
-//     name << filename;
+    // setting up the file name
+    stringstream name;
+    name << filename;
 
-//     // setting up file
-//     fstream file(name.str().c_str(),ios::out | ios::binary);
-//     file.seekp(0);
+    // setting up file
+    fstream file(name.str().c_str(),ios::out | ios::binary);
+    file.seekp(0);
 
-//     // start to write
-//     ColSet extent = l.getSize();
-//     file.write(reinterpret_cast<char*> (&extent), sizeof extent);
+    // start to write
+    DimSet3D extent = l.getSize();
+    file.write(reinterpret_cast<char*> (&extent), sizeof extent);
 
-//     ParamSet param = l.getParams();
-//     file.write(reinterpret_cast<char*> (&param), sizeof param);
+    ParamSet param = l.getParams();
+    file.write(reinterpret_cast<char*> (&param), sizeof param);
 
-//     field2D data = l.getData();
+    field3D data = l.getData();
 
-//     for (int x = 0; x<extent[0];x++){
-//         for (int y = 0; y<extent[1];y++){
-//             file.write(reinterpret_cast<char*> (&data[x][y]), sizeof(Cell2D));
-//         }
-//     }
-//     file.close();
-// }
+    for (int x = 0; x<extent[0];x++)
+    {
+        for (int y = 0; y<extent[1];y++)
+        {
+            for (int z = 0; z<extent[2];z++)
+            {
+                file.write(reinterpret_cast<char*> (&data[x][y][z]), sizeof(Cell3D));
+            }            
+        }
+    }
+    file.close();
+}
 
-// const bool read_binary(Lattice2D& outL, const string& filename){
-//     bool success;
+const bool read_binary3D(Lattice3D& outL, const string& filename){
+    bool success;
 
-//     // setting up file
-//     fstream file(filename.c_str(),ios::in | ios::binary);
-//     if(file.is_open()){
-//         success = true;
-//         file.seekg(0);
+    // setting up file
+    fstream file(filename.c_str(),ios::in | ios::binary);
+    if(file.is_open()){
+        success = true;
+        file.seekg(0);
 
-//         // start to read
-//         ColSet extent;
-//         file.read((char*) &extent, sizeof extent);
+        // start to read
+        DimSet3D extent;
+        file.read((char*) &extent, sizeof extent);
 
-//         ParamSet param;
-//         file.read((char*) &param, sizeof param);
+        ParamSet param;
+        file.read((char*) &param, sizeof param);
 
-//         Cell2D tmpCell;
-//         field2D data(boost::extents[extent[0]][extent[1]]);
-//         for(int x = 0; x<extent[0];x++){
-//             for(int y=0;y<extent[1];y++){
-//                 file.read((char*) &tmpCell, sizeof(Cell2D));
-//                 data[x][y] = tmpCell;
-//             }
-//         }
-//         file.close();
-//         outL.setParams(param);
-//         outL.setData(data, extent[0], extent[1]);
-//     }
-//     else success = false;
+        Cell3D tmpCell;
+        field3D data(boost::extents[extent[0]][extent[1]][extent[2]]);
+        for(int x = 0; x<extent[0];x++)
+        {
+            for(int y=0;y<extent[1];y++)
+            {
+                for(int z=0;z<extent[2];z++)
+                {
+                    file.read((char*) &tmpCell, sizeof(Cell3D));
+                    data[x][y][z] = tmpCell;
+                }
+            }
+        }
+        file.close();
+        outL.setParams(param);
+        outL.setData(data, extent[0], extent[1], extent[2]);
+    }
+    else success = false;
 
-//     return success;
-// }
+    return success;
+}
 
 // //=========================== RESTART FILES ===========================
 

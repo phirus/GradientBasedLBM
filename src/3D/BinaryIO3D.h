@@ -9,9 +9,9 @@
 
 #include"../BasicIO.h"
 
-// /// binary dump
-// void write_binary(const Lattice2D& l, const string& filename = "data.bin");
-// const bool read_binary(Lattice2D& outL, const string& filename = "data.bin");
+/// binary dump
+void write_binary3D(const Lattice3D& l, const string& filename = "data.bin");
+const bool read_binary3D(Lattice3D& outL, const string& filename = "data.bin");
 
 // /// restart files
 // void write_restart_file(const Lattice2D& l, const Preprocess& p, const Timetrack time, const string& filename = "restart.bin");
