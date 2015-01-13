@@ -72,148 +72,158 @@ const bool read_binary3D(Lattice3D& outL, const string& filename){
     return success;
 }
 
-// //=========================== RESTART FILES ===========================
+//=========================== RESTART FILES ===========================
 
-// void write_restart_file(const Lattice2D& l, const Preprocess& p, const Timetrack time, const string& filename){
+void write_restart_file3D(const Lattice3D& l, const Preprocess& p, const Timetrack time, const string& filename){
 
-//     // setting up the file name
-//     stringstream name;
-//     name << filename;
+    // setting up the file name
+    stringstream name;
+    name << filename;
 
-//     // setting up file
-//     fstream file(name.str().c_str(),ios::out | ios::binary);
-//     file.seekp(0);
+    // setting up file
+    fstream file(name.str().c_str(),ios::out | ios::binary);
+    file.seekp(0);
 
-//     // start to write
-//     ColSet extent = l.getSize();
-//     file.write(reinterpret_cast<char*> (&extent), sizeof extent);
+    // start to write
+    DimSet3D extent = l.getSize();
+    file.write(reinterpret_cast<char*> (&extent), sizeof extent);
 
-//     ParamSet param = l.getParams();
-//     file.write(reinterpret_cast<char*> (&param), sizeof param);
+    ParamSet param = l.getParams();
+    file.write(reinterpret_cast<char*> (&param), sizeof param);
 
-//     // write the velocity distributions
-//     field2D data = l.getData();
-//     for (int x = 0; x<extent[0];x++){
-//         for (int y = 0; y<extent[1];y++){
-//             file.write(reinterpret_cast<char*> (&data[x][y]), sizeof(Cell2D));
-//         }
-//     }
+    // write the velocity distributions
+    field3D data = l.getData();
+    for (int x = 0; x<extent[0];x++)
+    {
+        for (int y = 0; y<extent[1];y++)
+        {
+            for (int z = 0; z<extent[2]; z++)
+            {
+                file.write(reinterpret_cast<char*> (&data[x][y][z]), sizeof(Cell3D));
+            }
+        }
+    }
 
-//     // write Timetrack
-//     int count = time.getCount();
-//     int maxCount = time.getMaxCount();
-//     int output_interval = time.getOutputInt();
-//     int restart_interval = time.getRestartInt();
+    // write Timetrack
+    int count = time.getCount();
+    int maxCount = time.getMaxCount();
+    int output_interval = time.getOutputInt();
+    int restart_interval = time.getRestartInt();
 
-//     file.write(reinterpret_cast<char*> (&count), sizeof count);
-//     file.write(reinterpret_cast<char*> (&maxCount), sizeof maxCount);
-//     file.write(reinterpret_cast<char*> (&output_interval), sizeof output_interval);
-//     file.write(reinterpret_cast<char*> (&restart_interval), sizeof restart_interval);
+    file.write(reinterpret_cast<char*> (&count), sizeof count);
+    file.write(reinterpret_cast<char*> (&maxCount), sizeof maxCount);
+    file.write(reinterpret_cast<char*> (&output_interval), sizeof output_interval);
+    file.write(reinterpret_cast<char*> (&restart_interval), sizeof restart_interval);
 
-//     // write Preprocess
+    // write Preprocess
 
-//     double ReynoldsMax = p.getReynoldsMax();    
-//     double Morton = p.getMorton();
-//     double Eotvos = p.getEotvos();
-//     double resolution = p.getResolution();
-//     double rho_l = p.getRhoL();
-//     double gamma = p.getGamma();
-//     double mu_ratio = p.getMuRatio();
-//     double s_3 = p.getS_3();
-//     double s_5 = p.getS_5();
-//     double s_11 = p.getS_11();
-//     double s_17 = p.getS_17();
-//     int width = p.getWidth();
-//     int height = p.getHeight();
+    double ReynoldsMax = p.getReynoldsMax();    
+    double Morton = p.getMorton();
+    double Eotvos = p.getEotvos();
+    double resolution = p.getResolution();
+    double rho_l = p.getRhoL();
+    double gamma = p.getGamma();
+    double mu_ratio = p.getMuRatio();
+    double s_3 = p.getS_3();
+    double s_5 = p.getS_5();
+    double s_11 = p.getS_11();
+    double s_17 = p.getS_17();
+    int width = p.getWidth();
+    int height = p.getHeight();
 
-//     file.write(reinterpret_cast<char*> (&ReynoldsMax), sizeof(double));
-//     file.write(reinterpret_cast<char*> (&Morton), sizeof(double));
-//     file.write(reinterpret_cast<char*> (&Eotvos), sizeof(double));
-//     file.write(reinterpret_cast<char*> (&resolution), sizeof(double));
-//     file.write(reinterpret_cast<char*> (&rho_l), sizeof(double));
-//     file.write(reinterpret_cast<char*> (&gamma), sizeof(double));
-//     file.write(reinterpret_cast<char*> (&mu_ratio), sizeof(double));    
-//     file.write(reinterpret_cast<char*> (&s_3), sizeof(double));
-//     file.write(reinterpret_cast<char*> (&s_5), sizeof(double));
-//     file.write(reinterpret_cast<char*> (&s_11), sizeof(double));
-//     file.write(reinterpret_cast<char*> (&s_17), sizeof(double));
-//     file.write(reinterpret_cast<char*> (&width), sizeof(int));
-//     file.write(reinterpret_cast<char*> (&height), sizeof(int));
+    file.write(reinterpret_cast<char*> (&ReynoldsMax), sizeof(double));
+    file.write(reinterpret_cast<char*> (&Morton), sizeof(double));
+    file.write(reinterpret_cast<char*> (&Eotvos), sizeof(double));
+    file.write(reinterpret_cast<char*> (&resolution), sizeof(double));
+    file.write(reinterpret_cast<char*> (&rho_l), sizeof(double));
+    file.write(reinterpret_cast<char*> (&gamma), sizeof(double));
+    file.write(reinterpret_cast<char*> (&mu_ratio), sizeof(double));    
+    file.write(reinterpret_cast<char*> (&s_3), sizeof(double));
+    file.write(reinterpret_cast<char*> (&s_5), sizeof(double));
+    file.write(reinterpret_cast<char*> (&s_11), sizeof(double));
+    file.write(reinterpret_cast<char*> (&s_17), sizeof(double));
+    file.write(reinterpret_cast<char*> (&width), sizeof(int));
+    file.write(reinterpret_cast<char*> (&height), sizeof(int));
 
-//     file.close();
-// }
+    file.close();
+}
 
-// const bool read_restart_file(Lattice2D& outL, Preprocess& p, Timetrack& t, const string& filename)
-// {
-//     bool success;
+const bool read_restart_file(Lattice3D& outL, Preprocess& p, Timetrack& t, const string& filename)
+{
+    bool success;
 
-//     // setting up file
-//     fstream file(filename.c_str(),ios::in | ios::binary);
-//     if(file.is_open()){
-//         success = true;
-//         file.seekg(0);
+    // setting up file
+    fstream file(filename.c_str(),ios::in | ios::binary);
+    if(file.is_open()){
+        success = true;
+        file.seekg(0);
 
-//         // start to read
-//         ColSet extent;
-//         file.read((char*) &extent, sizeof extent);
+        // start to read
+        DimSet3D extent;
+        file.read((char*) &extent, sizeof extent);
 
-//         ParamSet param;
-//         file.read((char*) &param, sizeof param);
+        ParamSet param;
+        file.read((char*) &param, sizeof param);
 
-//         Cell2D tmpCell;
-//         field2D data(boost::extents[extent[0]][extent[1]]);
-//         for(int x = 0; x<extent[0];x++){
-//             for(int y=0;y<extent[1];y++){
-//                 file.read((char*) &tmpCell, sizeof(Cell2D));
-//                 data[x][y] = tmpCell;
-//             }
-//         }
+        Cell3D tmpCell;
+        field3D data(boost::extents[extent[0]][extent[1]][extent[2]]);
+        for(int x = 0; x<extent[0];x++)
+        {
+            for(int y=0;y<extent[1];y++)
+            {
+                for(int z=0;z<extent[2];z++)
+                {
+                    file.read((char*) &tmpCell, sizeof(Cell3D));
+                    data[x][y][z] = tmpCell;
+                }
+            }
+        }
 
-//         int count;
-//         int maxCount;
-//         int output_interval;
-//         int restart_interval;
+        int count;
+        int maxCount;
+        int output_interval;
+        int restart_interval;
 
-//         file.read((char*) &count, sizeof count);
-//         file.read((char*) &maxCount, sizeof maxCount);
-//         file.read((char*) &output_interval, sizeof output_interval);
-//         file.read((char*) &restart_interval, sizeof restart_interval);
+        file.read((char*) &count, sizeof count);
+        file.read((char*) &maxCount, sizeof maxCount);
+        file.read((char*) &output_interval, sizeof output_interval);
+        file.read((char*) &restart_interval, sizeof restart_interval);
 
-//         Timetrack time(maxCount, output_interval, restart_interval);
-//         time.setCount(count);
+        Timetrack time(maxCount, output_interval, restart_interval);
+        time.setCount(count);
 
-//         double ReynoldsMax, Morton, Eotvos;
-//         double resolution, rho_l, gamma;
-//         double mu_ratio, s_3, s_5, s_11, s_17; 
-//         int width, height;
+        double ReynoldsMax, Morton, Eotvos;
+        double resolution, rho_l, gamma;
+        double mu_ratio, s_3, s_5, s_11, s_17; 
+        int width, height;
 
-//         file.read((char*) &ReynoldsMax, sizeof(double));
-//         file.read((char*) &Morton, sizeof(double));
-//         file.read((char*) &Eotvos, sizeof(double));
-//         file.read((char*) &resolution, sizeof(double));
-//         file.read((char*) &rho_l, sizeof(double));
-//         file.read((char*) &gamma, sizeof(double));
-//         file.read((char*) &mu_ratio, sizeof(double));
-//         file.read((char*) &s_3, sizeof(double));
-//         file.read((char*) &s_5, sizeof(double));
-//         file.read((char*) &s_11, sizeof(double));
-//         file.read((char*) &s_17, sizeof(double));
+        file.read((char*) &ReynoldsMax, sizeof(double));
+        file.read((char*) &Morton, sizeof(double));
+        file.read((char*) &Eotvos, sizeof(double));
+        file.read((char*) &resolution, sizeof(double));
+        file.read((char*) &rho_l, sizeof(double));
+        file.read((char*) &gamma, sizeof(double));
+        file.read((char*) &mu_ratio, sizeof(double));
+        file.read((char*) &s_3, sizeof(double));
+        file.read((char*) &s_5, sizeof(double));
+        file.read((char*) &s_11, sizeof(double));
+        file.read((char*) &s_17, sizeof(double));
 
-//         file.read((char*) &width, sizeof(int));
-//         file.read((char*) &height, sizeof(int));
+        file.read((char*) &width, sizeof(int));
+        file.read((char*) &height, sizeof(int));
 
-//         Preprocess prepro(ReynoldsMax, Morton, Eotvos, resolution, rho_l, gamma, mu_ratio, s_3, s_5, s_11, s_17, width, height);
+        Preprocess prepro(ReynoldsMax, Morton, Eotvos, resolution, rho_l, gamma, mu_ratio, s_3, s_5, s_11, s_17, width, height);
         
-//         file.close();
-//         outL.setParams(param);
-//         outL.setData(data, extent[0], extent[1]);
-//         t = time;
-//         p = prepro;
-//     }
-//     else success = false;
+        file.close();
+        outL.setParams(param);
+        outL.setData(data, extent[0], extent[1], extent[2]);
+        t = time;
+        p = prepro;
+    }
+    else success = false;
 
-//     return success;
-// }
+    return success;
+}
 
 // //=========================== WRITE OUTPUT ===========================
 
