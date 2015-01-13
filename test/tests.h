@@ -10,6 +10,7 @@
 #include"../src/3D/Constants3D.h"
 #include"../src/3D/Cell3D.h"
 #include"../src/3D/Lattice3D.h"
+#include"../src/3D/BinaryIO3D.h"
 
 using namespace std;
 
@@ -55,6 +56,11 @@ TEST(BinaryIO2D,restart){
     EXPECT_EQ(lattice, vergleichL);
     EXPECT_EQ(newProcess, vergleichP);
     EXPECT_EQ(time, vergleichT);
+}
+
+TEST(BinaryIO3D,vtkGrid){
+    Lattice3D lattice(4,5,7);
+    EXPECT_NO_THROW(write_vtk_output3D(lattice));
 }
 
 TEST(Cell2D,constructor0)

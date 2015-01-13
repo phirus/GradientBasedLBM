@@ -331,7 +331,7 @@ void write_vtk_output2D(const Lattice2D& l, const string& filename)
     VTKFile.open(filename.c_str());
 
     VTKFile << "# vtk DataFile Version 3.1" << endl;
-    VTKFile << "Lattice2D Boltzmann data" << endl;
+    VTKFile << "Lattice Boltzmann data" << endl;
     VTKFile << "ASCII" << endl;
     VTKFile << "DATASET UNSTRUCTURED_GRID" << endl;
 
