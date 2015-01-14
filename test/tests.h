@@ -58,6 +58,33 @@ TEST(BinaryIO2D,restart){
     EXPECT_EQ(time, vergleichT);
 }
 
+TEST(BinaryIO3D,output){
+    Lattice3D lattice(40,40,100);
+    write_binary3D(lattice);
+    Lattice3D vergleich;
+    EXPECT_FALSE(read_binary3D(vergleich,"existiertnicht.txt"));
+    EXPECT_TRUE(read_binary3D(vergleich));
+    EXPECT_EQ(lattice,vergleich);
+}
+
+TEST(BinaryIO3D,restart){
+    Lattice3D lattice(40,40,100);
+
+    Timetrack time(2e5,100,1000);
+    time.timestep();
+
+    Preprocess newProcess = read_preprocess_file("preprocessFile");
+    write_restart_file3D(lattice, newProcess,time);
+    
+    Lattice3D vergleichL;
+    Preprocess vergleichP;
+    Timetrack vergleichT;
+    EXPECT_TRUE(read_restart_file3D(vergleichL,vergleichP,vergleichT));
+    EXPECT_EQ(lattice, vergleichL);
+    EXPECT_EQ(newProcess, vergleichP);
+    EXPECT_EQ(time, vergleichT);
+}
+
 TEST(BinaryIO3D,vtkGrid){
     Lattice3D lattice(4,5,7);
     EXPECT_NO_THROW(write_vtk_output3D(lattice));

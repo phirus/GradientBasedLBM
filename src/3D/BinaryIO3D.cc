@@ -148,7 +148,7 @@ void write_restart_file3D(const Lattice3D& l, const Preprocess& p, const Timetra
     file.close();
 }
 
-const bool read_restart_file(Lattice3D& outL, Preprocess& p, Timetrack& t, const string& filename)
+const bool read_restart_file3D(Lattice3D& outL, Preprocess& p, Timetrack& t, const string& filename)
 {
     bool success;
 
