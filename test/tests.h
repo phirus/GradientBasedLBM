@@ -59,7 +59,7 @@ TEST(BinaryIO2D,restart){
 }
 
 TEST(BinaryIO3D,output){
-    Lattice3D lattice(40,40,100);
+    Lattice3D lattice(20,25,40);
     write_binary3D(lattice);
     Lattice3D vergleich;
     EXPECT_FALSE(read_binary3D(vergleich,"existiertnicht.txt"));
@@ -68,7 +68,7 @@ TEST(BinaryIO3D,output){
 }
 
 TEST(BinaryIO3D,restart){
-    Lattice3D lattice(40,40,100);
+    Lattice3D lattice(20,25,40);
 
     Timetrack time(2e5,100,1000);
     time.timestep();
@@ -1263,7 +1263,7 @@ TEST(Matrix3D,plus_times){
     EXPECT_EQ(TRAFO_MATRIX3D+TRAFO_MATRIX3D, (TRAFO_MATRIX3D*3)-TRAFO_MATRIX3D);
 }
 
-TEST(MRT,trafo){
+TEST(MRT2D,trafo){
     /// testet ob die Differenz im Geschw.-Raum gleich der Rücktransformierten Differenz im moment-Raum ist
     ParamSet param;
     DistributionSetType2D phi = param.getPhi2D();
@@ -1292,7 +1292,7 @@ TEST(MRT,trafo){
     }
 }
 
-TEST(MRT,mass){
+TEST(MRT2D,mass){
     ParamSet param;
     DistributionSetType2D phi = param.getPhi2D();
     const array2D f = {{1,2,3,4,5,6,7,8,9}};
@@ -1303,6 +1303,52 @@ TEST(MRT,mass){
     DistributionSetType2D fEq  = eqDistro(rho,u,phi);
     array2D m = TRAFO_MATRIX2D * f;
     array2D mEq = TRAFO_MATRIX2D * fEq[0];
+
+    EXPECT_DOUBLE_EQ(m[0],mEq[0]);
+    EXPECT_DOUBLE_EQ(m[3],mEq[3]);
+    EXPECT_DOUBLE_EQ(m[5],mEq[5]);
+}
+
+TEST(MRT3D,trafo){
+    /// testet ob die Differenz im Geschw.-Raum gleich der Rücktransformierten Differenz im moment-Raum ist
+    ParamSet param;
+    DistributionSetType3D phi = param.getPhi3D();
+    const array3D f = {{1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19}};
+    Cell3D testCell(f,f);
+    testCell.calcRho();
+    ColSet rho = testCell.getRho();
+
+    VeloSet3D u = testCell.getU();
+    DistributionSetType3D fEq  = eqDistro(rho,u,phi);
+    DistributionSetType3D vergleich;
+    vergleich[0] = array_diff_3D(f, fEq[0]);
+    vergleich[1] = array_diff_3D(f, fEq[1]);
+    array3D m = TRAFO_MATRIX3D * f;
+    DistributionSetType3D mEq;
+    mEq[0] = TRAFO_MATRIX3D * fEq[0];
+    mEq[1] = TRAFO_MATRIX3D * fEq[1];
+    DistributionSetType3D transformed;
+    transformed[0] = INV_TRAFO_MATRIX3D * array_diff_3D(m,mEq[0]);
+    transformed[1] = INV_TRAFO_MATRIX3D * array_diff_3D(m,mEq[1]);
+
+    for(int i = 0; i<19;i++)
+    {
+        EXPECT_NEAR(vergleich[0][i],transformed[0][i],1e-10) ;
+        EXPECT_NEAR(vergleich[1][i],transformed[1][i],1e-10) ;
+    }
+}
+
+TEST(MRT3D,mass){
+    ParamSet param;
+    DistributionSetType3D phi = param.getPhi3D();
+    const array3D f = {{1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19}};
+    Cell3D testCell(f,f);
+    testCell.calcRho();
+    ColSet rho = testCell.getRho();
+    VeloSet3D u = testCell.getU();
+    DistributionSetType3D fEq  = eqDistro(rho,u,phi);
+    array3D m = TRAFO_MATRIX3D * f;
+    array3D mEq = TRAFO_MATRIX3D * fEq[0];
 
     EXPECT_DOUBLE_EQ(m[0],mEq[0]);
     EXPECT_DOUBLE_EQ(m[3],mEq[3]);
