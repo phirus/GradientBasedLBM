@@ -27,6 +27,7 @@ public:
     void overallRho();
     direction3D directions(int x, int y, int z)const; /// < calculates positions of neighboring sites (periodical)
     const Vector3D getGradient(int x, int y, int z)const; /// < calculates the color gradient on the position (x,y,z)
+    void linearIndex(int index, int& x, int& y, int& z)const;
         
     /// LB steps
     void streamAll(int threads = 1); /// < streaming step
@@ -58,7 +59,6 @@ private:
     field3D * data;    
     ParamSet param;     /// < set of parameters used during the simulation
 
-    void linearIndex(int index, int& x, int& y, int& z)const;
     void streamAndBouncePull(Cell3D& tCell, const direction3D& dir)const; /// < internal streaming mechanism with bounce back
 };
 

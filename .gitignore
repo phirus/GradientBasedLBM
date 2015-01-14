@@ -8,6 +8,7 @@ Documentation/
 *.depend
 *.cpb
 test/paramLog
+test/test.vtk
 
 helpers/translate/preprocessFile
 helpers/translate/paramLog

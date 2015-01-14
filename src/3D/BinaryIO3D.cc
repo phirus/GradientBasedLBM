@@ -360,7 +360,6 @@ void write_vtk_output3D(const Lattice3D& l, const string& filename)
 {
     ofstream VTKFile;
     Cell3D tmp;
-    int e,f;
     DimSet3D extent = l.getSize();
     int xsize = static_cast<int> (extent[0]);
     int ysize = static_cast<int> (extent[1]);
@@ -389,19 +388,17 @@ void write_vtk_output3D(const Lattice3D& l, const string& filename)
 
     VTKFile << "\nCELLS " << (xsize) * (ysize) * (zsize) << " " << (xsize) * (ysize) * (zsize) * 9 << "\n";
     
-    for (int j = 0; j < ysize; j++)
+    int x,y,z;
+    int e,f;
+    for (int index = 0; index < (xsize*ysize*zsize); index++)
     {
-        for (int i = 0; i < xsize; i++)
-        {
-            for (int k = 0; k < zsize; k++)
-            {
-                e = i+ (xsize+1)*j + (xsize+1)*(ysize+1)*k;
-                f = (xsize+1)*(ysize+1);
-                VTKFile <<"8 "<< e << " " << e+1 << " "<< e + xsize +1 << " " << e + xsize + 2 << " " << e + f << " " << e + f + 1 << " "<< e + f + xsize +1 << " " << e + f + xsize + 2 << " ";
-            }
-         }
-        VTKFile<< endl;
+        l.linearIndex(index, x, y, z);
+        e = x+ (xsize+1)*y + (xsize+1)*(ysize+1)*z;
+        f = (xsize+1)*(ysize+1);
+        VTKFile <<"8 "<< e << " " << e+1 << " "<< e + xsize +1 << " " << e + xsize + 2 << " " << e + f << " " << e + f + 1 << " "<< e + f + xsize +1 << " " << e + f + xsize + 2 << " ";
     }
+
+    VTKFile<< endl;
 
     VTKFile << "\nCELL_TYPES "<< (xsize * ysize * zsize) << "\n";
     for (int q = 0; q < (xsize * ysize* zsize); q++)
@@ -409,68 +406,59 @@ void write_vtk_output3D(const Lattice3D& l, const string& filename)
         VTKFile <<"11 ";
     }
 
-    // VTKFile << "\nCELL_DATA "<< (xsize) * (ysize) << endl;
+    VTKFile << "\nCELL_DATA "<< (xsize * ysize * zsize) << endl;
 
-    // VTKFile << "SCALARS Psi DOUBLE\nLOOKUP_TABLE default"<<endl;
-    // for (int j = 0; j < ysize; j++)
-    // {
-    //     for (int i = 0; i < xsize; i++)
-    //     {
-    //         tmp = l.getCell(i,j);
-    //         tmp.calcRho();
-    //         VTKFile << tmp.calcPsi() << " ";
-    //     }
-    // }
+    VTKFile << "SCALARS Psi DOUBLE\nLOOKUP_TABLE default"<<endl;
 
-    // VTKFile << "\nSCALARS Rho DOUBLE\nLOOKUP_TABLE default"<<endl;
-    // for (int j = 0; j < ysize; j++)
-    // {
-    //     for (int i = 0; i < xsize; i++)
-    //     {
-    //         tmp = l.getCell(i,j);
-    //         tmp.calcRho();
-    //         VTKFile << sum(tmp.getRho()) << " ";
-    //     }
-    // }
+    for (int index = 0; index < (xsize*ysize*zsize); index++)
+    {
+        l.linearIndex(index, x, y, z);
+        tmp = l.getCell(x,y,z);
+        tmp.calcRho();
+        VTKFile << tmp.calcPsi() << " ";
+    }
 
-    // VTKFile << "\nVECTORS j1 DOUBLE"<<endl;
-    // for (int j = 0; j < ysize; j++)
-    // {        
-    //     for (int i = 0; i < xsize; i++)
-    //     {
-    //         tmp = l.getCell(i,j);
-    //         tmp.calcRho();
+    VTKFile << "\nSCALARS Rho DOUBLE\nLOOKUP_TABLE default"<<endl;
 
-    //         VeloSet2D u = tmp.getU();
-    //         ColSet rho = tmp.getRho();
-    //         VTKFile << u[0].x * rho[0] << " " << u[0].y * rho[0] << " 0 ";
-    //     }
-    // }
+    for (int index = 0; index < (xsize*ysize*zsize); index++)
+    {
+        l.linearIndex(index, x, y, z);
+        tmp = l.getCell(x,y,z);
+        tmp.calcRho();
+           VTKFile << sum(tmp.getRho()) << " ";
+    }
 
-    // VTKFile << "\nVECTORS j2 DOUBLE"<<endl;
-    // for (int j = 0; j < ysize; j++)
-    // {
-    //     for (int i = 0; i < xsize; i++)
-    //     {
-    //         tmp = l.getCell(i,j);
-    //         tmp.calcRho();
+    VTKFile << "\nVECTORS j1 DOUBLE"<<endl;
+    for (int index = 0; index < (xsize*ysize*zsize); index++)
+    {
+        l.linearIndex(index, x, y, z);
+        tmp = l.getCell(x,y,z);
+        tmp.calcRho();
 
-    //         VeloSet2D u = tmp.getU();
-    //         ColSet rho = tmp.getRho();
-    //         VTKFile << u[1].x * rho[1] << " " << u[1].y * rho[1] << " 0 ";
-    //     }
-    // }
+        VeloSet3D u = tmp.getU();
+        ColSet rho = tmp.getRho();
+        VTKFile << u[0].x * rho[0] << " " << u[0].y * rho[0] << " " << u[0].z * rho[0] << " ";
+    }
 
-    // VTKFile << "\nVECTORS gradient DOUBLE"<<endl;
-    // for (int j = 0; j < ysize; j++)
-    // {
-    //     for (int i = 0; i < xsize; i++)
-    //     {
-    //         Vector2D gradient = l.getGradient(i, j);    
-    //         VTKFile << gradient.x << " " << gradient.y  << " 0 ";
-    //     }
-    // }
+    VTKFile << "\nVECTORS j2 DOUBLE"<<endl;
+    for (int index = 0; index < (xsize*ysize*zsize); index++)
+    {
+        l.linearIndex(index, x, y, z);
+        tmp = l.getCell(x,y,z);
+        tmp.calcRho();
+
+        VeloSet3D u = tmp.getU();
+        ColSet rho = tmp.getRho();
+        VTKFile << u[1].x * rho[1] << " " << u[1].y * rho[1] << " " << u[1].z * rho[1] << " ";
+    }
+
+    VTKFile << "\nVECTORS gradient DOUBLE"<<endl;
+    for (int index = 0; index < (xsize*ysize*zsize); index++)
+    {
+        l.linearIndex(index, x, y, z);
+        Vector3D gradient = l.getGradient(x, y, z);
+        VTKFile << gradient.x << " " << gradient.y  << " " << gradient.z << " ";
+    }
 
     VTKFile.close();
 }
-

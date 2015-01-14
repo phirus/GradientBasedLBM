@@ -164,6 +164,13 @@ const Vector3D Lattice3D::getGradient(int x, int y, int z)const
     return grad;
 }
 
+void Lattice3D::linearIndex(int index, int& x, int& y, int& z)const
+{
+    x = (index)%xsize;
+    y = ((index)/xsize)%ysize;
+    z = (index)/(xsize * ysize);
+}
+
 void Lattice3D::streamAll(int threads)
 {
     field3D *newData = new field3D(boost::extents[xsize][ysize][zsize]);
@@ -470,13 +477,6 @@ const bool Lattice3D::operator==(const Lattice3D& other)const
 // ///////////////////////////// PRIVATE /////////////////////////////
 
 //=========================== OPERATIONS ===========================
-
-void Lattice3D::linearIndex(int index, int& x, int& y, int& z)const
-{
-    x = (index)%xsize;
-    y = ((index)/xsize)%ysize;
-    z = (index)/(xsize * ysize);
-}
 
 void Lattice3D::streamAndBouncePull(Cell3D& tCell, const direction3D& dir)const
 {
