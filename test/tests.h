@@ -2,14 +2,7 @@
 #define TESTS_H
 
 #include"gtest/gtest.h"
-#include"../src/2D/Lattice2D.h"
-#include"../src/2D/Vector2D.h"
 #include"../src/2D/BinaryIO2D.h"
-
-#include"../src/3D/Definitions3D.h"
-#include"../src/3D/Constants3D.h"
-#include"../src/3D/Cell3D.h"
-#include"../src/3D/Lattice3D.h"
 #include"../src/3D/BinaryIO3D.h"
 
 using namespace std;

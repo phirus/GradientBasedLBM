@@ -96,6 +96,7 @@ clean:
 	rm -f $(OBJ_DEBUG) $(OUTPUT)
 	rm -rf $(BIN_DIR)
 	rm -rf $(OBJ_DIR)
+	rm -f *.vtk
 run: 
 	./$(OUTPUT)
 
