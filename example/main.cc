@@ -2,15 +2,15 @@
 #include<ctime>
 #include<vector>
 
-#include"../src/Lattice.h"
-#include"../src/BinaryIO.h"
-#include"../src/Analyze.h"
+#include"../src/2D/Lattice2D.h"
+#include"../src/2D/BinaryIO2D.h"
+#include"../src/2D/Analyze2D.h"
 #include<boost/program_options.hpp>
 
 using namespace std;
 namespace po = boost::program_options;
 
-void initialSetUp(Lattice& meins, Preprocess& prepro, int xmax, int ymax, ParamSet params);
+void initialSetUp(Lattice2D& meins, Preprocess& prepro, int xmax, int ymax, ParamSet params);
 
 int main(int argc, char** argv){
 
@@ -69,15 +69,15 @@ int main(int argc, char** argv){
     // create a Lattice   
     int ymax = prepro.getHeight();
     int xmax = prepro.getWidth();
-    Lattice meins(xmax,ymax);
+    Lattice2D meins(xmax,ymax);
 
     if (vm.count("restart")) 
     {
         cout << "Restart file is: " << vm["restart"].as<string>() << ".\n" << endl ;
-        Lattice tmpL;
+        Lattice2D tmpL;
         Preprocess tmpP;
         Timetrack tmpT;
-        bool tmpB = read_restart_file(tmpL, tmpP, tmpT, vm["restart"].as<string>());
+        bool tmpB = read_restart_file2D(tmpL, tmpP, tmpT, vm["restart"].as<string>());
         if (tmpB == true)
         {
             meins = tmpL;
@@ -98,7 +98,7 @@ int main(int argc, char** argv){
     }
     else {      // vm.count("restart")
         initialSetUp(meins, prepro, xmax, ymax, params);
-        write_vtk_output(meins, 0);;
+        write_vtk_output2D(meins, 0);;
     }
 
     time_t start,end;
@@ -140,13 +140,13 @@ int main(int argc, char** argv){
         if(i%outputInterval == 0) 
         {
             // write_techplot_output(meins,i,true);
-            write_vtk_output(meins, i);
+            write_vtk_output2D(meins, i);
         } 
         
         if(i%restartInterval == 0)
         {
             const string restart_file_name =  createFilename("restart", i, ".bin");
-            write_restart_file(meins, prepro, timetrack, restart_file_name);
+            write_restart_file2D(meins, prepro, timetrack, restart_file_name);
         }         
     }
 
@@ -158,7 +158,7 @@ int main(int argc, char** argv){
 }
 
 
-void initialSetUp(Lattice& meins, Preprocess& prepro, int xmax, int ymax, ParamSet params)
+void initialSetUp(Lattice2D& meins, Preprocess& prepro, int xmax, int ymax, ParamSet params)
 {
     // set the parameters        
     meins.setParams(params);
@@ -167,10 +167,10 @@ void initialSetUp(Lattice& meins, Preprocess& prepro, int xmax, int ymax, ParamS
     const double rho_liquid = prepro.getRhoL();
     const double rho_gas = rho_liquid / prepro.getGamma();
 
-    const Cell air(0,rho_gas,false);
-    const Cell liquid(rho_liquid,0,false);
+    const Cell2D air(0,rho_gas,false);
+    const Cell2D liquid(rho_liquid,0,false);
 
-    const Cell wall(0,0,true);
+    const Cell2D wall(0,0,true);
 
     // setup geometry (bubble at the bottom, x-centered)
     const int R1 = prepro.getResolution()/2;
