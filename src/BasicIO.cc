@@ -109,15 +109,16 @@ const Preprocess read_preprocess_file(const string& filename){
         mm.insert(pair<string,double>("s_5",1));
         mm.insert(pair<string,double>("s_11",1));
         mm.insert(pair<string,double>("s_17",1));
-        mm.insert(pair<string,double>("width",120));
-        mm.insert(pair<string,double>("height",360));
+        mm.insert(pair<string,double>("xCells",50));
+        mm.insert(pair<string,double>("yCells",50));
+        mm.insert(pair<string,double>("zCells",50));
 
         // cycling through the input file
         double tmp;
         for(map<string,double>::iterator it = mm.begin(); it != mm.end(); it++){            
             if( input_query(filename,it->first,tmp) == true ) it->second = tmp;
         }
-    Preprocess prepro(mm.at("Reynolds"),mm.at("Morton"),mm.at("Eotvos"),mm.at("resolution"),mm.at("rho_l"),mm.at("gamma"), mm.at("mu_ratio"), mm.at("s_3"), mm.at("s_5"), mm.at("s_11"), mm.at("s_17"), mm.at("width"), mm.at("height"));
+    Preprocess prepro(mm.at("Reynolds"),mm.at("Morton"),mm.at("Eotvos"),mm.at("resolution"),mm.at("rho_l"),mm.at("gamma"), mm.at("mu_ratio"), mm.at("s_3"), mm.at("s_5"), mm.at("s_11"), mm.at("s_17"), mm.at("xCells"), mm.at("yCells"), mm.at("zCells"));
     return prepro;
 }
 

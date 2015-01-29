@@ -113,8 +113,9 @@ void write_restart_file2D(const Lattice2D& l, const Preprocess& p, const Timetra
     double s_5 = p.getS_5();
     double s_11 = p.getS_11();
     double s_17 = p.getS_17();
-    int width = p.getWidth();
-    int height = p.getHeight();
+    int xCells = p.getXCells();
+    int yCells = p.getYCells();
+    int zCells = p.getZCells();
 
     file.write(reinterpret_cast<char*> (&ReynoldsMax), sizeof(double));
     file.write(reinterpret_cast<char*> (&Morton), sizeof(double));
@@ -127,8 +128,9 @@ void write_restart_file2D(const Lattice2D& l, const Preprocess& p, const Timetra
     file.write(reinterpret_cast<char*> (&s_5), sizeof(double));
     file.write(reinterpret_cast<char*> (&s_11), sizeof(double));
     file.write(reinterpret_cast<char*> (&s_17), sizeof(double));
-    file.write(reinterpret_cast<char*> (&width), sizeof(int));
-    file.write(reinterpret_cast<char*> (&height), sizeof(int));
+    file.write(reinterpret_cast<char*> (&xCells), sizeof(int));
+    file.write(reinterpret_cast<char*> (&yCells), sizeof(int));
+    file.write(reinterpret_cast<char*> (&zCells), sizeof(int));
 
     file.close();
 }
@@ -175,7 +177,7 @@ const bool read_restart_file2D(Lattice2D& outL, Preprocess& p, Timetrack& t, con
         double ReynoldsMax, Morton, Eotvos;
         double resolution, rho_l, gamma;
         double mu_ratio, s_3, s_5, s_11, s_17; 
-        int width, height;
+        int xCells, yCells, zCells;
 
         file.read((char*) &ReynoldsMax, sizeof(double));
         file.read((char*) &Morton, sizeof(double));
@@ -189,10 +191,11 @@ const bool read_restart_file2D(Lattice2D& outL, Preprocess& p, Timetrack& t, con
         file.read((char*) &s_11, sizeof(double));
         file.read((char*) &s_17, sizeof(double));
 
-        file.read((char*) &width, sizeof(int));
-        file.read((char*) &height, sizeof(int));
+        file.read((char*) &xCells, sizeof(int));
+        file.read((char*) &yCells, sizeof(int));
+        file.read((char*) &zCells, sizeof(int));
 
-        Preprocess prepro(ReynoldsMax, Morton, Eotvos, resolution, rho_l, gamma, mu_ratio, s_3, s_5, s_11, s_17, width, height);
+        Preprocess prepro(ReynoldsMax, Morton, Eotvos, resolution, rho_l, gamma, mu_ratio, s_3, s_5, s_11, s_17, xCells, yCells, zCells);
         
         file.close();
         outL.setParams(param);
@@ -427,4 +430,3 @@ void write_vtk_output2D(const Lattice2D& l, const string& filename)
 
     VTKFile.close();
 }
-

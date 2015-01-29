@@ -1419,8 +1419,9 @@ TEST(Preprocess,constr){
     EXPECT_DOUBLE_EQ(0.000316227766016838,newProcess.getSigma());
     EXPECT_DOUBLE_EQ(7.0272836892630665e-6,newProcess.getG());
 
-    EXPECT_EQ(120,newProcess.getWidth());
-    EXPECT_EQ(360,newProcess.getHeight());
+    EXPECT_EQ(50,newProcess.getXCells());
+    EXPECT_EQ(50,newProcess.getYCells());
+    EXPECT_EQ(50,newProcess.getZCells());
 }
 
 TEST(Preprocess,FileInput){
@@ -1438,8 +1439,9 @@ TEST(Preprocess,FileInput){
     // test the stored parameters
     EXPECT_DOUBLE_EQ(1,newProcess.getSpacestep());
     EXPECT_DOUBLE_EQ(1,newProcess.getTimestep());
-    EXPECT_EQ(150,newProcess.getWidth());
-    EXPECT_EQ(400,newProcess.getHeight());
+    EXPECT_EQ(70,newProcess.getXCells());
+    EXPECT_EQ(80,newProcess.getYCells());
+    EXPECT_EQ(90,newProcess.getZCells());
 
     // test the deduced parameters
     EXPECT_DOUBLE_EQ(0.9041451884327381,newProcess.getTau());

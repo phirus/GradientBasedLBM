@@ -12,7 +12,7 @@ class Preprocess
 {
 public: 
 	/// Lifecycle
-	Preprocess(double Re = 10, double Mo = 100, double Eo = 10, double res = 30, double rhol = 1, double gamma_ini = 2, double mu_rate = 2, double s3 = 1, double s5 = 1, double s11 = 1, double s17 = 1, int width_ini = 120, int height_ini = 360);
+	Preprocess(double Re = 10, double Mo = 100, double Eo = 10, double res = 30, double rhol = 1, double gamma_ini = 2, double mu_rate = 2, double s3 = 1, double s5 = 1, double s11 = 1, double s17 = 1, int xCells_ini = 50, int yCells_ini = 50 ,int zCells_ini = 50);
 
 	/// operations
 
@@ -44,8 +44,13 @@ public:
 	inline const double getSigma()const{return sigma;};
 	inline const double getG()const{return g;};
 
-	inline const int getWidth()const{return width;};
-	inline const int getHeight()const{return height;};
+	// inline const int getWidth()const{return width;};
+	// inline const int getHeight()const{return height;};
+
+	inline const int getXCells()const{return xCells;};
+	inline const int getYCells()const{return yCells;};
+	inline const int getZCells()const{return zCells;};
+
 
 	void setReynoldsMax(double val){ReynoldsMax = val;};
 
@@ -64,8 +69,8 @@ private:
 	double s_3, s_5, s_11, s_17;
 
 	// stored
-	int width;
-	int height;
+	int xCells, yCells, zCells;
+	
 
     // deduced
     double spacestep;  /// < spacestep /m	
