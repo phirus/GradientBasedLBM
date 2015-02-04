@@ -3,8 +3,7 @@
 
 #include<cmath>
 
-#include"2D/Definitions2D.h"
-#include"3D/Definitions3D.h"
+#include"Definitions_basic.h"
 #include<string.h>
 
 using namespace std;

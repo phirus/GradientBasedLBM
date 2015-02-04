@@ -1,23 +1,14 @@
 #ifndef DEFINITIONS2D_H
 #define DEFINITIONS2D_H
 
-#include<boost/multi_array.hpp>
 #include"Vector2D.h"
-#include"../Constants_basic.h"
+#include"../Definitions_basic.h"
 
 /// contains custom typedefs
 //=========================== TYPES ===========================
 
-typedef boost::array<double,9> array2D;       /// < used to describe single distributions
-typedef boost::array<array2D,2> DistributionSetType2D;         /// < merge two distributions into a single variable
 typedef boost::array<Vector2D,13> direction2D ; /// < collection of 13 direction vectors (D2Q13)
 typedef boost::array<Vector2D,2> VeloSet2D;
-
-struct RelaxationPar2D
-{
-    double s_2,s_3,s_5;
-    RelaxationPar2D(double s2=1, double s3=1, double s5=1):s_2(s2),s_3(s3),s_5(s5){};
-};
 
 //=========================== FUNCTIONS ===========================
 

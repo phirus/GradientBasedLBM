@@ -4,7 +4,7 @@
 #define PREPROCESS_H
 
 #include"ParamSet.h"
-#include"2D/Constants2D.h"
+#include"Constants_basic.h"
 
 using namespace std;
 
@@ -43,9 +43,6 @@ public:
 	inline const double getS2()const {return s_2;};
 	inline const double getSigma()const{return sigma;};
 	inline const double getG()const{return g;};
-
-	// inline const int getWidth()const{return width;};
-	// inline const int getHeight()const{return height;};
 
 	inline const int getXCells()const{return xCells;};
 	inline const int getYCells()const{return yCells;};
