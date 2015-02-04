@@ -2,15 +2,15 @@
 #include<ctime>
 #include<vector>
 
-#include"../src/2D/Lattice2D.h"
-#include"../src/2D/BinaryIO2D.h"
-#include"../src/2D/Analyze2D.h"
+#include"../src/3D/Lattice3D.h"
+#include"../src/3D/BinaryIO3D.h"
+#include"../src/3D/Analyze3D.h"
 #include<boost/program_options.hpp>
 
 using namespace std;
 namespace po = boost::program_options;
 
-void initialSetUp(Lattice2D& meins, Preprocess& prepro, int xmax, int ymax, ParamSet params);
+void initialSetUp(Lattice3D& meins, Preprocess& prepro, int xmax, int ymax, int zmax, ParamSet params);
 
 int main(int argc, char** argv){
 
@@ -67,17 +67,18 @@ int main(int argc, char** argv){
     }
 
     // create a Lattice   
-    int ymax = prepro.getHeight();
-    int xmax = prepro.getWidth();
-    Lattice2D meins(xmax,ymax);
+    int xmax = prepro.getXCells();
+    int ymax = prepro.getYCells();
+    int zmax = prepro.getZCells();
+    Lattice3D meins(xmax,ymax,zmax);
 
     if (vm.count("restart")) 
     {
         cout << "Restart file is: " << vm["restart"].as<string>() << ".\n" << endl ;
-        Lattice2D tmpL;
+        Lattice3D tmpL;
         Preprocess tmpP;
         Timetrack tmpT;
-        bool tmpB = read_restart_file2D(tmpL, tmpP, tmpT, vm["restart"].as<string>());
+        bool tmpB = read_restart_file3D(tmpL, tmpP, tmpT, vm["restart"].as<string>());
         if (tmpB == true)
         {
             meins = tmpL;
@@ -97,8 +98,8 @@ int main(int argc, char** argv){
         }
     }
     else {      // vm.count("restart")
-        initialSetUp(meins, prepro, xmax, ymax, params);
-        write_vtk_output2D(meins, 0);;
+        initialSetUp(meins, prepro, xmax, ymax, zmax, params);
+        write_vtk_output3D(meins, 0);;
     }
 
     time_t start,end;
@@ -140,13 +141,13 @@ int main(int argc, char** argv){
         if(i%outputInterval == 0) 
         {
             // write_techplot_output(meins,i,true);
-            write_vtk_output2D(meins, i);
+            write_vtk_output3D(meins, i);
         } 
         
         if(i%restartInterval == 0)
         {
             const string restart_file_name =  createFilename("restart", i, ".bin");
-            write_restart_file2D(meins, prepro, timetrack, restart_file_name);
+            write_restart_file3D(meins, prepro, timetrack, restart_file_name);
         }         
     }
 
@@ -158,7 +159,7 @@ int main(int argc, char** argv){
 }
 
 
-void initialSetUp(Lattice2D& meins, Preprocess& prepro, int xmax, int ymax, ParamSet params)
+void initialSetUp(Lattice3D& meins, Preprocess& prepro, int xmax, int ymax, int zmax, ParamSet params)
 {
     // set the parameters        
     meins.setParams(params);
@@ -167,58 +168,38 @@ void initialSetUp(Lattice2D& meins, Preprocess& prepro, int xmax, int ymax, Para
     const double rho_liquid = prepro.getRhoL();
     const double rho_gas = rho_liquid / prepro.getGamma();
 
-    const Cell2D air(0,rho_gas,false);
-    const Cell2D liquid(rho_liquid,0,false);
+    const Cell3D air(0,rho_gas,false);
+    const Cell3D liquid(rho_liquid,0,false);
 
-    const Cell2D wall(0,0,true);
+    const Cell3D wall(0,0,true);
 
-    // setup geometry (bubble at the bottom, x-centered)
-    const int R1 = prepro.getResolution()/2;
-    const int xm1 = xmax/2;
-    // const int ym1 = 2*R1;
-    const int ym1 = R1 + 20;
+    // setup geometry (bubble at the bottom, x and y centered)
+    const int radius = prepro.getResolution()/2;
+    const int xm = xmax/2;
+    const int ym = ymax/2;
+    const int zm =  radius + 20;
 
-    // const int ym1 = ymax/2;
-
-    for(int j=0; j< ymax; j++)
+    for(int i=0; i< xmax; i++)
     {
-        for(int i=0; i< xmax; i++){
-            if( (i-xm1)*(i-xm1) + (j-ym1)*(j-ym1) < R1*R1 ) meins.setCell(i,j,air);
-            // if( j > ym1) meins.setCell(i,j,air);
-            else meins.setCell(i,j,liquid);
+        for(int j=0; j< ymax; j++)
+        {
+            for(int k=0; k< zmax; k++)
+            {
+                if( (i-xm)*(i-xm) + (j-ym)*(j-ym) + (k-zm)*(k-zm) < radius*radius ) meins.setCell(i,j,k,air);
+                // if( k > zm) meins.setCell(i,j,air);
+                else meins.setCell(i,j,k,liquid);
+            }
         }
     }
 
     meins.bottomWall();
     meins.equilibriumIni();
 
-    // write_techplot_output(meins,0,true);
-    // // temporal mass_balance
-    // std::vector<double> count;
-    // std::vector<double> liquid_mass;
-    // std::vector<double> gas_mass;
-
    for (int i = 1; i< 1001; i++){
        meins.collideAll(1,false,false);
        meins.streamAll(1);
        if(i%100 == 0) cout << i<<endl;
-       // if(i%10 == 0) write_techplot_output(meins,i,true);;
    }
 
-   // for (int i = 501; i< 100001; i++){
-    
-   //     meins.collideAll(4,false,false);
-   //     meins.streamAll(4);
-   //     if(i%500 == 0)
-   //     {
-   //      double tmpL,tmpG;
-   //      meins.mass_balance(tmpL,tmpG);
-   //      count.push_back(i);
-   //      liquid_mass.push_back(tmpL);
-   //      gas_mass.push_back(tmpG);
-   //     }
-   // }
-   //        meins.collideAll(4,false,false,true);
-    // write_data_plot(count, liquid_mass, gas_mass);
     cout<<"Initialisierung beendet\n\nSchwerkraft wird zugeschaltet\n"<<endl;
 }
