@@ -10,7 +10,7 @@
 using namespace std;
 namespace po = boost::program_options;
 
-void initialSetUp(Lattice3D& meins, Preprocess& prepro, int xmax, int ymax, int zmax, ParamSet params);
+void initialSetUp(Lattice3D& meins, Preprocess& prepro, int xmax, int ymax, int zmax, ParamSet params, int numOfCPUs);
 
 int main(int argc, char** argv){
 
@@ -98,7 +98,7 @@ int main(int argc, char** argv){
         }
     }
     else {      // vm.count("restart")
-        initialSetUp(meins, prepro, xmax, ymax, zmax, params);
+        initialSetUp(meins, prepro, xmax, ymax, zmax, params, numOfCPUs);
         write_vtk_output3D(meins, 0);;
     }
 
@@ -159,7 +159,7 @@ int main(int argc, char** argv){
 }
 
 
-void initialSetUp(Lattice3D& meins, Preprocess& prepro, int xmax, int ymax, int zmax, ParamSet params)
+void initialSetUp(Lattice3D& meins, Preprocess& prepro, int xmax, int ymax, int zmax, ParamSet params, int numOfCPUs)
 {
     // set the parameters        
     meins.setParams(params);
@@ -196,8 +196,8 @@ void initialSetUp(Lattice3D& meins, Preprocess& prepro, int xmax, int ymax, int 
     meins.equilibriumIni();
 
    for (int i = 1; i< 1001; i++){
-       meins.collideAll(1,false,false);
-       meins.streamAll(1);
+       meins.collideAll(numOfCPUs,false,false);
+       meins.streamAll(numOfCPUs);
        if(i%100 == 0) cout << i<<endl;
    }
 
