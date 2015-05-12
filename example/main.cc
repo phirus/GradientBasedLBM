@@ -67,8 +67,8 @@ int main(int argc, char** argv){
     }
 
     // create a Lattice   
-    int ymax = prepro.getHeight();
-    int xmax = prepro.getWidth();
+    int ymax = prepro.getYCells();
+    int xmax = prepro.getXCells();
     Lattice2D meins(xmax,ymax);
 
     if (vm.count("restart")) 

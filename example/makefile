@@ -9,8 +9,7 @@ WINDRES = windres
 #INC = -I../../../gtest-1.6.0/include
 CFLAGS =  -Wall -O3 -fopenmp
 #LIB = gomp
-LDFLAGS = -lboost_program_options -lgomp
-#-lpthread
+LDFLAGS = -lboost_program_options -lgomp -lpthread
 
 SRC = ../src
 OBJ_DIR = obj
