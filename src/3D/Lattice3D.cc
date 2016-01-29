@@ -488,11 +488,16 @@ void Lattice3D::streamAndBouncePull(Cell3D& tCell, const direction3D& dir)const
 
         for (int i=1;i<19;i++)
         {
-            if ((*data)[ dir[PULL_INDEX_3D[i]].x][ dir[PULL_INDEX_3D[i]].y][ dir[PULL_INDEX_3D[i]].z].getIsSolid() == false)
+            const Cell3D neighbor = (*data)[ dir[PULL_INDEX_3D[i]].x][ dir[PULL_INDEX_3D[i]].y][ dir[PULL_INDEX_3D[i]].z];
+            if (neighbor.getIsSolid() == false)     // if(neighbor not solid?) -> stream
             {
-                ftmp[color][i] = (*data)[ dir[PULL_INDEX_3D[i]].x ][ dir[PULL_INDEX_3D[i]].y ][ dir[PULL_INDEX_3D[i]].z].getF()[color][i];    // if(neighbor not solid?) -> stream
+                ftmp[color][i] = neighbor.getF()[color][i];
             }
-            else ftmp[color][i] = f[color][PULL_INDEX_3D[i]]; // else -> bounce back
+            else // else -> bounce back
+            {
+                const ColSet rho = tCell.getRho();
+                ftmp[color][i] = f[color][PULL_INDEX_3D[i]] - (2.0 * WEIGHTS_3D[i] * rho[color] * (DIRECTION_3D[i] * neighbor.getU()[0]) ) ; 
+            } 
         } // end for i
     } // end for color 
     tCell.setF(ftmp);

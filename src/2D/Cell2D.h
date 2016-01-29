@@ -38,7 +38,7 @@ public:
 private:
     DistributionSetType2D f;         /// < set of two distributions
     ColSet rho;                    /// < rho_r = rho[0], rho_b = rho[1]
-    VeloSet2D u;                      /// < velocity vector resultińg from the distribution
+    VeloSet2D u;                   /// < velocity vector resultińg from the distribution
     bool isSolid;                  /// < used to mark solid cells
     double delta;
 };
