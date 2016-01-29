@@ -27,6 +27,7 @@ public:
     /// acsessors
     inline void setF(const DistributionSetType2D& newF){f = newF;};
     inline void setIsSolid(bool tmp){isSolid = tmp;};
+    inline void setSolidVelocity(const VeloSet2D& newU){if(isSolid == true) u = newU;};
 
     inline const DistributionSetType2D getF()const{return f;};
     inline const ColSet getRho()const{return rho;};
@@ -34,7 +35,6 @@ public:
     inline const VeloSet2D getU()const{return u;};
     inline const double getDeltaRho()const{return delta;};  /// < returns rho_red - rho_blue
    
-
 private:
     DistributionSetType2D f;         /// < set of two distributions
     ColSet rho;                    /// < rho_r = rho[0], rho_b = rho[1]

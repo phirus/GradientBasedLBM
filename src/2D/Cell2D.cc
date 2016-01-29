@@ -76,18 +76,19 @@ const bool Cell2D::operator==(const Cell2D& other)const {
 
 void Cell2D::calcRho()
 {
-    // initialize
+    // initialize density
     rho[0] = 0;
     rho[1] = 0;
 
-    u[0].x = 0;
-    u[0].y = 0;
-    u[1].x = 0;
-    u[1].y = 0;
-
-    // iterate
     if (isSolid == false)
     {
+        // initialize velocities
+        u[0].x = 0;
+        u[0].y = 0;
+        u[1].x = 0;
+        u[1].y = 0;
+
+        // iterate
         for (int i=0; i<9; i++)
         {
             rho[0] += f[0][i];

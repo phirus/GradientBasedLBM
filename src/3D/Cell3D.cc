@@ -83,20 +83,20 @@ const bool Cell3D::operator==(const Cell3D& other)const {
 
 void Cell3D::calcRho()
 {
-    // initialize
+    // initialize density
     rho[0] = 0;
     rho[1] = 0;
 
-    u[0].x = 0;
-    u[0].y = 0;
-    u[0].z = 0;
-    u[1].x = 0;
-    u[1].y = 0;
-    u[1].z = 0;
-
-    // iterate
     if (isSolid == false)
     {
+        // initialize velocities
+        u[0].x = 0;
+        u[0].y = 0;
+        u[0].z = 0;
+        u[1].x = 0;
+        u[1].y = 0;
+        u[1].z = 0;
+
         for (int i=0; i<19; i++)
         {
             rho[0] += f[0][i];
