@@ -353,6 +353,22 @@ void Lattice2D::bottomWall()
     }
 }
 
+void Lattice2D::genericWall(std::vector<double> x, std::vector<double> y, const Vector2D& u_w)
+{
+    if(x.size() == y.size())
+    {
+        const Cell2D wall(0,0,true);
+        wall.setSolidVelocity(u_w);
+        
+        for(int i = 0; i< x.size(); i++)
+        {
+            (*data)[x[i]][y[i]] = wall;
+        }
+    }
+    else throw "vector size mismatch";    
+}
+
+
 //=========================== ACCESSORS ===========================
 
 const ColSet Lattice2D::getSize()const

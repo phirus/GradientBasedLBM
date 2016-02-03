@@ -27,7 +27,7 @@ public:
     /// acsessors
     inline void setF(const DistributionSetType2D& newF){f = newF;};
     inline void setIsSolid(bool tmp){isSolid = tmp;};
-    inline void setSolidVelocity(const VeloSet2D& newU){if(isSolid == true) u = newU;};
+    inline void setSolidVelocity(const Vector2D& newU){if(isSolid == true) u[0] = newU;};
 
     inline const DistributionSetType2D getF()const{return f;};
     inline const ColSet getRho()const{return rho;};

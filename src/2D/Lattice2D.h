@@ -2,6 +2,7 @@
 #define LATTICE2D_H
 
 #include<iostream>
+#include<vector>
 #include<omp.h>
 
 #include"Cell2D.h"
@@ -36,6 +37,7 @@ public:
     /// walls
     void closedBox(); /// < initialize the Lattice2D (set up walls and calculate rho)
     void bottomWall(); /// < initialize the Lattice2D (set up walls and calculate rho)
+    void genericWall(std::vector<double> x, std::vector<double> y);
 
     /// accessors
     const ColSet getSize()const; /// < get the extend of the Lattice2D
