@@ -36,6 +36,7 @@ public:
     /// walls
     void closedBox(); /// < initialize the Lattice3D (set up walls and calculate rho)
     void bottomWall(); /// < turns the bottom Cells into walls (set up walls and calculate rho)
+    void genericWall(std::vector<double> x, std::vector<double> y, std::vector<double> z,  const Vector3D& u_w);
 
     /// accessors
     const DimSet3D getSize()const; /// < get the extend of the Lattice3D

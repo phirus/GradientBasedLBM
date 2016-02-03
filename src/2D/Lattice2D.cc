@@ -357,7 +357,7 @@ void Lattice2D::genericWall(std::vector<double> x, std::vector<double> y, const 
 {
     if(x.size() == y.size())
     {
-        const Cell2D wall(0,0,true);
+        Cell2D wall(0,0,true);
         wall.setSolidVelocity(u_w);
         
         for(int i = 0; i< x.size(); i++)

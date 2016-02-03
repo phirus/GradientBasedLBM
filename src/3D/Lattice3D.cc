@@ -400,6 +400,21 @@ void Lattice3D::bottomWall()
     }
 }
 
+void Lattice3D::genericWall(std::vector<double> x, std::vector<double> y, std::vector<double> z,  const Vector3D& u_w)
+{
+    if(x.size() == y.size() && x.size() == z.size())
+    {
+        Cell3D wall(0,0,true);
+        wall.setSolidVelocity(u_w);
+        
+        for(int i = 0; i< x.size(); i++)
+        {
+            (*data)[x[i]][y[i]][z[i]] = wall;
+        }
+    }
+    else throw "vector size mismatch";    
+}
+
 //=========================== ACCESSORS ===========================
 
 const DimSet3D Lattice3D::getSize()const
