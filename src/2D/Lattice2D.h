@@ -38,6 +38,8 @@ public:
     void closedBox(); /// < initialize the Lattice2D (set up walls and calculate rho)
     void bottomWall(); /// < initialize the Lattice2D (set up walls and calculate rho)
     void genericWall(std::vector<double> x, std::vector<double> y,  const Vector2D& u_w);
+    void lidDrivenCavity(const Vector2D& u_w); /// < initialize the Lattice2D with moving top wall
+    void shearWall(const Vector2D& u_w);    /// < initialize the Lattice2D with moving left wall
 
     /// accessors
     const ColSet getSize()const; /// < get the extend of the Lattice2D

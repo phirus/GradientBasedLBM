@@ -415,6 +415,95 @@ void Lattice3D::genericWall(std::vector<double> x, std::vector<double> y, std::v
     else throw "vector size mismatch";    
 }
 
+void Lattice3D::lidDrivenCavity(const Vector3D& u_w)
+{
+    Cell3D wall(0,0,true);
+
+    // left and right wall
+    for (int z=0; z<zsize; z++)
+    {
+        for (int y=0; y<ysize; y++)
+        {
+            (*data)[0][y][z] = wall;
+            (*data)[xsize-1][y][z] = wall;
+        }
+    }
+
+    // back and front wall
+    for (int z=0; z<zsize; z++)
+    {
+        for (int x=0; x<xsize; x++)
+        {
+            (*data)[x][0][z] = wall;
+            (*data)[x][ysize-1][z] = wall;
+        }
+    }
+
+    for (int x=0; x<xsize; x++)
+    {
+        for (int y=0; y<ysize; y++)
+        {
+            (*data)[x][y][0] = wall;    // bottom wall
+        }
+    }
+
+    wall.setSolidVelocity(u_w);
+    for (int x=0; x<xsize; x++)
+    {
+        for (int y=0; y<ysize; y++)
+        {
+            (*data)[x][y][zsize-1] = wall;
+        }
+    }
+
+    for (int y=0; y<ysize; y++)
+    {
+        for (int x=0; x<xsize; x++)
+        {
+            for (int z=0; z<zsize; z++)
+            {
+                (*data)[x][y][z].calcRho();
+            }
+        }
+    }
+}
+
+void Lattice3D::shearWall(const Vector3D& u_w)
+{
+    Cell3D wall(0,0,true);
+
+    // right wall
+    for (int z=0; z<zsize; z++)
+    {
+        for (int y=0; y<ysize; y++)
+        {
+            (*data)[xsize-1][y][z] = wall;
+        }
+    }
+
+    // left
+    wall.setSolidVelocity(u_w);
+    for (int z=0; z<zsize; z++)
+    {
+        for (int y=0; y<ysize; y++)
+        {
+            (*data)[0][y][z] = wall;
+        }
+    }
+
+
+    for (int y=0; y<ysize; y++)
+    {
+        for (int x=0; x<xsize; x++)
+        {
+            for (int z=0; z<zsize; z++)
+            {
+                (*data)[x][y][z].calcRho();
+            }
+        }
+    }
+}
+
 //=========================== ACCESSORS ===========================
 
 const DimSet3D Lattice3D::getSize()const

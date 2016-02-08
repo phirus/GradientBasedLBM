@@ -368,6 +368,59 @@ void Lattice2D::genericWall(std::vector<double> x, std::vector<double> y, const 
     else throw "vector size mismatch";    
 }
 
+void Lattice2D::lidDrivenCavity(const Vector2D& u_w)
+{
+    Cell2D wall(0,0,true);
+
+    for (int y=0; y<ysize; y++)
+    {
+        (*data)[0][y] = wall;   // left wall
+        (*data)[xsize-1][y] = wall; // right wall
+    }
+
+    for (int x=0; x<xsize; x++) 
+    {
+        (*data)[x][0] = wall; // bottom wall
+    }
+
+    wall.setSolidVelocity(u_w);
+    for (int x=0; x<xsize; x++) 
+    {
+         (*data)[x][ysize-1] = wall;    // top wall
+    }
+
+    for (int y=0; y<ysize; y++)
+    {
+        for (int x=0; x<xsize; x++)
+        {
+            (*data)[x][y].calcRho();
+        }
+    }
+}
+
+void Lattice2D::shearWall(const Vector2D& u_w)
+{
+    Cell2D wall(0,0,true);
+
+    for (int y=0; y<ysize; y++)
+    {
+        (*data)[xsize-1][y] = wall; // right wall
+    }
+
+    wall.setSolidVelocity(u_w);
+    for (int y=0; y<ysize; y++)
+    {
+        (*data)[0][y] = wall;   // left wall
+    }
+
+    for (int y=0; y<ysize; y++)
+    {
+        for (int x=0; x<xsize; x++)
+        {
+            (*data)[x][y].calcRho();
+        }
+    }
+}
 
 //=========================== ACCESSORS ===========================
 
