@@ -170,26 +170,35 @@ void initialSetUp(Lattice2D& meins, Preprocess& prepro, int xmax, int ymax, Para
     const Cell2D air(0,rho_gas,false);
     const Cell2D liquid(rho_liquid,0,false);
 
-    const Cell2D wall(0,0,true);
+    // // const Cell2D wall(0,0,true);
 
-    // setup geometry (bubble at the bottom, x-centered)
-    const int R1 = prepro.getResolution()/2;
-    const int xm1 = xmax/2;
-    // const int ym1 = 2*R1;
-    const int ym1 = R1 + 20;
+    // // setup geometry (bubble at the bottom, x-centered)
+    // const int R1 = prepro.getResolution()/2;
+    // const int xm1 = xmax/2;
+    // // const int ym1 = 2*R1;
+    // const int ym1 = R1 + 20;
 
-    // const int ym1 = ymax/2;
+    // // const int ym1 = ymax/2;
+
+    // for(int j=0; j< ymax; j++)
+    // {
+    //     for(int i=0; i< xmax; i++){
+    //         if( (i-xm1)*(i-xm1) + (j-ym1)*(j-ym1) < R1*R1 ) meins.setCell(i,j,air);
+    //         // if( j > ym1) meins.setCell(i,j,air);
+    //         else meins.setCell(i,j,liquid);
+    //     }
+    // }
 
     for(int j=0; j< ymax; j++)
     {
         for(int i=0; i< xmax; i++){
-            if( (i-xm1)*(i-xm1) + (j-ym1)*(j-ym1) < R1*R1 ) meins.setCell(i,j,air);
-            // if( j > ym1) meins.setCell(i,j,air);
-            else meins.setCell(i,j,liquid);
+            meins.setCell(i,j,liquid);
         }
     }
 
-    meins.bottomWall();
+    Vector2D u_wall(0.1,0);
+    // meins.bottomWall();
+    meins.lidDrivenCavity(u_wall);
     meins.equilibriumIni();
 
     // write_techplot_output(meins,0,true);
