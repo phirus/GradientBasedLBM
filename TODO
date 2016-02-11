@@ -1,0 +1,9 @@
+To Do
+- enable shear flow in Preprocessfile (shear rate)
+- use shear rate in main.cc
+- find indices of bubble Cells
+- cut and paste Cells from one Lattice to another
+- number of time steps for fully developed shear flow
+
+
+Done
