@@ -1,9 +1,12 @@
 To Do
+- C++11 in anderen Makefiles hinzufügen
 - use shear rate in main.cc
-- find indices of bubble Cells
-- cut and paste Cells from one Lattice to another
+- find indices of bubble Cells 3D
+- cut and paste Cells from one Lattice to another 3D
 - number of time steps for fully developed shear flow
-- process warnings
 
 Done
+- find indices of bubble Cells 2D
+- cut and paste Cells from one Lattice to another 2D
+- process warnings
 - enable shear flow in Preprocessfile (shear rate)

@@ -53,6 +53,10 @@ public:
     void setF(int x, int y, int color, const array2D& nf);
     void setF(int x, int y, int color, int index, double value);
     void setParams(const ParamSet& newParam){param = newParam;}; /// < set a new parameter set
+
+    /// Lattice cutout
+    const std::vector<int> findBubbleCells()const;
+    void copyCellsFromOther(const Lattice2D& other, const std::vector<int>& indices);
     
     /// operators
     Lattice2D& operator=(const Lattice2D& other);

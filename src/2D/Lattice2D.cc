@@ -456,6 +456,38 @@ void Lattice2D::setF(int x, int y, int color, int pos, double value)
     (*data)[x][y].setF(f);
 }
 
+//=========================== LATTICE CUTOUT ===========================
+
+const std::vector<int> Lattice2D::findBubbleCells()const
+{
+    std::vector<int> indices;
+    const int range = xsize * ysize;
+    int x,y;
+
+    for (int index = 0;  index < range; index++)
+    {
+        linearIndex(index,x,y);
+
+        const Cell2D tmpCell = (*data)[x][y];
+
+        if (tmpCell.calcPsi() < 0.99)
+        {
+            indices.push_back(index);
+        }        
+    }
+    return indices;
+}
+
+void Lattice2D::copyCellsFromOther(const Lattice2D& other, const std::vector<int>& indices)
+{
+    int x,y;
+    for (std::vector<int>::const_iterator it = indices.cbegin() ; it != indices.cend(); ++it)
+    {
+        linearIndex(*it,x,y);
+        (*data)[x][y] = other.getCell(x,y);
+    }
+}
+
 //=========================== OPERATOR ===========================
 
 Lattice2D& Lattice2D::operator=(const Lattice2D& other){
