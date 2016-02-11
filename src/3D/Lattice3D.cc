@@ -407,7 +407,7 @@ void Lattice3D::genericWall(std::vector<double> x, std::vector<double> y, std::v
         Cell3D wall(0,0,true);
         wall.setSolidVelocity(u_w);
         
-        for(int i = 0; i< x.size(); i++)
+        for(unsigned int i = 0; i< x.size(); i++)
         {
             (*data)[x[i]][y[i]][z[i]] = wall;
         }
@@ -508,7 +508,7 @@ void Lattice3D::shearWall(const Vector3D& u_w)
 
 const DimSet3D Lattice3D::getSize()const
 {
-    DimSet3D pony = {{xsize, ysize,zsize}};
+    DimSet3D pony = {{double(xsize), double(ysize), double(zsize)}}; // need to cast int -> double
     return pony;
 }
 

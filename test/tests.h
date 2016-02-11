@@ -1475,7 +1475,6 @@ TEST(Preprocess,ParameterCheck){
      }
 
 TEST(timetrack,FileInput){
-    Preprocess newProcess = read_preprocess_file("preprocessFile");
     Timetrack newTimetrack = read_timetrack_file("preprocessFile");
      // test the given parameters 
     EXPECT_DOUBLE_EQ(1e6,newTimetrack.getMaxCount());

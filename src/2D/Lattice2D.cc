@@ -360,7 +360,7 @@ void Lattice2D::genericWall(std::vector<double> x, std::vector<double> y, const 
         Cell2D wall(0,0,true);
         wall.setSolidVelocity(u_w);
         
-        for(int i = 0; i< x.size(); i++)
+        for(unsigned int i = 0; i< x.size(); i++)
         {
             (*data)[x[i]][y[i]] = wall;
         }
@@ -426,7 +426,7 @@ void Lattice2D::shearWall(const Vector2D& u_w)
 
 const ColSet Lattice2D::getSize()const
 {
-    ColSet pony = {{xsize, ysize}};
+    ColSet pony = {{double(xsize), double(ysize)}}; // need to cast int -> double
     return pony;
 }
 
