@@ -12,7 +12,7 @@ class Preprocess
 {
 public: 
 	/// Lifecycle
-	Preprocess(double Re = 10, double Mo = 100, double Eo = 10, double res = 30, double rhol = 1, double gamma_ini = 2, double mu_rate = 2, double s3 = 1, double s5 = 1, double s11 = 1, double s17 = 1, int xCells_ini = 50, int yCells_ini = 50 ,int zCells_ini = 50);
+	Preprocess(double Re = 10, double Mo = 100, double Eo = 10, double res = 30, double rhol = 1, double gamma_ini = 2, double mu_rate = 2, double s3 = 1, double s5 = 1, double s11 = 1, double s17 = 1, bool shear = false, double shear_rate = 0, int xCells_ini = 50, int yCells_ini = 50 ,int zCells_ini = 50);
 
 	/// operations
 
@@ -33,6 +33,8 @@ public:
 	inline const double getS_5()const{return s_5;};
 	inline const double getS_11()const{return s_11;};
 	inline const double getS_17()const{return s_17;};
+	inline const bool getIsShearFlow()const{return isShearFlow;};
+	inline const double getShearRate()const{return shearRate;};
 	
 	inline const double getSpacestep()const{return spacestep;};
 	inline const double getTimestep()const{return timestep;};
@@ -64,6 +66,8 @@ private:
   	double gamma; 			/// < density ratio
   	double muRatio;		/// ratio of second to first viscosity mu'/mu
 	double s_3, s_5, s_11, s_17;
+	bool isShearFlow; 		/// < switch that determines active shear flow
+	double shearRate;		/// < shear rate in (1/s)
 
 	// stored
 	int xCells, yCells, zCells;

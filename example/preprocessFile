@@ -39,6 +39,14 @@ s_3 = 1.2
 # s_5 , default [1]
 s_5 = 1.2
 
+####### SHEAR FLOW #######
+
+# does simulation feature shear flow, default [false]
+isShearFlow = false
+
+# shear rate in 1/s, default [0]
+shearRate = 0
+
 ####### CONTOLS #######
 
 # maximum number of time steps, default [1e5]

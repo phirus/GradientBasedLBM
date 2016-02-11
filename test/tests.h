@@ -1435,6 +1435,8 @@ TEST(Preprocess,FileInput){
     EXPECT_DOUBLE_EQ(1,newProcess.getRhoL());
     EXPECT_DOUBLE_EQ(3,newProcess.getGamma());
     EXPECT_DOUBLE_EQ(1.8,newProcess.getMuRatio());
+    EXPECT_TRUE(newProcess.getIsShearFlow());
+    EXPECT_DOUBLE_EQ(0.4, newProcess.getShearRate());
 
     // test the stored parameters
     EXPECT_DOUBLE_EQ(1,newProcess.getSpacestep());
