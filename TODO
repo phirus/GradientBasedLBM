@@ -1,9 +1,9 @@
 To Do
-- C++11 in anderen Makefiles hinzufügen
 - use shear rate in main.cc
 - number of time steps for fully developed shear flow
 
 Done
+- C++11 in anderen Makefiles hinzufügen
 - find indices of bubble Cells 
 - cut and paste Cells from one Lattice to another 
 - process warnings
