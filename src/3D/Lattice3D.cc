@@ -539,6 +539,38 @@ void Lattice3D::setF(int x, int y, int z, int color, int pos, double value)
     (*data)[x][y][z].setF(f);
 }
 
+//=========================== LATTICE CUTOUT ===========================
+
+const std::vector<int> Lattice3D::findBubbleCells()const
+{
+    std::vector<int> indices;
+    const int range = xsize * ysize * zsize;
+    int x,y,z;
+
+    for (int index = 0;  index < range; index++)
+    {
+        linearIndex(index,x,y,z);
+
+        const Cell3D tmpCell = (*data)[x][y][z];
+
+        if (tmpCell.calcPsi() < 0.99)
+        {
+            indices.push_back(index);
+        }        
+    }
+    return indices;
+}
+
+void Lattice3D::copyCellsFromOther(const Lattice3D& other, const std::vector<int>& indices)
+{
+    int x,y,z;
+    for (std::vector<int>::const_iterator it = indices.cbegin() ; it != indices.cend(); ++it)
+    {
+        linearIndex(*it,x,y,z);
+        (*data)[x][y][z] = other.getCell(x,y,z);
+    }
+}
+
 //=========================== OPERATOR ===========================
 
 Lattice3D& Lattice3D::operator=(const Lattice3D& other){
