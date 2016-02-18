@@ -564,9 +564,9 @@ const std::vector<int> Lattice3D::findBubbleCells()const
 void Lattice3D::copyCellsFromOther(const Lattice3D& other, const std::vector<int>& indices)
 {
     int x,y,z;
-    for (std::vector<int>::const_iterator it = indices.cbegin() ; it != indices.cend(); ++it)
+    for(int index: indices)
     {
-        linearIndex(*it,x,y,z);
+        linearIndex(index,x,y,z);
         (*data)[x][y][z] = other.getCell(x,y,z);
     }
 }

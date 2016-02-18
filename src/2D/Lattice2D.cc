@@ -481,9 +481,9 @@ const std::vector<int> Lattice2D::findBubbleCells()const
 void Lattice2D::copyCellsFromOther(const Lattice2D& other, const std::vector<int>& indices)
 {
     int x,y;
-    for (std::vector<int>::const_iterator it = indices.cbegin() ; it != indices.cend(); ++it)
+    for (int index : indices)
     {
-        linearIndex(*it,x,y);
+        linearIndex(index,x,y);
         (*data)[x][y] = other.getCell(x,y);
     }
 }

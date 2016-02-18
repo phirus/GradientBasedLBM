@@ -1,6 +1,7 @@
 To Do
 - use shear rate in main.cc
 - number of time steps for fully developed shear flow
+- check for static shear state
 
 Done
 - C++11 in anderen Makefiles hinzufügen

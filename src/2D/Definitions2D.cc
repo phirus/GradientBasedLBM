@@ -27,9 +27,9 @@ const array2D array_add_2D(const array2D &one, const array2D &two)
 const array2D array_times_2D(const array2D &foo, double factor)
 {
     array2D bar = foo;
-    for(boost::array<double,9>::iterator it = bar.begin(); it != bar.end(); ++it)
+    for(double &i : bar)
     {
-        *it *= factor;
+        i *= factor;
     }
     return bar;
 }
