@@ -40,3 +40,10 @@ const double getReynolds(const Lattice2D& l, double resolution)
 
     return reynolds;
 }
+
+const vector<double> getLineShearSum(const Lattice2D& l)
+{
+    ColSet extent = l.getSize();
+    
+
+}
