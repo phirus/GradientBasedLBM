@@ -2,6 +2,7 @@ To Do
 - use shear rate in main.cc
 - number of time steps for fully developed shear flow
 - check for static shear state
+- implement DimSet as struct 2D / 3D
 
 Done
 - C++11 in anderen Makefiles hinzufügen

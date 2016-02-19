@@ -9,6 +9,7 @@
 
 typedef boost::array<Vector2D,13> direction2D ; /// < collection of 13 direction vectors (D2Q13)
 typedef boost::array<Vector2D,2> VeloSet2D;
+typedef boost::array<int,2> SizeSet2D;
 
 //=========================== FUNCTIONS ===========================
 
