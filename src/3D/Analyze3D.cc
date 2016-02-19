@@ -45,7 +45,7 @@ const double getReynolds(const Lattice3D& l, double resolution)
     return reynolds;
 }
 
-const double getLineShearSum(const Lattice2D& l)
+const double getLineShearSum(const Lattice3D& l)
 {
     field3D data = l.getData();
     const DimSet3D extent = l.getSize();
