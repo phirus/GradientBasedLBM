@@ -11,7 +11,7 @@ using namespace std;
 namespace po = boost::program_options;
 
 void initialSetUp(Lattice2D& meins, Preprocess& prepro, int xmax, int ymax, ParamSet params);
-void initializeShearfFlow(Lattice2D& meins, Preprocess& prepro, int xmax, int ymax, ParamSet params)
+void initializeShearfFlow(Lattice2D& meins, Preprocess& prepro, int xmax, int ymax, ParamSet params);
 
 int main(int argc, char** argv){
 
