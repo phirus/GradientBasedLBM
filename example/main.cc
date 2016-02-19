@@ -156,7 +156,7 @@ int main(int argc, char** argv){
 
     // time(&end);
     // write_data_plot(reynolds_data, 1000, "ReynoldsPlot.dat");
-    cout<<"\nBerechnung beendet nach "<< difftime(end,start) <<" Sekunden"<<endl;
+    // cout<<"\nBerechnung beendet nach "<< difftime(end,start) <<" Sekunden"<<endl;
 
     return 0;
 }
@@ -231,13 +231,11 @@ void initializeShearfFlow(Lattice2D& meins, Preprocess& prepro, int xmax, int ym
    std::vector<double> shearSum_data;
    shearSum_data.push_back(0);
    std::vector<double> resi_data;
-   const max_count = 1e6;
+   const int max_count = 1e6;
     for(int count = 1; count < max_count; count++)
     {
-        meins.collideAll(numOfCPUs,false,false);
-        meins.streamAll(numOfCPUs);
-        timetrack.timestep();
-
+        meins.collideAll(1,false,false);
+        meins.streamAll(1);
         
         if(count%1000 == 0) 
         {
