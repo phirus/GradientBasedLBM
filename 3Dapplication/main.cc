@@ -207,49 +207,6 @@ void initialSetUp(Lattice3D& meins, Preprocess& prepro, int xmax, int ymax, int 
     cout<<"Initialisierung beendet\n\nSchwerkraft wird zugeschaltet\n"<<endl;
 }
 
-void initialSetUp(Lattice2D& meins, Preprocess& prepro, int xmax, int ymax, ParamSet params)
-{
-    // set the parameters        
-    meins.setParams(params);
-
-    // get densities
-    const double rho_liquid = prepro.getRhoL();
-    const double rho_gas = rho_liquid / prepro.getGamma();
-
-    const Cell2D air(0,rho_gas,false);
-    const Cell2D liquid(rho_liquid,0,false);
-
-    // const Cell2D wall(0,0,true);
-
-    // setup geometry (bubble at the bottom, x-centered)
-    const int R1 = prepro.getResolution()/2;
-    const int xm1 = xmax/2;
-    // const int ym1 = 2*R1;
-    const int ym1 = R1 + 20;
-
-    for(int j=0; j< ymax; j++)
-    {
-        for(int i=0; i< xmax; i++){
-            if( (i-xm1)*(i-xm1) + (j-ym1)*(j-ym1) < R1*R1 ) meins.setCell(i,j,air);
-            // if( j > ym1) meins.setCell(i,j,air);
-            else meins.setCell(i,j,liquid);
-        }
-    }
-
-    meins.bottomWall();
-    
-    meins.equilibriumIni();
-
-   for (int i = 1; i< 1001; i++){
-       meins.collideAll(1,false,false);
-       meins.streamAll(1);
-       if(i%100 == 0) cout << i<<endl;
-   }
-
-    cout<<"Initialisierung beendet\n\nSchwerkraft wird zugeschaltet\n"<<endl;
-}
-
-
 void initializeShearfFlow(Lattice3D& meins, Preprocess& prepro, int xmax, int ymax, int zmax, ParamSet params)
 {
     // set the parameters        
