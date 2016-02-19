@@ -11,6 +11,7 @@ using namespace std;
 namespace po = boost::program_options;
 
 void initialSetUp(Lattice2D& meins, Preprocess& prepro, int xmax, int ymax, ParamSet params);
+void initializeShearfFlow(Lattice2D& meins, Preprocess& prepro, int xmax, int ymax, ParamSet params)
 
 int main(int argc, char** argv){
 
@@ -178,16 +179,38 @@ void initialSetUp(Lattice2D& meins, Preprocess& prepro, int xmax, int ymax, Para
     // const int ym1 = 2*R1;
     const int ym1 = R1 + 20;
 
-    // const int ym1 = ymax/2;
+    for(int j=0; j< ymax; j++)
+    {
+        for(int i=0; i< xmax; i++){
+            if( (i-xm1)*(i-xm1) + (j-ym1)*(j-ym1) < R1*R1 ) meins.setCell(i,j,air);
+            // if( j > ym1) meins.setCell(i,j,air);
+            else meins.setCell(i,j,liquid);
+        }
+    }
 
-    // for(int j=0; j< ymax; j++)
-    // {
-    //     for(int i=0; i< xmax; i++){
-    //         if( (i-xm1)*(i-xm1) + (j-ym1)*(j-ym1) < R1*R1 ) meins.setCell(i,j,air);
-    //         // if( j > ym1) meins.setCell(i,j,air);
-    //         else meins.setCell(i,j,liquid);
-    //     }
-    // }
+    meins.bottomWall();
+    
+    meins.equilibriumIni();
+
+   for (int i = 1; i< 1001; i++){
+       meins.collideAll(1,false,false);
+       meins.streamAll(1);
+       if(i%100 == 0) cout << i<<endl;
+   }
+
+    cout<<"Initialisierung beendet\n\nSchwerkraft wird zugeschaltet\n"<<endl;
+}
+
+
+void initializeShearfFlow(Lattice2D& meins, Preprocess& prepro, int xmax, int ymax, ParamSet params)
+{
+    // set the parameters        
+    meins.setParams(params);
+
+    // get densities
+    const double rho_liquid = prepro.getRhoL();
+
+    const Cell2D liquid(rho_liquid,0,false);
 
     for(int j=0; j< ymax; j++)
     {
@@ -196,17 +219,11 @@ void initialSetUp(Lattice2D& meins, Preprocess& prepro, int xmax, int ymax, Para
         }
     }
 
-    Vector2D u_wall(0,-0.3);
-    // meins.bottomWall();
-    // meins.lidDrivenCavity(u_wall);
+    const Vector2D u_wall(0,-0.3);
+
     meins.shearWall(u_wall);
     meins.equilibriumIni();
 
-    // write_techplot_output(meins,0,true);
-    // // temporal mass_balance
-    // std::vector<double> count;
-    // std::vector<double> liquid_mass;
-    // std::vector<double> gas_mass;
 
    for (int i = 1; i< 1001; i++){
        meins.collideAll(1,false,false);
