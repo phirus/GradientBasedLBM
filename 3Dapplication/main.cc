@@ -11,6 +11,7 @@ using namespace std;
 namespace po = boost::program_options;
 
 void initialSetUp(Lattice3D& meins, Preprocess& prepro, int xmax, int ymax, int zmax, ParamSet params, int numOfCPUs);
+void initializeShearfFlow(Lattice3D& meins, Preprocess& prepro, int xmax, int ymax, int zmax, ParamSet params);
 
 int main(int argc, char** argv){
 
@@ -98,62 +99,64 @@ int main(int argc, char** argv){
         }
     }
     else {      // vm.count("restart")
-        initialSetUp(meins, prepro, xmax, ymax, zmax, params, numOfCPUs);
-        write_vtk_output3D(meins, 0);;
+        // initialSetUp(meins, prepro, xmax, ymax, zmax, params, numOfCPUs);
+        // write_vtk_output3D(meins, 0);
+
+        initializeShearfFlow(meins, prepro, xmax, ymax, zmax, params);
     }
 
-    time_t start,end;
-    time(&start);
+    // time_t start,end;
+    // time(&start);
 
-    const int outputInterval = timetrack.getOutputInt();
-    const int restartInterval = timetrack.getRestartInt();
+    // const int outputInterval = timetrack.getOutputInt();
+    // const int restartInterval = timetrack.getRestartInt();
 
-    std::vector<double> reynolds_data;
-    int i;
+    // std::vector<double> reynolds_data;
+    // int i;
 
-    while (timetrack.proceed() == true)
-    {
-        meins.collideAll(numOfCPUs,true,true);
-        meins.streamAll(numOfCPUs);
-        timetrack.timestep();
+    // while (timetrack.proceed() == true)
+    // {
+    //     meins.collideAll(numOfCPUs,true,true);
+    //     meins.streamAll(numOfCPUs);
+    //     timetrack.timestep();
 
-        // Output if necessary
-        i = timetrack.getCount();
+    //     // Output if necessary
+    //     i = timetrack.getCount();
         
-        if(i%10000 == 0) 
-        {
-            cout << i <<endl;
-        }
+    //     if(i%10000 == 0) 
+    //     {
+    //         cout << i <<endl;
+    //     }
         
-        if(i%10 == 0) 
-        {
-            const double reynolds_tmp = getReynolds(meins, prepro.getResolution());            
-            // reynolds_data.push_back(getReynolds(meins, prepro.getResolution()));
-            reynolds_data.push_back(reynolds_tmp);
-            write_data_plot(reynolds_data, 10, "ReynoldsPlot.dat");
-            if(reynolds_tmp < 0) 
-            {
-                cout <<"\nReynolds < 0, probably reached the top "<<endl;
-                break;
-            }
-        }
+    //     if(i%10 == 0) 
+    //     {
+    //         const double reynolds_tmp = getReynolds(meins, prepro.getResolution());            
+    //         // reynolds_data.push_back(getReynolds(meins, prepro.getResolution()));
+    //         reynolds_data.push_back(reynolds_tmp);
+    //         write_data_plot(reynolds_data, 10, "ReynoldsPlot.dat");
+    //         if(reynolds_tmp < 0) 
+    //         {
+    //             cout <<"\nReynolds < 0, probably reached the top "<<endl;
+    //             break;
+    //         }
+    //     }
 
-        if(i%outputInterval == 0) 
-        {
-            // write_techplot_output(meins,i,true);
-            write_vtk_output3D(meins, i);
-        } 
+    //     if(i%outputInterval == 0) 
+    //     {
+    //         // write_techplot_output(meins,i,true);
+    //         write_vtk_output3D(meins, i);
+    //     } 
         
-        if(i%restartInterval == 0)
-        {
-            const string restart_file_name =  createFilename("restart", i, ".bin");
-            write_restart_file3D(meins, prepro, timetrack, restart_file_name);
-        }         
-    }
+    //     if(i%restartInterval == 0)
+    //     {
+    //         const string restart_file_name =  createFilename("restart", i, ".bin");
+    //         write_restart_file3D(meins, prepro, timetrack, restart_file_name);
+    //     }         
+    // }
 
-    time(&end);
-    write_data_plot(reynolds_data, 1000, "ReynoldsPlot.dat");
-    cout<<"\nBerechnung beendet nach "<< difftime(end,start) <<" Sekunden"<<endl;
+    // time(&end);
+    // write_data_plot(reynolds_data, 1000, "ReynoldsPlot.dat");
+    // cout<<"\nBerechnung beendet nach "<< difftime(end,start) <<" Sekunden"<<endl;
 
     return 0;
 }
@@ -202,4 +205,110 @@ void initialSetUp(Lattice3D& meins, Preprocess& prepro, int xmax, int ymax, int 
    }
 
     cout<<"Initialisierung beendet\n\nSchwerkraft wird zugeschaltet\n"<<endl;
+}
+
+void initialSetUp(Lattice2D& meins, Preprocess& prepro, int xmax, int ymax, ParamSet params)
+{
+    // set the parameters        
+    meins.setParams(params);
+
+    // get densities
+    const double rho_liquid = prepro.getRhoL();
+    const double rho_gas = rho_liquid / prepro.getGamma();
+
+    const Cell2D air(0,rho_gas,false);
+    const Cell2D liquid(rho_liquid,0,false);
+
+    // const Cell2D wall(0,0,true);
+
+    // setup geometry (bubble at the bottom, x-centered)
+    const int R1 = prepro.getResolution()/2;
+    const int xm1 = xmax/2;
+    // const int ym1 = 2*R1;
+    const int ym1 = R1 + 20;
+
+    for(int j=0; j< ymax; j++)
+    {
+        for(int i=0; i< xmax; i++){
+            if( (i-xm1)*(i-xm1) + (j-ym1)*(j-ym1) < R1*R1 ) meins.setCell(i,j,air);
+            // if( j > ym1) meins.setCell(i,j,air);
+            else meins.setCell(i,j,liquid);
+        }
+    }
+
+    meins.bottomWall();
+    
+    meins.equilibriumIni();
+
+   for (int i = 1; i< 1001; i++){
+       meins.collideAll(1,false,false);
+       meins.streamAll(1);
+       if(i%100 == 0) cout << i<<endl;
+   }
+
+    cout<<"Initialisierung beendet\n\nSchwerkraft wird zugeschaltet\n"<<endl;
+}
+
+
+void initializeShearfFlow(Lattice3D& meins, Preprocess& prepro, int xmax, int ymax, int zmax, ParamSet params)
+{
+    // set the parameters        
+    meins.setParams(params);
+
+    // get densities
+    const double rho_liquid = prepro.getRhoL();
+
+    const Cell3D liquid(rho_liquid,0,false);
+
+    for(int k=0; k< zmax; k++)
+    {
+        for(int j=0; j< ymax; j++)
+        {
+            for(int i=0; i< xmax; i++)
+            {
+                meins.setCell(i,j,k,liquid);
+            }
+        }
+    }
+    
+    const Vector3D u_wall(0,0,-0.3);
+
+    meins.shearWall(u_wall);
+    meins.equilibriumIni();
+
+
+   std::vector<double> shearSum_data;
+   shearSum_data.push_back(0);
+   std::vector<double> resi_data;
+   const int max_count = 1e6;
+    for(int count = 1; count < max_count; count++)
+    {
+        meins.collideAll(1,false,false);
+        meins.streamAll(1);
+        
+        if(count%1000 == 0) 
+        {
+            cout << count <<endl;
+        }
+        
+        if(count%10 == 0) 
+        {
+            const double veloSum_tmp = getLineShearSum(meins);
+
+            const double Resi_tmp = (veloSum_tmp - shearSum_data.back()) / veloSum_tmp;
+
+            shearSum_data.push_back(veloSum_tmp);
+            write_data_plot(shearSum_data, 10, "ShearSum.dat");
+            resi_data.push_back(Resi_tmp);
+            write_data_plot(resi_data,10,"Residual.dat");
+        }
+
+        if(count%100 == 0) 
+        {
+            write_vtk_output3D(meins, createFilename("shearTest_", count, ".vtk"));
+        } 
+        
+    }
+
+    cout<<"Shear flow steadily initialized\n"<<endl;
 }
