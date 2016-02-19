@@ -59,7 +59,7 @@ const double getLineShearSum(const Lattice2D& l)
 
     for (int x = 0; x<extent[0];x++)
     {
-        tmp_cell = data[x][y_m];
+        tmp_cell = data[x][y_m][z_m];
         tmp_cell.calcRho();
         tmp_velo = tmp_cell.getU();
         sum += tmp_velo[0].z;
