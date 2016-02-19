@@ -13,7 +13,7 @@ void write_binary2D(const Lattice2D& l, const string& filename){
     file.seekp(0);
 
     // start to write
-    ColSet extent = l.getSize();
+    DimSet2D extent = l.getSize();
     file.write(reinterpret_cast<char*> (&extent), sizeof extent);
 
     ParamSet param = l.getParams();
@@ -39,7 +39,7 @@ const bool read_binary2D(Lattice2D& outL, const string& filename){
         file.seekg(0);
 
         // start to read
-        ColSet extent;
+        DimSet2D extent;
         file.read((char*) &extent, sizeof extent);
 
         ParamSet param;
@@ -75,7 +75,7 @@ void write_restart_file2D(const Lattice2D& l, const Preprocess& p, const Timetra
     file.seekp(0);
 
     // start to write
-    ColSet extent = l.getSize();
+    DimSet2D extent = l.getSize();
     file.write(reinterpret_cast<char*> (&extent), sizeof extent);
 
     ParamSet param = l.getParams();
@@ -150,7 +150,7 @@ const bool read_restart_file2D(Lattice2D& outL, Preprocess& p, Timetrack& t, con
         file.seekg(0);
 
         // start to read
-        ColSet extent;
+        DimSet2D extent;
         file.read((char*) &extent, sizeof extent);
 
         ParamSet param;
@@ -221,9 +221,9 @@ void write_techplot_output2D(const Lattice2D& l, int iterNum)
 {
     ofstream PsiFile;
     Cell2D tmp;
-    ColSet extent = l.getSize();
-    int xsize = static_cast<int> (extent[0]);
-    int ysize = static_cast<int> (extent[1]);
+    DimSet2D extent = l.getSize();
+    int xsize = extent[0];
+    int ysize = extent[1];
 
     stringstream name;
     name <<"psi_"<< iterNum<<".dat";
@@ -270,9 +270,9 @@ void write_techplot_output_alternative2D(const Lattice2D& l, const string& filen
 {
     ofstream PsiFile;
     Cell2D tmp;
-    ColSet extent = l.getSize();
-    int xsize = static_cast<int> (extent[0]);
-    int ysize = static_cast<int> (extent[1]);
+    DimSet2D extent = l.getSize();
+    int xsize = extent[0];
+    int ysize = extent[1];
 
     stringstream name;
     name <<filename;
@@ -330,9 +330,9 @@ void write_vtk_output2D(const Lattice2D& l, const string& filename)
     ofstream VTKFile;
     Cell2D tmp;
     int e;
-    ColSet extent = l.getSize();
-    int xsize = static_cast<int> (extent[0]);
-    int ysize = static_cast<int> (extent[1]);
+    DimSet2D extent = l.getSize();
+    int xsize = extent[0];
+    int ysize = extent[1];
 
     // stringstream name;
     // name <<"test_"<< iterNum<<".vtk";

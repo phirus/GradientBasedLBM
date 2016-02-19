@@ -3,7 +3,7 @@
 const double getBubbleVelocity(const Lattice2D& l)
 {
     field2D data = l.getData();
-    ColSet extent = l.getSize();
+    DimSet2D extent = l.getSize();
 
     Cell2D tmp_cell;
     VeloSet2D tmp_velo;

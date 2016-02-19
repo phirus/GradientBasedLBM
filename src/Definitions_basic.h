@@ -11,7 +11,8 @@ typedef boost::array<double,9> array2D;       /// < used to describe single dist
 typedef boost::array<array2D,2> DistributionSetType2D;         /// < merge two distributions into a single variable
 
 typedef boost::array<double,19> array3D;       /// < used to describe single distributions
-typedef boost::array<double,3> DimSet3D;         /// < simple 3d vector
+typedef boost::array<int,2> DimSet2D;         /// < simple 2d vector for lattice positions and size
+typedef boost::array<int,3> DimSet3D;         /// < simple 3d vector for lattice positions and size
 typedef boost::array<array3D,2> DistributionSetType3D;         /// < merge two distributions into a single variable
 
 struct RelaxationPar2D

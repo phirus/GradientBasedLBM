@@ -42,7 +42,7 @@ public:
     void shearWall(const Vector2D& u_w);    /// < initialize the Lattice2D with moving left wall
 
     /// accessors
-    const ColSet getSize()const; /// < get the extend of the Lattice2D
+    const DimSet2D getSize()const; /// < get the extend of the Lattice2D
     const field2D getData()const{return *data;}; /// < get the data field2D
     const Cell2D getCell(int x, int y)const{return (*data)[x][y];};  /// < get a Cell
     const ParamSet getParams()const{return param;}; /// < get the paramter set

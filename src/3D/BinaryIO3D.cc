@@ -242,9 +242,9 @@ void write_techplot_output3D(const Lattice3D& l, int iterNum)
     ofstream PsiFile;
     Cell3D tmp;
     DimSet3D extent = l.getSize();
-    int xsize = static_cast<int> (extent[0]);
-    int ysize = static_cast<int> (extent[1]);
-    int zsize = static_cast<int> (extent[2]);
+    int xsize = extent[0];
+    int ysize = extent[1];
+    int zsize = extent[2];
 
     stringstream name;
     name <<"psi_"<< iterNum<<".dat";
@@ -298,9 +298,9 @@ void write_techplot_output_alternative3D(const Lattice3D& l, const string& filen
     ofstream PsiFile;
     Cell3D tmp;
     DimSet3D extent = l.getSize();
-    int xsize = static_cast<int> (extent[0]);
-    int ysize = static_cast<int> (extent[1]);
-    int zsize = static_cast<int> (extent[2]);
+    int xsize = extent[0];
+    int ysize = extent[1];
+    int zsize = extent[2];
 
     stringstream name;
     name <<filename;
@@ -371,9 +371,9 @@ void write_vtk_output3D(const Lattice3D& l, const string& filename)
     ofstream VTKFile;
     Cell3D tmp;
     DimSet3D extent = l.getSize();
-    int xsize = static_cast<int> (extent[0]);
-    int ysize = static_cast<int> (extent[1]);
-    int zsize = static_cast<int> (extent[2]);
+    int xsize = extent[0];
+    int ysize = extent[1];
+    int zsize = extent[2];
 
     VTKFile.open(filename.c_str());
 

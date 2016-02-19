@@ -424,9 +424,9 @@ void Lattice2D::shearWall(const Vector2D& u_w)
 
 //=========================== ACCESSORS ===========================
 
-const ColSet Lattice2D::getSize()const
+const DimSet2D Lattice2D::getSize()const
 {
-    ColSet pony = {{double(xsize), double(ysize)}}; // need to cast int -> double
+    DimSet2D pony = {{xsize, ysize}}; 
     return pony;
 }
 
@@ -500,7 +500,7 @@ Lattice2D& Lattice2D::operator=(const Lattice2D& other){
 const bool Lattice2D::operator==(const Lattice2D& other)const
 {
     bool exit = true;
-    ColSet extent = other.getSize();
+    DimSet2D extent = other.getSize();
     if (xsize == extent[0] && ysize == extent[1])
     {
         ParamSet pOther = other.getParams();

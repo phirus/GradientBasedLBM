@@ -508,7 +508,7 @@ void Lattice3D::shearWall(const Vector3D& u_w)
 
 const DimSet3D Lattice3D::getSize()const
 {
-    DimSet3D pony = {{double(xsize), double(ysize), double(zsize)}}; // need to cast int -> double
+    DimSet3D pony = {{xsize, ysize, zsize}}; 
     return pony;
 }
 
