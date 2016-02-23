@@ -470,5 +470,27 @@ void write_vtk_output3D(const Lattice3D& l, const string& filename)
         VTKFile << gradient.x << " " << gradient.y  << " " << gradient.z << " ";
     }
 
+    VTKFile << "\nVECTORS u1 DOUBLE"<<endl;
+    for (int index = 0; index < (xsize*ysize*zsize); index++)
+    {
+        l.linearIndex(index, x, y, z);
+        tmp = l.getCell(x,y,z);
+        tmp.calcRho();
+
+        VeloSet3D u = tmp.getU();
+        VTKFile << u[0].x << " " << u[0].y << " " << u[0].z << " ";
+    }
+
+    VTKFile << "\nVECTORS j2 DOUBLE"<<endl;
+    for (int index = 0; index < (xsize*ysize*zsize); index++)
+    {
+        l.linearIndex(index, x, y, z);
+        tmp = l.getCell(x,y,z);
+        tmp.calcRho();
+
+        VeloSet3D u = tmp.getU();
+        VTKFile << u[1].x << " " << u[1].y << " " << u[1].z << " ";
+    }
+
     VTKFile.close();
 }

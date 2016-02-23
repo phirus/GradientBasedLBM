@@ -435,5 +435,31 @@ void write_vtk_output2D(const Lattice2D& l, const string& filename)
         }
     }
 
+    VTKFile << "\nVECTORS u1 DOUBLE"<<endl;
+    for (int j = 0; j < ysize; j++)
+    {        
+        for (int i = 0; i < xsize; i++)
+        {
+            tmp = l.getCell(i,j);
+            tmp.calcRho();
+
+            VeloSet2D u = tmp.getU();
+            VTKFile << u[0].x << " " << u[0].y << " 0 ";
+        }
+    }
+
+    VTKFile << "\nVECTORS u2 DOUBLE"<<endl;
+    for (int j = 0; j < ysize; j++)
+    {
+        for (int i = 0; i < xsize; i++)
+        {
+            tmp = l.getCell(i,j);
+            tmp.calcRho();
+
+            VeloSet2D u = tmp.getU();
+            VTKFile << u[1].x << " " << u[1].y << " 0 ";
+        }
+    }
+
     VTKFile.close();
 }

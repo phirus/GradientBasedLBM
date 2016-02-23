@@ -242,7 +242,7 @@ void initializeShearfFlow(Lattice2D& meins, Preprocess& prepro, int xmax, int ym
             cout << count <<endl;
         }
         
-        if(count%10 == 0) 
+        if(count%100 == 0) 
         {
             const double veloSum_tmp = getLineShearSum(meins);
 
@@ -254,7 +254,7 @@ void initializeShearfFlow(Lattice2D& meins, Preprocess& prepro, int xmax, int ym
             write_data_plot(resi_data,10,"Residual.dat");
         }
 
-        if(count%100 == 0) 
+        if(count%200 == 0) 
         {
             write_vtk_output2D(meins, createFilename("shearTest_", count, ".vtk"));
         } 
