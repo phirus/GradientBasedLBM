@@ -470,7 +470,7 @@ const std::vector<int> Lattice2D::findBubbleCells()const
 
         const Cell2D tmpCell = (*data)[x][y];
 
-        if (tmpCell.calcPsi() < 0.99)
+        if (tmpCell.calcPsi() < BUBBLE_CRITERION)
         {
             indices.push_back(index);
         }        
