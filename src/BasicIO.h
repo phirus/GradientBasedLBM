@@ -16,6 +16,7 @@ using namespace std;
 /// write output
 void write_data_plot(const std::vector<double> x, const std::vector<double> y1, const std::vector<double> y2, const string& filename = "massplot.dat");
 void write_data_plot(const std::vector<double> y, double del_x, const string& filename = "ReynoldsPlot.dat");
+void write_data_plot(const std::vector<double> y1, const std::vector<double> y2, double del_x, const string& filename = "BubbleVeloPlot.dat");
 void write_param_log(const ParamSet& p);
 
 /// read input

@@ -98,65 +98,76 @@ int main(int argc, char** argv){
         }
     }
     else {      // vm.count("restart"), if no restart file -> initialize
-        // initialSetUp(meins, prepro, xmax, ymax, params);
-        // write_vtk_output2D(meins, 0);
+        initialSetUp(meins, prepro, xmax, ymax, params);
+        write_vtk_output2D(meins, 0);
 
-        initializeShearfFlow(meins, prepro, xmax, ymax, params);
+        // initializeShearfFlow(meins, prepro, xmax, ymax, params);
 
     }
 
-    // time_t start,end;
-    // time(&start);
+    time_t start,end;
+    time(&start);
 
-    // const int outputInterval = timetrack.getOutputInt();
-    // const int restartInterval = timetrack.getRestartInt();
+    const int outputInterval = timetrack.getOutputInt();
+    const int restartInterval = timetrack.getRestartInt();
 
-    // std::vector<double> reynolds_data;
-    // int i;
+    std::vector<double> reynolds_data;
+    std::vector<double> side_velo_data;
+    std::vector<double> up_velo_data;
+    int i;
 
-    // while (timetrack.proceed() == true)
-    // {
-    //     meins.collideAll(numOfCPUs,true,true);
-    //     meins.streamAll(numOfCPUs);
-    //     timetrack.timestep();
+    while (timetrack.proceed() == true)
+    {
+        meins.collideAll(numOfCPUs,true,true);
+        meins.streamAll(numOfCPUs);
+        timetrack.timestep();
 
-    //     // Output if necessary
-    //     i = timetrack.getCount();
+        // Output if necessary
+        i = timetrack.getCount();
         
-    //     if(i%10000 == 0) 
-    //     {
-    //         cout << i <<endl;
-    //     }
+        if(i%10000 == 0) 
+        {
+            cout << i <<endl;
+        }
         
-    //     if(i%10 == 0) 
-    //     {
-    //         const double reynolds_tmp = getReynolds(meins, prepro.getResolution());            
-    //         // reynolds_data.push_back(getReynolds(meins, prepro.getResolution()));
-    //         reynolds_data.push_back(reynolds_tmp);
-    //         write_data_plot(reynolds_data, 10, "ReynoldsPlot.dat");
-    //         if(reynolds_tmp < 0) 
-    //         {
-    //             cout <<"\nReynolds < 0, probably reached the top "<<endl;
-    //             break;
-    //         }
-    //     }
+        if(i%10 == 0) 
+        {
+            const double reynolds_tmp = getReynolds(meins, prepro.getResolution());            
+            // reynolds_data.push_back(getReynolds(meins, prepro.getResolution()));
+            reynolds_data.push_back(reynolds_tmp);
+            write_data_plot(reynolds_data, 10, "ReynoldsPlot.dat");
+            // if(reynolds_tmp < 0) 
+            // {
+            //     cout <<"\nReynolds < 0, probably reached the top "<<endl;
+            //     break;
+            // }
+        }
 
-    //     if(i%outputInterval == 0) 
-    //     {
-    //         // write_techplot_output(meins,i,true);
-    //         write_vtk_output2D(meins, i);
-    //     } 
+        if(i%10 == 0) 
+        {
+            const Vector2D velo_tmp = getBubbleVelocity(meins);            
+            side_velo_data.push_back(velo_tmp.x);
+            up_velo_data.push_back(velo_tmp.y);
+
+            write_data_plot(up_velo_data, side_velo_data, 10, "BubbleVeloPlot.dat");
+        }
+
+        if(i%outputInterval == 0) 
+        {
+            // write_techplot_output(meins,i,true);
+            write_vtk_output2D(meins, i);
+        } 
         
-    //     if(i%restartInterval == 0)
-    //     {
-    //         const string restart_file_name =  createFilename("restart", i, ".bin");
-    //         write_restart_file2D(meins, prepro, timetrack, restart_file_name);
-    //     }         
-    // }
+        if(i%restartInterval == 0)
+        {
+            const string restart_file_name =  createFilename("restart", i, ".bin");
+            write_restart_file2D(meins, prepro, timetrack, restart_file_name);
+        }         
+    }
 
-    // time(&end);
-    // write_data_plot(reynolds_data, 1000, "ReynoldsPlot.dat");
-    // cout<<"\nBerechnung beendet nach "<< difftime(end,start) <<" Sekunden"<<endl;
+    time(&end);
+    write_data_plot(reynolds_data, 1000, "ReynoldsPlot.dat");
+    cout<<"\nBerechnung beendet nach "<< difftime(end,start) <<" Sekunden"<<endl;
 
     return 0;
 }
@@ -178,7 +189,8 @@ void initialSetUp(Lattice2D& meins, Preprocess& prepro, int xmax, int ymax, Para
 
     // setup geometry (bubble at the bottom, x-centered)
     const int R1 = prepro.getResolution()/2;
-    const int xm1 = xmax/2;
+    // const int xm1 = xmax/2;
+    const int xm1 = xmax/4;
     // const int ym1 = 2*R1;
     const int ym1 = R1 + 20;
 
@@ -191,7 +203,8 @@ void initialSetUp(Lattice2D& meins, Preprocess& prepro, int xmax, int ymax, Para
         }
     }
 
-    meins.bottomWall();
+    // meins.bottomWall();
+    meins.closedBox();
     
     meins.equilibriumIni();
 
@@ -232,7 +245,7 @@ void initializeShearfFlow(Lattice2D& meins, Preprocess& prepro, int xmax, int ym
    shearSum_data.push_back(0);
    std::vector<double> resi_data;
    const int max_count = 1e6;
-    for(int count = 1; count < max_count; count++)
+    for(int count = 0; count < max_count; count++)
     {
         meins.collideAll(1,false,false);
         meins.streamAll(1);
@@ -249,9 +262,9 @@ void initializeShearfFlow(Lattice2D& meins, Preprocess& prepro, int xmax, int ym
             const double Resi_tmp = (veloSum_tmp - shearSum_data.back()) / veloSum_tmp;
 
             shearSum_data.push_back(veloSum_tmp);
-            write_data_plot(shearSum_data, 10, "ShearSum.dat");
+            write_data_plot(shearSum_data, 100, "ShearSum.dat");
             resi_data.push_back(Resi_tmp);
-            write_data_plot(resi_data,10,"Residual.dat");
+            write_data_plot(resi_data,100,"Residual.dat");
         }
 
         if(count%200 == 0) 

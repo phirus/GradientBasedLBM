@@ -1,6 +1,6 @@
 #include"Analyze3D.h"
 
-const double getBubbleVelocity(const Lattice3D& l)
+const Vector3D getBubbleVelocity(const Lattice3D& l)
 {
     field3D data = l.getData();
     DimSet3D extent = l.getSize();
@@ -31,16 +31,14 @@ const double getBubbleVelocity(const Lattice3D& l)
     }
 
     Vector3D velocity = momentum * (1.0/ rho_sum);
-
-    double upward_velo = velocity.z;
-    return upward_velo;
+    return velocity;
 }
 
 const double getReynolds(const Lattice3D& l, double resolution)
 {
     const ParamSet params = l.getParams();
-    const double velocity = getBubbleVelocity(l);
-    const double reynolds = getReynolds(params, velocity, resolution);
+    const Vector3D velocity = getBubbleVelocity(l);
+    const double reynolds = getReynolds(params, velocity.z, resolution);
 
     return reynolds;
 }

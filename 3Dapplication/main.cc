@@ -99,64 +99,64 @@ int main(int argc, char** argv){
         }
     }
     else {      // vm.count("restart")
-        // initialSetUp(meins, prepro, xmax, ymax, zmax, params, numOfCPUs);
-        // write_vtk_output3D(meins, 0);
+        initialSetUp(meins, prepro, xmax, ymax, zmax, params, numOfCPUs);
+        write_vtk_output3D(meins, 0);
 
-        initializeShearfFlow(meins, prepro, xmax, ymax, zmax, params);
+        // initializeShearfFlow(meins, prepro, xmax, ymax, zmax, params);
     }
 
-    // time_t start,end;
-    // time(&start);
+    time_t start,end;
+    time(&start);
 
-    // const int outputInterval = timetrack.getOutputInt();
-    // const int restartInterval = timetrack.getRestartInt();
+    const int outputInterval = timetrack.getOutputInt();
+    const int restartInterval = timetrack.getRestartInt();
 
-    // std::vector<double> reynolds_data;
-    // int i;
+    std::vector<double> reynolds_data;
+    int i;
 
-    // while (timetrack.proceed() == true)
-    // {
-    //     meins.collideAll(numOfCPUs,true,true);
-    //     meins.streamAll(numOfCPUs);
-    //     timetrack.timestep();
+    while (timetrack.proceed() == true)
+    {
+        meins.collideAll(numOfCPUs,true,true);
+        meins.streamAll(numOfCPUs);
+        timetrack.timestep();
 
-    //     // Output if necessary
-    //     i = timetrack.getCount();
+        // Output if necessary
+        i = timetrack.getCount();
         
-    //     if(i%10000 == 0) 
-    //     {
-    //         cout << i <<endl;
-    //     }
+        if(i%10000 == 0) 
+        {
+            cout << i <<endl;
+        }
         
-    //     if(i%10 == 0) 
-    //     {
-    //         const double reynolds_tmp = getReynolds(meins, prepro.getResolution());            
-    //         // reynolds_data.push_back(getReynolds(meins, prepro.getResolution()));
-    //         reynolds_data.push_back(reynolds_tmp);
-    //         write_data_plot(reynolds_data, 10, "ReynoldsPlot.dat");
-    //         if(reynolds_tmp < 0) 
-    //         {
-    //             cout <<"\nReynolds < 0, probably reached the top "<<endl;
-    //             break;
-    //         }
-    //     }
+        if(i%10 == 0) 
+        {
+            const double reynolds_tmp = getReynolds(meins, prepro.getResolution());            
+            // reynolds_data.push_back(getReynolds(meins, prepro.getResolution()));
+            reynolds_data.push_back(reynolds_tmp);
+            write_data_plot(reynolds_data, 10, "ReynoldsPlot.dat");
+            if(reynolds_tmp < 0) 
+            {
+                cout <<"\nReynolds < 0, probably reached the top "<<endl;
+                break;
+            }
+        }
 
-    //     if(i%outputInterval == 0) 
-    //     {
-    //         // write_techplot_output(meins,i,true);
-    //         write_vtk_output3D(meins, i);
-    //     } 
+        if(i%outputInterval == 0) 
+        {
+            // write_techplot_output(meins,i,true);
+            write_vtk_output3D(meins, i);
+        } 
         
-    //     if(i%restartInterval == 0)
-    //     {
-    //         const string restart_file_name =  createFilename("restart", i, ".bin");
-    //         write_restart_file3D(meins, prepro, timetrack, restart_file_name);
-    //     }         
-    // }
+        if(i%restartInterval == 0)
+        {
+            const string restart_file_name =  createFilename("restart", i, ".bin");
+            write_restart_file3D(meins, prepro, timetrack, restart_file_name);
+        }         
+    }
 
-    // time(&end);
-    // write_data_plot(reynolds_data, 1000, "ReynoldsPlot.dat");
-    // cout<<"\nBerechnung beendet nach "<< difftime(end,start) <<" Sekunden"<<endl;
+    time(&end);
+    write_data_plot(reynolds_data, 1000, "ReynoldsPlot.dat");
+    cout<<"\nBerechnung beendet nach "<< difftime(end,start) <<" Sekunden"<<endl;
 
     return 0;
 }
@@ -179,6 +179,7 @@ void initialSetUp(Lattice3D& meins, Preprocess& prepro, int xmax, int ymax, int 
     // setup geometry (bubble at the bottom, x and y centered)
     const int radius = prepro.getResolution()/2;
     const int xm = xmax/2;
+    // const int xm = xmax/4;
     const int ym = ymax/2;
     const int zm =  radius + 20;
 

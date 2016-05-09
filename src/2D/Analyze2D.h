@@ -8,7 +8,7 @@
 
 using namespace std;
 
-const double getBubbleVelocity(const Lattice2D& l);
+const Vector2D getBubbleVelocity(const Lattice2D& l);
 const double getReynolds(const Lattice2D& l, double resolution = 40);
 const double getLineShearSum(const Lattice2D& l);
 

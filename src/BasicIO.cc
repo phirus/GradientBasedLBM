@@ -28,6 +28,17 @@ void write_data_plot(const std::vector<double> y, double del_x, const string& fi
     RePlot.close();
 }
 
+void write_data_plot(const std::vector<double> y1, const std::vector<double> y2, double del_x, const string& filename){
+    ofstream Plot;
+
+    Plot.open( filename.c_str() );
+    Plot << "x" << "\t" << "y1" << "\t" << "y2" << "\n";
+    for(unsigned int i = 0; i< y1.size(); i++){
+        Plot << i*del_x << "\t" << y1.at(i) << "\t" << y2.at(i) << "\n";
+    } 
+    Plot.close();
+}
+
 void write_param_log(const ParamSet& p){
     ofstream paramLog;
 

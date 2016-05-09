@@ -1,6 +1,6 @@
 #include"Analyze2D.h"
 
-const double getBubbleVelocity(const Lattice2D& l)
+const Vector2D getBubbleVelocity(const Lattice2D& l)
 {
     field2D data = l.getData();
     DimSet2D extent = l.getSize();
@@ -26,17 +26,15 @@ const double getBubbleVelocity(const Lattice2D& l)
         }
     }
 
-    Vector2D velocity = momentum * (1.0/ rho_sum);
-
-    double upward_velo = velocity.y;
-    return upward_velo;
+    const Vector2D velocity = momentum * (1.0/ rho_sum);
+    return velocity;
 }
 
 const double getReynolds(const Lattice2D& l, double resolution)
 {
     const ParamSet params = l.getParams();
-    const double velocity = getBubbleVelocity(l);
-    const double reynolds = getReynolds(params, velocity, resolution);
+    const Vector2D velocity = getBubbleVelocity(l);
+    const double reynolds = getReynolds(params, velocity.y, resolution);
 
     return reynolds;
 }
