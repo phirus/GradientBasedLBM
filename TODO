@@ -1,10 +1,12 @@
 To Do
+- analyze bubble position 3D
 - analyze lateral Bubble motion 3D
 - use shear rate in main.cc
 - number of time steps for fully developed shear flow
 - check for static shear state
 
 Done
+- analyze bubble position 2D
 - analyze lateral Bubble motion 2D
 - C++11 in anderen Makefiles hinzufügen
 - find indices of bubble Cells 

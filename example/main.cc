@@ -114,6 +114,9 @@ int main(int argc, char** argv){
     std::vector<double> reynolds_data;
     std::vector<double> side_velo_data;
     std::vector<double> up_velo_data;
+    std::vector<double> bubble_pos_x_data;
+    std::vector<double> bubble_pos_y_data;
+
     int i;
 
     while (timetrack.proceed() == true)
@@ -150,6 +153,13 @@ int main(int argc, char** argv){
             up_velo_data.push_back(velo_tmp.y);
 
             write_data_plot(up_velo_data, side_velo_data, 10, "BubbleVeloPlot.dat");
+
+            const Vector2D pos_tmp = getBubblePosition(meins);
+
+            bubble_pos_x_data.push_back(pos_tmp.x);
+            bubble_pos_y_data.push_back(pos_tmp.y);
+
+            write_data_plot(bubble_pos_x_data, bubble_pos_y_data, 10, "BubblePosPlot.dat");
         }
 
         if(i%outputInterval == 0) 
@@ -166,7 +176,6 @@ int main(int argc, char** argv){
     }
 
     time(&end);
-    write_data_plot(reynolds_data, 1000, "ReynoldsPlot.dat");
     cout<<"\nBerechnung beendet nach "<< difftime(end,start) <<" Sekunden"<<endl;
 
     return 0;
@@ -189,8 +198,8 @@ void initialSetUp(Lattice2D& meins, Preprocess& prepro, int xmax, int ymax, Para
 
     // setup geometry (bubble at the bottom, x-centered)
     const int R1 = prepro.getResolution()/2;
-    // const int xm1 = xmax/2;
-    const int xm1 = xmax/4;
+    const int xm1 = xmax/2;
+    // const int xm1 = xmax * 0.75;
     // const int ym1 = 2*R1;
     const int ym1 = R1 + 20;
 
@@ -203,8 +212,8 @@ void initialSetUp(Lattice2D& meins, Preprocess& prepro, int xmax, int ymax, Para
         }
     }
 
-    // meins.bottomWall();
-    meins.closedBox();
+    meins.bottomWall();
+    // meins.closedBox();
     
     meins.equilibriumIni();
 

@@ -2,8 +2,8 @@
 
 const Vector2D getBubbleVelocity(const Lattice2D& l)
 {
-    field2D data = l.getData();
-    DimSet2D extent = l.getSize();
+    const field2D data = l.getData();
+    const DimSet2D extent = l.getSize();
 
     Cell2D tmp_cell;
     VeloSet2D tmp_velo;
@@ -28,6 +28,35 @@ const Vector2D getBubbleVelocity(const Lattice2D& l)
 
     const Vector2D velocity = momentum * (1.0/ rho_sum);
     return velocity;
+}
+
+const Vector2D getBubblePosition(const Lattice2D& l)
+{
+    const field2D data = l.getData();
+    const DimSet2D extent = l.getSize();
+
+    Cell2D tmp_cell;
+    ColSet tmp_rho;
+    Vector2D position(0,0);
+    double rho_sum(0);
+
+    for (int x = 0; x<extent[0];x++)
+    {
+        for (int y = 0; y<extent[1];y++)
+        {
+            tmp_cell = data[x][y];
+            tmp_cell.calcRho();
+            tmp_rho = tmp_cell.getRho();
+            if ( tmp_cell.calcPsi() < -0.99) {
+                position.x = position.x + (x * tmp_rho[1]);
+                position.y = position.y + (y * tmp_rho[1]);
+                rho_sum += tmp_rho[1];
+            }
+        }
+    }
+
+    position = position * (1.0/ rho_sum);
+    return position;
 }
 
 const double getReynolds(const Lattice2D& l, double resolution)
