@@ -71,7 +71,7 @@ int main(int argc, char** argv){
     int ymax = prepro.getYCells();
     int xmax = prepro.getXCells();
     Lattice2D meins(xmax,ymax);
-    Lattice2D bubble_only(xmax,ymax);
+    //Lattice2D bubble_only(xmax,ymax);
 
     if (vm.count("restart")) 
     {
@@ -100,14 +100,14 @@ int main(int argc, char** argv){
     }
     else {      // vm.count("restart"), if no restart file -> initialize
         
-        // initialSetUp(meins, prepro, xmax, ymax, params);
-        // write_vtk_output2D(meins, 0);
+        initialSetUp(meins, prepro, xmax, ymax, params);
+        write_vtk_output2D(meins, 0);
 
-        initialSetUp(bubble_only, prepro, xmax, ymax, params);
+        //nitialSetUp(bubble_only, prepro, xmax, ymax, params);
         
-        initializeShearfFlow(meins, prepro, xmax, ymax, params);
+        //initializeShearfFlow(meins, prepro, xmax, ymax, params);
 
-        meins.copyCellsFromOther(bubble_only, bubble_only.findBubbleCells());
+        //meins.copyCellsFromOther(bubble_only, bubble_only.findBubbleCells());
         write_vtk_output2D(meins, 0);
 
     }
@@ -142,7 +142,6 @@ int main(int argc, char** argv){
 
         if(i%outputInterval == 0) 
         {
-            // write_techplot_output(meins,i,true);
             write_vtk_output2D(meins, i);
         } 
         
@@ -158,11 +157,6 @@ int main(int argc, char** argv){
             // reynolds_data.push_back(getReynolds(meins, prepro.getResolution()));
             reynolds_data.push_back(reynolds_tmp);
             write_data_plot(reynolds_data, 10, "ReynoldsPlot.dat");
-            // if(reynolds_tmp < 0) 
-            // {
-            //     cout <<"\nReynolds < 0, probably reached the top "<<endl;
-            //     break;
-            // }
         }
 
         if(i%10 == 0) 
@@ -180,7 +174,7 @@ int main(int argc, char** argv){
 
             write_data_plot(bubble_pos_x_data, bubble_pos_y_data, 10, "BubblePosPlot.dat");
 
-            if(bubble_pos_y_data > 0.96 * ymax)
+            if(pos_tmp.y > 0.96 * ymax)
             {
                 cout << "\nBubble reached the top";
                 break;
@@ -211,8 +205,8 @@ void initialSetUp(Lattice2D& meins, Preprocess& prepro, int xmax, int ymax, Para
 
     // setup geometry (bubble at the bottom, x-centered)
     const int R1 = prepro.getResolution()/2;
-    const int xm1 = xmax/2;
-    // const int xm1 = xmax * 0.75;
+    // const int xm1 = xmax/2;
+    const int xm1 = xmax * 0.6;
     // const int ym1 = 2*R1;
     const int ym1 = R1 + 20;
 
@@ -225,8 +219,8 @@ void initialSetUp(Lattice2D& meins, Preprocess& prepro, int xmax, int ymax, Para
         }
     }
 
-    meins.bottomWall();
-    // meins.closedBox();
+    // meins.bottomWall();
+    meins.closedBox();
     
     meins.equilibriumIni();
 
@@ -257,7 +251,7 @@ void initializeShearfFlow(Lattice2D& meins, Preprocess& prepro, int xmax, int ym
         }
     }
 
-    const Vector2D u_wall(0,-0.3);
+    const Vector2D u_wall(0,prepro.getShearRate());
 
     meins.shearWall(u_wall);
     meins.equilibriumIni();
@@ -269,8 +263,8 @@ void initializeShearfFlow(Lattice2D& meins, Preprocess& prepro, int xmax, int ym
    const int max_count = 1e6;
     for(int count = 0; count < max_count; count++)
     {
-        meins.collideAll(1,false,false);
-        meins.streamAll(1);
+        meins.collideAll(4,false,false);
+        meins.streamAll(4);
         
         if(count%1000 == 0) 
         {
@@ -287,6 +281,12 @@ void initializeShearfFlow(Lattice2D& meins, Preprocess& prepro, int xmax, int ym
             write_data_plot(shearSum_data, 100, "ShearSum.dat");
             resi_data.push_back(Resi_tmp);
             write_data_plot(resi_data,100,"Residual.dat");
+
+            if(Resi_tmp < 1e-5)
+            {
+                write_vtk_output2D(meins, createFilename("shearTest_", count, ".vtk"));
+                break;
+            }
         }
 
         if(count%200 == 0) 
