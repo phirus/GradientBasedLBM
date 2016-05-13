@@ -71,6 +71,7 @@ int main(int argc, char** argv){
     int ymax = prepro.getYCells();
     int xmax = prepro.getXCells();
     Lattice2D meins(xmax,ymax);
+    Lattice2D bubble_only(xmax,ymax);
 
     if (vm.count("restart")) 
     {
@@ -98,10 +99,16 @@ int main(int argc, char** argv){
         }
     }
     else {      // vm.count("restart"), if no restart file -> initialize
-        initialSetUp(meins, prepro, xmax, ymax, params);
-        write_vtk_output2D(meins, 0);
+        
+        // initialSetUp(meins, prepro, xmax, ymax, params);
+        // write_vtk_output2D(meins, 0);
 
-        // initializeShearfFlow(meins, prepro, xmax, ymax, params);
+        initialSetUp(bubble_only, prepro, xmax, ymax, params);
+        
+        initializeShearfFlow(meins, prepro, xmax, ymax, params);
+
+        meins.copyCellsFromOther(bubble_only, bubble_only.findBubbleCells());
+        write_vtk_output2D(meins, 0);
 
     }
 
@@ -132,6 +139,18 @@ int main(int argc, char** argv){
         {
             cout << i <<endl;
         }
+
+        if(i%outputInterval == 0) 
+        {
+            // write_techplot_output(meins,i,true);
+            write_vtk_output2D(meins, i);
+        } 
+        
+        if(i%restartInterval == 0)
+        {
+            const string restart_file_name =  createFilename("restart", i, ".bin");
+            write_restart_file2D(meins, prepro, timetrack, restart_file_name);
+        }
         
         if(i%10 == 0) 
         {
@@ -160,18 +179,12 @@ int main(int argc, char** argv){
             bubble_pos_y_data.push_back(pos_tmp.y);
 
             write_data_plot(bubble_pos_x_data, bubble_pos_y_data, 10, "BubblePosPlot.dat");
-        }
 
-        if(i%outputInterval == 0) 
-        {
-            // write_techplot_output(meins,i,true);
-            write_vtk_output2D(meins, i);
-        } 
-        
-        if(i%restartInterval == 0)
-        {
-            const string restart_file_name =  createFilename("restart", i, ".bin");
-            write_restart_file2D(meins, prepro, timetrack, restart_file_name);
+            if(bubble_pos_y_data > 0.96 * ymax)
+            {
+                cout << "\nBubble reached the top";
+                break;
+            }
         }         
     }
 

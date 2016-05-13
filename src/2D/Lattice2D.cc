@@ -552,7 +552,7 @@ void Lattice2D::streamAndBouncePull(Cell2D& tCell, const direction2D& dir)const
             else  // else -> bounce back
             {
                 const ColSet rho = tCell.getRho();
-                ftmp[color][i] = f[color][PULL_INDEX_2D[i]] - (2.0 * WEIGHTS_2D[i] * rho[color] * (DIRECTION_2D[i] * neighbor.getU()[0]) ) ;
+                ftmp[color][i] = f[color][PULL_INDEX_2D[i]] - (2.0 * 3.0 * WEIGHTS_2D[i] * rho[color] * (DIRECTION_2D[i] * neighbor.getU()[0]) ) ;
             } 
         } // end for i
     } // end for color
