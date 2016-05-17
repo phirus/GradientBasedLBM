@@ -1,14 +1,11 @@
 #include <iostream>
 #include<ctime>
 
-#include"../../src/Lattice.h"
-#include"../../src/BinaryIO.h"
+#include"../../src/BasicIO.h"
 #include<boost/program_options.hpp>
 
 using namespace std;
 namespace po = boost::program_options;
-
-void initialSetUp(Lattice& meins, Preprocess& prepro, int xmax, int ymax);
 
 int main(int argc, char** argv){
 

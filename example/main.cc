@@ -71,7 +71,7 @@ int main(int argc, char** argv){
     int ymax = prepro.getYCells();
     int xmax = prepro.getXCells();
     Lattice2D meins(xmax,ymax);
-    //Lattice2D bubble_only(xmax,ymax);
+    Lattice2D bubble_only(xmax,ymax);
 
     if (vm.count("restart")) 
     {
@@ -100,16 +100,18 @@ int main(int argc, char** argv){
     }
     else {      // vm.count("restart"), if no restart file -> initialize
         
-        initialSetUp(meins, prepro, xmax, ymax, params);
-        write_vtk_output2D(meins, 0);
+//        initialSetUp(meins, prepro, xmax, ymax, params);
+//        write_vtk_output2D(meins, 0);
 
-        //nitialSetUp(bubble_only, prepro, xmax, ymax, params);
+        initialSetUp(bubble_only, prepro, xmax, ymax, params);
         
-        //initializeShearfFlow(meins, prepro, xmax, ymax, params);
+        initializeShearfFlow(meins, prepro, xmax, ymax, params);
 
-        //meins.copyCellsFromOther(bubble_only, bubble_only.findBubbleCells());
+        const string shear_file_name =  "shear.bin";
+        write_restart_file2D(meins, prepro, timetrack, shear_file_name);
+
+        meins.copyCellsFromOther(bubble_only, bubble_only.findBubbleCells());
         write_vtk_output2D(meins, 0);
-
     }
 
     time_t start,end;
@@ -206,7 +208,7 @@ void initialSetUp(Lattice2D& meins, Preprocess& prepro, int xmax, int ymax, Para
     // setup geometry (bubble at the bottom, x-centered)
     const int R1 = prepro.getResolution()/2;
     // const int xm1 = xmax/2;
-    const int xm1 = xmax * 0.6;
+    const int xm1 = xmax * 0.55;
     // const int ym1 = 2*R1;
     const int ym1 = R1 + 20;
 
@@ -220,7 +222,7 @@ void initialSetUp(Lattice2D& meins, Preprocess& prepro, int xmax, int ymax, Para
     }
 
     // meins.bottomWall();
-    meins.closedBox();
+    //meins.closedBox();
     
     meins.equilibriumIni();
 
@@ -282,7 +284,7 @@ void initializeShearfFlow(Lattice2D& meins, Preprocess& prepro, int xmax, int ym
             resi_data.push_back(Resi_tmp);
             write_data_plot(resi_data,100,"Residual.dat");
 
-            if(Resi_tmp < 1e-5)
+            if(Resi_tmp < 1e-3)
             {
                 write_vtk_output2D(meins, createFilename("shearTest_", count, ".vtk"));
                 break;

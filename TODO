@@ -1,4 +1,5 @@
 To Do
+- update preprocessFile in /example
 - analyze bubble position 3D
 - analyze lateral Bubble motion 3D
 - use shear rate in main.cc
@@ -6,6 +7,7 @@ To Do
 - check for static shear state
 
 Done
+- update makefile for /translate
 - analyze bubble position 2D
 - analyze lateral Bubble motion 2D
 - C++11 in anderen Makefiles hinzufügen
