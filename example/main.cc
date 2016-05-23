@@ -227,8 +227,8 @@ void initialSetUp(Lattice2D& meins, Preprocess& prepro, int xmax, int ymax, Para
     meins.equilibriumIni();
 
    for (int i = 1; i< 1001; i++){
-       meins.collideAll(1,false,false);
-       meins.streamAll(1);
+       meins.collideAll(6,false,false);
+       meins.streamAll(6);
        if(i%100 == 0) cout << i<<endl;
    }
 
@@ -265,8 +265,8 @@ void initializeShearfFlow(Lattice2D& meins, Preprocess& prepro, int xmax, int ym
    const int max_count = 1e6;
     for(int count = 0; count < max_count; count++)
     {
-        meins.collideAll(4,false,false);
-        meins.streamAll(4);
+        meins.collideAll(6,false,false);
+        meins.streamAll(6);
         
         if(count%1000 == 0) 
         {
