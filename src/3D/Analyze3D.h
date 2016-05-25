@@ -9,6 +9,7 @@
 using namespace std;
 
 const Vector3D getBubbleVelocity(const Lattice3D& l);
+const Vector3D getBubblePosition(const Lattice3D& l);
 const double getReynolds(const Lattice3D& l, double resolution = 40);
 const double getLineShearSum(const Lattice3D& l);
 

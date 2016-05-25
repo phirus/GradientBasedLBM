@@ -1,6 +1,5 @@
 To Do
 - update preprocessFile in /example
-- analyze bubble position 3D
 - analyze lateral Bubble motion 3D
 - use shear rate in main.cc
 - number of time steps for fully developed shear flow
@@ -11,7 +10,7 @@ Done
 - fixed cut-out 3D
 - write proper CSV files
 - update makefile for /translate
-- analyze bubble position 2D
+- analyze bubble position 2D / 3D
 - analyze lateral Bubble motion 2D
 - C++11 in anderen Makefiles hinzufügen
 - find indices of bubble Cells 
