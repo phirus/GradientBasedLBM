@@ -11,7 +11,7 @@ using namespace std;
 namespace po = boost::program_options;
 
 void initialSetUp(Lattice3D& meins, Preprocess& prepro, int xmax, int ymax, int zmax, ParamSet params, int numOfCPUs);
-void initializeShearfFlow(Lattice3D& meins, Preprocess& prepro, int xmax, int ymax, int zmax, ParamSet params);
+void initializeShearfFlow(Lattice3D& meins, Preprocess& prepro, int xmax, int ymax, int zmax, ParamSet params, int numOfCPUs);
 
 int main(int argc, char** argv){
 
@@ -208,7 +208,7 @@ void initialSetUp(Lattice3D& meins, Preprocess& prepro, int xmax, int ymax, int 
     cout<<"Initialisierung beendet\n\nSchwerkraft wird zugeschaltet\n"<<endl;
 }
 
-void initializeShearfFlow(Lattice3D& meins, Preprocess& prepro, int xmax, int ymax, int zmax, ParamSet params)
+void initializeShearfFlow(Lattice3D& meins, Preprocess& prepro, int xmax, int ymax, int zmax, ParamSet params, int numOfCPUs)
 {
     // set the parameters        
     meins.setParams(params);
@@ -241,8 +241,8 @@ void initializeShearfFlow(Lattice3D& meins, Preprocess& prepro, int xmax, int ym
    const int max_count = 1e6;
     for(int count = 1; count < max_count; count++)
     {
-        meins.collideAll(1,false,false);
-        meins.streamAll(1);
+        meins.collideAll(numOfCPUs,false,false);
+        meins.streamAll(numOfCPUs);
         
         if(count%1000 == 0) 
         {

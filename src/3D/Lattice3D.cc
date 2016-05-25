@@ -553,7 +553,7 @@ const std::vector<int> Lattice3D::findBubbleCells()const
 
         const Cell3D tmpCell = (*data)[x][y][z];
 
-        if (tmpCell.calcPsi() < BUBBLE_CRITERION)
+        if (tmpCell.calcPsi() < BUBBLE_CRITERION && tmpCell.getIsSolid() == false)
         {
             indices.push_back(index);
         }        

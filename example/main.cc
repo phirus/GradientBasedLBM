@@ -10,8 +10,8 @@
 using namespace std;
 namespace po = boost::program_options;
 
-void initialSetUp(Lattice2D& meins, Preprocess& prepro, int xmax, int ymax, ParamSet params);
-void initializeShearfFlow(Lattice2D& meins, Preprocess& prepro, int xmax, int ymax, ParamSet params);
+void initialSetUp(Lattice2D& meins, Preprocess& prepro, int xmax, int ymax, ParamSet params, int numOfCPUs);
+void initializeShearfFlow(Lattice2D& meins, Preprocess& prepro, int xmax, int ymax, ParamSet params, int numOfCPUs);
 
 int main(int argc, char** argv){
 
@@ -191,7 +191,7 @@ int main(int argc, char** argv){
 }
 
 
-void initialSetUp(Lattice2D& meins, Preprocess& prepro, int xmax, int ymax, ParamSet params)
+void initialSetUp(Lattice2D& meins, Preprocess& prepro, int xmax, int ymax, ParamSet params, int numOfCPUs)
 {
     // set the parameters        
     meins.setParams(params);
@@ -227,8 +227,8 @@ void initialSetUp(Lattice2D& meins, Preprocess& prepro, int xmax, int ymax, Para
     meins.equilibriumIni();
 
    for (int i = 1; i< 1001; i++){
-       meins.collideAll(6,false,false);
-       meins.streamAll(6);
+       meins.collideAll(numOfCPUs,false,false);
+       meins.streamAll(numOfCPUs);
        if(i%100 == 0) cout << i<<endl;
    }
 
@@ -236,7 +236,7 @@ void initialSetUp(Lattice2D& meins, Preprocess& prepro, int xmax, int ymax, Para
 }
 
 
-void initializeShearfFlow(Lattice2D& meins, Preprocess& prepro, int xmax, int ymax, ParamSet params)
+void initializeShearfFlow(Lattice2D& meins, Preprocess& prepro, int xmax, int ymax, ParamSet params, int numOfCPUs)
 {
     // set the parameters        
     meins.setParams(params);
@@ -265,8 +265,8 @@ void initializeShearfFlow(Lattice2D& meins, Preprocess& prepro, int xmax, int ym
    const int max_count = 1e6;
     for(int count = 0; count < max_count; count++)
     {
-        meins.collideAll(6,false,false);
-        meins.streamAll(6);
+        meins.collideAll(numOfCPUs,false,false);
+        meins.streamAll(numOfCPUs);
         
         if(count%1000 == 0) 
         {
