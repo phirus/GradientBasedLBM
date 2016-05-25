@@ -1,4 +1,6 @@
 To Do
+- fix numOfthreads in all cases
+- fix cut-out 3D
 - update preprocessFile in /example
 - analyze bubble position 3D
 - analyze lateral Bubble motion 3D
@@ -7,6 +9,7 @@ To Do
 - check for static shear state
 
 Done
+- write proper CSV files
 - update makefile for /translate
 - analyze bubble position 2D
 - analyze lateral Bubble motion 2D

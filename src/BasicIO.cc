@@ -39,6 +39,23 @@ void write_data_plot(const std::vector<double> y1, const std::vector<double> y2,
     Plot.close();
 }
 
+void write_csv(const nested_vector& data, const string& filename, const string& header){
+    ofstream Plot;
+
+    Plot.open( filename.c_str() );
+    Plot << header << "\n";
+
+    for (const auto& line:data)
+    {
+        for (const auto& item:line)
+        {
+            Plot << item << " , ";
+        }
+        Plot << "\b" << "\n";
+    } 
+    Plot.close();
+}
+
 void write_param_log(const ParamSet& p){
     ofstream paramLog;
 
