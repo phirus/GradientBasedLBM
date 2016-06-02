@@ -14,11 +14,14 @@ Eotvos = 1
 # resolution / Cells per Bubble diameter, default [30]
 resolution = 35
 
-# height /Cells, default [360]
-height = 400
+# number of Cells in x direction, default [50]
+xCells = 300
 
-# width /Cells, default [120]
-width = 150
+# number of Cells in y direction,, default [50]
+yCells = 1200
+
+# number of Cells in z direction,, default [50]
+zCells = 1
 
 ####### DENSITY #######
 

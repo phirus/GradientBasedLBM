@@ -100,18 +100,18 @@ int main(int argc, char** argv){
     }
     else {      // vm.count("restart"), if no restart file -> initialize
         
-//        initialSetUp(meins, prepro, xmax, ymax, params);
-//        write_vtk_output2D(meins, 0);
+       initialSetUp(meins, prepro, xmax, ymax, params,numOfCPUs);
+       write_vtk_output2D(meins, 0);
 
-        initialSetUp(bubble_only, prepro, xmax, ymax, params);
+        // initialSetUp(bubble_only, prepro, xmax, ymax, params);
         
-        initializeShearfFlow(meins, prepro, xmax, ymax, params);
+        // initializeShearfFlow(meins, prepro, xmax, ymax, params);
 
-        const string shear_file_name =  "shear.bin";
-        write_restart_file2D(meins, prepro, timetrack, shear_file_name);
+        // const string shear_file_name =  "shear.bin";
+        // write_restart_file2D(meins, prepro, timetrack, shear_file_name);
 
-        meins.copyCellsFromOther(bubble_only, bubble_only.findBubbleCells());
-        write_vtk_output2D(meins, 0);
+        // meins.copyCellsFromOther(bubble_only, bubble_only.findBubbleCells());
+        // write_vtk_output2D(meins, 0);
     }
 
     time_t start,end;
@@ -120,11 +120,14 @@ int main(int argc, char** argv){
     const int outputInterval = timetrack.getOutputInt();
     const int restartInterval = timetrack.getRestartInt();
 
-    std::vector<double> reynolds_data;
-    std::vector<double> side_velo_data;
-    std::vector<double> up_velo_data;
+    std::vector<double> iter_count_data;
     std::vector<double> bubble_pos_x_data;
     std::vector<double> bubble_pos_y_data;
+    std::vector<double> x_velo_data;
+    std::vector<double> y_velo_data;
+    std::vector<double> reynolds_data;
+
+    
 
     int i;
 
@@ -155,19 +158,17 @@ int main(int argc, char** argv){
         
         if(i%10 == 0) 
         {
+            iter_count_data.push_back(i);
+
             const double reynolds_tmp = getReynolds(meins, prepro.getResolution());            
-            // reynolds_data.push_back(getReynolds(meins, prepro.getResolution()));
             reynolds_data.push_back(reynolds_tmp);
             write_data_plot(reynolds_data, 10, "ReynoldsPlot.dat");
-        }
 
-        if(i%10 == 0) 
-        {
             const Vector2D velo_tmp = getBubbleVelocity(meins);            
-            side_velo_data.push_back(velo_tmp.x);
-            up_velo_data.push_back(velo_tmp.y);
+            x_velo_data.push_back(velo_tmp.x);
+            y_velo_data.push_back(velo_tmp.y);
 
-            write_data_plot(up_velo_data, side_velo_data, 10, "BubbleVeloPlot.dat");
+            write_data_plot(y_velo_data, x_velo_data, 10, "BubbleVeloPlot.dat");
 
             const Vector2D pos_tmp = getBubblePosition(meins);
 
@@ -175,6 +176,15 @@ int main(int argc, char** argv){
             bubble_pos_y_data.push_back(pos_tmp.y);
 
             write_data_plot(bubble_pos_x_data, bubble_pos_y_data, 10, "BubblePosPlot.dat");
+
+            nested_vector statistics;
+            statistics.push_back(iter_count_data);
+            statistics.push_back(bubble_pos_x_data);
+            statistics.push_back(bubble_pos_y_data);
+            statistics.push_back(x_velo_data);
+            statistics.push_back(y_velo_data);
+            statistics.push_back(reynolds_data);
+            write_csv(statistics, "BubblePlot.csv", "time , PosX , PosY , v_x , v_y , Re");
 
             if(pos_tmp.y > 0.96 * ymax)
             {
@@ -208,7 +218,7 @@ void initialSetUp(Lattice2D& meins, Preprocess& prepro, int xmax, int ymax, Para
     // setup geometry (bubble at the bottom, x-centered)
     const int R1 = prepro.getResolution()/2;
     // const int xm1 = xmax/2;
-    const int xm1 = xmax * 0.55;
+    const int xm1 = xmax * 0.6;
     // const int ym1 = 2*R1;
     const int ym1 = R1 + 20;
 
@@ -221,8 +231,8 @@ void initialSetUp(Lattice2D& meins, Preprocess& prepro, int xmax, int ymax, Para
         }
     }
 
-    // meins.bottomWall();
-    //meins.closedBox();
+    //meins.bottomWall();
+    meins.closedBox();
     
     meins.equilibriumIni();
 
