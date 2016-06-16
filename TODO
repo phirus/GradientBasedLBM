@@ -1,6 +1,6 @@
 To Do
 - centering in preprocess
-- initialize shear flow
+- initialize shear flow 3D
 - Test alternative ways to determine velocities
 - analyze lateral Bubble motion 3D
 - use shear rate in main.cc
@@ -8,6 +8,7 @@ To Do
 - check for static shear state
 
 Done
+- initialize shear flow 2D
 - update preprocessFile in /example
 - fix numOfthreads in all cases
 - fixed cut-out 3D

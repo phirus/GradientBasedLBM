@@ -40,6 +40,7 @@ public:
     void genericWall(std::vector<double> x, std::vector<double> y,  const Vector2D& u_w);
     void lidDrivenCavity(const Vector2D& u_w); /// < initialize the Lattice2D with moving top wall
     void shearWall(const Vector2D& u_w);    /// < initialize the Lattice2D with moving left wall
+    void setShearProfile(double gradient, double offset); /// < initialize linear shear profile according to V_y = m x + n
 
     /// accessors
     const DimSet2D getSize()const; /// < get the extend of the Lattice2D

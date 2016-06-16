@@ -184,7 +184,7 @@ int main(int argc, char** argv){
             statistics.push_back(x_velo_data);
             statistics.push_back(y_velo_data);
             statistics.push_back(reynolds_data);
-            write_csv(statistics, "BubblePlot.csv", "time , PosX , PosY , v_x , v_y , Re");
+            write_csv(statistics, "BubblePlot.csv", "time;PosX;PosY;v_x;v_y;Re");
 
             if(pos_tmp.y > 0.96 * ymax)
             {
@@ -218,7 +218,7 @@ void initialSetUp(Lattice2D& meins, Preprocess& prepro, int xmax, int ymax, Para
     // setup geometry (bubble at the bottom, x-centered)
     const int R1 = prepro.getResolution()/2;
     // const int xm1 = xmax/2;
-    const int xm1 = xmax * 0.6;
+    const int xm1 = xmax * 0.5;
     // const int ym1 = 2*R1;
     const int ym1 = R1 + 20;
 

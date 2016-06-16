@@ -207,22 +207,8 @@ bool Lattice2D::collideAll(int threads, bool gravity, bool isLimitActive)
                 const double rho = sum(rho_k);
 
                 const Vector2D G(0 ,  g*(rho - rho_k[0]));
-                // const Vector2D G(0 , - rho * g);
 
                 VeloSet2D u = tmpCell.getU();
-
-                // if (isLimitActive == true)
-                // {
-                //     // check for exceptions
-                //     if ( u[0].Abs() > speedlimit || u[1].Abs() > speedlimit)
-                //     {
-                //         #pragma omp critical(Output)
-                //         cout<<"u[0].Abs() = "<< u[0].Abs() << "\tu[1].Abs() = "<< u[1].Abs() << "\tspeedlimit = " << speedlimit << endl;
-
-                //         #pragma omp critical(ExceptionLike)
-                //         success = false;
-                //     } 
-                // }   // end if(isLimitActive == true) 
 
                 if(gravity == true){
                 u[0] = u[0] + G *  (dt/(2* rho)) ;
@@ -420,6 +406,30 @@ void Lattice2D::shearWall(const Vector2D& u_w)
             (*data)[x][y].calcRho();
         }
     }
+}
+
+void Lattice2D::setShearProfile(double gradient, double offset)
+{
+    const int range = xsize * ysize;
+    const double m = gradient;
+    const double n = offset - (m * ( xsize *  param.getDeltaX() ) );
+    for (int index = 0;  index < range; index++)
+        {
+            int x,y;
+            linearIndex(index,x,y);
+            Cell2D tmpCell = (*data)[x][y];
+            tmpCell.calcRho();
+            VeloSet2D u;
+            u[0] = Vector2D(0,m*x + n);
+            u[1] = Vector2D(0,0);
+            //const Vector2D u(0 , m*x + n);   
+            const ColSet rho = tmpCell.getRho();
+            const DistributionSetType2D phi = param.getPhi2D();
+
+            tmpCell.setF(eqDistro(rho,u, phi));
+            (*data)[x][y] = tmpCell;
+        }
+
 }
 
 //=========================== ACCESSORS ===========================

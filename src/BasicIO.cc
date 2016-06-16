@@ -40,18 +40,21 @@ void write_data_plot(const std::vector<double> y1, const std::vector<double> y2,
 }
 
 void write_csv(const nested_vector& data, const string& filename, const string& header){
+    const auto numOfSets = data.size();
+    const auto numOfLines = data.at(0).size();
+
     ofstream Plot;
 
     Plot.open( filename.c_str() );
     Plot << header << "\n";
 
-    for (const auto& line:data)
+    for (unsigned int line = 0; line  < numOfLines ; line++)
     {
-        for (const auto& item:line)
+        for (unsigned int item = 0; item < numOfSets; item++)
         {
-            Plot << item << " , ";
+            const string end_char = (item == numOfSets -1) ? "\n" : ";" ;
+            Plot << data[item][line] << end_char;
         }
-        Plot << "\b" << "\n";
     } 
     Plot.close();
 }

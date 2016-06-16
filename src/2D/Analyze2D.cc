@@ -19,7 +19,8 @@ const Vector2D getBubbleVelocity(const Lattice2D& l)
             tmp_cell.calcRho();
             tmp_velo = tmp_cell.getU();
             tmp_rho = tmp_cell.getRho();
-            if ( tmp_cell.calcPsi() < -0.99) {
+            if ( tmp_cell.calcPsi() < 0.99 && tmp_cell.getIsSolid() == false) 
+            {
                 momentum = momentum + (tmp_velo[1] * tmp_rho[1]);
                 rho_sum += tmp_rho[1];
             }
@@ -47,7 +48,8 @@ const Vector2D getBubblePosition(const Lattice2D& l)
             tmp_cell = data[x][y];
             tmp_cell.calcRho();
             tmp_rho = tmp_cell.getRho();
-            if ( tmp_cell.calcPsi() < -0.99) {
+            if ( tmp_cell.calcPsi() < 0.99 && tmp_cell.getIsSolid() == false) 
+            {
                 position.x = position.x + (x * tmp_rho[1]);
                 position.y = position.y + (y * tmp_rho[1]);
                 rho_sum += tmp_rho[1];
