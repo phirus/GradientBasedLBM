@@ -11,6 +11,7 @@ TEST(BasicIO,paramLog){
     RelaxationPar3D rel = RelaxationPar3D(0.8,1.2,1.2,1.1,1.3);
     ParamSet params(1.1, 0.9, 1.1, 5, 2e-4, 2e-4, 1e-4, 1e-3,rel, 0.21, 0.11, 0.98);   
     EXPECT_NO_THROW(write_param_log(params));
+    EXPECT_NO_THROW(write_param_log_csv(params));
 
     ParamSet read_in = read_paramset_file();
     EXPECT_EQ(params, read_in);

@@ -1,13 +1,13 @@
 To Do
+- apply more correct velocity measurement to 3D
 - centering in preprocess
 - initialize shear flow 3D
-- Test alternative ways to determine velocities
 - analyze lateral Bubble motion 3D
 - use shear rate in main.cc
-- number of time steps for fully developed shear flow
-- check for static shear state
 
 Done
+- Param log as CSV
+- Test alternative ways to determine velocities
 - initialize shear flow 2D
 - update preprocessFile in /example
 - fix numOfthreads in all cases

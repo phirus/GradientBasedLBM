@@ -44,7 +44,6 @@ void write_csv(const nested_vector& data, const string& filename, const string& 
     const auto numOfLines = data.at(0).size();
 
     ofstream Plot;
-
     Plot.open( filename.c_str() );
     Plot << header << "\n";
 
@@ -97,6 +96,37 @@ void write_param_log(const ParamSet& p){
     paramLog.close();
 }
 
+void write_param_log_csv(const ParamSet& p){
+    ofstream paramLog;
+
+    stringstream name;
+    name <<"paramLog.csv";
+    //paramLog.precision(std::numeric_limits< double >::max_digits10);
+    paramLog.open( name.str().c_str() );
+
+    paramLog << "omega_red;omega_blue;rho_red;gamma;alpha_blue;delta;beta;sigma;dt;dx;gravity;s_2;s_3;s_5;s_11;s_17" << endl;
+    RelaxationPar3D relax = p.getRelaxation3D();
+    paramLog <<  p.getOmegaRed() << ";" << p.getOmegaBlue()  << ";" << p.getRhoR() << ";" << p.getGamma() << ";" ;
+    paramLog << p.getAlpha() << ";" << p.getInterfaceThickness() << ";" << p.getBeta() << ";" << p.getSigma() << ";" ; 
+    paramLog << p.getDeltaT() << ";" << p.getDeltaX() << ";" << p.getG() << ";";
+    paramLog << relax.s_2 << ";" << relax.s_3 << ";" << relax.s_5 << ";" << relax.s_11 << ";" << relax.s_17 << endl;
+
+    paramLog.close();
+}
+
+void write_preprocess_csv(const Preprocess& p){
+    ofstream preproCSV;
+
+    stringstream name;
+    name <<"prepro.csv";
+    preproCSV.open( name.str().c_str() );
+
+    preproCSV << "ReynoldsMax;Morton;Eotvos;resolution;muRatio;isShearFlow;shearRate;xCells;yCells;zCells"<<endl;
+    preproCSV << p.getReynoldsMax() << ";" << p.getMorton() << ";" << p.getEotvos() << ";" << p.getResolution() << ";" ;
+    preproCSV << p.getMuRatio() << ";" << p.getIsShearFlow() << ";" << p.getShearRate() << ";" ;
+    preproCSV << p.getXCells() << ";" << p.getYCells() << ";" << p.getZCells() << endl;
+    preproCSV.close();
+}
 
 //=========================== READ INPUT ===========================
 

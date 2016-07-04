@@ -33,7 +33,8 @@ int main(int argc, char** argv){
     }
    
      const ParamSet params = prepro.getParamSet();
-     write_param_log(params);       
+     write_param_log(params);
+     write_param_log_csv(params);       
 
     return 0;
 }

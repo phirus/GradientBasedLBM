@@ -7,6 +7,7 @@
 #include<map>
 #include<string.h>
 #include<vector>
+#include<limits>
 
 #include"Preprocess.h"
 #include"Timetrack.h"
@@ -19,6 +20,8 @@ void write_data_plot(const std::vector<double> y, double del_x, const string& fi
 void write_data_plot(const std::vector<double> y1, const std::vector<double> y2, double del_x, const string& filename = "BubbleVeloPlot.dat");
 void write_csv(const nested_vector& data, const string& filename = "BubbleVeloPlot.csv", const string& header= "time , Posx , PosY , v_y , v_x , Re");
 void write_param_log(const ParamSet& p);
+void write_param_log_csv(const ParamSet& p);
+void write_preprocess_csv(const Preprocess& p);
 
 /// read input
 const bool input_query(const string& filename, const string& query, double& value);
