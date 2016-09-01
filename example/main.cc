@@ -231,8 +231,8 @@ void initialSetUp(Lattice2D& meins, Preprocess& prepro, int xmax, int ymax, Para
         }
     }
 
-    //meins.bottomWall();
-    meins.closedBox();
+    meins.bottomWall();
+    //meins.closedBox();
     
     meins.equilibriumIni();
 

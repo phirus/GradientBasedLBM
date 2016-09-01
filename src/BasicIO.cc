@@ -242,6 +242,91 @@ const ParamSet read_paramset_file(const string& filename){
     return params;
 }
 
+const Boundaries read_boundaries_file(const string& filename){
+    vector<string> tags;
+    vector<double> val;
+    // initialzing strings and fallback values
+    map<string,double> mm;
+    mm.insert(pair<string,double>("n_type",0));
+    mm.insert(pair<string,double>("n_rho_dense",0));
+    mm.insert(pair<string,double>("n_rho_dilute",0));
+    mm.insert(pair<string,double>("nvx",0));
+    mm.insert(pair<string,double>("nvy",0));
+    mm.insert(pair<string,double>("nvz",0));
+
+    mm.insert(pair<string,double>("s_type",0));
+    mm.insert(pair<string,double>("s_rho_dense",0));
+    mm.insert(pair<string,double>("s_rho_dilute",0));
+    mm.insert(pair<string,double>("svx",0));
+    mm.insert(pair<string,double>("svy",0));
+    mm.insert(pair<string,double>("svz",0));
+
+    mm.insert(pair<string,double>("e_type",0));
+    mm.insert(pair<string,double>("e_rho_dense",0));
+    mm.insert(pair<string,double>("e_rho_dilute",0));
+    mm.insert(pair<string,double>("evx",0));
+    mm.insert(pair<string,double>("evy",0));
+    mm.insert(pair<string,double>("evz",0));
+
+    mm.insert(pair<string,double>("w_type",0));
+    mm.insert(pair<string,double>("w_rho_dense",0));
+    mm.insert(pair<string,double>("w_rho_dilute",0));
+    mm.insert(pair<string,double>("wvx",0));
+    mm.insert(pair<string,double>("wvy",0));
+    mm.insert(pair<string,double>("wvz",0));
+
+    mm.insert(pair<string,double>("f_type",0));
+    mm.insert(pair<string,double>("f_rho_dense",0));
+    mm.insert(pair<string,double>("f_rho_dilute",0));
+    mm.insert(pair<string,double>("fvx",0));
+    mm.insert(pair<string,double>("fvy",0));
+    mm.insert(pair<string,double>("fvz",0));
+
+    mm.insert(pair<string,double>("b_type",0));
+    mm.insert(pair<string,double>("b_rho_dense",0));
+    mm.insert(pair<string,double>("b_rho_dilute",0));
+    mm.insert(pair<string,double>("bvx",0));
+    mm.insert(pair<string,double>("bvy",0));
+    mm.insert(pair<string,double>("bvz",0));
+
+    // cycling through the input file
+    double tmp;
+    for(map<string,double>::iterator it = mm.begin(); it != mm.end(); it++){            
+        if( input_query(filename,it->first,tmp) == true ) it->second = tmp;
+    }
+
+    ColSet tmp_rho;
+    VeloSet3D tmp_u;
+
+    Boundaries b;
+
+    tmp_rho = {{mm.at("n_rho_dense"),mm.at("n_rho_dilute")}};
+    tmp_u = {{Vector3D(mm.at("nvx"),mm.at("nvy"),mm.at("nvz")),Vector3D()}};
+    b.north = BoundaryInformation(mm.at("n_type"),tmp_rho,tmp_u);
+
+    tmp_rho = {{mm.at("s_rho_dense"),mm.at("s_rho_dilute")}};
+    tmp_u = {{Vector3D(mm.at("svx"),mm.at("svy"),mm.at("svz")),Vector3D()}};
+    b.south = BoundaryInformation(mm.at("s_type"),tmp_rho,tmp_u);
+
+    tmp_rho = {{mm.at("e_rho_dense"),mm.at("e_rho_dilute")}};
+    tmp_u = {{Vector3D(mm.at("evx"),mm.at("evy"),mm.at("evz")),Vector3D()}};
+    b.east = BoundaryInformation(mm.at("e_type"),tmp_rho,tmp_u);
+
+    tmp_rho = {{mm.at("w_rho_dense"),mm.at("w_rho_dilute")}};
+    tmp_u = {{Vector3D(mm.at("wvx"),mm.at("wvy"),mm.at("wvz")),Vector3D()}};
+    b.west = BoundaryInformation(mm.at("w_type"),tmp_rho,tmp_u);
+
+    tmp_rho = {{mm.at("f_rho_dense"),mm.at("f_rho_dilute")}};
+    tmp_u = {{Vector3D(mm.at("fvx"),mm.at("fvy"),mm.at("fvz")),Vector3D()}};
+    b.front = BoundaryInformation(mm.at("f_type"),tmp_rho,tmp_u);
+
+    tmp_rho = {{mm.at("b_rho_dense"),mm.at("b_rho_dilute")}};
+    tmp_u = {{Vector3D(mm.at("bvx"),mm.at("bvy"),mm.at("bvz")),Vector3D()}};
+    b.back = BoundaryInformation(mm.at("b_type"),tmp_rho,tmp_u);
+ 
+    return b;
+}
+
 
 //=========================== AUXILIARY ===========================
 

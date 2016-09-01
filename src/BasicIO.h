@@ -11,6 +11,7 @@
 
 #include"Preprocess.h"
 #include"Timetrack.h"
+#include"Boundaries.h"
 
 using namespace std;
 typedef std::vector<std::vector<double>> nested_vector; 
@@ -28,6 +29,7 @@ const bool input_query(const string& filename, const string& query, double& valu
 const Preprocess read_preprocess_file(const string& filename);
 const Timetrack read_timetrack_file(const string& filename);
 const ParamSet read_paramset_file(const string& filename = "paramLog");
+const Boundaries read_boundaries_file(const string& filename);
 
 ///auxiliary
 const string createFilename(const string& name, int iteration, const string& type = ".bin");

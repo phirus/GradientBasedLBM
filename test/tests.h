@@ -4,6 +4,7 @@
 #include"gtest/gtest.h"
 #include"../src/2D/BinaryIO2D.h"
 #include"../src/3D/BinaryIO3D.h"
+#include"../src/Boundaries.h"
 
 using namespace std;
 
@@ -82,6 +83,78 @@ TEST(BinaryIO3D,restart){
 TEST(BinaryIO3D,vtkGrid){
     Lattice3D lattice(4,5,7);
     EXPECT_NO_THROW(write_vtk_output3D(lattice));
+}
+
+TEST(Boundaries,constructor){
+
+    const boundary_type bt0 = periodic;
+    const ColSet density0 = {{0,0}};
+    const VeloSet3D velocity0 = {{Vector3D(),Vector3D()}};
+
+    const boundary_type bt1 = pressure;
+    const ColSet density1 = {{4,1}};
+    const VeloSet3D velocity1 = {{Vector3D(1,2,3),Vector3D(4,5,6)}};
+
+    const BoundaryInformation bi0 = BoundaryInformation();
+    const BoundaryInformation bi1 = BoundaryInformation(bt1, density1, velocity1);
+    const BoundaryInformation bi2 = BoundaryInformation(1);
+    const BoundaryInformation bi3 = BoundaryInformation(2);
+
+
+    EXPECT_EQ(bi0.getType(),bt0);
+    EXPECT_EQ(bi0.getRho(),density0);
+    EXPECT_EQ(bi0.getVelocity(),velocity0);
+
+    EXPECT_EQ(bi1.getType(),bt1);
+    EXPECT_EQ(bi1.getRho(),density1);
+    EXPECT_EQ(bi1.getVelocity(),velocity1);
+
+    EXPECT_EQ(bi2.getType(),bounceback);
+    EXPECT_EQ(bi3.getType(),pressure);
+}
+
+TEST(Boundaries,FileInput){
+
+    const Boundaries b = read_boundaries_file("BoundaryInput");
+
+    ColSet density;
+    VeloSet3D velocity;
+
+    density = {{1,2}};
+    velocity = {{Vector3D(3,4,5),Vector3D()}};
+    EXPECT_EQ(b.north.getType(), bounceback);
+    EXPECT_EQ(b.north.getRho(),density);
+    EXPECT_EQ(b.north.getVelocity(),velocity);
+
+    density = {{6,7}};
+    velocity = {{Vector3D(8,9,10),Vector3D()}};
+    EXPECT_EQ(b.south.getType(), periodic);
+    EXPECT_EQ(b.south.getRho(),density);
+    EXPECT_EQ(b.south.getVelocity(),velocity);
+
+    density = {{11,12}};
+    velocity = {{Vector3D(13,14,15),Vector3D()}};
+    EXPECT_EQ(b.east.getType(), pressure);
+    EXPECT_EQ(b.east.getRho(),density);
+    EXPECT_EQ(b.east.getVelocity(),velocity);
+
+    density = {{16,17}};
+    velocity = {{Vector3D(18,19,20),Vector3D()}};
+    EXPECT_EQ(b.west.getType(), periodic);
+    EXPECT_EQ(b.west.getRho(),density);
+    EXPECT_EQ(b.west.getVelocity(),velocity);
+
+    density = {{21,22}};
+    velocity = {{Vector3D(23,24,25),Vector3D()}};
+    EXPECT_EQ(b.front.getType(), bounceback);
+    EXPECT_EQ(b.front.getRho(),density);
+    EXPECT_EQ(b.front.getVelocity(),velocity);
+
+    density = {{26,27}};
+    velocity = {{Vector3D(28,29,30),Vector3D()}};
+    EXPECT_EQ(b.back.getType(), pressure);
+    EXPECT_EQ(b.back.getRho(),density);
+    EXPECT_EQ(b.back.getVelocity(),velocity);
 }
 
 TEST(Cell2D,constructor0)

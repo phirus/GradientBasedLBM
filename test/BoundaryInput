@@ -1,0 +1,83 @@
+### North Boundary
+
+# type -> 0 periodic - 1 bounceback - 2 pressure, default [0]
+n_type = 1
+
+# density, only relevant for pressure boundary -> default [(0,0)]
+n_rho_dense = 1
+n_rho_dilute = 2
+
+# velocity, only relevant for bounceback -> default [(0,0,0)]
+nvx = 3
+nvy = 4
+nvz = 5
+
+### South Boundary
+
+# type -> 0 periodic - 1 bounceback - 2 pressure, default [0]
+s_type = 0
+
+# density, only relevant for pressure boundary -> default [(0,0)]
+s_rho_dense = 6
+s_rho_dilute = 7
+
+# velocity, only relevant for bounceback -> default [(0,0,0)]
+svx = 8
+svy = 9
+svz = 10
+
+### East Boundary
+
+# type -> 0 periodic - 1 bounceback - 2 pressure, default [0]
+e_type = 2
+
+# density, only relevant for pressure boundary -> default [(0,0)]
+e_rho_dense = 11
+e_rho_dilute = 12
+
+# velocity, only relevant for bounceback -> default [(0,0,0)]
+evx = 13
+evy = 14
+evz = 15
+
+### West Boundary
+
+# type -> 0 periodic - 1 bounceback - 2 pressure, default [0]
+w_type = 0
+
+# density, only relevant for pressure boundary -> default [(0,0)]
+w_rho_dense = 16
+w_rho_dilute = 17
+
+# velocity, only relevant for bounceback -> default [(0,0,0)]
+wvx = 18
+wvy = 19
+wvz = 20
+
+### Front Boundary
+
+# type -> 0 periodic - 1 bounceback - 2 pressure, default [0]
+f_type = 1
+
+# density, only relevant for pressure boundary -> default [(0,0)]
+f_rho_dense = 21
+f_rho_dilute = 22
+
+# velocity, only relevant for bounceback -> default [(0,0,0)]
+fvx = 23
+fvy = 24
+fvz = 25
+
+### Back Boundary
+
+# type -> 0 periodic - 1 bounceback - 2 pressure, default [0]
+b_type = 2
+
+# density, only relevant for pressure boundary -> default [(0,0)]
+b_rho_dense = 26
+b_rho_dilute = 27
+
+# velocity, only relevant for bounceback -> default [(0,0,0)]
+bvx = 28
+bvy = 29
+bvz = 30
