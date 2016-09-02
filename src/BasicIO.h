@@ -26,6 +26,7 @@ void write_preprocess_csv(const Preprocess& p);
 
 /// read input
 const bool input_query(const string& filename, const string& query, double& value);
+const map<string,double> assign_map_via_file(map<string,double> mm, const string& filename);
 const Preprocess read_preprocess_file(const string& filename);
 const Timetrack read_timetrack_file(const string& filename);
 const ParamSet read_paramset_file(const string& filename = "paramLog");
