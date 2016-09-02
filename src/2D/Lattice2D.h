@@ -7,6 +7,7 @@
 
 #include"Cell2D.h"
 #include"../ParamSet.h"
+#include"../Boundaries.h"
 // #include"Timetrack.h"
 
 /// custom typedef for the whole field of cells
@@ -44,16 +45,18 @@ public:
 
     /// accessors
     const DimSet2D getSize()const; /// < get the extend of the Lattice2D
-    const field2D getData()const{return *data;}; /// < get the data field2D
-    const Cell2D getCell(int x, int y)const{return (*data)[x][y];};  /// < get a Cell
-    const ParamSet getParams()const{return param;}; /// < get the paramter set
-    const DistributionSetType2D getF(int x, int y)const{return (*data)[x][y].getF();};          /// < get F
+    inline const field2D getData()const{return *data;}; /// < get the data field2D
+    inline const Cell2D getCell(int x, int y)const{return (*data)[x][y];};  /// < get a Cell
+    inline const ParamSet getParams()const{return param;}; /// < get the paramter set
+    inline const Boundaries getBoundaries()const{return bound;};
+    inline const DistributionSetType2D getF(int x, int y)const{return (*data)[x][y].getF();};          /// < get F
 
     void setData(const field2D& ndata, int x, int y); /// < set the data field2D (and size)
     void setCell(int y, int x, const Cell2D& ncell);    /// < set a Cell
     void setF(int x, int y, int color, const array2D& nf);
     void setF(int x, int y, int color, int index, double value);
-    void setParams(const ParamSet& newParam){param = newParam;}; /// < set a new parameter set
+    inline void setParams(const ParamSet& newParam){param = newParam;}; /// < set a new parameter set
+    inline void setBoundaries(const Boundaries& newBound){bound = newBound;};
 
     /// Lattice cutout
     const std::vector<int> findBubbleCells()const;
@@ -67,6 +70,8 @@ private:
     int xsize, ysize;   /// < extent of the Lattice2D
     field2D * data;    
     ParamSet param;     /// < set of parameters used during the simulation
+    Boundaries bound;
+
 
     inline void linearIndex(int index, int& x, int& y)const;
     void streamAndBouncePull(Cell2D& tCell, const direction2D& dir)const; /// < internal streaming mechanism with bounce back

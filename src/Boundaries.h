@@ -21,6 +21,9 @@ public:
     inline const ColSet getRho()const{return rho;};
     inline const VeloSet3D getVelocity()const{return u;};
 
+    /// operators
+    const bool operator==(const BoundaryInformation& other)const{return (type == other.getType())&& (rho == other.getRho())&&(u == other.getVelocity());};
+
 private:
     boundary_type type;
     ColSet rho;                    
@@ -30,11 +33,13 @@ private:
 struct Boundaries
 {
     BoundaryInformation north;
-    BoundaryInformation east;
     BoundaryInformation south;
+    BoundaryInformation east;
     BoundaryInformation west;
     BoundaryInformation front;
     BoundaryInformation back;
+
+    const bool operator==(const Boundaries& o)const{return (north == o.north)&&(south == o.south)&&(east == o.east)&&(west == o.west)&&(front == o.front)&&(back == o.back);};
 };
 
 #endif 

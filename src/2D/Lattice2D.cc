@@ -9,6 +9,7 @@ xsize(x_size)
 ,ysize(y_size)
 ,data(new field2D(boost::extents[xsize][ysize]))
 ,param()
+,bound()
 {
     for (int x = 0; x<xsize; x++)
     {
@@ -24,6 +25,7 @@ xsize(other.getSize()[0])
 ,ysize(other.getSize()[1])
 ,data(new field2D(boost::extents[xsize][ysize]))
 ,param(other.getParams())
+,bound(other.getBoundaries())
 {
     (*data) = other.getData();
 }
@@ -503,6 +505,7 @@ void Lattice2D::copyCellsFromOther(const Lattice2D& other, const std::vector<int
 Lattice2D& Lattice2D::operator=(const Lattice2D& other){
     this->setData(other.getData(), other.getSize()[0], other.getSize()[1]);
     this->setParams(other.getParams());
+    this->setBoundaries(other.getBoundaries());
 
     return *this;
 }
@@ -515,6 +518,9 @@ const bool Lattice2D::operator==(const Lattice2D& other)const
     {
         ParamSet pOther = other.getParams();
         if (!(param == pOther)) exit = false;
+
+        Boundaries bOther = other.getBoundaries();
+        if (!(bound == bOther)) exit = false;
 
         field2D otherData = other.getData();
         for (int x = 0; x< xsize;x++)

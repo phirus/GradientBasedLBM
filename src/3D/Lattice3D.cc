@@ -10,6 +10,7 @@ xsize(x_size)
 ,zsize(z_size)
 ,data(new field3D(boost::extents[xsize][ysize][zsize]))
 ,param()
+,bound()
 {
     for (int x = 0; x<xsize; x++)
     {
@@ -29,6 +30,7 @@ xsize(other.getSize()[0])
 ,zsize(other.getSize()[2])
 ,data(new field3D(boost::extents[xsize][ysize][zsize]))
 ,param(other.getParams())
+,bound(other.getBoundaries())
 {
     (*data) = other.getData();
 }
@@ -576,6 +578,7 @@ void Lattice3D::copyCellsFromOther(const Lattice3D& other, const std::vector<int
 Lattice3D& Lattice3D::operator=(const Lattice3D& other){
     this->setData(other.getData(), other.getSize()[0], other.getSize()[1], other.getSize()[2]);
     this->setParams(other.getParams());
+    this->setBoundaries(other.getBoundaries());
 
     return *this;
 }
@@ -588,6 +591,9 @@ const bool Lattice3D::operator==(const Lattice3D& other)const
     {
         ParamSet pOther = other.getParams();
         if (!(param == pOther)) exit = false;
+
+        Boundaries bOther = other.getBoundaries();
+        if (!(bound == bOther)) exit = false;
 
         field3D otherData = other.getData();
         for (int x = 0; x< xsize;x++)
