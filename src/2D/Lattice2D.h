@@ -34,6 +34,7 @@ public:
     /// LB steps
     void streamAll(int threads = 1); /// < streaming step
     bool collideAll(int threads = 1, bool gravity = false, bool isLimitActive = true); /// < collision step
+    void evaluateBoundaries();
 
     /// walls
     void closedBox(); /// < initialize the Lattice2D (set up walls and calculate rho)
@@ -75,6 +76,7 @@ private:
 
     inline void linearIndex(int index, int& x, int& y)const;
     void streamAndBouncePull(Cell2D& tCell, const direction2D& dir)const; /// < internal streaming mechanism with bounce back
+    const bool isBoundary(int x, int y)const;
 };
 
 /// calculates the equilibrium distribution based of a cell

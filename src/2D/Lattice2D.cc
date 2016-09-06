@@ -184,7 +184,6 @@ bool Lattice2D::collideAll(int threads, bool gravity, bool isLimitActive)
     // const double rhoRedFixed = param.getRhoR();
     const RelaxationPar2D relax = param.getRelaxation2D();
     const double dt = param.getDeltaT();
-    // const double speedlimit = param.getSpeedlimit();
 
     double g(0);
     if(gravity == true) g = param.getG();
@@ -200,7 +199,10 @@ bool Lattice2D::collideAll(int threads, bool gravity, bool isLimitActive)
             linearIndex(index,x,y);
             Cell2D tmpCell = (*data)[x][y];
 
-            if (tmpCell.getIsSolid() == false)
+            //const bool boundary_position = isBoundary(x, y);
+
+
+            if (tmpCell.getIsSolid() == false || isBoundary(x, y) == false)
             {
                 DistributionSetType2D  fTmp;
                 const DistributionSetType2D fCell = tmpCell.getF();
@@ -276,9 +278,6 @@ bool Lattice2D::collideAll(int threads, bool gravity, bool isLimitActive)
                         fTmp[1][q] +=  dt * second_forcing_term[1][q];
                     } 
 
-                    // if (fTmp[0][q] < 0) fTmp[0][q] = 0;
-                    // if (fTmp[1][q] < 0) fTmp[1][q] = 0;
-
                 } // end for 
 
                 tmpCell.setF(fTmp);
@@ -297,6 +296,130 @@ bool Lattice2D::collideAll(int threads, bool gravity, bool isLimitActive)
     }     
 
     return success;
+}
+
+void Lattice2D::evaluateBoundaries()
+{
+    // north boundary
+    if(bound.north.getType() == pressure)
+    {
+        ColSet rho = bound.north.getRho();
+        for (int x=0; x<xsize; x++)
+        {
+            Cell2D tmpCell = (*data)[x][ysize-1] ;
+
+            DistributionSetType2D f = tmpCell.getF();
+            ColSet u_y;
+
+            u_y[0] = -1.0 + (f[0][0] + f[0][1] + f[0][5] + 2* (f[0][2] + f[0][3] + f[0][4])) / rho[0];
+            u_y[1] = -1.0 + (f[1][0] + f[1][1] + f[1][5] + 2* (f[1][2] + f[1][3] + f[1][4])) / rho[1];
+
+            f[0][7] = f[0][3] - 2.0/3.0 * rho[0]*u_y[0];
+            f[1][7] = f[1][3] - 2.0/3.0 * rho[1]*u_y[1];
+
+            f[0][6] = rho[0]*u_y[0]/6.0 + f[0][2] + (f[0][1] - f[0][5])/2.0;
+            f[1][6] = rho[1]*u_y[1]/6.0 + f[1][2] + (f[1][1] - f[1][5])/2.0;
+
+            f[0][8] = rho[0]*u_y[0]/6.0 + f[0][4] + (f[0][5] - f[0][1])/2.0;
+            f[1][8] = rho[1]*u_y[1]/6.0 + f[1][4] + (f[1][5] - f[1][1])/2.0;
+
+            tmpCell.setF(f);
+            tmpCell.calcRho();
+
+            (*data)[x][ysize-1] = tmpCell;
+        }
+    }
+
+    // south boundary
+    if(bound.south.getType() == pressure)
+    {
+        ColSet rho = bound.south.getRho();
+        for (int x=0; x<xsize; x++)
+        {
+            Cell2D tmpCell = (*data)[x][0] ;
+
+            DistributionSetType2D f = tmpCell.getF();
+            ColSet u_y;
+
+            u_y[0] = -1.0 + (f[0][0] + f[0][1] + f[0][5] + 2* (f[0][6] + f[0][7] + f[0][8])) / rho[0];
+            u_y[1] = -1.0 + (f[1][0] + f[1][1] + f[1][5] + 2* (f[1][6] + f[1][7] + f[1][8])) / rho[1];
+
+            f[0][3] = f[0][7] + 2.0/3.0 * rho[0]*u_y[0];
+            f[1][3] = f[1][7] + 2.0/3.0 * rho[1]*u_y[1];
+
+            f[0][2] = - rho[0]*u_y[0]/6.0 + f[0][6] + (f[0][5] - f[0][1])/2.0;
+            f[1][2] = - rho[1]*u_y[1]/6.0 + f[1][6] + (f[1][5] - f[1][1])/2.0;
+
+            f[0][4] = - rho[0]*u_y[0]/6.0 + f[0][8] + (f[0][1] - f[0][5])/2.0;
+            f[1][4] = - rho[1]*u_y[1]/6.0 + f[1][8] + (f[1][1] - f[1][5])/2.0;
+
+            tmpCell.setF(f);
+            tmpCell.calcRho();
+
+            (*data)[x][0] = tmpCell;
+        }
+    }
+    
+
+    // west boundary
+    if(bound.west.getType() == pressure)
+    {
+        ColSet rho = bound.west.getRho();
+        for (int y=0; y<ysize; y++)
+        {
+            Cell2D tmpCell = (*data)[0][y] ;
+
+            DistributionSetType2D f = tmpCell.getF();
+            ColSet u_x;
+
+            u_x[0] = -1.0 + (f[0][0] + f[0][3] + f[0][7] + 2* (f[0][4] + f[0][5] + f[0][6])) / rho[0];
+            u_x[1] = -1.0 + (f[1][0] + f[1][3] + f[1][7] + 2* (f[1][4] + f[1][5] + f[1][6])) / rho[1];
+
+            f[0][1] = f[0][5] + 2.0/3.0 * rho[0]*u_x[0];
+            f[1][1] = f[1][5] + 2.0/3.0 * rho[1]*u_x[1];
+
+            f[0][2] = rho[0]*u_x[0]/6.0 + f[0][6] + (f[0][7] - f[0][3])/2.0;
+            f[1][2] = rho[1]*u_x[1]/6.0 + f[1][6] + (f[1][7] - f[1][3])/2.0;
+
+            f[0][8] = rho[0]*u_x[0]/6.0 + f[0][4] + (f[0][3] - f[0][7])/2.0;
+            f[1][8] = rho[1]*u_x[1]/6.0 + f[1][4] + (f[1][3] - f[1][7])/2.0;
+
+            tmpCell.setF(f);
+            tmpCell.calcRho();
+
+            (*data)[0][y] = tmpCell;
+        }
+    }
+
+    // east boundary
+    if(bound.east.getType() == pressure)
+    {
+        ColSet rho = bound.east.getRho();
+        for (int y=0; y<ysize; y++)
+        {
+            Cell2D tmpCell = (*data)[xsize-1][y] ;
+
+            DistributionSetType2D f = tmpCell.getF();
+            ColSet u_x;
+
+            u_x[0] = -1.0 + (f[0][0] + f[0][3] + f[0][7] + 2* (f[0][1] + f[0][2] + f[0][8])) / rho[0];
+            u_x[1] = -1.0 + (f[1][0] + f[1][3] + f[1][7] + 2* (f[1][1] + f[1][2] + f[1][8])) / rho[1];
+
+            f[0][5] = f[0][1] - 2.0/3.0 * rho[0]*u_x[0];
+            f[1][5] = f[1][1] - 2.0/3.0 * rho[1]*u_x[1];
+
+            f[0][6] = - rho[0]*u_x[0]/6.0 + f[0][2] + (f[0][3] - f[0][7])/2.0;
+            f[1][6] = - rho[1]*u_x[1]/6.0 + f[1][2] + (f[1][3] - f[1][7])/2.0;
+
+            f[0][4] = - rho[0]*u_x[0]/6.0 + f[0][8] + (f[0][7] - f[0][3])/2.0;
+            f[1][4] = - rho[1]*u_x[1]/6.0 + f[1][8] + (f[1][7] - f[1][3])/2.0;
+
+            tmpCell.setF(f);
+            tmpCell.calcRho();
+
+            (*data)[xsize-1][y] = tmpCell;
+        }
+    }
 }
 
 void Lattice2D::closedBox()
@@ -574,6 +697,14 @@ void Lattice2D::streamAndBouncePull(Cell2D& tCell, const direction2D& dir)const
     } // end for color
     tCell.setF(ftmp);
 }
+
+const bool Lattice2D::isBoundary(int x, int y)const
+{
+    return  (x == 0 && bound.west.getType()!= periodic) || (x == xsize-1 && bound.east.getType()!= periodic) || (y == ysize-1 && bound.north.getType()!= periodic) || (y == 0 && bound.south.getType()!= periodic);
+}
+
+//const Cell2D Lattice2D::evaluateBoundaryCondition(Cell2D tCell, boundary_pos position)const
+
 
 ///////////////////////////// C-STYLE /////////////////////////////
 
