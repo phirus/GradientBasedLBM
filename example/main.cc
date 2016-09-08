@@ -10,7 +10,7 @@
 using namespace std;
 namespace po = boost::program_options;
 
-void initialSetUp(Lattice2D& meins, Preprocess& prepro, int xmax, int ymax, ParamSet params, int numOfCPUs);
+void initialSetUp(Lattice2D& meins, Preprocess& prepro, Boundaries& bound, int xmax, int ymax, ParamSet params, int numOfCPUs);
 void initializeShearfFlow(Lattice2D& meins, Preprocess& prepro, int xmax, int ymax, ParamSet params, int numOfCPUs);
 
 int main(int argc, char** argv){
@@ -18,9 +18,10 @@ int main(int argc, char** argv){
     boost::program_options::options_description desc("Allowed options");
 	desc.add_options()
         ("help,h", "produce help message")
+        ("boundary,b", boost::program_options::value<string> (), "specify boundary input file")
         ("cpu,c", boost::program_options::value<int> (), "takes the number of CPUs")
         ("preprocess,p", boost::program_options::value<string> (), "specify preprocess parameter file")
-        ("bypass,b", boost::program_options::value<string> (), "specify parameter file to bypass preprocess routine")
+        ("override,o", boost::program_options::value<string> (), "specify parameter file to bypass preprocess routine")
         ("restart,r", boost::program_options::value<string> (), "specify restart file")
         ;
     boost::program_options::variables_map vm;
@@ -43,6 +44,7 @@ int main(int argc, char** argv){
     Preprocess prepro = read_preprocess_file("preprocessFile");
     Timetrack timetrack = read_timetrack_file("preprocessFile");
     ParamSet params = prepro.getParamSet();
+    Boundaries boundaries = read_boundaries_file("BoundaryInput");
 
     Preprocess prepro_input;
     Timetrack timetrack_input;    
@@ -60,10 +62,16 @@ int main(int argc, char** argv){
         params = params_input;
     }
 
-    if (vm.count("bypass")) 
+        if (vm.count("boundary")) 
     {
-        cout << "bypass preprocess file with: " << vm["bypass"].as<string>() << ".\n" << endl ;
-        params_input = read_paramset_file(vm["bypass"].as<string>());
+        cout << "boundary file is: " << vm["boundary"].as<string>() << ".\n" << endl ;
+        boundaries = read_boundaries_file(vm["boundary"].as<string>());
+    }
+
+    if (vm.count("override")) 
+    {
+        cout << "override preprocess file with: " << vm["override"].as<string>() << ".\n" << endl ;
+        params_input = read_paramset_file(vm["override"].as<string>());
         params = params_input;
     }
 
@@ -71,7 +79,7 @@ int main(int argc, char** argv){
     int ymax = prepro.getYCells();
     int xmax = prepro.getXCells();
     Lattice2D meins(xmax,ymax);
-    Lattice2D bubble_only(xmax,ymax);
+    //Lattice2D bubble_only(xmax,ymax);
 
     if (vm.count("restart")) 
     {
@@ -99,8 +107,8 @@ int main(int argc, char** argv){
         }
     }
     else {      // vm.count("restart"), if no restart file -> initialize
-        
-       initialSetUp(meins, prepro, xmax, ymax, params,numOfCPUs);
+       
+       initialSetUp(meins, prepro, boundaries, xmax, ymax, params,numOfCPUs);
        write_vtk_output2D(meins, 0);
 
         // initialSetUp(bubble_only, prepro, xmax, ymax, params);
@@ -134,7 +142,9 @@ int main(int argc, char** argv){
     while (timetrack.proceed() == true)
     {
         meins.collideAll(numOfCPUs,true,true);
+        meins.evaluateBoundaries();
         meins.streamAll(numOfCPUs);
+
         timetrack.timestep();
 
         // Output if necessary
@@ -201,7 +211,7 @@ int main(int argc, char** argv){
 }
 
 
-void initialSetUp(Lattice2D& meins, Preprocess& prepro, int xmax, int ymax, ParamSet params, int numOfCPUs)
+void initialSetUp(Lattice2D& meins, Preprocess& prepro, Boundaries& bound, int xmax, int ymax, ParamSet params, int numOfCPUs)
 {
     // set the parameters        
     meins.setParams(params);
@@ -231,8 +241,9 @@ void initialSetUp(Lattice2D& meins, Preprocess& prepro, int xmax, int ymax, Para
         }
     }
 
-    meins.bottomWall();
+    //meins.bottomWall();
     //meins.closedBox();
+    meins.setBoundaries(bound);
     
     meins.equilibriumIni();
 

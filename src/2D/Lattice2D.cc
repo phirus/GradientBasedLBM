@@ -591,6 +591,12 @@ void Lattice2D::setF(int x, int y, int color, int pos, double value)
     (*data)[x][y].setF(f);
 }
 
+void Lattice2D::setBoundaries(const Boundaries& newBound)
+{
+    bound = newBound;
+    buildWalls();
+}
+
 //=========================== LATTICE CUTOUT ===========================
 
 const std::vector<int> Lattice2D::findBubbleCells()const
@@ -701,6 +707,60 @@ void Lattice2D::streamAndBouncePull(Cell2D& tCell, const direction2D& dir)const
 const bool Lattice2D::isBoundary(int x, int y)const
 {
     return  (x == 0 && bound.west.getType()!= periodic) || (x == xsize-1 && bound.east.getType()!= periodic) || (y == ysize-1 && bound.north.getType()!= periodic) || (y == 0 && bound.south.getType()!= periodic);
+}
+
+void Lattice2D::buildWalls()
+{
+    Cell2D wall(0,0,true);
+
+    if(bound.north.getType() == bounceback)
+    {
+        Vector3D u3D = bound.north.getVelocity()[0];
+        Vector2D u_wall(u3D.x,u3D.y);
+        wall.setSolidVelocity(u_wall);
+
+        for (int x=0; x<xsize; x++)
+        {
+            (*data)[x][ysize-1] = wall;
+        }
+    }
+
+    if(bound.south.getType() == bounceback)
+    {
+        Vector3D u3D = bound.south.getVelocity()[0];
+        Vector2D u_wall(u3D.x,u3D.y);
+        wall.setSolidVelocity(u_wall);
+
+        for (int x=0; x<xsize; x++)
+        {
+            (*data)[x][0] = wall;
+        }
+    }
+
+    if(bound.west.getType() == bounceback)
+    {
+        Vector3D u3D = bound.west.getVelocity()[0];
+        Vector2D u_wall(u3D.x,u3D.y);
+        wall.setSolidVelocity(u_wall);
+
+        for (int y=0; y<ysize; y++)
+        {
+            (*data)[0][y] = wall;
+        }
+    }
+
+    if(bound.east.getType() == bounceback)
+    {
+        Vector3D u3D = bound.east.getVelocity()[0];
+        Vector2D u_wall(u3D.x,u3D.y);
+        wall.setSolidVelocity(u_wall);
+
+        for (int y=0; y<ysize; y++)
+        {
+            (*data)[xsize-1][y] = wall;
+        }
+    }    
+
 }
 
 //const Cell2D Lattice2D::evaluateBoundaryCondition(Cell2D tCell, boundary_pos position)const

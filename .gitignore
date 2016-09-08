@@ -8,6 +8,7 @@ Documentation/
 *.depend
 *.cpb
 test/paramLog
+test/paramLog.csv
 test/test.vtk
 
 helpers/translate/preprocessFile
@@ -19,3 +20,5 @@ helpers/julia/preprocessFile
 helpers/julia/constants.jl
 
 *.sublime-workspace
+*.coatidb
+*.coatiproject

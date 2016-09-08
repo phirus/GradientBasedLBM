@@ -56,8 +56,8 @@ public:
     void setCell(int y, int x, const Cell2D& ncell);    /// < set a Cell
     void setF(int x, int y, int color, const array2D& nf);
     void setF(int x, int y, int color, int index, double value);
+    void setBoundaries(const Boundaries& newBound);
     inline void setParams(const ParamSet& newParam){param = newParam;}; /// < set a new parameter set
-    inline void setBoundaries(const Boundaries& newBound){bound = newBound;};
 
     /// Lattice cutout
     const std::vector<int> findBubbleCells()const;
@@ -77,6 +77,7 @@ private:
     inline void linearIndex(int index, int& x, int& y)const;
     void streamAndBouncePull(Cell2D& tCell, const direction2D& dir)const; /// < internal streaming mechanism with bounce back
     const bool isBoundary(int x, int y)const;
+    void buildWalls(); /// < and the Mexicans pay for it
 };
 
 /// calculates the equilibrium distribution based of a cell
