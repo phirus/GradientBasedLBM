@@ -142,7 +142,7 @@ int main(int argc, char** argv){
     while (timetrack.proceed() == true)
     {
         meins.collideAll(numOfCPUs,true,true);
-        meins.evaluateBoundaries();
+        //meins.evaluateBoundaries();
         meins.streamAll(numOfCPUs);
 
         timetrack.timestep();
@@ -249,6 +249,7 @@ void initialSetUp(Lattice2D& meins, Preprocess& prepro, Boundaries& bound, int x
 
    for (int i = 1; i< 1001; i++){
        meins.collideAll(numOfCPUs,false,false);
+       //meins.evaluateBoundaries();
        meins.streamAll(numOfCPUs);
        if(i%100 == 0) cout << i<<endl;
    }

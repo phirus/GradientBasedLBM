@@ -311,17 +311,23 @@ void Lattice2D::evaluateBoundaries()
             DistributionSetType2D f = tmpCell.getF();
             ColSet u_y;
 
-            u_y[0] = -1.0 + (f[0][0] + f[0][1] + f[0][5] + 2* (f[0][2] + f[0][3] + f[0][4])) / rho[0];
-            u_y[1] = -1.0 + (f[1][0] + f[1][1] + f[1][5] + 2* (f[1][2] + f[1][3] + f[1][4])) / rho[1];
-
-            f[0][7] = f[0][3] - 2.0/3.0 * rho[0]*u_y[0];
-            f[1][7] = f[1][3] - 2.0/3.0 * rho[1]*u_y[1];
-
-            f[0][6] = rho[0]*u_y[0]/6.0 + f[0][2] + (f[0][1] - f[0][5])/2.0;
-            f[1][6] = rho[1]*u_y[1]/6.0 + f[1][2] + (f[1][1] - f[1][5])/2.0;
-
-            f[0][8] = rho[0]*u_y[0]/6.0 + f[0][4] + (f[0][5] - f[0][1])/2.0;
-            f[1][8] = rho[1]*u_y[1]/6.0 + f[1][4] + (f[1][5] - f[1][1])/2.0;
+            for(int color = 0; color <= 1; color++)
+            {
+                if(rho[color]>0)
+                {
+                    u_y[color] = -1.0 + (f[color][0] + f[color][1] + f[color][5] + 2* (f[color][2] + f[color][3] + f[color][4])) / rho[color];
+                    f[color][7] = f[color][3] - 2.0/3.0 * rho[color]*u_y[color];
+                    f[color][6] = rho[color]*u_y[color]/6.0 + f[color][2] + (f[color][1] - f[color][5])/2.0;
+                    f[color][8] = rho[color]*u_y[color]/6.0 + f[color][4] + (f[color][5] - f[color][1])/2.0;
+                }
+                else
+                {
+                    u_y[color] = 0;
+                    f[color][7] = 0;
+                    f[color][6] = 0;
+                    f[color][8] = 0;
+                }
+            }
 
             tmpCell.setF(f);
             tmpCell.calcRho();
@@ -341,17 +347,23 @@ void Lattice2D::evaluateBoundaries()
             DistributionSetType2D f = tmpCell.getF();
             ColSet u_y;
 
-            u_y[0] = -1.0 + (f[0][0] + f[0][1] + f[0][5] + 2* (f[0][6] + f[0][7] + f[0][8])) / rho[0];
-            u_y[1] = -1.0 + (f[1][0] + f[1][1] + f[1][5] + 2* (f[1][6] + f[1][7] + f[1][8])) / rho[1];
-
-            f[0][3] = f[0][7] + 2.0/3.0 * rho[0]*u_y[0];
-            f[1][3] = f[1][7] + 2.0/3.0 * rho[1]*u_y[1];
-
-            f[0][2] = - rho[0]*u_y[0]/6.0 + f[0][6] + (f[0][5] - f[0][1])/2.0;
-            f[1][2] = - rho[1]*u_y[1]/6.0 + f[1][6] + (f[1][5] - f[1][1])/2.0;
-
-            f[0][4] = - rho[0]*u_y[0]/6.0 + f[0][8] + (f[0][1] - f[0][5])/2.0;
-            f[1][4] = - rho[1]*u_y[1]/6.0 + f[1][8] + (f[1][1] - f[1][5])/2.0;
+            for(int color = 0; color <= 1; color++)
+            {
+                if(rho[color]>0)
+                {
+                    u_y[color] = -1.0 + (f[color][0] + f[color][1] + f[color][5] + 2* (f[color][6] + f[color][7] + f[color][8])) / rho[color];
+                    f[color][3] = f[color][7] + 2.0/3.0 * rho[color]*u_y[color];
+                    f[color][2] = - rho[color]*u_y[color]/6.0 + f[color][6] + (f[color][5] - f[color][1])/2.0;
+                    f[color][4] = - rho[color]*u_y[color]/6.0 + f[color][8] + (f[color][1] - f[color][5])/2.0;
+                }
+                else
+                {
+                    u_y[color] = 0;
+                    f[color][3] = 0;
+                    f[color][2] = 0;
+                    f[color][4] = 0;
+                }
+            }
 
             tmpCell.setF(f);
             tmpCell.calcRho();
@@ -372,17 +384,23 @@ void Lattice2D::evaluateBoundaries()
             DistributionSetType2D f = tmpCell.getF();
             ColSet u_x;
 
-            u_x[0] = -1.0 + (f[0][0] + f[0][3] + f[0][7] + 2* (f[0][4] + f[0][5] + f[0][6])) / rho[0];
-            u_x[1] = -1.0 + (f[1][0] + f[1][3] + f[1][7] + 2* (f[1][4] + f[1][5] + f[1][6])) / rho[1];
-
-            f[0][1] = f[0][5] + 2.0/3.0 * rho[0]*u_x[0];
-            f[1][1] = f[1][5] + 2.0/3.0 * rho[1]*u_x[1];
-
-            f[0][2] = rho[0]*u_x[0]/6.0 + f[0][6] + (f[0][7] - f[0][3])/2.0;
-            f[1][2] = rho[1]*u_x[1]/6.0 + f[1][6] + (f[1][7] - f[1][3])/2.0;
-
-            f[0][8] = rho[0]*u_x[0]/6.0 + f[0][4] + (f[0][3] - f[0][7])/2.0;
-            f[1][8] = rho[1]*u_x[1]/6.0 + f[1][4] + (f[1][3] - f[1][7])/2.0;
+            for(int color = 0; color <= 1; color++)
+            {
+                if(rho[color]>0)
+                {
+                    u_x[color] = -1.0 + (f[color][0] + f[color][3] + f[color][7] + 2* (f[color][4] + f[color][5] + f[color][6])) / rho[color];
+                    f[color][1] = f[color][5] + 2.0/3.0 * rho[color]*u_x[color];
+                    f[color][2] = rho[color]*u_x[color]/6.0 + f[color][6] + (f[color][7] - f[color][3])/2.0;
+                    f[color][8] = rho[color]*u_x[color]/6.0 + f[color][4] + (f[color][3] - f[color][7])/2.0;
+                }
+                else
+                {
+                    u_x[color] = 0;
+                    f[color][1] = 0;
+                    f[color][2] = 0;
+                    f[color][8] = 0;
+                }
+            }
 
             tmpCell.setF(f);
             tmpCell.calcRho();
@@ -402,17 +420,23 @@ void Lattice2D::evaluateBoundaries()
             DistributionSetType2D f = tmpCell.getF();
             ColSet u_x;
 
-            u_x[0] = -1.0 + (f[0][0] + f[0][3] + f[0][7] + 2* (f[0][1] + f[0][2] + f[0][8])) / rho[0];
-            u_x[1] = -1.0 + (f[1][0] + f[1][3] + f[1][7] + 2* (f[1][1] + f[1][2] + f[1][8])) / rho[1];
-
-            f[0][5] = f[0][1] - 2.0/3.0 * rho[0]*u_x[0];
-            f[1][5] = f[1][1] - 2.0/3.0 * rho[1]*u_x[1];
-
-            f[0][6] = - rho[0]*u_x[0]/6.0 + f[0][2] + (f[0][3] - f[0][7])/2.0;
-            f[1][6] = - rho[1]*u_x[1]/6.0 + f[1][2] + (f[1][3] - f[1][7])/2.0;
-
-            f[0][4] = - rho[0]*u_x[0]/6.0 + f[0][8] + (f[0][7] - f[0][3])/2.0;
-            f[1][4] = - rho[1]*u_x[1]/6.0 + f[1][8] + (f[1][7] - f[1][3])/2.0;
+            for(int color = 0; color <= 1; color++)
+            {
+                if(rho[color]>0)
+                {
+                    u_x[color] = -1.0 + (f[color][0] + f[color][3] + f[color][7] + 2* (f[color][1] + f[color][2] + f[color][8])) / rho[color];
+                    f[color][5] = f[color][1] - 2.0/3.0 * rho[color]*u_x[color];
+                    f[color][6] = - rho[color]*u_x[color]/6.0 + f[color][2] + (f[color][3] - f[color][7])/2.0;
+                    f[color][4] = - rho[color]*u_x[color]/6.0 + f[color][8] + (f[color][7] - f[color][3])/2.0;
+                }
+                else
+                {
+                    u_x[color] = 0;
+                    f[color][5] = 0;
+                    f[color][6] = 0;
+                    f[color][4] = 0;
+                }
+            }
 
             tmpCell.setF(f);
             tmpCell.calcRho();
