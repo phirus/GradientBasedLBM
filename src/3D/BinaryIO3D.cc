@@ -19,6 +19,9 @@ void write_binary3D(const Lattice3D& l, const string& filename){
     ParamSet param = l.getParams();
     file.write(reinterpret_cast<char*> (&param), sizeof param);
 
+    Boundaries bound = l.getBoundaries();
+    file.write(reinterpret_cast<char*> (&bound), sizeof bound);
+
     field3D data = l.getData();
 
     for (int x = 0; x<extent[0];x++)
@@ -50,6 +53,9 @@ const bool read_binary3D(Lattice3D& outL, const string& filename){
         ParamSet param;
         file.read((char*) &param, sizeof param);
 
+        Boundaries bound;
+        file.read((char*) &bound, sizeof bound);
+
         Cell3D tmpCell;
         field3D data(boost::extents[extent[0]][extent[1]][extent[2]]);
         for(int x = 0; x<extent[0];x++)
@@ -65,6 +71,7 @@ const bool read_binary3D(Lattice3D& outL, const string& filename){
         }
         file.close();
         outL.setParams(param);
+        outL.setBoundaries(bound);
         outL.setData(data, extent[0], extent[1], extent[2]);
     }
     else success = false;
@@ -90,6 +97,9 @@ void write_restart_file3D(const Lattice3D& l, const Preprocess& p, const Timetra
 
     ParamSet param = l.getParams();
     file.write(reinterpret_cast<char*> (&param), sizeof param);
+
+    Boundaries bound = l.getBoundaries();
+    file.write(reinterpret_cast<char*> (&bound), sizeof bound);
 
     // write the velocity distributions
     field3D data = l.getData();
@@ -128,6 +138,8 @@ void write_restart_file3D(const Lattice3D& l, const Preprocess& p, const Timetra
     double s_5 = p.getS_5();
     double s_11 = p.getS_11();
     double s_17 = p.getS_17();
+    bool isShearFlow = p.getIsShearFlow();
+    double shearRate = p.getShearRate();
     int xCells = p.getXCells();
     int yCells = p.getYCells();
     int zCells = p.getZCells();
@@ -143,6 +155,8 @@ void write_restart_file3D(const Lattice3D& l, const Preprocess& p, const Timetra
     file.write(reinterpret_cast<char*> (&s_5), sizeof(double));
     file.write(reinterpret_cast<char*> (&s_11), sizeof(double));
     file.write(reinterpret_cast<char*> (&s_17), sizeof(double));
+    file.write(reinterpret_cast<char*> (&isShearFlow), sizeof(bool));
+    file.write(reinterpret_cast<char*> (&shearRate), sizeof(double));
     file.write(reinterpret_cast<char*> (&xCells), sizeof(int));
     file.write(reinterpret_cast<char*> (&yCells), sizeof(int));
     file.write(reinterpret_cast<char*> (&zCells), sizeof(int));
@@ -166,6 +180,9 @@ const bool read_restart_file3D(Lattice3D& outL, Preprocess& p, Timetrack& t, con
 
         ParamSet param;
         file.read((char*) &param, sizeof param);
+
+        Boundaries bound;
+        file.read((char*) &bound, sizeof bound);
 
         Cell3D tmpCell;
         field3D data(boost::extents[extent[0]][extent[1]][extent[2]]);
@@ -196,7 +213,9 @@ const bool read_restart_file3D(Lattice3D& outL, Preprocess& p, Timetrack& t, con
 
         double ReynoldsMax, Morton, Eotvos;
         double resolution, rho_l, gamma;
-        double mu_ratio, s_3, s_5, s_11, s_17; 
+        double mu_ratio, s_3, s_5, s_11, s_17;
+        bool isShearFlow;
+        double shearRate; 
         int xCells, yCells, zCells;
 
         file.read((char*) &ReynoldsMax, sizeof(double));
@@ -210,14 +229,17 @@ const bool read_restart_file3D(Lattice3D& outL, Preprocess& p, Timetrack& t, con
         file.read((char*) &s_5, sizeof(double));
         file.read((char*) &s_11, sizeof(double));
         file.read((char*) &s_17, sizeof(double));
+        file.read((char*) &isShearFlow, sizeof(bool));
+        file.read((char*) &shearRate, sizeof(double));
         file.read((char*) &xCells, sizeof(int));
         file.read((char*) &yCells, sizeof(int));
         file.read((char*) &zCells, sizeof(int));
 
-        Preprocess prepro(ReynoldsMax, Morton, Eotvos, resolution, rho_l, gamma, mu_ratio, s_3, s_5, s_11, s_17, xCells, yCells, zCells);
+        Preprocess prepro(ReynoldsMax, Morton, Eotvos, resolution, rho_l, gamma, mu_ratio, s_3, s_5, s_11, s_17, isShearFlow, shearRate, xCells, yCells, zCells);
         
         file.close();
         outL.setParams(param);
+        outL.setBoundaries(bound);
         outL.setData(data, extent[0], extent[1], extent[2]);
         t = time;
         p = prepro;
@@ -234,9 +256,9 @@ void write_techplot_output3D(const Lattice3D& l, int iterNum)
     ofstream PsiFile;
     Cell3D tmp;
     DimSet3D extent = l.getSize();
-    int xsize = static_cast<int> (extent[0]);
-    int ysize = static_cast<int> (extent[1]);
-    int zsize = static_cast<int> (extent[2]);
+    int xsize = extent[0];
+    int ysize = extent[1];
+    int zsize = extent[2];
 
     stringstream name;
     name <<"psi_"<< iterNum<<".dat";
@@ -290,9 +312,9 @@ void write_techplot_output_alternative3D(const Lattice3D& l, const string& filen
     ofstream PsiFile;
     Cell3D tmp;
     DimSet3D extent = l.getSize();
-    int xsize = static_cast<int> (extent[0]);
-    int ysize = static_cast<int> (extent[1]);
-    int zsize = static_cast<int> (extent[2]);
+    int xsize = extent[0];
+    int ysize = extent[1];
+    int zsize = extent[2];
 
     stringstream name;
     name <<filename;
@@ -363,9 +385,9 @@ void write_vtk_output3D(const Lattice3D& l, const string& filename)
     ofstream VTKFile;
     Cell3D tmp;
     DimSet3D extent = l.getSize();
-    int xsize = static_cast<int> (extent[0]);
-    int ysize = static_cast<int> (extent[1]);
-    int zsize = static_cast<int> (extent[2]);
+    int xsize = extent[0];
+    int ysize = extent[1];
+    int zsize = extent[2];
 
     VTKFile.open(filename.c_str());
 
@@ -460,6 +482,28 @@ void write_vtk_output3D(const Lattice3D& l, const string& filename)
         l.linearIndex(index, x, y, z);
         Vector3D gradient = l.getGradient(x, y, z);
         VTKFile << gradient.x << " " << gradient.y  << " " << gradient.z << " ";
+    }
+
+    VTKFile << "\nVECTORS u1 DOUBLE"<<endl;
+    for (int index = 0; index < (xsize*ysize*zsize); index++)
+    {
+        l.linearIndex(index, x, y, z);
+        tmp = l.getCell(x,y,z);
+        tmp.calcRho();
+
+        VeloSet3D u = tmp.getU();
+        VTKFile << u[0].x << " " << u[0].y << " " << u[0].z << " ";
+    }
+
+    VTKFile << "\nVECTORS j2 DOUBLE"<<endl;
+    for (int index = 0; index < (xsize*ysize*zsize); index++)
+    {
+        l.linearIndex(index, x, y, z);
+        tmp = l.getCell(x,y,z);
+        tmp.calcRho();
+
+        VeloSet3D u = tmp.getU();
+        VTKFile << u[1].x << " " << u[1].y << " " << u[1].z << " ";
     }
 
     VTKFile.close();

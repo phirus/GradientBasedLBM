@@ -11,6 +11,8 @@ const double PI = 3.14159265358979323846264338327950288419716939937510;
 /// arbitrary  definition
 const double MACH_MAX = 0.1; // maximal erlaubte Mach-Zahl
 
+const double BUBBLE_CRITERION = 0.99;
+
 //=========================== TYPES ===========================
 
 typedef boost::array<double,2> ColSet;         /// < simple 2d vector

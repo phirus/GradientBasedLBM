@@ -5,6 +5,7 @@
 
 #include"Cell3D.h"
 #include"../ParamSet.h"
+#include"../Boundaries.h"
 // #include"Timetrack.h"
 
 /// custom typedef for the whole field of cells
@@ -36,20 +37,29 @@ public:
     /// walls
     void closedBox(); /// < initialize the Lattice3D (set up walls and calculate rho)
     void bottomWall(); /// < turns the bottom Cells into walls (set up walls and calculate rho)
+    void genericWall(std::vector<double> x, std::vector<double> y, std::vector<double> z,  const Vector3D& u_w);
+    void lidDrivenCavity(const Vector3D& u_w); /// < initialize the Lattice3D with moving top wall
+    void shearWall(const Vector3D& u_w);    /// < initialize the Lattice3D with moving left wall
 
     /// accessors
     const DimSet3D getSize()const; /// < get the extend of the Lattice3D
-    const field3D getData()const{return *data;}; /// < get the data field3D
-    const Cell3D getCell(int x, int y, int z)const{return (*data)[x][y][z];};  /// < get a Cell
-    const ParamSet getParams()const{return param;}; /// < get the paramter set
-    const DistributionSetType3D getF(int x, int y, int z)const{return (*data)[x][y][z].getF();};          /// < get F
+    inline const field3D getData()const{return *data;}; /// < get the data field3D
+    inline const Cell3D getCell(int x, int y, int z)const{return (*data)[x][y][z];};  /// < get a Cell
+    inline const ParamSet getParams()const{return param;}; /// < get the paramter set
+    inline const Boundaries getBoundaries()const{return bound;};
+    inline const DistributionSetType3D getF(int x, int y, int z)const{return (*data)[x][y][z].getF();};          /// < get F
 
     void setData(const field3D& ndata, int x, int y, int z); /// < set the data field3D (and size)
     void setCell(int x, int y, int z, const Cell3D& ncell);    /// < set a Cell
     void setF(int x, int y, int z, int color, const array3D& nf);
     void setF(int x, int y, int z, int color, int index, double value);
-    void setParams(const ParamSet& newParam){param = newParam;}; /// < set a new parameter set
-    
+    inline void setParams(const ParamSet& newParam){param = newParam;}; /// < set a new parameter set
+    inline void setBoundaries(const Boundaries& newBound){bound = newBound;};
+
+    /// Lattice cutout
+    const std::vector<int> findBubbleCells()const;
+    void copyCellsFromOther(const Lattice3D& other, const std::vector<int>& indices);
+
     /// operators
     Lattice3D& operator=(const Lattice3D& other);
     const bool operator==(const Lattice3D& other)const;
@@ -58,6 +68,7 @@ private:
     int xsize, ysize, zsize;   /// < extent of the Lattice3D
     field3D * data;    
     ParamSet param;     /// < set of parameters used during the simulation
+    Boundaries bound;
 
     void streamAndBouncePull(Cell3D& tCell, const direction3D& dir)const; /// < internal streaming mechanism with bounce back
 };

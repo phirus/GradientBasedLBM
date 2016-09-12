@@ -1,14 +1,11 @@
 #include <iostream>
 #include<ctime>
 
-#include"../../src/Lattice.h"
-#include"../../src/BinaryIO.h"
+#include"../../src/BasicIO.h"
 #include<boost/program_options.hpp>
 
 using namespace std;
 namespace po = boost::program_options;
-
-void initialSetUp(Lattice& meins, Preprocess& prepro, int xmax, int ymax);
 
 int main(int argc, char** argv){
 
@@ -36,7 +33,8 @@ int main(int argc, char** argv){
     }
    
      const ParamSet params = prepro.getParamSet();
-     write_param_log(params);       
+     write_param_log(params);
+     write_param_log_csv(params);       
 
     return 0;
 }

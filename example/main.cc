@@ -10,16 +10,18 @@
 using namespace std;
 namespace po = boost::program_options;
 
-void initialSetUp(Lattice2D& meins, Preprocess& prepro, int xmax, int ymax, ParamSet params);
+void initialSetUp(Lattice2D& meins, Preprocess& prepro, Boundaries& bound, int xmax, int ymax, ParamSet params, int numOfCPUs);
+void initializeShearfFlow(Lattice2D& meins, Preprocess& prepro, int xmax, int ymax, ParamSet params, int numOfCPUs);
 
 int main(int argc, char** argv){
 
     boost::program_options::options_description desc("Allowed options");
 	desc.add_options()
         ("help,h", "produce help message")
+        ("boundary,b", boost::program_options::value<string> (), "specify boundary input file")
         ("cpu,c", boost::program_options::value<int> (), "takes the number of CPUs")
         ("preprocess,p", boost::program_options::value<string> (), "specify preprocess parameter file")
-        ("bypass,b", boost::program_options::value<string> (), "specify parameter file to bypass preprocess routine")
+        ("override,o", boost::program_options::value<string> (), "specify parameter file to bypass preprocess routine")
         ("restart,r", boost::program_options::value<string> (), "specify restart file")
         ;
     boost::program_options::variables_map vm;
@@ -42,6 +44,7 @@ int main(int argc, char** argv){
     Preprocess prepro = read_preprocess_file("preprocessFile");
     Timetrack timetrack = read_timetrack_file("preprocessFile");
     ParamSet params = prepro.getParamSet();
+    Boundaries boundaries = read_boundaries_file("BoundaryInput");
 
     Preprocess prepro_input;
     Timetrack timetrack_input;    
@@ -59,10 +62,16 @@ int main(int argc, char** argv){
         params = params_input;
     }
 
-    if (vm.count("bypass")) 
+        if (vm.count("boundary")) 
     {
-        cout << "bypass preprocess file with: " << vm["bypass"].as<string>() << ".\n" << endl ;
-        params_input = read_paramset_file(vm["bypass"].as<string>());
+        cout << "boundary file is: " << vm["boundary"].as<string>() << ".\n" << endl ;
+        boundaries = read_boundaries_file(vm["boundary"].as<string>());
+    }
+
+    if (vm.count("override")) 
+    {
+        cout << "override preprocess file with: " << vm["override"].as<string>() << ".\n" << endl ;
+        params_input = read_paramset_file(vm["override"].as<string>());
         params = params_input;
     }
 
@@ -70,6 +79,7 @@ int main(int argc, char** argv){
     int ymax = prepro.getYCells();
     int xmax = prepro.getXCells();
     Lattice2D meins(xmax,ymax);
+    //Lattice2D bubble_only(xmax,ymax);
 
     if (vm.count("restart")) 
     {
@@ -96,9 +106,20 @@ int main(int argc, char** argv){
             timetrack.setRestartInt( timetrack_input.getRestartInt() );
         }
     }
-    else {      // vm.count("restart")
-        initialSetUp(meins, prepro, xmax, ymax, params);
-        write_vtk_output2D(meins, 0);;
+    else {      // vm.count("restart"), if no restart file -> initialize
+       
+       initialSetUp(meins, prepro, boundaries, xmax, ymax, params,numOfCPUs);
+       write_vtk_output2D(meins, 0);
+
+        // initialSetUp(bubble_only, prepro, xmax, ymax, params);
+        
+        // initializeShearfFlow(meins, prepro, xmax, ymax, params);
+
+        // const string shear_file_name =  "shear.bin";
+        // write_restart_file2D(meins, prepro, timetrack, shear_file_name);
+
+        // meins.copyCellsFromOther(bubble_only, bubble_only.findBubbleCells());
+        // write_vtk_output2D(meins, 0);
     }
 
     time_t start,end;
@@ -107,13 +128,23 @@ int main(int argc, char** argv){
     const int outputInterval = timetrack.getOutputInt();
     const int restartInterval = timetrack.getRestartInt();
 
+    std::vector<double> iter_count_data;
+    std::vector<double> bubble_pos_x_data;
+    std::vector<double> bubble_pos_y_data;
+    std::vector<double> x_velo_data;
+    std::vector<double> y_velo_data;
     std::vector<double> reynolds_data;
+
+    
+
     int i;
 
     while (timetrack.proceed() == true)
     {
         meins.collideAll(numOfCPUs,true,true);
+        //meins.evaluateBoundaries();
         meins.streamAll(numOfCPUs);
+
         timetrack.timestep();
 
         // Output if necessary
@@ -123,23 +154,9 @@ int main(int argc, char** argv){
         {
             cout << i <<endl;
         }
-        
-        if(i%10 == 0) 
-        {
-            const double reynolds_tmp = getReynolds(meins, prepro.getResolution());            
-            // reynolds_data.push_back(getReynolds(meins, prepro.getResolution()));
-            reynolds_data.push_back(reynolds_tmp);
-            write_data_plot(reynolds_data, 10, "ReynoldsPlot.dat");
-            if(reynolds_tmp < 0) 
-            {
-                cout <<"\nReynolds < 0, probably reached the top "<<endl;
-                break;
-            }
-        }
 
         if(i%outputInterval == 0) 
         {
-            // write_techplot_output(meins,i,true);
             write_vtk_output2D(meins, i);
         } 
         
@@ -147,18 +164,54 @@ int main(int argc, char** argv){
         {
             const string restart_file_name =  createFilename("restart", i, ".bin");
             write_restart_file2D(meins, prepro, timetrack, restart_file_name);
+        }
+        
+        if(i%10 == 0) 
+        {
+            iter_count_data.push_back(i);
+
+            const double reynolds_tmp = getReynolds(meins, prepro.getResolution());            
+            reynolds_data.push_back(reynolds_tmp);
+            write_data_plot(reynolds_data, 10, "ReynoldsPlot.dat");
+
+            const Vector2D velo_tmp = getBubbleVelocity(meins);            
+            x_velo_data.push_back(velo_tmp.x);
+            y_velo_data.push_back(velo_tmp.y);
+
+            write_data_plot(y_velo_data, x_velo_data, 10, "BubbleVeloPlot.dat");
+
+            const Vector2D pos_tmp = getBubblePosition(meins);
+
+            bubble_pos_x_data.push_back(pos_tmp.x);
+            bubble_pos_y_data.push_back(pos_tmp.y);
+
+            write_data_plot(bubble_pos_x_data, bubble_pos_y_data, 10, "BubblePosPlot.dat");
+
+            nested_vector statistics;
+            statistics.push_back(iter_count_data);
+            statistics.push_back(bubble_pos_x_data);
+            statistics.push_back(bubble_pos_y_data);
+            statistics.push_back(x_velo_data);
+            statistics.push_back(y_velo_data);
+            statistics.push_back(reynolds_data);
+            write_csv(statistics, "BubblePlot.csv", "time;PosX;PosY;v_x;v_y;Re");
+
+            if(pos_tmp.y > 0.96 * ymax)
+            {
+                cout << "\nBubble reached the top";
+                break;
+            }
         }         
     }
 
     time(&end);
-    write_data_plot(reynolds_data, 1000, "ReynoldsPlot.dat");
     cout<<"\nBerechnung beendet nach "<< difftime(end,start) <<" Sekunden"<<endl;
 
     return 0;
 }
 
 
-void initialSetUp(Lattice2D& meins, Preprocess& prepro, int xmax, int ymax, ParamSet params)
+void initialSetUp(Lattice2D& meins, Preprocess& prepro, Boundaries& bound, int xmax, int ymax, ParamSet params, int numOfCPUs)
 {
     // set the parameters        
     meins.setParams(params);
@@ -170,15 +223,14 @@ void initialSetUp(Lattice2D& meins, Preprocess& prepro, int xmax, int ymax, Para
     const Cell2D air(0,rho_gas,false);
     const Cell2D liquid(rho_liquid,0,false);
 
-    const Cell2D wall(0,0,true);
+    // const Cell2D wall(0,0,true);
 
     // setup geometry (bubble at the bottom, x-centered)
     const int R1 = prepro.getResolution()/2;
-    const int xm1 = xmax/2;
+    // const int xm1 = xmax/2;
+    const int xm1 = xmax * 0.5;
     // const int ym1 = 2*R1;
     const int ym1 = R1 + 20;
-
-    // const int ym1 = ymax/2;
 
     for(int j=0; j< ymax; j++)
     {
@@ -189,36 +241,84 @@ void initialSetUp(Lattice2D& meins, Preprocess& prepro, int xmax, int ymax, Para
         }
     }
 
-    meins.bottomWall();
+    //meins.bottomWall();
+    //meins.closedBox();
+    meins.setBoundaries(bound);
+    
     meins.equilibriumIni();
 
-    // write_techplot_output(meins,0,true);
-    // // temporal mass_balance
-    // std::vector<double> count;
-    // std::vector<double> liquid_mass;
-    // std::vector<double> gas_mass;
-
    for (int i = 1; i< 1001; i++){
-       meins.collideAll(1,false,false);
-       meins.streamAll(1);
+       meins.collideAll(numOfCPUs,false,false);
+       //meins.evaluateBoundaries();
+       meins.streamAll(numOfCPUs);
        if(i%100 == 0) cout << i<<endl;
-       // if(i%10 == 0) write_techplot_output(meins,i,true);;
    }
 
-   // for (int i = 501; i< 100001; i++){
-    
-   //     meins.collideAll(4,false,false);
-   //     meins.streamAll(4);
-   //     if(i%500 == 0)
-   //     {
-   //      double tmpL,tmpG;
-   //      meins.mass_balance(tmpL,tmpG);
-   //      count.push_back(i);
-   //      liquid_mass.push_back(tmpL);
-   //      gas_mass.push_back(tmpG);
-   //     }
-   // }
-   //        meins.collideAll(4,false,false,true);
-    // write_data_plot(count, liquid_mass, gas_mass);
     cout<<"Initialisierung beendet\n\nSchwerkraft wird zugeschaltet\n"<<endl;
+}
+
+
+void initializeShearfFlow(Lattice2D& meins, Preprocess& prepro, int xmax, int ymax, ParamSet params, int numOfCPUs)
+{
+    // set the parameters        
+    meins.setParams(params);
+
+    // get densities
+    const double rho_liquid = prepro.getRhoL();
+
+    const Cell2D liquid(rho_liquid,0,false);
+
+    for(int j=0; j< ymax; j++)
+    {
+        for(int i=0; i< xmax; i++){
+            meins.setCell(i,j,liquid);
+        }
+    }
+
+    const Vector2D u_wall(0,prepro.getShearRate());
+
+    meins.shearWall(u_wall);
+    meins.equilibriumIni();
+
+
+   std::vector<double> shearSum_data;
+   shearSum_data.push_back(0);
+   std::vector<double> resi_data;
+   const int max_count = 1e6;
+    for(int count = 0; count < max_count; count++)
+    {
+        meins.collideAll(numOfCPUs,false,false);
+        meins.streamAll(numOfCPUs);
+        
+        if(count%1000 == 0) 
+        {
+            cout << count <<endl;
+        }
+        
+        if(count%100 == 0) 
+        {
+            const double veloSum_tmp = getLineShearSum(meins);
+
+            const double Resi_tmp = (veloSum_tmp - shearSum_data.back()) / veloSum_tmp;
+
+            shearSum_data.push_back(veloSum_tmp);
+            write_data_plot(shearSum_data, 100, "ShearSum.dat");
+            resi_data.push_back(Resi_tmp);
+            write_data_plot(resi_data,100,"Residual.dat");
+
+            if(Resi_tmp < 1e-3)
+            {
+                write_vtk_output2D(meins, createFilename("shearTest_", count, ".vtk"));
+                break;
+            }
+        }
+
+        if(count%200 == 0) 
+        {
+            write_vtk_output2D(meins, createFilename("shearTest_", count, ".vtk"));
+        } 
+        
+    }
+
+    cout<<"Shear flow steadily initialized\n"<<endl;
 }

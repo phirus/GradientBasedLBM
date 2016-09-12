@@ -11,6 +11,7 @@ using namespace std;
 namespace po = boost::program_options;
 
 void initialSetUp(Lattice3D& meins, Preprocess& prepro, int xmax, int ymax, int zmax, ParamSet params, int numOfCPUs);
+void initializeShearfFlow(Lattice3D& meins, Preprocess& prepro, int xmax, int ymax, int zmax, ParamSet params, int numOfCPUs);
 
 int main(int argc, char** argv){
 
@@ -99,7 +100,9 @@ int main(int argc, char** argv){
     }
     else {      // vm.count("restart")
         initialSetUp(meins, prepro, xmax, ymax, zmax, params, numOfCPUs);
-        write_vtk_output3D(meins, 0);;
+        write_vtk_output3D(meins, 0);
+
+        // initializeShearfFlow(meins, prepro, xmax, ymax, zmax, params);
     }
 
     time_t start,end;
@@ -176,6 +179,7 @@ void initialSetUp(Lattice3D& meins, Preprocess& prepro, int xmax, int ymax, int 
     // setup geometry (bubble at the bottom, x and y centered)
     const int radius = prepro.getResolution()/2;
     const int xm = xmax/2;
+    // const int xm = xmax/4;
     const int ym = ymax/2;
     const int zm =  radius + 20;
 
@@ -202,4 +206,67 @@ void initialSetUp(Lattice3D& meins, Preprocess& prepro, int xmax, int ymax, int 
    }
 
     cout<<"Initialisierung beendet\n\nSchwerkraft wird zugeschaltet\n"<<endl;
+}
+
+void initializeShearfFlow(Lattice3D& meins, Preprocess& prepro, int xmax, int ymax, int zmax, ParamSet params, int numOfCPUs)
+{
+    // set the parameters        
+    meins.setParams(params);
+
+    // get densities
+    const double rho_liquid = prepro.getRhoL();
+
+    const Cell3D liquid(rho_liquid,0,false);
+
+    for(int k=0; k< zmax; k++)
+    {
+        for(int j=0; j< ymax; j++)
+        {
+            for(int i=0; i< xmax; i++)
+            {
+                meins.setCell(i,j,k,liquid);
+            }
+        }
+    }
+    
+    const Vector3D u_wall(0,0,-0.3);
+
+    meins.shearWall(u_wall);
+    meins.equilibriumIni();
+
+
+   std::vector<double> shearSum_data;
+   shearSum_data.push_back(0);
+   std::vector<double> resi_data;
+   const int max_count = 1e6;
+    for(int count = 1; count < max_count; count++)
+    {
+        meins.collideAll(numOfCPUs,false,false);
+        meins.streamAll(numOfCPUs);
+        
+        if(count%1000 == 0) 
+        {
+            cout << count <<endl;
+        }
+        
+        if(count%10 == 0) 
+        {
+            const double veloSum_tmp = getLineShearSum(meins);
+
+            const double Resi_tmp = (veloSum_tmp - shearSum_data.back()) / veloSum_tmp;
+
+            shearSum_data.push_back(veloSum_tmp);
+            write_data_plot(shearSum_data, 10, "ShearSum.dat");
+            resi_data.push_back(Resi_tmp);
+            write_data_plot(resi_data,10,"Residual.dat");
+        }
+
+        if(count%100 == 0) 
+        {
+            write_vtk_output3D(meins, createFilename("shearTest_", count, ".vtk"));
+        } 
+        
+    }
+
+    cout<<"Shear flow steadily initialized\n"<<endl;
 }

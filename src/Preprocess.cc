@@ -4,10 +4,11 @@
 
 //=========================== LIFECYCLE ===========================
 
-Preprocess::Preprocess(double Re, double Mo, double Eo, double res, double rhol, double gamma_ini, double mu_rate, double s3, double s5, double s11, double s17, int xCells_ini, int yCells_ini ,int zCells_ini):
+Preprocess::Preprocess(double Re, double Mo, double Eo, double res, double rhol, double gamma_ini, double mu_rate, double s3, double s5, double s11, double s17, bool shear, double shear_rate, int xCells_ini, int yCells_ini ,int zCells_ini):
 ReynoldsMax(Re), Morton(Mo), Eotvos(Eo),
 resolution(res), rho_l(rhol), gamma(gamma_ini), 
 muRatio(mu_rate), s_3(s3), s_5(s5), s_11(s11), s_17(s17),
+isShearFlow(shear), shearRate(shear_rate),
 xCells(xCells_ini), yCells(yCells_ini), zCells(zCells_ini)
 {
     deduceAll();
@@ -39,6 +40,8 @@ const bool Preprocess::operator==(const Preprocess& other)const
     if(s_5 != other.getS_5()) exit = false;
     if(s_11 != other.getS_11()) exit = false;
     if(s_17 != other.getS_17()) exit = false;
+    if(isShearFlow != other.getIsShearFlow()) exit = false;
+    if(shearRate != other.getShearRate()) exit = false;
     if(spacestep != other.getSpacestep()) exit = false;
     if(timestep != other.getTimestep()) exit = false;   
     if(tau != other.getTau()) exit = false;

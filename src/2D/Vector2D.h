@@ -20,6 +20,7 @@ class Vector2D
     inline const Vector2D operator-(const Vector2D& other)const{return Vector2D(x-other.x, y-other.y);};  /// < subtraction-operator
     inline const double operator*(const Vector2D&other)const{return x*other.x + y*other.y;};   /// < scalar product
     inline const Vector2D operator*(double c)const{return Vector2D(x*c,y*c);};                   /// < multiplication with a number
+    inline const bool operator==(const Vector2D& other)const{return (x == other.x && y == other.y);}; 
 
     /// operations
     inline const double Abs()const{return sqrt(x*x+y*y);};   /// < absolute value

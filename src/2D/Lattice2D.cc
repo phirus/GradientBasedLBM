@@ -9,6 +9,7 @@ xsize(x_size)
 ,ysize(y_size)
 ,data(new field2D(boost::extents[xsize][ysize]))
 ,param()
+,bound()
 {
     for (int x = 0; x<xsize; x++)
     {
@@ -24,6 +25,7 @@ xsize(other.getSize()[0])
 ,ysize(other.getSize()[1])
 ,data(new field2D(boost::extents[xsize][ysize]))
 ,param(other.getParams())
+,bound(other.getBoundaries())
 {
     (*data) = other.getData();
 }
@@ -182,7 +184,6 @@ bool Lattice2D::collideAll(int threads, bool gravity, bool isLimitActive)
     // const double rhoRedFixed = param.getRhoR();
     const RelaxationPar2D relax = param.getRelaxation2D();
     const double dt = param.getDeltaT();
-    // const double speedlimit = param.getSpeedlimit();
 
     double g(0);
     if(gravity == true) g = param.getG();
@@ -198,7 +199,10 @@ bool Lattice2D::collideAll(int threads, bool gravity, bool isLimitActive)
             linearIndex(index,x,y);
             Cell2D tmpCell = (*data)[x][y];
 
-            if (tmpCell.getIsSolid() == false)
+            //const bool boundary_position = isBoundary(x, y);
+
+
+            if (tmpCell.getIsSolid() == false || isBoundary(x, y) == false)
             {
                 DistributionSetType2D  fTmp;
                 const DistributionSetType2D fCell = tmpCell.getF();
@@ -207,22 +211,8 @@ bool Lattice2D::collideAll(int threads, bool gravity, bool isLimitActive)
                 const double rho = sum(rho_k);
 
                 const Vector2D G(0 ,  g*(rho - rho_k[0]));
-                // const Vector2D G(0 , - rho * g);
 
                 VeloSet2D u = tmpCell.getU();
-
-                // if (isLimitActive == true)
-                // {
-                //     // check for exceptions
-                //     if ( u[0].Abs() > speedlimit || u[1].Abs() > speedlimit)
-                //     {
-                //         #pragma omp critical(Output)
-                //         cout<<"u[0].Abs() = "<< u[0].Abs() << "\tu[1].Abs() = "<< u[1].Abs() << "\tspeedlimit = " << speedlimit << endl;
-
-                //         #pragma omp critical(ExceptionLike)
-                //         success = false;
-                //     } 
-                // }   // end if(isLimitActive == true) 
 
                 if(gravity == true){
                 u[0] = u[0] + G *  (dt/(2* rho)) ;
@@ -288,9 +278,6 @@ bool Lattice2D::collideAll(int threads, bool gravity, bool isLimitActive)
                         fTmp[1][q] +=  dt * second_forcing_term[1][q];
                     } 
 
-                    // if (fTmp[0][q] < 0) fTmp[0][q] = 0;
-                    // if (fTmp[1][q] < 0) fTmp[1][q] = 0;
-
                 } // end for 
 
                 tmpCell.setF(fTmp);
@@ -309,6 +296,154 @@ bool Lattice2D::collideAll(int threads, bool gravity, bool isLimitActive)
     }     
 
     return success;
+}
+
+void Lattice2D::evaluateBoundaries()
+{
+    // north boundary
+    if(bound.north.getType() == pressure)
+    {
+        ColSet rho = bound.north.getRho();
+        for (int x=0; x<xsize; x++)
+        {
+            Cell2D tmpCell = (*data)[x][ysize-1] ;
+
+            DistributionSetType2D f = tmpCell.getF();
+            ColSet u_y;
+
+            for(int color = 0; color <= 1; color++)
+            {
+                if(rho[color]>0)
+                {
+                    u_y[color] = -1.0 + (f[color][0] + f[color][1] + f[color][5] + 2* (f[color][2] + f[color][3] + f[color][4])) / rho[color];
+                    f[color][7] = f[color][3] - 2.0/3.0 * rho[color]*u_y[color];
+                    f[color][6] = rho[color]*u_y[color]/6.0 + f[color][2] + (f[color][1] - f[color][5])/2.0;
+                    f[color][8] = rho[color]*u_y[color]/6.0 + f[color][4] + (f[color][5] - f[color][1])/2.0;
+                }
+                else
+                {
+                    u_y[color] = 0;
+                    f[color][7] = 0;
+                    f[color][6] = 0;
+                    f[color][8] = 0;
+                }
+            }
+
+            tmpCell.setF(f);
+            tmpCell.calcRho();
+
+            (*data)[x][ysize-1] = tmpCell;
+        }
+    }
+
+    // south boundary
+    if(bound.south.getType() == pressure)
+    {
+        ColSet rho = bound.south.getRho();
+        for (int x=0; x<xsize; x++)
+        {
+            Cell2D tmpCell = (*data)[x][0] ;
+
+            DistributionSetType2D f = tmpCell.getF();
+            ColSet u_y;
+
+            for(int color = 0; color <= 1; color++)
+            {
+                if(rho[color]>0)
+                {
+                    u_y[color] = -1.0 + (f[color][0] + f[color][1] + f[color][5] + 2* (f[color][6] + f[color][7] + f[color][8])) / rho[color];
+                    f[color][3] = f[color][7] + 2.0/3.0 * rho[color]*u_y[color];
+                    f[color][2] = - rho[color]*u_y[color]/6.0 + f[color][6] + (f[color][5] - f[color][1])/2.0;
+                    f[color][4] = - rho[color]*u_y[color]/6.0 + f[color][8] + (f[color][1] - f[color][5])/2.0;
+                }
+                else
+                {
+                    u_y[color] = 0;
+                    f[color][3] = 0;
+                    f[color][2] = 0;
+                    f[color][4] = 0;
+                }
+            }
+
+            tmpCell.setF(f);
+            tmpCell.calcRho();
+
+            (*data)[x][0] = tmpCell;
+        }
+    }
+    
+
+    // west boundary
+    if(bound.west.getType() == pressure)
+    {
+        ColSet rho = bound.west.getRho();
+        for (int y=0; y<ysize; y++)
+        {
+            Cell2D tmpCell = (*data)[0][y] ;
+
+            DistributionSetType2D f = tmpCell.getF();
+            ColSet u_x;
+
+            for(int color = 0; color <= 1; color++)
+            {
+                if(rho[color]>0)
+                {
+                    u_x[color] = -1.0 + (f[color][0] + f[color][3] + f[color][7] + 2* (f[color][4] + f[color][5] + f[color][6])) / rho[color];
+                    f[color][1] = f[color][5] + 2.0/3.0 * rho[color]*u_x[color];
+                    f[color][2] = rho[color]*u_x[color]/6.0 + f[color][6] + (f[color][7] - f[color][3])/2.0;
+                    f[color][8] = rho[color]*u_x[color]/6.0 + f[color][4] + (f[color][3] - f[color][7])/2.0;
+                }
+                else
+                {
+                    u_x[color] = 0;
+                    f[color][1] = 0;
+                    f[color][2] = 0;
+                    f[color][8] = 0;
+                }
+            }
+
+            tmpCell.setF(f);
+            tmpCell.calcRho();
+
+            (*data)[0][y] = tmpCell;
+        }
+    }
+
+    // east boundary
+    if(bound.east.getType() == pressure)
+    {
+        ColSet rho = bound.east.getRho();
+        for (int y=0; y<ysize; y++)
+        {
+            Cell2D tmpCell = (*data)[xsize-1][y] ;
+
+            DistributionSetType2D f = tmpCell.getF();
+            ColSet u_x;
+
+            for(int color = 0; color <= 1; color++)
+            {
+                if(rho[color]>0)
+                {
+                    u_x[color] = -1.0 + (f[color][0] + f[color][3] + f[color][7] + 2* (f[color][1] + f[color][2] + f[color][8])) / rho[color];
+                    f[color][5] = f[color][1] - 2.0/3.0 * rho[color]*u_x[color];
+                    f[color][6] = - rho[color]*u_x[color]/6.0 + f[color][2] + (f[color][3] - f[color][7])/2.0;
+                    f[color][4] = - rho[color]*u_x[color]/6.0 + f[color][8] + (f[color][7] - f[color][3])/2.0;
+                }
+                else
+                {
+                    u_x[color] = 0;
+                    f[color][5] = 0;
+                    f[color][6] = 0;
+                    f[color][4] = 0;
+                }
+            }
+
+            tmpCell.setF(f);
+            tmpCell.calcRho();
+
+            (*data)[xsize-1][y] = tmpCell;
+        }
+    }
 }
 
 void Lattice2D::closedBox()
@@ -353,11 +488,104 @@ void Lattice2D::bottomWall()
     }
 }
 
+void Lattice2D::genericWall(std::vector<double> x, std::vector<double> y, const Vector2D& u_w)
+{
+    if(x.size() == y.size())
+    {
+        Cell2D wall(0,0,true);
+        wall.setSolidVelocity(u_w);
+        
+        for(unsigned int i = 0; i< x.size(); i++)
+        {
+            (*data)[x[i]][y[i]] = wall;
+        }
+    }
+    else throw "vector size mismatch";    
+}
+
+void Lattice2D::lidDrivenCavity(const Vector2D& u_w)
+{
+    Cell2D wall(0,0,true);
+
+    for (int y=0; y<ysize; y++)
+    {
+        (*data)[0][y] = wall;   // left wall
+        (*data)[xsize-1][y] = wall; // right wall
+    }
+
+    for (int x=0; x<xsize; x++) 
+    {
+        (*data)[x][0] = wall; // bottom wall
+    }
+
+    wall.setSolidVelocity(u_w);
+    for (int x=0; x<xsize; x++) 
+    {
+         (*data)[x][ysize-1] = wall;    // top wall
+    }
+
+    for (int y=0; y<ysize; y++)
+    {
+        for (int x=0; x<xsize; x++)
+        {
+            (*data)[x][y].calcRho();
+        }
+    }
+}
+
+void Lattice2D::shearWall(const Vector2D& u_w)
+{
+    Cell2D wall(0,0,true);
+
+    for (int y=0; y<ysize; y++)
+    {
+        (*data)[xsize-1][y] = wall; // right wall
+    }
+
+    wall.setSolidVelocity(u_w);
+    for (int y=0; y<ysize; y++)
+    {
+        (*data)[0][y] = wall;   // left wall
+    }
+
+    for (int y=0; y<ysize; y++)
+    {
+        for (int x=0; x<xsize; x++)
+        {
+            (*data)[x][y].calcRho();
+        }
+    }
+}
+
+void Lattice2D::setShearProfile(double gradient, double offset)
+{
+    const int range = xsize * ysize;
+    const double m = gradient;
+    const double n = offset - (m * ( xsize *  param.getDeltaX() ) );
+    for (int index = 0;  index < range; index++)
+        {
+            int x,y;
+            linearIndex(index,x,y);
+            Cell2D tmpCell = (*data)[x][y];
+            tmpCell.calcRho();
+            VeloSet2D u;
+            u[0] = Vector2D(0,m*x + n);
+            u[1] = Vector2D(0,0);
+            //const Vector2D u(0 , m*x + n);   
+            const ColSet rho = tmpCell.getRho();
+            const DistributionSetType2D phi = param.getPhi2D();
+
+            tmpCell.setF(eqDistro(rho,u, phi));
+            (*data)[x][y] = tmpCell;
+        }
+
+}
+
 //=========================== ACCESSORS ===========================
 
-const ColSet Lattice2D::getSize()const
+const DimSet2D Lattice2D::getSize()const
 {
-    ColSet pony = {{xsize, ysize}};
+    DimSet2D pony = {{xsize, ysize}}; 
     return pony;
 }
 
@@ -387,11 +615,50 @@ void Lattice2D::setF(int x, int y, int color, int pos, double value)
     (*data)[x][y].setF(f);
 }
 
+void Lattice2D::setBoundaries(const Boundaries& newBound)
+{
+    bound = newBound;
+    buildWalls();
+}
+
+//=========================== LATTICE CUTOUT ===========================
+
+const std::vector<int> Lattice2D::findBubbleCells()const
+{
+    std::vector<int> indices;
+    const int range = xsize * ysize;
+    int x,y;
+
+    for (int index = 0;  index < range; index++)
+    {
+        linearIndex(index,x,y);
+
+        const Cell2D tmpCell = (*data)[x][y];
+
+        if (tmpCell.calcPsi() < BUBBLE_CRITERION && tmpCell.getIsSolid() == false)
+        {
+            indices.push_back(index);
+        }        
+    }
+    return indices;
+}
+
+void Lattice2D::copyCellsFromOther(const Lattice2D& other, const std::vector<int>& indices)
+{
+    int x,y;
+    for (int index : indices)
+    {
+        linearIndex(index,x,y);
+        (*data)[x][y] = other.getCell(x,y);
+    }
+}
+
 //=========================== OPERATOR ===========================
 
 Lattice2D& Lattice2D::operator=(const Lattice2D& other){
     this->setData(other.getData(), other.getSize()[0], other.getSize()[1]);
     this->setParams(other.getParams());
+    this->setBoundaries(other.getBoundaries());
 
     return *this;
 }
@@ -399,11 +666,14 @@ Lattice2D& Lattice2D::operator=(const Lattice2D& other){
 const bool Lattice2D::operator==(const Lattice2D& other)const
 {
     bool exit = true;
-    ColSet extent = other.getSize();
+    DimSet2D extent = other.getSize();
     if (xsize == extent[0] && ysize == extent[1])
     {
         ParamSet pOther = other.getParams();
         if (!(param == pOther)) exit = false;
+
+        Boundaries bOther = other.getBoundaries();
+        if (!(bound == bOther)) exit = false;
 
         field2D otherData = other.getData();
         for (int x = 0; x< xsize;x++)
@@ -443,15 +713,82 @@ void Lattice2D::streamAndBouncePull(Cell2D& tCell, const direction2D& dir)const
 
         for (int i=1;i<9;i++)
         {
-            if ((*data)[ dir[PULL_INDEX_2D[i]].x ][ dir[PULL_INDEX_2D[i]].y ].getIsSolid() == false)
+            const Cell2D neighbor = (*data)[ dir[PULL_INDEX_2D[i]].x ][ dir[PULL_INDEX_2D[i]].y ];
+            if (neighbor.getIsSolid() == false) // if(neighbor not solid?) -> stream
             {
-                ftmp[color][i] = (*data)[ dir[PULL_INDEX_2D[i]].x ][ dir[PULL_INDEX_2D[i]].y ].getF()[color][i];    // if(neighbor not solid?) -> stream
+                ftmp[color][i] = neighbor.getF()[color][i];    
             }
-            else ftmp[color][i] = f[color][PULL_INDEX_2D[i]]; // else -> bounce back
+            else  // else -> bounce back
+            {
+                const ColSet rho = tCell.getRho();
+                ftmp[color][i] = f[color][PULL_INDEX_2D[i]] - (2.0 * 3.0 * WEIGHTS_2D[i] * rho[color] * (DIRECTION_2D[i] * neighbor.getU()[0]) ) ;
+            } 
         } // end for i
     } // end for color
     tCell.setF(ftmp);
 }
+
+const bool Lattice2D::isBoundary(int x, int y)const
+{
+    return  (x == 0 && bound.west.getType()!= periodic) || (x == xsize-1 && bound.east.getType()!= periodic) || (y == ysize-1 && bound.north.getType()!= periodic) || (y == 0 && bound.south.getType()!= periodic);
+}
+
+void Lattice2D::buildWalls()
+{
+    Cell2D wall(0,0,true);
+
+    if(bound.north.getType() == bounceback)
+    {
+        Vector3D u3D = bound.north.getVelocity()[0];
+        Vector2D u_wall(u3D.x,u3D.y);
+        wall.setSolidVelocity(u_wall);
+
+        for (int x=0; x<xsize; x++)
+        {
+            (*data)[x][ysize-1] = wall;
+        }
+    }
+
+    if(bound.south.getType() == bounceback)
+    {
+        Vector3D u3D = bound.south.getVelocity()[0];
+        Vector2D u_wall(u3D.x,u3D.y);
+        wall.setSolidVelocity(u_wall);
+
+        for (int x=0; x<xsize; x++)
+        {
+            (*data)[x][0] = wall;
+        }
+    }
+
+    if(bound.west.getType() == bounceback)
+    {
+        Vector3D u3D = bound.west.getVelocity()[0];
+        Vector2D u_wall(u3D.x,u3D.y);
+        wall.setSolidVelocity(u_wall);
+
+        for (int y=0; y<ysize; y++)
+        {
+            (*data)[0][y] = wall;
+        }
+    }
+
+    if(bound.east.getType() == bounceback)
+    {
+        Vector3D u3D = bound.east.getVelocity()[0];
+        Vector2D u_wall(u3D.x,u3D.y);
+        wall.setSolidVelocity(u_wall);
+
+        for (int y=0; y<ysize; y++)
+        {
+            (*data)[xsize-1][y] = wall;
+        }
+    }    
+
+}
+
+//const Cell2D Lattice2D::evaluateBoundaryCondition(Cell2D tCell, boundary_pos position)const
+
 
 ///////////////////////////// C-STYLE /////////////////////////////
 

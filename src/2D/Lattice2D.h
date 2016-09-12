@@ -2,10 +2,12 @@
 #define LATTICE2D_H
 
 #include<iostream>
+#include<vector>
 #include<omp.h>
 
 #include"Cell2D.h"
 #include"../ParamSet.h"
+#include"../Boundaries.h"
 // #include"Timetrack.h"
 
 /// custom typedef for the whole field of cells
@@ -32,23 +34,34 @@ public:
     /// LB steps
     void streamAll(int threads = 1); /// < streaming step
     bool collideAll(int threads = 1, bool gravity = false, bool isLimitActive = true); /// < collision step
+    void evaluateBoundaries();
 
     /// walls
     void closedBox(); /// < initialize the Lattice2D (set up walls and calculate rho)
     void bottomWall(); /// < initialize the Lattice2D (set up walls and calculate rho)
+    void genericWall(std::vector<double> x, std::vector<double> y,  const Vector2D& u_w);
+    void lidDrivenCavity(const Vector2D& u_w); /// < initialize the Lattice2D with moving top wall
+    void shearWall(const Vector2D& u_w);    /// < initialize the Lattice2D with moving left wall
+    void setShearProfile(double gradient, double offset); /// < initialize linear shear profile according to V_y = m x + n
 
     /// accessors
-    const ColSet getSize()const; /// < get the extend of the Lattice2D
-    const field2D getData()const{return *data;}; /// < get the data field2D
-    const Cell2D getCell(int x, int y)const{return (*data)[x][y];};  /// < get a Cell
-    const ParamSet getParams()const{return param;}; /// < get the paramter set
-    const DistributionSetType2D getF(int x, int y)const{return (*data)[x][y].getF();};          /// < get F
+    const DimSet2D getSize()const; /// < get the extend of the Lattice2D
+    inline const field2D getData()const{return *data;}; /// < get the data field2D
+    inline const Cell2D getCell(int x, int y)const{return (*data)[x][y];};  /// < get a Cell
+    inline const ParamSet getParams()const{return param;}; /// < get the paramter set
+    inline const Boundaries getBoundaries()const{return bound;};
+    inline const DistributionSetType2D getF(int x, int y)const{return (*data)[x][y].getF();};          /// < get F
 
     void setData(const field2D& ndata, int x, int y); /// < set the data field2D (and size)
     void setCell(int y, int x, const Cell2D& ncell);    /// < set a Cell
     void setF(int x, int y, int color, const array2D& nf);
     void setF(int x, int y, int color, int index, double value);
-    void setParams(const ParamSet& newParam){param = newParam;}; /// < set a new parameter set
+    void setBoundaries(const Boundaries& newBound);
+    inline void setParams(const ParamSet& newParam){param = newParam;}; /// < set a new parameter set
+
+    /// Lattice cutout
+    const std::vector<int> findBubbleCells()const;
+    void copyCellsFromOther(const Lattice2D& other, const std::vector<int>& indices);
     
     /// operators
     Lattice2D& operator=(const Lattice2D& other);
@@ -58,9 +71,13 @@ private:
     int xsize, ysize;   /// < extent of the Lattice2D
     field2D * data;    
     ParamSet param;     /// < set of parameters used during the simulation
+    Boundaries bound;
+
 
     inline void linearIndex(int index, int& x, int& y)const;
     void streamAndBouncePull(Cell2D& tCell, const direction2D& dir)const; /// < internal streaming mechanism with bounce back
+    const bool isBoundary(int x, int y)const;
+    void buildWalls(); /// < and the Mexicans pay for it
 };
 
 /// calculates the equilibrium distribution based of a cell

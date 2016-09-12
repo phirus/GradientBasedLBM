@@ -27,9 +27,9 @@ const array3D array_add_3D(const array3D &one, const array3D &two)
 const array3D array_times_3D(const array3D &foo, double factor)
 {
     array3D bar = foo;
-    for(boost::array<double,19>::iterator it = bar.begin(); it != bar.end(); ++it)
+    for(double &i: bar)
     {
-        *it *= factor;
+        i *= factor;
     }
     return bar;
 }

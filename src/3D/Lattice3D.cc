@@ -10,6 +10,7 @@ xsize(x_size)
 ,zsize(z_size)
 ,data(new field3D(boost::extents[xsize][ysize][zsize]))
 ,param()
+,bound()
 {
     for (int x = 0; x<xsize; x++)
     {
@@ -29,6 +30,7 @@ xsize(other.getSize()[0])
 ,zsize(other.getSize()[2])
 ,data(new field3D(boost::extents[xsize][ysize][zsize]))
 ,param(other.getParams())
+,bound(other.getBoundaries())
 {
     (*data) = other.getData();
 }
@@ -400,11 +402,115 @@ void Lattice3D::bottomWall()
     }
 }
 
+void Lattice3D::genericWall(std::vector<double> x, std::vector<double> y, std::vector<double> z,  const Vector3D& u_w)
+{
+    if(x.size() == y.size() && x.size() == z.size())
+    {
+        Cell3D wall(0,0,true);
+        wall.setSolidVelocity(u_w);
+        
+        for(unsigned int i = 0; i< x.size(); i++)
+        {
+            (*data)[x[i]][y[i]][z[i]] = wall;
+        }
+    }
+    else throw "vector size mismatch";    
+}
+
+void Lattice3D::lidDrivenCavity(const Vector3D& u_w)
+{
+    Cell3D wall(0,0,true);
+
+    // left and right wall
+    for (int z=0; z<zsize; z++)
+    {
+        for (int y=0; y<ysize; y++)
+        {
+            (*data)[0][y][z] = wall;
+            (*data)[xsize-1][y][z] = wall;
+        }
+    }
+
+    // back and front wall
+    for (int z=0; z<zsize; z++)
+    {
+        for (int x=0; x<xsize; x++)
+        {
+            (*data)[x][0][z] = wall;
+            (*data)[x][ysize-1][z] = wall;
+        }
+    }
+
+    for (int x=0; x<xsize; x++)
+    {
+        for (int y=0; y<ysize; y++)
+        {
+            (*data)[x][y][0] = wall;    // bottom wall
+        }
+    }
+
+    wall.setSolidVelocity(u_w);
+    for (int x=0; x<xsize; x++)
+    {
+        for (int y=0; y<ysize; y++)
+        {
+            (*data)[x][y][zsize-1] = wall;
+        }
+    }
+
+    for (int y=0; y<ysize; y++)
+    {
+        for (int x=0; x<xsize; x++)
+        {
+            for (int z=0; z<zsize; z++)
+            {
+                (*data)[x][y][z].calcRho();
+            }
+        }
+    }
+}
+
+void Lattice3D::shearWall(const Vector3D& u_w)
+{
+    Cell3D wall(0,0,true);
+
+    // right wall
+    for (int z=0; z<zsize; z++)
+    {
+        for (int y=0; y<ysize; y++)
+        {
+            (*data)[xsize-1][y][z] = wall;
+        }
+    }
+
+    // left
+    wall.setSolidVelocity(u_w);
+    for (int z=0; z<zsize; z++)
+    {
+        for (int y=0; y<ysize; y++)
+        {
+            (*data)[0][y][z] = wall;
+        }
+    }
+
+
+    for (int y=0; y<ysize; y++)
+    {
+        for (int x=0; x<xsize; x++)
+        {
+            for (int z=0; z<zsize; z++)
+            {
+                (*data)[x][y][z].calcRho();
+            }
+        }
+    }
+}
+
 //=========================== ACCESSORS ===========================
 
 const DimSet3D Lattice3D::getSize()const
 {
-    DimSet3D pony = {{xsize, ysize,zsize}};
+    DimSet3D pony = {{xsize, ysize, zsize}}; 
     return pony;
 }
 
@@ -435,11 +541,44 @@ void Lattice3D::setF(int x, int y, int z, int color, int pos, double value)
     (*data)[x][y][z].setF(f);
 }
 
+//=========================== LATTICE CUTOUT ===========================
+
+const std::vector<int> Lattice3D::findBubbleCells()const
+{
+    std::vector<int> indices;
+    const int range = xsize * ysize * zsize;
+    int x,y,z;
+
+    for (int index = 0;  index < range; index++)
+    {
+        linearIndex(index,x,y,z);
+
+        const Cell3D tmpCell = (*data)[x][y][z];
+
+        if (tmpCell.calcPsi() < BUBBLE_CRITERION && tmpCell.getIsSolid() == false)
+        {
+            indices.push_back(index);
+        }        
+    }
+    return indices;
+}
+
+void Lattice3D::copyCellsFromOther(const Lattice3D& other, const std::vector<int>& indices)
+{
+    int x,y,z;
+    for(int index: indices)
+    {
+        linearIndex(index,x,y,z);
+        (*data)[x][y][z] = other.getCell(x,y,z);
+    }
+}
+
 //=========================== OPERATOR ===========================
 
 Lattice3D& Lattice3D::operator=(const Lattice3D& other){
     this->setData(other.getData(), other.getSize()[0], other.getSize()[1], other.getSize()[2]);
     this->setParams(other.getParams());
+    this->setBoundaries(other.getBoundaries());
 
     return *this;
 }
@@ -452,6 +591,9 @@ const bool Lattice3D::operator==(const Lattice3D& other)const
     {
         ParamSet pOther = other.getParams();
         if (!(param == pOther)) exit = false;
+
+        Boundaries bOther = other.getBoundaries();
+        if (!(bound == bOther)) exit = false;
 
         field3D otherData = other.getData();
         for (int x = 0; x< xsize;x++)
@@ -488,11 +630,16 @@ void Lattice3D::streamAndBouncePull(Cell3D& tCell, const direction3D& dir)const
 
         for (int i=1;i<19;i++)
         {
-            if ((*data)[ dir[PULL_INDEX_3D[i]].x][ dir[PULL_INDEX_3D[i]].y][ dir[PULL_INDEX_3D[i]].z].getIsSolid() == false)
+            const Cell3D neighbor = (*data)[ dir[PULL_INDEX_3D[i]].x][ dir[PULL_INDEX_3D[i]].y][ dir[PULL_INDEX_3D[i]].z];
+            if (neighbor.getIsSolid() == false)     // if(neighbor not solid?) -> stream
             {
-                ftmp[color][i] = (*data)[ dir[PULL_INDEX_3D[i]].x ][ dir[PULL_INDEX_3D[i]].y ][ dir[PULL_INDEX_3D[i]].z].getF()[color][i];    // if(neighbor not solid?) -> stream
+                ftmp[color][i] = neighbor.getF()[color][i];
             }
-            else ftmp[color][i] = f[color][PULL_INDEX_3D[i]]; // else -> bounce back
+            else // else -> bounce back
+            {
+                const ColSet rho = tCell.getRho();
+                ftmp[color][i] = f[color][PULL_INDEX_3D[i]] - (2.0 * WEIGHTS_3D[i] * rho[color] * (DIRECTION_3D[i] * neighbor.getU()[0]) ) ; 
+            } 
         } // end for i
     } // end for color 
     tCell.setF(ftmp);

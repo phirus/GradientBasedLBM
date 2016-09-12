@@ -20,6 +20,7 @@ class Vector3D
     inline const Vector3D operator-(const Vector3D& other)const{return Vector3D(x-other.x, y-other.y, z-other.z);};  /// < subtraction-operator
     inline const double operator*(const Vector3D&other)const{return x*other.x + y*other.y + z*other.z;};   /// < scalar product
     inline const Vector3D operator*(double c)const{return Vector3D(x*c,y*c,z*c);};                   /// < multiplication with a number
+    inline const bool operator==(const Vector3D& other)const{return (x == other.x && y == other.y && z == other.z);}; 
 
     /// operations
     inline const double Abs()const{return sqrt(x*x+y*y+z*z);};   /// < absolute value

@@ -7,7 +7,7 @@ LD = g++
 WINDRES = windres
 
 INC = -I../../../gtest-1.7.0/include
-CFLAGS =  -Wall -g -fopenmp
+CFLAGS =  -Wall -g -fopenmp -std=c++11
 LIB = ../../../gtest-1.7.0/make/gtest_main.a
 LDFLAGS = -lgomp -lpthread
 

@@ -27,13 +27,13 @@ public:
     /// acsessors
     inline void setF(const DistributionSetType3D& newF){f = newF;};
     inline void setIsSolid(bool tmp){isSolid = tmp;};
+    inline void setSolidVelocity(const Vector3D& newU){if(isSolid == true) u[0] = newU;};
 
     inline const DistributionSetType3D getF()const{return f;};
     inline const ColSet getRho()const{return rho;};
     inline const bool getIsSolid()const{return isSolid;};
     inline const VeloSet3D getU()const{return u;};
     inline const double getDeltaRho()const{return delta;};  /// < returns rho_red - rho_blue
-   
 
 private:
     DistributionSetType3D f;         /// < set of two distributions
