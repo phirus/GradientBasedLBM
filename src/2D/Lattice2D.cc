@@ -187,8 +187,6 @@ bool Lattice2D::collideAll(int threads, bool gravity, bool isLimitActive)
 
     double g(0);
     if(gravity == true) g = param.getG();
-    // if(gravity == true) g = 1e-1;
-
 
     #pragma omp parallel
     {
@@ -287,6 +285,7 @@ bool Lattice2D::collideAll(int threads, bool gravity, bool isLimitActive)
             (*newData)[x][y] = tmpCell;
         }
     }
+    
     if(success == true){
         delete data;
         data = newData;
