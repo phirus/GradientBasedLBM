@@ -351,7 +351,7 @@ void Lattice2D::evaluateBoundaries()
             {
                 if(rho[color]>0)
                 {
-                    u_y[color] = -1.0 + (f[color][0] + f[color][1] + f[color][5] + 2* (f[color][6] + f[color][7] + f[color][8])) / rho[color];
+                    u_y[color] = 1.0 - (f[color][0] + f[color][1] + f[color][5] + 2* (f[color][6] + f[color][7] + f[color][8])) / rho[color];
                     f[color][3] = f[color][7] + 2.0/3.0 * rho[color]*u_y[color];
                     f[color][2] = - rho[color]*u_y[color]/6.0 + f[color][6] + (f[color][5] - f[color][1])/2.0;
                     f[color][4] = - rho[color]*u_y[color]/6.0 + f[color][8] + (f[color][1] - f[color][5])/2.0;
@@ -388,7 +388,7 @@ void Lattice2D::evaluateBoundaries()
             {
                 if(rho[color]>0)
                 {
-                    u_x[color] = -1.0 + (f[color][0] + f[color][3] + f[color][7] + 2* (f[color][4] + f[color][5] + f[color][6])) / rho[color];
+                    u_x[color] = 1.0 - (f[color][0] + f[color][3] + f[color][7] + 2* (f[color][4] + f[color][5] + f[color][6])) / rho[color];
                     f[color][1] = f[color][5] + 2.0/3.0 * rho[color]*u_x[color];
                     f[color][2] = rho[color]*u_x[color]/6.0 + f[color][6] + (f[color][7] - f[color][3])/2.0;
                     f[color][8] = rho[color]*u_x[color]/6.0 + f[color][4] + (f[color][3] - f[color][7])/2.0;

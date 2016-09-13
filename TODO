@@ -1,4 +1,8 @@
 To Do
+- shear flow boundary 2D/3D
+- velocity boundary 2D/3D
+- use Boundaries in 3D
+- not calculate Gradient every time 2D/3D
 - apply more correct velocity measurement to 3D
 - centering in preprocess
 - initialize shear flow 3D
