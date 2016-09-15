@@ -7,8 +7,10 @@ LD = g++
 WINDRES = windres
 
 #INC = -I../../../gtest-1.6.0/include
+#CFLAGS =  -Wall -O3 -fopenmp -std=c++11 -pg
 CFLAGS =  -Wall -O3 -fopenmp -std=c++11
 #LIB = gomp
+#LDFLAGS = -lboost_program_options -lgomp -lpthread -pg
 LDFLAGS = -lboost_program_options -lgomp -lpthread
 
 SRC = ../src
