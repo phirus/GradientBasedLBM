@@ -200,7 +200,7 @@ bool Lattice2D::collideAll(int threads, bool gravity, bool isLimitActive)
             //const bool boundary_position = isBoundary(x, y);
 
 
-            if (tmpCell.getIsSolid() == false || isBoundary(x, y) == false)
+            if (tmpCell.getIsSolid() == false && isBoundary(x, y) == false)
             {
                 DistributionSetType2D  fTmp;
                 const DistributionSetType2D fCell = tmpCell.getF();
@@ -303,7 +303,74 @@ void Lattice2D::evaluateBoundaries()
     if(bound.north.getType() == pressure)
     {
         ColSet rho = bound.north.getRho();
-        for (int x=0; x<xsize; x++)
+
+        int lowerX = 0;
+        int upperX = xsize;
+
+        if (bound.west.getType() != periodic) lowerX++;
+        if (bound.east.getType() != periodic) upperX--;
+
+        if(bound.west.getType() == pressure)
+        {
+            // north west corner
+            Cell2D tmpCell = (*data)[0][ysize-1];
+            DistributionSetType2D f = tmpCell.getF();
+
+            for(int color = 0; color <= 1; color++)
+            {
+                if(rho[color]>0 )
+                {
+                    f[color][1] = f[color][5];
+                    f[color][7] = f[color][3];
+                    f[color][8] = f[color][4];
+                    f[color][2] = 0.5 * (rho[color] - f[color][0] )  - f[color][3] - f[color][4] - f[color][5];
+                    f[color][6] = f[color][2];
+                }
+                else
+                {
+                    f[color][1] = 0;
+                    f[color][2] = 0;
+                    f[color][6] = 0;
+                    f[color][7] = 0;
+                    f[color][8] = 0;
+                }
+            }
+            tmpCell.setF(f);
+            tmpCell.calcRho();
+            (*data)[0][ysize-1] = tmpCell;
+        }
+
+        if(bound.east.getType() == pressure)
+        {
+            // north east corner
+            Cell2D tmpCell = (*data)[xsize-1][ysize-1];
+            DistributionSetType2D f = tmpCell.getF();
+
+            for(int color = 0; color <= 1; color++)
+            {
+                if(rho[color]>0 )
+                {
+                    f[color][5] = f[color][1];
+                    f[color][6] = f[color][2];
+                    f[color][7] = f[color][3];
+                    f[color][4] = 0.5 * (rho[color] - f[color][0] )  - f[color][1] - f[color][2] - f[color][3];
+                    f[color][8] = f[color][4];
+                }
+                else
+                {
+                    f[color][4] = 0;
+                    f[color][5] = 0;
+                    f[color][6] = 0;
+                    f[color][7] = 0;
+                    f[color][8] = 0;
+                }
+            }
+            tmpCell.setF(f);
+            tmpCell.calcRho();
+            (*data)[xsize-1][ysize-1] = tmpCell;
+        }
+
+        for (int x=lowerX; x<upperX; x++)
         {
             Cell2D tmpCell = (*data)[x][ysize-1] ;
 
@@ -327,10 +394,8 @@ void Lattice2D::evaluateBoundaries()
                     f[color][8] = 0;
                 }
             }
-
             tmpCell.setF(f);
             tmpCell.calcRho();
-
             (*data)[x][ysize-1] = tmpCell;
         }
     }
@@ -339,7 +404,73 @@ void Lattice2D::evaluateBoundaries()
     if(bound.south.getType() == pressure)
     {
         ColSet rho = bound.south.getRho();
-        for (int x=0; x<xsize; x++)
+        int lowerX = 0;
+        int upperX = xsize;
+
+        if (bound.west.getType() != periodic) lowerX++;
+        if (bound.east.getType() != periodic) upperX--;
+
+        if(bound.west.getType() == pressure)
+        {
+            // south west corner
+            Cell2D tmpCell = (*data)[0][0];
+            DistributionSetType2D f = tmpCell.getF();
+
+            for(int color = 0; color <= 1; color++)
+            {
+                if(rho[color]>0 )
+                {
+                    f[color][1] = f[color][5];
+                    f[color][2] = f[color][6];
+                    f[color][3] = f[color][7];
+                    f[color][4] = 0.5 * (rho[color] - f[color][0] )  - f[color][5] - f[color][6] - f[color][7];
+                    f[color][8] = f[color][4];
+                }
+                else
+                {
+                    f[color][1] = 0;
+                    f[color][2] = 0;
+                    f[color][3] = 0;
+                    f[color][4] = 0;
+                    f[color][8] = 0;
+                }
+            }
+            tmpCell.setF(f);
+            tmpCell.calcRho();
+            (*data)[0][0] = tmpCell;
+        }
+
+        if(bound.east.getType() == pressure)
+        {
+            // south east corner
+            Cell2D tmpCell = (*data)[xsize-1][0];
+            DistributionSetType2D f = tmpCell.getF();
+
+            for(int color = 0; color <= 1; color++)
+            {
+                if(rho[color]>0 )
+                {
+                    f[color][3] = f[color][7];
+                    f[color][4] = f[color][8];
+                    f[color][5] = f[color][1];
+                    f[color][2] = 0.5 * (rho[color] - f[color][0] )  - f[color][1] - f[color][7] - f[color][8];
+                    f[color][6] = f[color][4];
+                }
+                else
+                {
+                    f[color][3] = 0;
+                    f[color][4] = 0;
+                    f[color][5] = 0;
+                    f[color][2] = 0;
+                    f[color][6] = 0;
+                }
+            }
+            tmpCell.setF(f);
+            tmpCell.calcRho();
+            (*data)[xsize-1][0] = tmpCell;
+        }
+
+        for (int x=lowerX; x<upperX; x++)
         {
             Cell2D tmpCell = (*data)[x][0] ;
 
@@ -348,7 +479,7 @@ void Lattice2D::evaluateBoundaries()
 
             for(int color = 0; color <= 1; color++)
             {
-                if(rho[color]>0)
+                if(rho[color]>0 )
                 {
                     u_y[color] = 1.0 - (f[color][0] + f[color][1] + f[color][5] + 2* (f[color][6] + f[color][7] + f[color][8])) / rho[color];
                     f[color][3] = f[color][7] + 2.0/3.0 * rho[color]*u_y[color];
@@ -363,10 +494,8 @@ void Lattice2D::evaluateBoundaries()
                     f[color][4] = 0;
                 }
             }
-
             tmpCell.setF(f);
             tmpCell.calcRho();
-
             (*data)[x][0] = tmpCell;
         }
     }
@@ -376,7 +505,13 @@ void Lattice2D::evaluateBoundaries()
     if(bound.west.getType() == pressure)
     {
         ColSet rho = bound.west.getRho();
-        for (int y=0; y<ysize; y++)
+
+        int lowerY = 0;
+        int upperY = ysize;
+        if (bound.south.getType() != periodic) lowerY++;
+        if (bound.north.getType() != periodic) upperY--;
+
+        for (int y=lowerY; y< upperY; y++)
         {
             Cell2D tmpCell = (*data)[0][y] ;
 
@@ -400,10 +535,8 @@ void Lattice2D::evaluateBoundaries()
                     f[color][8] = 0;
                 }
             }
-
             tmpCell.setF(f);
             tmpCell.calcRho();
-
             (*data)[0][y] = tmpCell;
         }
     }
@@ -412,7 +545,14 @@ void Lattice2D::evaluateBoundaries()
     if(bound.east.getType() == pressure)
     {
         ColSet rho = bound.east.getRho();
-        for (int y=0; y<ysize; y++)
+
+        int lowerY = 0;
+        int upperY = ysize;
+
+        if (bound.south.getType() != periodic) lowerY++;
+        if (bound.north.getType() != periodic) upperY--;
+
+        for (int y=lowerY; y< upperY; y++)
         {
             Cell2D tmpCell = (*data)[xsize-1][y] ;
 
@@ -439,7 +579,6 @@ void Lattice2D::evaluateBoundaries()
 
             tmpCell.setF(f);
             tmpCell.calcRho();
-
             (*data)[xsize-1][y] = tmpCell;
         }
     }
