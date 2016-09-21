@@ -142,7 +142,7 @@ int main(int argc, char** argv){
     while (timetrack.proceed() == true)
     {
         meins.collideAll(numOfCPUs,true,true);
-        //meins.evaluateBoundaries();
+        meins.evaluateBoundaries();
         meins.streamAll(numOfCPUs);
 
         timetrack.timestep();
