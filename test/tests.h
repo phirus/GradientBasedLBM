@@ -5,6 +5,7 @@
 #include"../src/2D/BinaryIO2D.h"
 #include"../src/3D/BinaryIO3D.h"
 #include"../src/Boundaries.h"
+//#include"../src/2D/Matrix2D_alter.h"
 
 using namespace std;
 
@@ -1183,53 +1184,54 @@ TEST(Matrix2D,backtrafo){
 }
 
 TEST(Matrix2D,multiply){
-    const Matrix2D S(RelaxationPar2D(1,10,100));
+    const Matrix2D S(RelaxationPar2D(1,10,100),false);
     const array2D f = {{1,2,3,4,5,6,7,8,9}};
-    // const array2D vergleich = {{ -48, -382, 194, 18, -206, 418, -206, 18, 194}};
     const array2D vergleich = {{ 1, 2, 30, 4, 500, 6, 700, 8, 9}};
 
-    array2D test = S*f;
+    array2D test1 = S*f;
+    array2D test2 = S.diagMult(f);
 
     for(int i = 0; i<9;i++)
     {
-        EXPECT_DOUBLE_EQ(vergleich[i],test[i])<<"i = "<<i ;
+        EXPECT_DOUBLE_EQ(vergleich[i],test1[i])<<"i = "<<i ;
+        EXPECT_DOUBLE_EQ(vergleich[i],test2[i])<<"i = "<<i ;
     }
 }
 
-TEST(Matrix2D,multiply_linewise){
-    const Matrix2D S(RelaxationPar2D(1,10,100));
-    const array2D f = {{1,2,3,4,5,6,7,8,9}};
-    // const array2D vergleich = {{ -48, -382, 194, 18, -206, 418, -206, 18, 194}};
-    const array2D vergleich = {{ 1, 2, 30, 4, 500, 6, 700, 8, 9}};
+// TEST(Matrix2D,multiply_linewise){
+//     const Matrix2D S(RelaxationPar2D(1,10,100));
+//     const array2D f = {{1,2,3,4,5,6,7,8,9}};
+//     // const array2D vergleich = {{ -48, -382, 194, 18, -206, 418, -206, 18, 194}};
+//     const array2D vergleich = {{ 1, 2, 30, 4, 500, 6, 700, 8, 9}};
 
-    array2D test;
+//     array2D test;
 
-    for(int i = 0; i<9;i++)
-    {
-        test[i] = S.linewise(f,i);
-        EXPECT_DOUBLE_EQ(vergleich[i],test[i])<<"i = "<<i ;
-    }
-}
+//     for(int i = 0; i<9;i++)
+//     {
+//         test[i] = S.linewise(f,i);
+//         EXPECT_DOUBLE_EQ(vergleich[i],test[i])<<"i = "<<i ;
+//     }
+// }
 
-TEST(Matrix2D,identity){
-    const array2D f = {{1,2,3,4,5,6,7,8,9}};
-    const array2D f0 = {{0,0,0,0,0,0,0,0,0}};
+// TEST(Matrix2D,identity){
+//     const array2D f = {{1,2,3,4,5,6,7,8,9}};
+//     const array2D f0 = {{0,0,0,0,0,0,0,0,0}};
 
-    const Matrix2D Identity = Matrix2D(true);
-    const Matrix2D Zeros = Matrix2D();
-    array2D test;
+//     const Matrix2D Identity = Matrix2D(true);
+//     const Matrix2D Zeros = Matrix2D();
+//     array2D test;
 
-    EXPECT_EQ(f, Identity * f);
-    EXPECT_EQ(f0, Zeros * f);
-    for(int i = 0; i<9;i++)
-    {
-        test[i] = Identity.linewise(f,i);
-    }
-    EXPECT_EQ(f, test);
-}
+//     EXPECT_EQ(f, Identity * f);
+//     EXPECT_EQ(f0, Zeros * f);
+//     for(int i = 0; i<9;i++)
+//     {
+//         test[i] = Identity.linewise(f,i);
+//     }
+//     EXPECT_EQ(f, test);
+// }
 
 TEST(Matrix2D,plus_times){
-    const Matrix2D Identity = Matrix2D(true);
+    const Matrix2D Identity = Matrix2D(1.0);
     
     EXPECT_EQ(Identity+Identity, Identity*2);
 
@@ -1598,5 +1600,87 @@ TEST(Vector3D,angle){
     EXPECT_DOUBLE_EQ(1,g1.Angle(g2));
     EXPECT_DOUBLE_EQ(0,g1.Angle(DIRECTION_3D[0]));
 }
+
+
+
+
+
+
+
+// TEST(Matrix2D_alter,trafo){
+//     const array2D verteilung = {{1,2,3,4,5,6,7,8,9}};
+//     const array2D vergleich = {{45,24,-12,-4,8,-12,0,-4,-4}};
+
+//     const array2D trafo = TRAFO_MATRIX2D * verteilung;
+
+//     EXPECT_EQ(vergleich, trafo);
+// }
+
+// TEST(Matrix2D_alter,backtrafo){
+//     const array2D vergleich = {{1,2,3,4,5,6,7,8,9}};
+//     const array2D verteilung = {{45,24,-12,-4,8,-12,0,-4,-4}};
+
+//     const array2D backtrafo = INV_TRAFO_MATRIX2D * verteilung;
+
+//     for(int i = 0; i<9;i++)
+//     {
+//         EXPECT_DOUBLE_EQ(vergleich[i],backtrafo[i]);
+//     }
+// }
+
+// TEST(Matrix2D_alter,multiply){
+//     const Matrix2D_alter S(RelaxationPar2D(1,10,100));
+//     const array2D f = {{1,2,3,4,5,6,7,8,9}};
+//     // const array2D vergleich = {{ -48, -382, 194, 18, -206, 418, -206, 18, 194}};
+//     const array2D vergleich = {{ 1, 2, 30, 4, 500, 6, 700, 8, 9}};
+
+//     array2D test = S*f;
+
+//     for(int i = 0; i<9;i++)
+//     {
+//         EXPECT_DOUBLE_EQ(vergleich[i],test[i])<<"i = "<<i ;
+//     }
+// }
+
+// TEST(Matrix2D_alter,multiply_linewise){
+//     const Matrix2D_alter S(RelaxationPar2D(1,10,100));
+//     const array2D f = {{1,2,3,4,5,6,7,8,9}};
+//     // const array2D vergleich = {{ -48, -382, 194, 18, -206, 418, -206, 18, 194}};
+//     const array2D vergleich = {{ 1, 2, 30, 4, 500, 6, 700, 8, 9}};
+
+//     array2D test;
+
+//     for(int i = 0; i<9;i++)
+//     {
+//         test[i] = S.linewise(f,i);
+//         EXPECT_DOUBLE_EQ(vergleich[i],test[i])<<"i = "<<i ;
+//     }
+// }
+
+// TEST(Matrix2D_alter,identity){
+//     const array2D f = {{1,2,3,4,5,6,7,8,9}};
+//     const array2D f0 = {{0,0,0,0,0,0,0,0,0}};
+
+//     const Matrix2D_alter Identity = Matrix2D_alter(true);
+//     const Matrix2D_alter Zeros = Matrix2D_alter();
+//     array2D test;
+
+//     EXPECT_EQ(f, Identity * f);
+//     EXPECT_EQ(f0, Zeros * f);
+//     for(int i = 0; i<9;i++)
+//     {
+//         test[i] = Identity.linewise(f,i);
+//     }
+//     EXPECT_EQ(f, test);
+// }
+
+// TEST(Matrix2D_alter,plus_times){
+//     const Matrix2D_alter Identity = Matrix2D_alter(true);
+    
+//     EXPECT_EQ(Identity+Identity, Identity*2);
+
+//     EXPECT_EQ(TRAFO_MATRIX2D+TRAFO_MATRIX2D+TRAFO_MATRIX2D, TRAFO_MATRIX2D*3);
+//     EXPECT_EQ(TRAFO_MATRIX2D+TRAFO_MATRIX2D, (TRAFO_MATRIX2D*3)-TRAFO_MATRIX2D);
+// }
 
 #endif

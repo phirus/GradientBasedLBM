@@ -197,9 +197,6 @@ bool Lattice2D::collideAll(int threads, bool gravity, bool isLimitActive)
             linearIndex(index,x,y);
             Cell2D tmpCell = (*data)[x][y];
 
-            //const bool boundary_position = isBoundary(x, y);
-
-
             if (tmpCell.getIsSolid() == false && isBoundary(x, y) == false)
             {
                 DistributionSetType2D  fTmp;
@@ -221,13 +218,20 @@ bool Lattice2D::collideAll(int threads, bool gravity, bool isLimitActive)
                 const DistributionSetType2D diff = distro_diff_2D(fCell, fEq);
             
                 const double omega = param.getOmega(tmpCell.calcPsi());
-                const Matrix2D relaxation_matrix(relax,omega);
+                const Matrix2D relaxation_matrix(relax,false,omega);
                 
-                const Matrix2D forcing_factor = Matrix2D(true) - (relaxation_matrix*0.5);    // (I - 0.5 S) -> ( 1 - 0.5 omega)
-                const DistributionSetType2D first_forcing_term = forcing_factor * (TRAFO_MATRIX2D * calculate_forcing_term(G,u)); // F' = (I - 0.5 S) M F
+                // const Matrix2D forcing_factor = Matrix2D(true) - (relaxation_matrix*0.5);    // (I - 0.5 S) -> ( 1 - 0.5 omega)
+                // const DistributionSetType2D first_forcing_term = forcing_factor * (TRAFO_MATRIX2D * calculate_forcing_term(G,u)); // F' = (I - 0.5 S) M F
+                // const DistributionSetType2D second_forcing_term = INV_TRAFO_MATRIX2D * first_forcing_term;    // M^{-1} F'
+
+                // const DistributionSetType2D single_phase_col = INV_TRAFO_MATRIX2D * (relaxation_matrix * (TRAFO_MATRIX2D * diff));
+
+                const Matrix2D forcing_factor(relax,true,omega);    // (I - 0.5 S) -> ( 1 - 0.5 omega)
+                const DistributionSetType2D first_forcing_term = forcing_factor.diagMult(TRAFO_MATRIX2D * calculate_forcing_term(G,u)); // F' = (I - 0.5 S) M F
                 const DistributionSetType2D second_forcing_term = INV_TRAFO_MATRIX2D * first_forcing_term;    // M^{-1} F'
 
-                const DistributionSetType2D single_phase_col = INV_TRAFO_MATRIX2D * (relaxation_matrix * (TRAFO_MATRIX2D * diff));
+                const DistributionSetType2D single_phase_col = INV_TRAFO_MATRIX2D * (relaxation_matrix.diagMult(TRAFO_MATRIX2D * diff));
+
                           
                 const ColSet A_k = param.getAk(omega);
                 const Vector2D grad = getGradient(x,y);

@@ -6,7 +6,7 @@ AR = ar
 LD = g++
 WINDRES = windres
 
-INC = -I../../../gtest-1.7.0/include
+INC = -I ../../../gtest-1.7.0/include -I ../helpers
 CFLAGS =  -Wall -g -fopenmp -std=c++11
 LIB = ../../../gtest-1.7.0/make/gtest_main.a
 LDFLAGS = -lgomp -lpthread
@@ -17,6 +17,7 @@ BIN_DIR = bin
 OUTPUT = $(BIN_DIR)/GradientBased
 
 # creating OBJs
+# OBJ_DEBUG = $(OBJ_DIR)/Analyze_basic.o  $(OBJ_DIR)/Analyze2D.o  $(OBJ_DIR)/Analyze3D.o $(OBJ_DIR)/BasicIO.o $(OBJ_DIR)/BinaryIO2D.o $(OBJ_DIR)/BinaryIO3D.o $(OBJ_DIR)/Constants2D.o $(OBJ_DIR)/Constants3D.o $(OBJ_DIR)/Cell2D.o $(OBJ_DIR)/Cell3D.o $(OBJ_DIR)/Definitions2D.o $(OBJ_DIR)/Definitions3D.o $(OBJ_DIR)/Lattice2D.o $(OBJ_DIR)/Lattice3D.o $(OBJ_DIR)/main.o $(OBJ_DIR)/Matrix2D.o $(OBJ_DIR)/Matrix2D_alter.o $(OBJ_DIR)/Matrix3D.o $(OBJ_DIR)/ParamSet.o $(OBJ_DIR)/Preprocess.o $(OBJ_DIR)/Timetrack.o $(OBJ_DIR)/Vector2D.o $(OBJ_DIR)/Vector3D.o
 OBJ_DEBUG = $(OBJ_DIR)/Analyze_basic.o  $(OBJ_DIR)/Analyze2D.o  $(OBJ_DIR)/Analyze3D.o $(OBJ_DIR)/BasicIO.o $(OBJ_DIR)/BinaryIO2D.o $(OBJ_DIR)/BinaryIO3D.o $(OBJ_DIR)/Constants2D.o $(OBJ_DIR)/Constants3D.o $(OBJ_DIR)/Cell2D.o $(OBJ_DIR)/Cell3D.o $(OBJ_DIR)/Definitions2D.o $(OBJ_DIR)/Definitions3D.o $(OBJ_DIR)/Lattice2D.o $(OBJ_DIR)/Lattice3D.o $(OBJ_DIR)/main.o $(OBJ_DIR)/Matrix2D.o $(OBJ_DIR)/Matrix3D.o $(OBJ_DIR)/ParamSet.o $(OBJ_DIR)/Preprocess.o $(OBJ_DIR)/Timetrack.o $(OBJ_DIR)/Vector2D.o $(OBJ_DIR)/Vector3D.o
 
 all: build run
@@ -79,6 +80,9 @@ $(OBJ_DIR)/main.o: main.cc
 
 $(OBJ_DIR)/Matrix2D.o: $(SRC)/2D/Matrix2D.cc
 	$(CXX) $(CFLAGS) $(INC) -c $(SRC)/2D/Matrix2D.cc -o $(OBJ_DIR)/Matrix2D.o
+
+# $(OBJ_DIR)/Matrix2D_alter.o: $(SRC)/2D/Matrix2D_alter.cc
+# 	$(CXX) $(CFLAGS) $(INC) -c $(SRC)/2D/Matrix2D_alter.cc -o $(OBJ_DIR)/Matrix2D_alter.o
 
 $(OBJ_DIR)/Matrix3D.o: $(SRC)/3D/Matrix3D.cc
 	$(CXX) $(CFLAGS) $(INC) -c $(SRC)/3D/Matrix3D.cc -o $(OBJ_DIR)/Matrix3D.o

@@ -11,8 +11,10 @@ class Matrix2D
     public:
         /// Lifecylce
         Matrix2D(bool identity = false);
+        Matrix2D(double diag);
         Matrix2D(const boost::multi_array<double,2> &m);
-        Matrix2D(const RelaxationPar2D &relax, double omega = 1);
+        // Matrix2D(const RelaxationPar2D &relax, double omega = 1);
+        Matrix2D(const RelaxationPar2D &relax, bool forcingterm, double omega = 1);
         Matrix2D(const Matrix2D &other);
 
          /// operators
@@ -24,7 +26,9 @@ class Matrix2D
         const bool operator==(const Matrix2D &other)const;       
         
         /// operations
-        const double linewise(const array2D &other, int line) const;
+        const array2D diagMult(const array2D &other) const;
+        const DistributionSetType2D diagMult(const DistributionSetType2D &other) const;
+        //const double linewise(const array2D &other, int line) const;
         
         /// accessors
         inline const boost::multi_array<double,2> getData()const{return matrix;};
