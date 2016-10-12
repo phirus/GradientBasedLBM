@@ -148,23 +148,23 @@ void Lattice2D::streamAll(int threads)
     field2D *newData = new field2D(boost::extents[xsize][ysize]);
 
     omp_set_num_threads (threads);
-    const int range = xsize * ysize;
+    //const int range = xsize * ysize;
 
     #pragma omp parallel
     {
-        #pragma omp for        
-        for (int index = 0;  index < range; index++)
+        #pragma omp for collapse(2) schedule(dynamic, 100)
+        for (int x=0; x<xsize; x++)
         {
-            int x,y;
-            linearIndex(index,x,y);
-            const direction2D dir = directions(x,y);
-            Cell2D tmpCell = (*data)[x][y];
+            for (int y = 0; y < ysize; y++)
+            {
+                const direction2D dir = directions(x,y);
+                Cell2D tmpCell = (*data)[x][y];
 
-            if (tmpCell.getIsSolid() == false) streamAndBouncePull(tmpCell,dir);
+                if (tmpCell.getIsSolid() == false) streamAndBouncePull(tmpCell,dir);
 
-            tmpCell.calcRho();
-            #pragma omp critical(Zuweisung)
-            (*newData)[x][y] = tmpCell;
+                tmpCell.calcRho();
+                (*newData)[x][y] = tmpCell;
+            }
         }
     }
     delete data;
@@ -180,7 +180,7 @@ bool Lattice2D::collideAll(int threads, bool gravity, bool isLimitActive)
 
     const double beta = param.getBeta();
     const DistributionSetType2D phi = param.getPhi2D();
-    const int range = xsize * ysize;
+    //const int range = xsize * ysize;
     // const double rhoRedFixed = param.getRhoR();
     const RelaxationPar2D relax = param.getRelaxation2D();
     const double dt = param.getDeltaT();
@@ -190,11 +190,11 @@ bool Lattice2D::collideAll(int threads, bool gravity, bool isLimitActive)
 
     #pragma omp parallel
     {
-        #pragma omp for
-        for (int index = 0;  index < range; index++)
+        #pragma omp for collapse(2) schedule(dynamic, 100)
+        for (int x=0; x<xsize; x++)
         {
-            int x,y;
-            linearIndex(index,x,y);
+            for (int y = 0; y < ysize; y++)
+            {
             Cell2D tmpCell = (*data)[x][y];
 
             if (tmpCell.getIsSolid() == false && isBoundary(x, y) == false)
@@ -285,10 +285,11 @@ bool Lattice2D::collideAll(int threads, bool gravity, bool isLimitActive)
                 tmpCell.setF(fTmp);
                 tmpCell.calcRho();
             }
-            #pragma omp critical(Zuweisung2)
             (*newData)[x][y] = tmpCell;
         }
     }
+    }
+    
     
     if(success == true){
         delete data;

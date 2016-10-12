@@ -1,6 +1,7 @@
 #include<iostream>
 #include<ctime>
 #include<vector>
+#include<chrono>
 
 #include"../src/2D/Lattice2D.h"
 #include"../src/2D/BinaryIO2D.h"
@@ -122,8 +123,13 @@ int main(int argc, char** argv){
         // write_vtk_output2D(meins, 0);
     }
 
-    time_t start,end;
-    time(&start);
+    //time_t start,end;
+    std::chrono::high_resolution_clock::time_point start,end;
+    //std::chrono::high_resolution_clock::duration parallel, sequential;
+    auto parallel = std::chrono::duration_cast<std::chrono::microseconds>( end - end).count();
+    auto sequential = std::chrono::duration_cast<std::chrono::microseconds>( end - end).count();
+
+//    time(&start);
 
     const int outputInterval = timetrack.getOutputInt();
     const int restartInterval = timetrack.getRestartInt();
@@ -141,10 +147,23 @@ int main(int argc, char** argv){
 
     while (timetrack.proceed() == true)
     {
+        start = std::chrono::high_resolution_clock::now();
         meins.collideAll(numOfCPUs,true,true);
-        meins.evaluateBoundaries();
-        meins.streamAll(numOfCPUs);
+        end = std::chrono::high_resolution_clock::now();
+        parallel += std::chrono::duration_cast<std::chrono::microseconds>( end - start).count();
 
+
+        start = std::chrono::high_resolution_clock::now();
+        meins.evaluateBoundaries();
+        end = std::chrono::high_resolution_clock::now();
+        sequential +=  std::chrono::duration_cast<std::chrono::microseconds>( end - start).count();
+
+        start = std::chrono::high_resolution_clock::now();
+        meins.streamAll(numOfCPUs);
+        end = std::chrono::high_resolution_clock::now();
+        parallel +=  std::chrono::duration_cast<std::chrono::microseconds>( end - start).count();
+
+        start = std::chrono::high_resolution_clock::now();
         timetrack.timestep();
 
         // Output if necessary
@@ -196,6 +215,9 @@ int main(int argc, char** argv){
             statistics.push_back(reynolds_data);
             write_csv(statistics, "BubblePlot.csv", "time;PosX;PosY;v_x;v_y;Re");
 
+            end = std::chrono::high_resolution_clock::now();
+            sequential +=  std::chrono::duration_cast<std::chrono::microseconds>( end - start).count();
+
             if(pos_tmp.y > 0.96 * ymax)
             {
                 cout << "\nBubble reached the top";
@@ -204,8 +226,11 @@ int main(int argc, char** argv){
         }         
     }
 
-    time(&end);
-    cout<<"\nBerechnung beendet nach "<< difftime(end,start) <<" Sekunden"<<endl;
+//    time(&end);
+//    cout<<"\nBerechnung beendet nach "<< difftime(end,start) <<" Sekunden"<<endl;
+      cout<<"\nBerechnung beendet nach "<< sequential+parallel <<" Micro-Sekunden"<<endl;
+      cout<<"\nDavon parallel:  "<< parallel <<" Micro-Sekunden"<<endl;
+      cout<<"\nDavon sequentiell "<< sequential <<" Micro-Sekunden"<<endl;
 
     return 0;
 }
