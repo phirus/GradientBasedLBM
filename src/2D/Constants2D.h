@@ -19,6 +19,7 @@ const boost::array<double,13> GRAD_WEIGHTS_2D = {{0, 0.2666666666666667, 0.1, 0.
 /// D2Q13 directions
 const Vector2D e0(0,0),e1(1,0),e2(1,1),e3(0,1),e4(-1,1),e5(-1,0),e6(-1,-1),e7(0,-1),e8(1,-1),e9(2,0),e10(0,2),e11(-2,0),e12(0,-2);
 const boost::array<Vector2D,13> DIRECTION_2D = {{e0,e1,e2,e3,e4,e5,e6,e7,e8,e9,e10,e11,e12}};
+const boost::array<double,13> DIRECTION_ABS_2D = {{e0.Abs(),e1.Abs(),e2.Abs(),e3.Abs(),e4.Abs(),e5.Abs(),e6.Abs(),e7.Abs(),e8.Abs(),e9.Abs(),e10.Abs(),e11.Abs(),e12.Abs()}};
 
 /// D2Q9 streaming indices
 const boost::array<int,9> PULL_INDEX_2D = {{0,5,6,7,8,1,2,3,4}};

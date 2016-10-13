@@ -235,30 +235,39 @@ bool Lattice2D::collideAll(int threads, bool gravity, bool isLimitActive)
                     double scal;
                     double fges;
                     double recolor;
-            
-                    for (int q=0; q<9; q++)
-                    {
-                        // gradient based two phase
-                        scal = grad*DIRECTION_2D[q];
 
+                    // q = 0
+                    for (int color=0;color<=1; color++)
+                    {
+                        fTmp[color][0] =  fCell[color][0] - single_phase_col[color][0]; //single
+                        if (gravity == true) fTmp[color][0] +=  dt * second_forcing_term[color][0]; // forcing term
+                        fTmp[color][0] += A_k[color] * (- (av/2 * B_2D[0])); // perturbation
+                    }
+                    fges = fTmp[0][0]+fTmp[1][0];
+                    if (rho > 0)
+                    {
+                        fTmp[0][0] = rho_k[0]/rho  * fges;
+                        fTmp[1][0] = rho_k[1]/rho * fges;
+                    }
+
+                    for (int q=1; q<9; q++)
+                    {
+                        scal = grad*DIRECTION_2D[q];
                         double gradient_collision(0);
                         if (av > 0 ) gradient_collision = av/2 * (WEIGHTS_2D[q] * ( scal*scal )/(av*av) - B_2D[q]);
 
                         for (int color=0;color<=1; color++)
                         {
-                            fTmp[color][q] =  fCell[color][q] - single_phase_col[color][q];// + dt * final_forcing_term;
+                            fTmp[color][q] =  fCell[color][q] - single_phase_col[color][q];
                             if (gravity == true) fTmp[color][q] +=  dt * second_forcing_term[color][q];
-                        }
-
-                        for (int color=0;color<=1; color++)
-                        {
                             fTmp[color][q] += A_k[color] * gradient_collision;
                         }
 
                         fges = fTmp[0][q]+fTmp[1][q];
 
                         // recoloring
-                        if (rho > 0) recolor = beta * (rho_k[0] * rho_k[1])/(rho*rho) *  grad.Angle(DIRECTION_2D[q])   * (rho_k[0] * phi.at(0).at(q) + rho_k[1] * phi.at(1).at(q)); 
+                        //if (rho > 0) recolor = beta * (rho_k[0] * rho_k[1])/(rho*rho) *  grad.Angle(DIRECTION_2D[q])   * (rho_k[0] * phi.at(0).at(q) + rho_k[1] * phi.at(1).at(q)); 
+                        if (rho > 0 && av>0) recolor = beta * (rho_k[0] * rho_k[1])/(rho*rho) * (scal /(av * DIRECTION_ABS_2D[q])) * (rho_k[0] * phi.at(0).at(q) + rho_k[1] * phi.at(1).at(q)); 
                         else recolor = 0;
 
                         if (rho > 0)
@@ -267,11 +276,6 @@ bool Lattice2D::collideAll(int threads, bool gravity, bool isLimitActive)
                             fTmp[1][q] = rho_k[1]/rho * fges - recolor;
                         }
 
-                        if (gravity == true)
-                        {
-                            fTmp[0][q] +=  dt * second_forcing_term[0][q];
-                            fTmp[1][q] +=  dt * second_forcing_term[1][q];
-                        }
                     } // end for
 
                     tmpCell.setF(fTmp);
