@@ -958,7 +958,7 @@ const DistributionSetType2D calculate_forcing_term(Vector2D G, VeloSet2D u)
     for (int i=0; i<9; i++)
     {
         forcing_term[0][i] = 0;
-        forcing_term[1][i] = WEIGHTS_2D[i] * (G * ( DIRECTION_2D[i] * (DIRECTION_2D[i] * u[1]) + DIRECTION_2D[i] - u[1])) ;
+        forcing_term[1][i] = WEIGHTS_2D[i] * (G * ( DIRECTION_2D[i] * (DIRECTION_2D[i] * u[1]) * 9 + (DIRECTION_2D[i] - u[1]) * 3)) ;
     }
     return forcing_term;
 }
