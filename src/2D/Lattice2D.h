@@ -34,7 +34,7 @@ public:
     /// LB steps
     void streamAll(int threads = 1); /// < streaming step
     bool collideAll(int threads = 1, bool gravity = false, bool isLimitActive = true); /// < collision step
-    void evaluateBoundaries();
+    void evaluateBoundaries(int threads = 1);
 
     /// walls
     void closedBox(); /// < initialize the Lattice2D (set up walls and calculate rho)

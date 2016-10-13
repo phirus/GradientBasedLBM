@@ -195,396 +195,399 @@ bool Lattice2D::collideAll(int threads, bool gravity, bool isLimitActive)
         {
             for (int y = 0; y < ysize; y++)
             {
-            Cell2D tmpCell = (*data)[x][y];
+                Cell2D tmpCell = (*data)[x][y];
 
-            if (tmpCell.getIsSolid() == false && isBoundary(x, y) == false)
-            {
-                DistributionSetType2D  fTmp;
-                const DistributionSetType2D fCell = tmpCell.getF();
+                if (tmpCell.getIsSolid() == false && isBoundary(x, y) == false)
+                {
+                    DistributionSetType2D  fTmp;
+                    const DistributionSetType2D fCell = tmpCell.getF();
 
-                const ColSet rho_k = tmpCell.getRho();
-                const double rho = sum(rho_k);
+                    const ColSet rho_k = tmpCell.getRho();
+                    const double rho = sum(rho_k);
 
-                const Vector2D G(0 ,  g*(rho - rho_k[0]));
+                    const Vector2D G(0 ,  g*(rho - rho_k[0]));
 
-                VeloSet2D u = tmpCell.getU();
+                    VeloSet2D u = tmpCell.getU();
 
-                if(gravity == true){
-                u[0] = u[0] + G *  (dt/(2* rho)) ;
-                u[1] = u[1] + G *  (dt/(2* rho)) ;
-                }
+                    if(gravity == true)
+                    {
+                        u[0] = u[0] + G *  (dt/(2* rho)) ;
+                        u[1] = u[1] + G *  (dt/(2* rho)) ;
+                    }
 
-                const DistributionSetType2D fEq = eqDistro(rho_k, u, phi);
-                const DistributionSetType2D diff = distro_diff_2D(fCell, fEq);
+                    const DistributionSetType2D fEq = eqDistro(rho_k, u, phi);
+                    const DistributionSetType2D diff = distro_diff_2D(fCell, fEq);
             
-                const double omega = param.getOmega(tmpCell.calcPsi());
-                const Matrix2D relaxation_matrix(relax,false,omega);
-                
-                // const Matrix2D forcing_factor = Matrix2D(true) - (relaxation_matrix*0.5);    // (I - 0.5 S) -> ( 1 - 0.5 omega)
-                // const DistributionSetType2D first_forcing_term = forcing_factor * (TRAFO_MATRIX2D * calculate_forcing_term(G,u)); // F' = (I - 0.5 S) M F
-                // const DistributionSetType2D second_forcing_term = INV_TRAFO_MATRIX2D * first_forcing_term;    // M^{-1} F'
+                    const double omega = param.getOmega(tmpCell.calcPsi());
+                    const Matrix2D relaxation_matrix(relax,false,omega);
 
-                // const DistributionSetType2D single_phase_col = INV_TRAFO_MATRIX2D * (relaxation_matrix * (TRAFO_MATRIX2D * diff));
+                    const Matrix2D forcing_factor(relax,true,omega);    // (I - 0.5 S) -> ( 1 - 0.5 omega)
+                    const DistributionSetType2D first_forcing_term = forcing_factor.diagMult(TRAFO_MATRIX2D * calculate_forcing_term(G,u)); // F' = (I - 0.5 S) M F
+                    const DistributionSetType2D second_forcing_term = INV_TRAFO_MATRIX2D * first_forcing_term;    // M^{-1} F'
 
-                const Matrix2D forcing_factor(relax,true,omega);    // (I - 0.5 S) -> ( 1 - 0.5 omega)
-                const DistributionSetType2D first_forcing_term = forcing_factor.diagMult(TRAFO_MATRIX2D * calculate_forcing_term(G,u)); // F' = (I - 0.5 S) M F
-                const DistributionSetType2D second_forcing_term = INV_TRAFO_MATRIX2D * first_forcing_term;    // M^{-1} F'
-
-                const DistributionSetType2D single_phase_col = INV_TRAFO_MATRIX2D * (relaxation_matrix.diagMult(TRAFO_MATRIX2D * diff));
+                    const DistributionSetType2D single_phase_col = INV_TRAFO_MATRIX2D * (relaxation_matrix.diagMult(TRAFO_MATRIX2D * diff));
 
                           
-                const ColSet A_k = param.getAk(omega);
-                const Vector2D grad = getGradient(x,y);
-                const double av = grad.Abs();
+                    const ColSet A_k = param.getAk(omega);
+                    const Vector2D grad = getGradient(x,y);
+                    const double av = grad.Abs();
 
-                double scal;
-                double fges;
-                double recolor;
-                // double final_forcing_term(0);                
-
-                for (int q=0; q<9; q++)
-                {
-                    // gradient based two phase
-                    scal = grad*DIRECTION_2D[q];
-
-                    double gradient_collision(0);
-                    if (av > 0 ) gradient_collision = av/2 * (WEIGHTS_2D[q] * ( scal*scal )/(av*av) - B_2D[q]);
-
-                    for (int color=0;color<=1; color++)
+                    double scal;
+                    double fges;
+                    double recolor;
+            
+                    for (int q=0; q<9; q++)
                     {
-                        // if (gravity == true) final_forcing_term = second_forcing_term[color][q] ;
-                        // fTmp[color][q] =  fCell[color][q] - single_phase_col[color][q] + dt * final_forcing_term + A_k[color] * gradient_collision;
-                        fTmp[color][q] =  fCell[color][q] - single_phase_col[color][q];// + dt * final_forcing_term;
-                        if (gravity == true) fTmp[color][q] +=  dt * second_forcing_term[color][q];
-                    }
-                    
-                    for (int color=0;color<=1; color++)
-                    {
-                        fTmp[color][q] += A_k[color] * gradient_collision;
-                    }
+                        // gradient based two phase
+                        scal = grad*DIRECTION_2D[q];
 
-                    fges = fTmp[0][q]+fTmp[1][q];
+                        double gradient_collision(0);
+                        if (av > 0 ) gradient_collision = av/2 * (WEIGHTS_2D[q] * ( scal*scal )/(av*av) - B_2D[q]);
 
-                    // recoloring
-                    if (rho > 0) recolor = beta * (rho_k[0] * rho_k[1])/(rho*rho) *  grad.Angle(DIRECTION_2D[q])   * (rho_k[0] * phi.at(0).at(q) + rho_k[1] * phi.at(1).at(q)); 
-                    else recolor = 0;
+                        for (int color=0;color<=1; color++)
+                        {
+                            fTmp[color][q] =  fCell[color][q] - single_phase_col[color][q];// + dt * final_forcing_term;
+                            if (gravity == true) fTmp[color][q] +=  dt * second_forcing_term[color][q];
+                        }
 
-                    if (rho > 0)
-                    {
-                        fTmp[0][q] = rho_k[0]/rho  * fges + recolor;
-                        fTmp[1][q] = rho_k[1]/rho * fges - recolor;
-                    }
+                        for (int color=0;color<=1; color++)
+                        {
+                            fTmp[color][q] += A_k[color] * gradient_collision;
+                        }
 
-                    if (gravity == true){
-                        fTmp[0][q] +=  dt * second_forcing_term[0][q];
-                        fTmp[1][q] +=  dt * second_forcing_term[1][q];
-                    } 
+                        fges = fTmp[0][q]+fTmp[1][q];
 
-                } // end for 
+                        // recoloring
+                        if (rho > 0) recolor = beta * (rho_k[0] * rho_k[1])/(rho*rho) *  grad.Angle(DIRECTION_2D[q])   * (rho_k[0] * phi.at(0).at(q) + rho_k[1] * phi.at(1).at(q)); 
+                        else recolor = 0;
 
-                tmpCell.setF(fTmp);
-                tmpCell.calcRho();
+                        if (rho > 0)
+                        {
+                            fTmp[0][q] = rho_k[0]/rho  * fges + recolor;
+                            fTmp[1][q] = rho_k[1]/rho * fges - recolor;
+                        }
+
+                        if (gravity == true)
+                        {
+                            fTmp[0][q] +=  dt * second_forcing_term[0][q];
+                            fTmp[1][q] +=  dt * second_forcing_term[1][q];
+                        }
+                    } // end for
+
+                    tmpCell.setF(fTmp);
+                    tmpCell.calcRho();
+                }
+                (*newData)[x][y] = tmpCell;
             }
-            (*newData)[x][y] = tmpCell;
         }
     }
-    }
     
     
-    if(success == true){
+    if(success == true)
+    {
         delete data;
         data = newData;
     }
-    else{
+    else
+    {
         delete newData;
     }     
 
     return success;
 }
 
-void Lattice2D::evaluateBoundaries()
+void Lattice2D::evaluateBoundaries(int threads)
 {
-    // north boundary
-    if(bound.north.getType() == pressure)
+    omp_set_num_threads (threads);
+
+    #pragma omp parallel
     {
-        ColSet rho = bound.north.getRho();
-
-        int lowerX = 0;
-        int upperX = xsize;
-
-        if (bound.west.getType() != periodic) lowerX++;
-        if (bound.east.getType() != periodic) upperX--;
-
-        if(bound.west.getType() == pressure)
+        // north boundary
+        if(bound.north.getType() == pressure)
         {
-            // north west corner
-            Cell2D tmpCell = (*data)[0][ysize-1];
-            DistributionSetType2D f = tmpCell.getF();
+            ColSet rho = bound.north.getRho();
 
-            for(int color = 0; color <= 1; color++)
+            int lowerX = 0;
+            int upperX = xsize;
+
+            if (bound.west.getType() != periodic) lowerX++;
+            if (bound.east.getType() != periodic) upperX--;
+
+            if(bound.west.getType() == pressure)
             {
-                if(rho[color]>0 )
+                // north west corner
+                Cell2D tmpCell = (*data)[0][ysize-1];
+                DistributionSetType2D f = tmpCell.getF();
+
+                for(int color = 0; color <= 1; color++)
                 {
-                    f[color][1] = f[color][5];
-                    f[color][7] = f[color][3];
-                    f[color][8] = f[color][4];
-                    f[color][2] = 0.5 * (rho[color] - f[color][0] )  - f[color][3] - f[color][4] - f[color][5];
-                    f[color][6] = f[color][2];
+                    if(rho[color]>0 )
+                    {
+                        f[color][1] = f[color][5];
+                        f[color][7] = f[color][3];
+                        f[color][8] = f[color][4];
+                        f[color][2] = 0.5 * (rho[color] - f[color][0] )  - f[color][3] - f[color][4] - f[color][5];
+                        f[color][6] = f[color][2];
+                    }
+                    else
+                    {
+                        f[color][1] = 0;
+                        f[color][2] = 0;
+                        f[color][6] = 0;
+                        f[color][7] = 0;
+                        f[color][8] = 0;
+                    }
                 }
-                else
-                {
-                    f[color][1] = 0;
-                    f[color][2] = 0;
-                    f[color][6] = 0;
-                    f[color][7] = 0;
-                    f[color][8] = 0;
-                }
+                tmpCell.setF(f);
+                tmpCell.calcRho();
+                (*data)[0][ysize-1] = tmpCell;
             }
-            tmpCell.setF(f);
-            tmpCell.calcRho();
-            (*data)[0][ysize-1] = tmpCell;
-        }
 
-        if(bound.east.getType() == pressure)
-        {
-            // north east corner
-            Cell2D tmpCell = (*data)[xsize-1][ysize-1];
-            DistributionSetType2D f = tmpCell.getF();
-
-            for(int color = 0; color <= 1; color++)
+            if(bound.east.getType() == pressure)
             {
-                if(rho[color]>0 )
+                // north east corner
+                Cell2D tmpCell = (*data)[xsize-1][ysize-1];
+                DistributionSetType2D f = tmpCell.getF();
+
+                for(int color = 0; color <= 1; color++)
                 {
-                    f[color][5] = f[color][1];
-                    f[color][6] = f[color][2];
-                    f[color][7] = f[color][3];
-                    f[color][4] = 0.5 * (rho[color] - f[color][0] )  - f[color][1] - f[color][2] - f[color][3];
-                    f[color][8] = f[color][4];
+                    if(rho[color]>0 )
+                    {
+                        f[color][5] = f[color][1];
+                        f[color][6] = f[color][2];
+                        f[color][7] = f[color][3];
+                        f[color][4] = 0.5 * (rho[color] - f[color][0] )  - f[color][1] - f[color][2] - f[color][3];
+                        f[color][8] = f[color][4];
+                    }
+                    else
+                    {
+                        f[color][4] = 0;
+                        f[color][5] = 0;
+                        f[color][6] = 0;
+                        f[color][7] = 0;
+                        f[color][8] = 0;
+                    }
                 }
-                else
-                {
-                    f[color][4] = 0;
-                    f[color][5] = 0;
-                    f[color][6] = 0;
-                    f[color][7] = 0;
-                    f[color][8] = 0;
-                }
+                tmpCell.setF(f);
+                tmpCell.calcRho();
+                (*data)[xsize-1][ysize-1] = tmpCell;
             }
-            tmpCell.setF(f);
-            tmpCell.calcRho();
-            (*data)[xsize-1][ysize-1] = tmpCell;
-        }
 
-        for (int x=lowerX; x<upperX; x++)
-        {
-            Cell2D tmpCell = (*data)[x][ysize-1] ;
-
-            DistributionSetType2D f = tmpCell.getF();
-            ColSet u_y;
-
-            for(int color = 0; color <= 1; color++)
+            #pragma omp for schedule(static,10) nowait
+            for (int x=lowerX; x<upperX; x++)
             {
-                if(rho[color]>0)
-                {
-                    u_y[color] = -1.0 + (f[color][0] + f[color][1] + f[color][5] + 2* (f[color][2] + f[color][3] + f[color][4])) / rho[color];
-                    f[color][7] = f[color][3] - 2.0/3.0 * rho[color]*u_y[color];
-                    f[color][6] = rho[color]*u_y[color]/6.0 + f[color][2] + (f[color][1] - f[color][5])/2.0;
-                    f[color][8] = rho[color]*u_y[color]/6.0 + f[color][4] + (f[color][5] - f[color][1])/2.0;
-                }
-                else
-                {
-                    u_y[color] = 0;
-                    f[color][7] = 0;
-                    f[color][6] = 0;
-                    f[color][8] = 0;
-                }
-            }
-            tmpCell.setF(f);
-            tmpCell.calcRho();
-            (*data)[x][ysize-1] = tmpCell;
-        }
-    }
-
-    // south boundary
-    if(bound.south.getType() == pressure)
-    {
-        ColSet rho = bound.south.getRho();
-        int lowerX = 0;
-        int upperX = xsize;
-
-        if (bound.west.getType() != periodic) lowerX++;
-        if (bound.east.getType() != periodic) upperX--;
-
-        if(bound.west.getType() == pressure)
-        {
-            // south west corner
-            Cell2D tmpCell = (*data)[0][0];
-            DistributionSetType2D f = tmpCell.getF();
-
-            for(int color = 0; color <= 1; color++)
-            {
-                if(rho[color]>0 )
-                {
-                    f[color][1] = f[color][5];
-                    f[color][2] = f[color][6];
-                    f[color][3] = f[color][7];
-                    f[color][4] = 0.5 * (rho[color] - f[color][0] )  - f[color][5] - f[color][6] - f[color][7];
-                    f[color][8] = f[color][4];
-                }
-                else
-                {
-                    f[color][1] = 0;
-                    f[color][2] = 0;
-                    f[color][3] = 0;
-                    f[color][4] = 0;
-                    f[color][8] = 0;
-                }
-            }
-            tmpCell.setF(f);
-            tmpCell.calcRho();
-            (*data)[0][0] = tmpCell;
-        }
-
-        if(bound.east.getType() == pressure)
-        {
-            // south east corner
-            Cell2D tmpCell = (*data)[xsize-1][0];
-            DistributionSetType2D f = tmpCell.getF();
-
-            for(int color = 0; color <= 1; color++)
-            {
-                if(rho[color]>0 )
-                {
-                    f[color][3] = f[color][7];
-                    f[color][4] = f[color][8];
-                    f[color][5] = f[color][1];
-                    f[color][2] = 0.5 * (rho[color] - f[color][0] )  - f[color][1] - f[color][7] - f[color][8];
-                    f[color][6] = f[color][4];
-                }
-                else
-                {
-                    f[color][3] = 0;
-                    f[color][4] = 0;
-                    f[color][5] = 0;
-                    f[color][2] = 0;
-                    f[color][6] = 0;
-                }
-            }
-            tmpCell.setF(f);
-            tmpCell.calcRho();
-            (*data)[xsize-1][0] = tmpCell;
-        }
-
-        for (int x=lowerX; x<upperX; x++)
-        {
-            Cell2D tmpCell = (*data)[x][0] ;
-
-            DistributionSetType2D f = tmpCell.getF();
-            ColSet u_y;
-
-            for(int color = 0; color <= 1; color++)
-            {
-                if(rho[color]>0 )
-                {
-                    u_y[color] = 1.0 - (f[color][0] + f[color][1] + f[color][5] + 2* (f[color][6] + f[color][7] + f[color][8])) / rho[color];
-                    f[color][3] = f[color][7] + 2.0/3.0 * rho[color]*u_y[color];
-                    f[color][2] = - rho[color]*u_y[color]/6.0 + f[color][6] + (f[color][5] - f[color][1])/2.0;
-                    f[color][4] = - rho[color]*u_y[color]/6.0 + f[color][8] + (f[color][1] - f[color][5])/2.0;
-                }
-                else
-                {
-                    u_y[color] = 0;
-                    f[color][3] = 0;
-                    f[color][2] = 0;
-                    f[color][4] = 0;
-                }
-            }
-            tmpCell.setF(f);
-            tmpCell.calcRho();
-            (*data)[x][0] = tmpCell;
-        }
-    }
+                Cell2D tmpCell = (*data)[x][ysize-1] ;
     
-
-    // west boundary
-    if(bound.west.getType() == pressure)
-    {
-        ColSet rho = bound.west.getRho();
-
-        int lowerY = 0;
-        int upperY = ysize;
-        if (bound.south.getType() != periodic) lowerY++;
-        if (bound.north.getType() != periodic) upperY--;
-
-        for (int y=lowerY; y< upperY; y++)
-        {
-            Cell2D tmpCell = (*data)[0][y] ;
-
-            DistributionSetType2D f = tmpCell.getF();
-            ColSet u_x;
-
-            for(int color = 0; color <= 1; color++)
-            {
-                if(rho[color]>0)
+                DistributionSetType2D f = tmpCell.getF();
+                ColSet u_y;
+    
+                for(int color = 0; color <= 1; color++)
                 {
-                    u_x[color] = 1.0 - (f[color][0] + f[color][3] + f[color][7] + 2* (f[color][4] + f[color][5] + f[color][6])) / rho[color];
-                    f[color][1] = f[color][5] + 2.0/3.0 * rho[color]*u_x[color];
-                    f[color][2] = rho[color]*u_x[color]/6.0 + f[color][6] + (f[color][7] - f[color][3])/2.0;
-                    f[color][8] = rho[color]*u_x[color]/6.0 + f[color][4] + (f[color][3] - f[color][7])/2.0;
+                    if(rho[color]>0)
+                    {
+                        u_y[color] = -1.0 + (f[color][0] + f[color][1] + f[color][5] + 2* (f[color][2] + f[color][3] + f[color][4])) / rho[color];
+                        f[color][7] = f[color][3] - 2.0/3.0 * rho[color]*u_y[color];
+                        f[color][6] = rho[color]*u_y[color]/6.0 + f[color][2] + (f[color][1] - f[color][5])/2.0;
+                        f[color][8] = rho[color]*u_y[color]/6.0 + f[color][4] + (f[color][5] - f[color][1])/2.0;
+                    }
+                    else
+                    {
+                        u_y[color] = 0;
+                        f[color][7] = 0;
+                        f[color][6] = 0;
+                        f[color][8] = 0;
+                    }
                 }
-                else
-                {
-                    u_x[color] = 0;
-                    f[color][1] = 0;
-                    f[color][2] = 0;
-                    f[color][8] = 0;
-                }
+                tmpCell.setF(f);
+                tmpCell.calcRho();
+                (*data)[x][ysize-1] = tmpCell;
             }
-            tmpCell.setF(f);
-            tmpCell.calcRho();
-            (*data)[0][y] = tmpCell;
         }
-    }
 
-    // east boundary
-    if(bound.east.getType() == pressure)
-    {
-        ColSet rho = bound.east.getRho();
-
-        int lowerY = 0;
-        int upperY = ysize;
-
-        if (bound.south.getType() != periodic) lowerY++;
-        if (bound.north.getType() != periodic) upperY--;
-
-        for (int y=lowerY; y< upperY; y++)
+        // south boundary
+        if(bound.south.getType() == pressure)
         {
-            Cell2D tmpCell = (*data)[xsize-1][y] ;
-
-            DistributionSetType2D f = tmpCell.getF();
-            ColSet u_x;
-
-            for(int color = 0; color <= 1; color++)
+            ColSet rho = bound.south.getRho();
+            int lowerX = 0;
+            int upperX = xsize;
+    
+            if (bound.west.getType() != periodic) lowerX++;
+            if (bound.east.getType() != periodic) upperX--;
+    
+            if(bound.west.getType() == pressure)
             {
-                if(rho[color]>0)
+                // south west corner
+                Cell2D tmpCell = (*data)[0][0];
+                DistributionSetType2D f = tmpCell.getF();
+    
+                for(int color = 0; color <= 1; color++)
                 {
-                    u_x[color] = -1.0 + (f[color][0] + f[color][3] + f[color][7] + 2* (f[color][1] + f[color][2] + f[color][8])) / rho[color];
-                    f[color][5] = f[color][1] - 2.0/3.0 * rho[color]*u_x[color];
-                    f[color][6] = - rho[color]*u_x[color]/6.0 + f[color][2] + (f[color][3] - f[color][7])/2.0;
-                    f[color][4] = - rho[color]*u_x[color]/6.0 + f[color][8] + (f[color][7] - f[color][3])/2.0;
+                    if(rho[color]>0 )
+                    {
+                        f[color][1] = f[color][5];
+                        f[color][2] = f[color][6];
+                        f[color][3] = f[color][7];
+                        f[color][4] = 0.5 * (rho[color] - f[color][0] )  - f[color][5] - f[color][6] - f[color][7];
+                        f[color][8] = f[color][4];
+                    }
+                    else
+                    {
+                        f[color][1] = 0;
+                        f[color][2] = 0;
+                        f[color][3] = 0;
+                        f[color][4] = 0;
+                        f[color][8] = 0;
+                    }
                 }
-                else
+                tmpCell.setF(f);
+                tmpCell.calcRho();
+                (*data)[0][0] = tmpCell;
+            }
+    
+            if(bound.east.getType() == pressure)
+            {
+                // south east corner
+                Cell2D tmpCell = (*data)[xsize-1][0];
+                DistributionSetType2D f = tmpCell.getF();
+    
+                for(int color = 0; color <= 1; color++)
                 {
-                    u_x[color] = 0;
-                    f[color][5] = 0;
-                    f[color][6] = 0;
-                    f[color][4] = 0;
+                    if(rho[color]>0 )
+                    {
+                        f[color][3] = f[color][7];
+                        f[color][4] = f[color][8];
+                        f[color][5] = f[color][1];
+                        f[color][2] = 0.5 * (rho[color] - f[color][0] )  - f[color][1] - f[color][7] - f[color][8];
+                        f[color][6] = f[color][4];
+                    }
+                    else
+                    {
+                        f[color][3] = 0;
+                        f[color][4] = 0;
+                        f[color][5] = 0;
+                        f[color][2] = 0;
+                        f[color][6] = 0;
+                    }
                 }
+                tmpCell.setF(f);
+                tmpCell.calcRho();
+                (*data)[xsize-1][0] = tmpCell;
             }
 
-            tmpCell.setF(f);
-            tmpCell.calcRho();
-            (*data)[xsize-1][y] = tmpCell;
+            #pragma omp for schedule(static,10) nowait
+            for (int x=lowerX; x<upperX; x++)
+            {
+                Cell2D tmpCell = (*data)[x][0] ;
+    
+                DistributionSetType2D f = tmpCell.getF();
+                ColSet u_y;
+    
+                for(int color = 0; color <= 1; color++)
+                {
+                    if(rho[color]>0 )
+                    {
+                        u_y[color] = 1.0 - (f[color][0] + f[color][1] + f[color][5] + 2* (f[color][6] + f[color][7] + f[color][8])) / rho[color];
+                        f[color][3] = f[color][7] + 2.0/3.0 * rho[color]*u_y[color];
+                        f[color][2] = - rho[color]*u_y[color]/6.0 + f[color][6] + (f[color][5] - f[color][1])/2.0;
+                        f[color][4] = - rho[color]*u_y[color]/6.0 + f[color][8] + (f[color][1] - f[color][5])/2.0;
+                    }
+                    else
+                    {
+                        u_y[color] = 0;
+                        f[color][3] = 0;
+                        f[color][2] = 0;
+                        f[color][4] = 0;
+                    }
+                }
+                tmpCell.setF(f);
+                tmpCell.calcRho();
+                (*data)[x][0] = tmpCell;
+            }
+        }
+    
+    
+        // west boundary
+        if(bound.west.getType() == pressure)
+        {
+            ColSet rho = bound.west.getRho();
+    
+            int lowerY = 0;
+            int upperY = ysize;
+            if (bound.south.getType() != periodic) lowerY++;
+            if (bound.north.getType() != periodic) upperY--;
+        
+            #pragma omp for schedule(static,10) nowait
+            for (int y=lowerY; y< upperY; y++)
+            {
+                Cell2D tmpCell = (*data)[0][y] ;
+    
+                DistributionSetType2D f = tmpCell.getF();
+                ColSet u_x;
+    
+                for(int color = 0; color <= 1; color++)
+                {
+                    if(rho[color]>0)
+                    {
+                        u_x[color] = 1.0 - (f[color][0] + f[color][3] + f[color][7] + 2* (f[color][4] + f[color][5] + f[color][6])) / rho[color];
+                        f[color][1] = f[color][5] + 2.0/3.0 * rho[color]*u_x[color];
+                        f[color][2] = rho[color]*u_x[color]/6.0 + f[color][6] + (f[color][7] - f[color][3])/2.0;
+                        f[color][8] = rho[color]*u_x[color]/6.0 + f[color][4] + (f[color][3] - f[color][7])/2.0;
+                    }
+                    else
+                    {
+                        u_x[color] = 0;
+                        f[color][1] = 0;
+                        f[color][2] = 0;
+                        f[color][8] = 0;
+                    }
+                }
+                tmpCell.setF(f);
+                tmpCell.calcRho();
+                (*data)[0][y] = tmpCell;
+            }
+        }
+    
+        // east boundary
+        if(bound.east.getType() == pressure)
+        {
+            ColSet rho = bound.east.getRho();
+    
+            int lowerY = 0;
+            int upperY = ysize;
+    
+            if (bound.south.getType() != periodic) lowerY++;
+            if (bound.north.getType() != periodic) upperY--;
+
+            #pragma omp for schedule(static,10) nowait
+            for (int y=lowerY; y< upperY; y++)
+            {
+                Cell2D tmpCell = (*data)[xsize-1][y] ;
+    
+                DistributionSetType2D f = tmpCell.getF();
+                ColSet u_x;
+    
+                for(int color = 0; color <= 1; color++)
+                {
+                    if(rho[color]>0)
+                    {
+                        u_x[color] = -1.0 + (f[color][0] + f[color][3] + f[color][7] + 2* (f[color][1] + f[color][2] + f[color][8])) / rho[color];
+                        f[color][5] = f[color][1] - 2.0/3.0 * rho[color]*u_x[color];
+                        f[color][6] = - rho[color]*u_x[color]/6.0 + f[color][2] + (f[color][3] - f[color][7])/2.0;
+                        f[color][4] = - rho[color]*u_x[color]/6.0 + f[color][8] + (f[color][7] - f[color][3])/2.0;
+                    }
+                    else
+                    {
+                        u_x[color] = 0;
+                        f[color][5] = 0;
+                        f[color][6] = 0;
+                        f[color][4] = 0;
+                    }
+                }
+    
+                tmpCell.setF(f);
+                tmpCell.calcRho();
+                (*data)[xsize-1][y] = tmpCell;
+            }
         }
     }
 }

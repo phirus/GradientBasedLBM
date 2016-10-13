@@ -148,18 +148,11 @@ int main(int argc, char** argv){
     while (timetrack.proceed() == true)
     {
         start = std::chrono::high_resolution_clock::now();
+
         meins.collideAll(numOfCPUs,true,true);
-        end = std::chrono::high_resolution_clock::now();
-        parallel += std::chrono::duration_cast<std::chrono::microseconds>( end - start).count();
-
-
-        start = std::chrono::high_resolution_clock::now();
-        meins.evaluateBoundaries();
-        end = std::chrono::high_resolution_clock::now();
-        sequential +=  std::chrono::duration_cast<std::chrono::microseconds>( end - start).count();
-
-        start = std::chrono::high_resolution_clock::now();
+        meins.evaluateBoundaries(numOfCPUs);
         meins.streamAll(numOfCPUs);
+
         end = std::chrono::high_resolution_clock::now();
         parallel +=  std::chrono::duration_cast<std::chrono::microseconds>( end - start).count();
 
