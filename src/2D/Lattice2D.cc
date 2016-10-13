@@ -279,7 +279,6 @@ bool Lattice2D::collideAll(int threads, bool gravity, bool isLimitActive)
                     } // end for
 
                     tmpCell.setF(fTmp);
-                    tmpCell.calcRho();
                 }
                 (*newData)[x][y] = tmpCell;
             }
@@ -343,7 +342,6 @@ void Lattice2D::evaluateBoundaries(int threads)
                     }
                 }
                 tmpCell.setF(f);
-                tmpCell.calcRho();
                 (*data)[0][ysize-1] = tmpCell;
             }
 
@@ -373,7 +371,6 @@ void Lattice2D::evaluateBoundaries(int threads)
                     }
                 }
                 tmpCell.setF(f);
-                tmpCell.calcRho();
                 (*data)[xsize-1][ysize-1] = tmpCell;
             }
 
@@ -403,7 +400,6 @@ void Lattice2D::evaluateBoundaries(int threads)
                     }
                 }
                 tmpCell.setF(f);
-                tmpCell.calcRho();
                 (*data)[x][ysize-1] = tmpCell;
             }
         }
@@ -444,7 +440,6 @@ void Lattice2D::evaluateBoundaries(int threads)
                     }
                 }
                 tmpCell.setF(f);
-                tmpCell.calcRho();
                 (*data)[0][0] = tmpCell;
             }
     
@@ -474,7 +469,6 @@ void Lattice2D::evaluateBoundaries(int threads)
                     }
                 }
                 tmpCell.setF(f);
-                tmpCell.calcRho();
                 (*data)[xsize-1][0] = tmpCell;
             }
 
@@ -504,7 +498,6 @@ void Lattice2D::evaluateBoundaries(int threads)
                     }
                 }
                 tmpCell.setF(f);
-                tmpCell.calcRho();
                 (*data)[x][0] = tmpCell;
             }
         }
@@ -546,7 +539,6 @@ void Lattice2D::evaluateBoundaries(int threads)
                     }
                 }
                 tmpCell.setF(f);
-                tmpCell.calcRho();
                 (*data)[0][y] = tmpCell;
             }
         }
@@ -589,7 +581,6 @@ void Lattice2D::evaluateBoundaries(int threads)
                 }
     
                 tmpCell.setF(f);
-                tmpCell.calcRho();
                 (*data)[xsize-1][y] = tmpCell;
             }
         }
