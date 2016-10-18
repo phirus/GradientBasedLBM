@@ -3,21 +3,16 @@
 
 //=========================== WRITE OUTPUT ===========================
 
-void write_data_plot(const std::vector<double> x, const std::vector<double> y1, const std::vector<double> y2, const string& filename){
-    ofstream massplot;
-
-    stringstream name;
-    name << filename;
-
-    massplot.open( name.str().c_str() );
-    massplot << "x" << "\t" << "y1" << "\t" << "y2" << "\n";
-    for(unsigned int i = 0; i< x.size(); i++){
-        massplot << x.at(i) << "\t" << y1.at(i) << "\t" << y2.at(i) << "\n";
-    } 
-    massplot.close();
+void write_file_header(const string& filename, const string& header)
+{
+    ofstream Plot;
+    Plot.open( filename.c_str() );
+    Plot << header << "\n";
+    Plot.close();
 }
 
-void write_data_plot(const std::vector<double> y, double del_x, const string& filename){
+void write_data_plot(const std::vector<double> y, double del_x, const string& filename)
+{
     ofstream RePlot;
 
     RePlot.open( filename.c_str() );
@@ -28,18 +23,16 @@ void write_data_plot(const std::vector<double> y, double del_x, const string& fi
     RePlot.close();
 }
 
-void write_data_plot(const std::vector<double> y1, const std::vector<double> y2, double del_x, const string& filename){
+void write_data_plot_linewise(int time ,double y1, double y2, const string& filename)
+{
     ofstream Plot;
-
-    Plot.open( filename.c_str() );
-    Plot << "x" << "\t" << "y1" << "\t" << "y2" << "\n";
-    for(unsigned int i = 0; i< y1.size(); i++){
-        Plot << i*del_x << "\t" << y1.at(i) << "\t" << y2.at(i) << "\n";
-    } 
+    Plot.open( filename.c_str(), ios::app);
+    Plot << time << "\t" << y1 << "\t" << y2 << "\n"; 
     Plot.close();
 }
 
-void write_csv(const nested_vector& data, const string& filename, const string& header){
+void write_csv(const nested_vector& data, const string& filename, const string& header)
+{
     const auto numOfSets = data.size();
     const auto numOfLines = data.at(0).size();
 
@@ -58,7 +51,16 @@ void write_csv(const nested_vector& data, const string& filename, const string& 
     Plot.close();
 }
 
-void write_param_log(const ParamSet& p){
+void write_csv_linewise(int i, double Posx, double PosY, double v_x, double v_y, double Re, const string& filename)
+{
+    ofstream Plot;
+    Plot.open(filename.c_str(),ios::app);
+    Plot << i << ";" << Posx << ";" << PosY << ";" << v_y << ";" << v_x << ";" << Re << "\n";
+    Plot.close();
+}
+
+void write_param_log(const ParamSet& p)
+{
     ofstream paramLog;
 
     stringstream name;
@@ -96,7 +98,8 @@ void write_param_log(const ParamSet& p){
     paramLog.close();
 }
 
-void write_param_log_csv(const ParamSet& p){
+void write_param_log_csv(const ParamSet& p)
+{
     ofstream paramLog;
 
     stringstream name;
@@ -114,7 +117,8 @@ void write_param_log_csv(const ParamSet& p){
     paramLog.close();
 }
 
-void write_preprocess_csv(const Preprocess& p){
+void write_preprocess_csv(const Preprocess& p)
+{
     ofstream preproCSV;
 
     stringstream name;
@@ -130,7 +134,8 @@ void write_preprocess_csv(const Preprocess& p){
 
 //=========================== READ INPUT ===========================
 
-const bool input_query(const string& filename, const string& query, double& value){
+const bool input_query(const string& filename, const string& query, double& value)
+{
     bool success = false;
     value = 0;
     string lineString;
@@ -154,7 +159,8 @@ const bool input_query(const string& filename, const string& query, double& valu
     return success;
 }
 
-const map<string,double> assign_map_via_file(map<string,double> mm, const string& filename){
+const map<string,double> assign_map_via_file(map<string,double> mm, const string& filename)
+{
     double tmp;
     for(map<string,double>::iterator it = mm.begin(); it != mm.end(); it++){
         if( input_query(filename,it->first,tmp) == true ) it->second = tmp;
@@ -162,7 +168,8 @@ const map<string,double> assign_map_via_file(map<string,double> mm, const string
     return mm;
 }
 
-const Preprocess read_preprocess_file(const string& filename){
+const Preprocess read_preprocess_file(const string& filename)
+{
 
     // initialzing strings and fallback values
     map<string,double> mm;
@@ -189,8 +196,8 @@ const Preprocess read_preprocess_file(const string& filename){
     return prepro;
 }
 
-const Timetrack read_timetrack_file(const string& filename){
-    
+const Timetrack read_timetrack_file(const string& filename)
+{
     // initialzing strings and fallback values
     map<string,double> mm;
     mm.insert(pair<string,double>("max_steps",1e5));
@@ -204,8 +211,8 @@ const Timetrack read_timetrack_file(const string& filename){
     return time;
 }
 
-const ParamSet read_paramset_file(const string& filename){
-
+const ParamSet read_paramset_file(const string& filename)
+{
     // initialzing strings and fallback values
     map<string,double> mm;
     mm.insert(pair<string,double>("omega_red",1));
@@ -233,8 +240,8 @@ const ParamSet read_paramset_file(const string& filename){
     return params;
 }
 
-const Boundaries read_boundaries_file(const string& filename){
-    
+const Boundaries read_boundaries_file(const string& filename)
+{   
     // initialzing strings and fallback values
     map<string,double> mm;
     mm.insert(pair<string,double>("n_type",0));

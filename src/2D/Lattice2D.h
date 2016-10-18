@@ -62,6 +62,7 @@ public:
     /// Lattice cutout
     const std::vector<int> findBubbleCells()const;
     void copyCellsFromOther(const Lattice2D& other, const std::vector<int>& indices);
+    const boost::array<Vector2D,2> getBubbleData()const;
     
     /// operators
     Lattice2D& operator=(const Lattice2D& other);

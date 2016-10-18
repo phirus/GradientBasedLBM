@@ -86,6 +86,24 @@ Matrix2D::Matrix2D(const Matrix2D &other):matrix(boost::extents[9][9])
 }
 
 //=========================== OPERATORS ===========================
+const Matrix2D Matrix2D::operator*(const Matrix2D &other)const
+{
+    boost::multi_array<double,2> m(boost::extents[9][9]);
+    boost::multi_array<double,2> mother = other.getData();
+    for (int i=0; i<9; i++)
+    {
+        for (int j=0; j<9; j++)
+        {
+            double sum = 0;
+            for (int k = 0; k<9; k++)
+            {
+                sum += matrix[i][k] * mother[k][j];
+            }
+            m[i][j] = sum;
+        }
+    }
+    return Matrix2D(m);
+}
 
 const array2D Matrix2D::operator*(const array2D &other)const 
 {

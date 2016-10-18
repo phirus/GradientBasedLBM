@@ -19,7 +19,7 @@ BIN_DIR = bin
 OUTPUT = $(BIN_DIR)/BubbleTest
 
 # creating OBJs
-OBJ_DEBUG = $(OBJ_DIR)/Analyze_basic.o  $(OBJ_DIR)/Analyze2D.o $(OBJ_DIR)/BasicIO.o $(OBJ_DIR)/BinaryIO2D.o $(OBJ_DIR)/Constants2D.o $(OBJ_DIR)/Cell2D.o $(OBJ_DIR)/Definitions2D.o $(OBJ_DIR)/Lattice2D.o $(OBJ_DIR)/main.o $(OBJ_DIR)/Matrix2D.o $(OBJ_DIR)/ParamSet.o $(OBJ_DIR)/Preprocess.o $(OBJ_DIR)/Timetrack.o $(OBJ_DIR)/Vector2D.o
+OBJ_DEBUG = $(OBJ_DIR)/Analyze_basic.o  $(OBJ_DIR)/Analyze2D.o $(OBJ_DIR)/BasicIO.o $(OBJ_DIR)/BinaryIO2D.o $(OBJ_DIR)/Constants2D.o $(OBJ_DIR)/Cell2D.o $(OBJ_DIR)/Definitions2D.o $(OBJ_DIR)/Lattice2D.o $(OBJ_DIR)/main.o $(OBJ_DIR)/Matrix2D.o $(OBJ_DIR)/ParamSet.o $(OBJ_DIR)/Preprocess.o $(OBJ_DIR)/Timetrack.o
 
 all: clean build
 
@@ -74,9 +74,6 @@ $(OBJ_DIR)/Preprocess.o: $(SRC)/Preprocess.cc
 
 $(OBJ_DIR)/Timetrack.o: $(SRC)/Timetrack.cc
 	$(CXX) $(CFLAGS) $(INC) -c $(SRC)/Timetrack.cc -o $(OBJ_DIR)/Timetrack.o
-
-$(OBJ_DIR)/Vector2D.o: $(SRC)/2D/Vector2D.cc
-	$(CXX) $(CFLAGS) $(INC) -c $(SRC)/2D/Vector2D.cc -o $(OBJ_DIR)/Vector2D.o
 
 clean: 
 	rm -f $(OBJ_DEBUG) $(OUTPUT)

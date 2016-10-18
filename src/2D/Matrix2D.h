@@ -18,6 +18,7 @@ class Matrix2D
         Matrix2D(const Matrix2D &other);
 
          /// operators
+        const Matrix2D operator*(const Matrix2D &other)const;
         const array2D operator*(const array2D &other) const;
         const DistributionSetType2D operator*(const DistributionSetType2D &other) const;
         const Matrix2D operator*(double other)const;

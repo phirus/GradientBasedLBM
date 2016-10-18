@@ -25,7 +25,6 @@ class Vector2D
     /// operations
     inline const double Abs()const{return sqrt(x*x+y*y);};   /// < absolute value
     inline const double Sum()const{return x+y;};             /// < sum over all components
-    const double Angle(const Vector2D& other)const;
 };
 
 #endif

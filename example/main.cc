@@ -134,14 +134,9 @@ int main(int argc, char** argv){
     const int outputInterval = timetrack.getOutputInt();
     const int restartInterval = timetrack.getRestartInt();
 
-    std::vector<double> iter_count_data;
-    std::vector<double> bubble_pos_x_data;
-    std::vector<double> bubble_pos_y_data;
-    std::vector<double> x_velo_data;
-    std::vector<double> y_velo_data;
-    std::vector<double> reynolds_data;
-
-    
+    write_file_header("BubblePlot.csv", "time;PosX;PosY;v_x;v_y;Re");
+    write_file_header("BubblePosPlot.dat", "time \t PosX \t PosY");
+    write_file_header("BubbleVeloPlot.dat", "time \t vx \t vy");
 
     int i;
 
@@ -180,38 +175,19 @@ int main(int argc, char** argv){
         
         if(i%10 == 0) 
         {
-            iter_count_data.push_back(i);
-
-            const double reynolds_tmp = getReynolds(meins, prepro.getResolution());            
-            reynolds_data.push_back(reynolds_tmp);
-            write_data_plot(reynolds_data, 10, "ReynoldsPlot.dat");
-
-            const Vector2D velo_tmp = getBubbleVelocity(meins);            
-            x_velo_data.push_back(velo_tmp.x);
-            y_velo_data.push_back(velo_tmp.y);
-
-            write_data_plot(y_velo_data, x_velo_data, 10, "BubbleVeloPlot.dat");
-
-            const Vector2D pos_tmp = getBubblePosition(meins);
-
-            bubble_pos_x_data.push_back(pos_tmp.x);
-            bubble_pos_y_data.push_back(pos_tmp.y);
-
-            write_data_plot(bubble_pos_x_data, bubble_pos_y_data, 10, "BubblePosPlot.dat");
-
-            nested_vector statistics;
-            statistics.push_back(iter_count_data);
-            statistics.push_back(bubble_pos_x_data);
-            statistics.push_back(bubble_pos_y_data);
-            statistics.push_back(x_velo_data);
-            statistics.push_back(y_velo_data);
-            statistics.push_back(reynolds_data);
-            write_csv(statistics, "BubblePlot.csv", "time;PosX;PosY;v_x;v_y;Re");
+            const boost::array<Vector2D,2> bubble_data = meins.getBubbleData();
+            const Vector2D pos = bubble_data[0];
+            const Vector2D velo = bubble_data[1];           
+            const double Re = getReynolds(params, velo.y, prepro.getResolution());
+            
+            write_data_plot_linewise(i ,pos.x, pos.y, "BubblePosPlot.dat");
+            write_data_plot_linewise(i ,velo.x, velo.y, "BubbleVeloPlot.dat");
+            write_csv_linewise(i, pos.x, pos.y, velo.x, velo.y, Re, "BubblePlot.csv");
 
             end = std::chrono::high_resolution_clock::now();
             sequential +=  std::chrono::duration_cast<std::chrono::microseconds>( end - start).count();
 
-            if(pos_tmp.y > 0.96 * ymax)
+            if(pos.y > 0.96 * ymax)
             {
                 cout << "\nBubble reached the top";
                 break;

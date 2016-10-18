@@ -180,8 +180,7 @@ bool Lattice2D::collideAll(int threads, bool gravity, bool isLimitActive)
 
     const double beta = param.getBeta();
     const DistributionSetType2D phi = param.getPhi2D();
-    //const int range = xsize * ysize;
-    // const double rhoRedFixed = param.getRhoR();
+
     const RelaxationPar2D relax = param.getRelaxation2D();
     const double dt = param.getDeltaT();
 
@@ -794,6 +793,36 @@ void Lattice2D::copyCellsFromOther(const Lattice2D& other, const std::vector<int
     }
 }
 
+const boost::array<Vector2D,2> Lattice2D::getBubbleData()const
+{
+    Vector2D momentum(0,0);
+    Vector2D tmp_position(0,0);
+    double rho_sum(0);
+
+    for (int x = 0; x<xsize;x++)
+    {
+        for (int y = 0; y<ysize;y++)
+        {
+            const Cell2D tmp_cell = (*data)[x][y];
+            const VeloSet2D tmp_velo = tmp_cell.getU();
+            const ColSet tmp_rho = tmp_cell.getRho();
+            if ( tmp_cell.calcPsi() < 0.99 && tmp_cell.getIsSolid() == false) 
+            {
+                momentum = momentum + (tmp_velo[1] * tmp_rho[1]);
+                tmp_position = tmp_position + (Vector2D(x,y) * tmp_rho[1]);
+                rho_sum += tmp_rho[1];
+            }
+        }
+    }
+
+    const Vector2D velocity = momentum * (1.0/ rho_sum);
+    const Vector2D position = tmp_position * (1.0/ rho_sum);
+    
+    boost::array<Vector2D,2> result = {{position,velocity}};
+    return result;
+
+}
+
 //=========================== OPERATOR ===========================
 
 Lattice2D& Lattice2D::operator=(const Lattice2D& other){
@@ -927,9 +956,6 @@ void Lattice2D::buildWalls()
     }    
 
 }
-
-//const Cell2D Lattice2D::evaluateBoundaryCondition(Cell2D tCell, boundary_pos position)const
-
 
 ///////////////////////////// C-STYLE /////////////////////////////
 

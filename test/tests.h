@@ -1219,6 +1219,71 @@ TEST(Matrix2D,multiply){
     }
 }
 
+TEST(Matrix2D,multiply_matrix){
+    const Matrix2D Identity(true);
+    
+    const Matrix2D test1 = TRAFO_MATRIX2D * INV_TRAFO_MATRIX2D;
+    const Matrix2D test2 = INV_TRAFO_MATRIX2D * TRAFO_MATRIX2D;
+
+    const boost::multi_array<double,2> id = Identity.getData();
+    const boost::multi_array<double,2> t1 = test1.getData();
+    const boost::multi_array<double,2> t2 = test2.getData();
+
+    for (int i = 0;i <9;i++)
+    {
+        for (int j=0;j<9;j++)
+        {
+            EXPECT_NEAR(id[i][j],t1[i][j],1e-15);
+            EXPECT_NEAR(id[i][j],t2[i][j],1e-15);
+        }
+    }
+}
+
+TEST(Matrix2D,multiply_matrix_left_right_alright){
+    const Matrix2D zero(false);
+
+    boost::multi_array<double,2> a = zero.getData();
+    boost::multi_array<double,2> b = zero.getData();
+    boost::multi_array<double,2> v1 = zero.getData();
+    boost::multi_array<double,2> v2 = zero.getData();
+
+    a[0][0] = 1;
+    a[0][1] = 2;
+    a[1][0] = 3;
+    a[1][1] = 4;
+    const Matrix2D A = Matrix2D(a);
+
+    b[0][0] = 5;
+    b[0][1] = 6;
+    b[1][0] = 7;
+    b[1][1] = 8;
+    const Matrix2D B = Matrix2D(b);
+
+    v1[0][0] = 19;
+    v1[0][1] = 22;
+    v1[1][0] = 43;
+    v1[1][1] = 50;
+
+    v2[0][0] = 23;
+    v2[0][1] = 34;
+    v2[1][0] = 31;
+    v2[1][1] = 46;
+
+    const Matrix2D test1 = A * B;
+    const Matrix2D test2 = B * A;
+    const boost::multi_array<double,2> t1 = test1.getData();
+    const boost::multi_array<double,2> t2 = test2.getData();
+
+    for (int i = 0;i <9;i++)
+    {
+        for (int j=0;j<9;j++)
+        {
+            EXPECT_NEAR(v1[i][j],t1[i][j],1e-15);
+            EXPECT_NEAR(v2[i][j],t2[i][j],1e-15);
+        }
+    }
+}
+
 // TEST(Matrix2D,multiply_linewise){
 //     const Matrix2D S(RelaxationPar2D(1,10,100));
 //     const array2D f = {{1,2,3,4,5,6,7,8,9}};
@@ -1577,23 +1642,23 @@ TEST(Vector2D,scalar){
     EXPECT_DOUBLE_EQ(11, v2*v1);
 }
 
-TEST(Vector2D,angle){
-    const Vector2D g(1,1);
+// TEST(Vector2D,angle){
+//     const Vector2D g(1,1);
 
-    EXPECT_DOUBLE_EQ(0, g.Angle(DIRECTION_2D[0]));
-    EXPECT_DOUBLE_EQ(cos(PI/4), g.Angle(DIRECTION_2D[1]));
-    EXPECT_DOUBLE_EQ(1, g.Angle(DIRECTION_2D[2]));
-    EXPECT_DOUBLE_EQ(cos(PI/4), g.Angle(DIRECTION_2D[3]));
-    EXPECT_DOUBLE_EQ(0, g.Angle(DIRECTION_2D[4]));
-    EXPECT_DOUBLE_EQ(-cos(PI/4), g.Angle(DIRECTION_2D[5]));
-    EXPECT_DOUBLE_EQ(-1, g.Angle(DIRECTION_2D[6]));
-    EXPECT_DOUBLE_EQ(-cos(PI/4), g.Angle(DIRECTION_2D[7]));
-    EXPECT_DOUBLE_EQ(0, g.Angle(DIRECTION_2D[8]));
+//     EXPECT_DOUBLE_EQ(0, g.Angle(DIRECTION_2D[0]));
+//     EXPECT_DOUBLE_EQ(cos(PI/4), g.Angle(DIRECTION_2D[1]));
+//     EXPECT_DOUBLE_EQ(1, g.Angle(DIRECTION_2D[2]));
+//     EXPECT_DOUBLE_EQ(cos(PI/4), g.Angle(DIRECTION_2D[3]));
+//     EXPECT_DOUBLE_EQ(0, g.Angle(DIRECTION_2D[4]));
+//     EXPECT_DOUBLE_EQ(-cos(PI/4), g.Angle(DIRECTION_2D[5]));
+//     EXPECT_DOUBLE_EQ(-1, g.Angle(DIRECTION_2D[6]));
+//     EXPECT_DOUBLE_EQ(-cos(PI/4), g.Angle(DIRECTION_2D[7]));
+//     EXPECT_DOUBLE_EQ(0, g.Angle(DIRECTION_2D[8]));
 
-    const Vector2D g1(1e-10, -1e-10), g2(1e-6, -1e-6);
-    EXPECT_DOUBLE_EQ(1,g1.Angle(g2));
-    EXPECT_DOUBLE_EQ(0,g1.Angle(DIRECTION_2D[0]));
-}
+//     const Vector2D g1(1e-10, -1e-10), g2(1e-6, -1e-6);
+//     EXPECT_DOUBLE_EQ(1,g1.Angle(g2));
+//     EXPECT_DOUBLE_EQ(0,g1.Angle(DIRECTION_2D[0]));
+// }
 
 TEST(Vector3D,scalar){
     const Vector3D v0, v1(1,2,3), v2(4,5,6), v3(-1,-20,100);
