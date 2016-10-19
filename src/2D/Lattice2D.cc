@@ -176,18 +176,28 @@ bool Lattice2D::collideAll(int threads, bool gravity, bool isLimitActive)
     bool success(true);
     field2D *newData = new field2D(boost::extents[xsize][ysize]);
 
+    // const field2D realData = *data;
+
     omp_set_num_threads (threads);
 
     const double beta = param.getBeta();
     const DistributionSetType2D phi = param.getPhi2D();
-
     const RelaxationPar2D relax = param.getRelaxation2D();
     const double dt = param.getDeltaT();
+
+    const double omega = param.getOmega(1);
+    const ColSet A_k = param.getAk(omega);
+
+    const Matrix2D relaxation_matrix(relax,false,omega);
+    const Matrix2D forcing_factor(relax,true,omega);    // (I - 0.5 S) -> ( 1 - 0.5 omega)
+    const Matrix2D forcing_relax = INV_TRAFO_MATRIX2D * forcing_factor * TRAFO_MATRIX2D;     
+    const Matrix2D single_relax = INV_TRAFO_MATRIX2D * relaxation_matrix * TRAFO_MATRIX2D;
+
 
     double g(0);
     if(gravity == true) g = param.getG();
 
-    #pragma omp parallel
+    #pragma omp parallel firstprivate(forcing_relax, single_relax)
     {
         #pragma omp for collapse(2) schedule(dynamic, 100)
         for (int x=0; x<xsize; x++)
@@ -195,9 +205,12 @@ bool Lattice2D::collideAll(int threads, bool gravity, bool isLimitActive)
             for (int y = 0; y < ysize; y++)
             {
                 Cell2D tmpCell = (*data)[x][y];
+                // Cell2D tmpCell = realData[x][y];
 
                 if (tmpCell.getIsSolid() == false && isBoundary(x, y) == false)
                 {
+                    //const direction2D dir = directions(x,y);
+
                     DistributionSetType2D  fTmp;
                     const DistributionSetType2D fCell = tmpCell.getF();
 
@@ -217,18 +230,14 @@ bool Lattice2D::collideAll(int threads, bool gravity, bool isLimitActive)
                     const DistributionSetType2D fEq = eqDistro(rho_k, u, phi);
                     const DistributionSetType2D diff = distro_diff_2D(fCell, fEq);
             
-                    const double omega = param.getOmega(tmpCell.calcPsi());
-                    const Matrix2D relaxation_matrix(relax,false,omega);
+                    const DistributionSetType2D second_forcing_term = forcing_relax * calculate_forcing_term(G,u);    // M^{-1} F'
 
-                    const Matrix2D forcing_factor(relax,true,omega);    // (I - 0.5 S) -> ( 1 - 0.5 omega)
-                    const DistributionSetType2D first_forcing_term = forcing_factor.diagMult(TRAFO_MATRIX2D * calculate_forcing_term(G,u)); // F' = (I - 0.5 S) M F
-                    const DistributionSetType2D second_forcing_term = INV_TRAFO_MATRIX2D * first_forcing_term;    // M^{-1} F'
-
-                    const DistributionSetType2D single_phase_col = INV_TRAFO_MATRIX2D * (relaxation_matrix.diagMult(TRAFO_MATRIX2D * diff));
+                    const DistributionSetType2D single_phase_col =  single_relax * diff;
 
                           
-                    const ColSet A_k = param.getAk(omega);
+                   
                     const Vector2D grad = getGradient(x,y);
+                    // const Vector2D grad = getGradientFun(dir, realData);
                     const double av = grad.Abs();
 
                     double scal;
@@ -265,7 +274,6 @@ bool Lattice2D::collideAll(int threads, bool gravity, bool isLimitActive)
                         fges = fTmp[0][q]+fTmp[1][q];
 
                         // recoloring
-                        //if (rho > 0) recolor = beta * (rho_k[0] * rho_k[1])/(rho*rho) *  grad.Angle(DIRECTION_2D[q])   * (rho_k[0] * phi.at(0).at(q) + rho_k[1] * phi.at(1).at(q)); 
                         if (rho > 0 && av>0) recolor = beta * (rho_k[0] * rho_k[1])/(rho*rho) * (scal /(av * DIRECTION_ABS_2D[q])) * (rho_k[0] * phi.at(0).at(q) + rho_k[1] * phi.at(1).at(q)); 
                         else recolor = 0;
 
@@ -988,3 +996,16 @@ const DistributionSetType2D calculate_forcing_term(Vector2D G, VeloSet2D u)
     }
     return forcing_term;
 }
+
+// const Vector2D getGradientFun(const direction2D& dir, const field2D& data)
+// {
+//     Vector2D grad(0,0);
+//     double tmpDelta;
+
+//     for (int q=0;q<13;q++)
+//     {
+//         tmpDelta = GRAD_WEIGHTS_2D[q] * data[ dir[q].x ][ dir[q].y ].getDeltaRho();
+//         grad = grad + (DIRECTION_2D[q] * tmpDelta);
+//     }
+//     return grad;
+// }

@@ -86,4 +86,6 @@ const DistributionSetType2D eqDistro(const ColSet& rho_k, const VeloSet2D& u, co
 
 const DistributionSetType2D calculate_forcing_term(Vector2D G, VeloSet2D u);
 
+// const Vector2D getGradientFun(const direction2D& dir, const field2D& data); /// < calculates the color gradient on the position (y,x)
+
 #endif // LATTICE2D_H
