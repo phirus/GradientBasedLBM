@@ -55,7 +55,7 @@ void write_csv_linewise(int i, double Posx, double PosY, double v_x, double v_y,
 {
     ofstream Plot;
     Plot.open(filename.c_str(),ios::app);
-    Plot << i << ";" << Posx << ";" << PosY << ";" << v_y << ";" << v_x << ";" << Re << "\n";
+    Plot << i << ";" << Posx << ";" << PosY << ";" << v_x << ";" << v_y << ";" << Re << "\n";
     Plot.close();
 }
 

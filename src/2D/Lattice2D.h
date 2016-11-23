@@ -8,6 +8,7 @@
 #include"Cell2D.h"
 #include"../ParamSet.h"
 #include"../Boundaries.h"
+#include"BubbleBox2D.h"
 // #include"Timetrack.h"
 
 /// custom typedef for the whole field of cells
@@ -50,6 +51,7 @@ public:
     inline const Cell2D getCell(int x, int y)const{return (*data)[x][y];};  /// < get a Cell
     inline const ParamSet getParams()const{return param;}; /// < get the paramter set
     inline const Boundaries getBoundaries()const{return bound;};
+    inline const BubbleBox2D getBubbleBox()const{return bubblebox;};
     inline const DistributionSetType2D getF(int x, int y)const{return (*data)[x][y].getF();};          /// < get F
 
     void setData(const field2D& ndata, int x, int y); /// < set the data field2D (and size)
@@ -57,6 +59,7 @@ public:
     void setF(int x, int y, int color, const array2D& nf);
     void setF(int x, int y, int color, int index, double value);
     void setBoundaries(const Boundaries& newBound);
+    void setBubbleBox(const BubbleBox2D& newBubble){bubblebox = newBubble;};
     inline void setParams(const ParamSet& newParam){param = newParam;}; /// < set a new parameter set
 
     /// Lattice cutout
@@ -73,7 +76,7 @@ private:
     field2D * data;    
     ParamSet param;     /// < set of parameters used during the simulation
     Boundaries bound;
-
+    BubbleBox2D bubblebox;
 
     inline void linearIndex(int index, int& x, int& y)const;
     void streamAndBouncePull(Cell2D& tCell, const direction2D& dir)const; /// < internal streaming mechanism with bounce back

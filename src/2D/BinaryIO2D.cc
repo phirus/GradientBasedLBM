@@ -22,6 +22,9 @@ void write_binary2D(const Lattice2D& l, const string& filename){
     Boundaries bound = l.getBoundaries();
     file.write(reinterpret_cast<char*> (&bound), sizeof bound);
 
+    BubbleBox2D bubble = l.getBubbleBox();
+    file.write(reinterpret_cast<char*> (&bubble), sizeof bubble);
+
     field2D data = l.getData();
 
     for (int x = 0; x<extent[0];x++){
@@ -51,6 +54,9 @@ const bool read_binary2D(Lattice2D& outL, const string& filename){
         Boundaries bound;
         file.read((char*) &bound, sizeof bound);
 
+        BubbleBox2D bubble;
+        file.read((char*) &bubble, sizeof bubble);
+
         Cell2D tmpCell;
         field2D data(boost::extents[extent[0]][extent[1]]);
         for(int x = 0; x<extent[0];x++){
@@ -62,6 +68,7 @@ const bool read_binary2D(Lattice2D& outL, const string& filename){
         file.close();
         outL.setParams(param);
         outL.setBoundaries(bound);
+        outL.setBubbleBox(bubble);
         outL.setData(data, extent[0], extent[1]);
     }
     else success = false;
@@ -90,6 +97,9 @@ void write_restart_file2D(const Lattice2D& l, const Preprocess& p, const Timetra
 
     Boundaries bound = l.getBoundaries();
     file.write(reinterpret_cast<char*> (&bound), sizeof bound);
+
+    BubbleBox2D bubble = l.getBubbleBox();
+    file.write(reinterpret_cast<char*> (&bubble), sizeof bubble);
 
     // write the velocity distributions
     field2D data = l.getData();
@@ -169,6 +179,9 @@ const bool read_restart_file2D(Lattice2D& outL, Preprocess& p, Timetrack& t, con
         Boundaries bound;
         file.read((char*) &bound, sizeof bound);
 
+        BubbleBox2D bubble;
+        file.read((char*) &bubble, sizeof bubble);
+
         Cell2D tmpCell;
         field2D data(boost::extents[extent[0]][extent[1]]);
         for(int x = 0; x<extent[0];x++){
@@ -220,6 +233,7 @@ const bool read_restart_file2D(Lattice2D& outL, Preprocess& p, Timetrack& t, con
         file.close();
         outL.setParams(param);
         outL.setBoundaries(bound);
+        outL.setBubbleBox(bubble);
         outL.setData(data, extent[0], extent[1]);
         t = time;
         p = prepro;

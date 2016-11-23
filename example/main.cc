@@ -179,6 +179,11 @@ int main(int argc, char** argv){
             const Vector2D pos = bubble_data[0];
             const Vector2D velo = bubble_data[1];           
             const double Re = getReynolds(params, velo.y, prepro.getResolution());
+
+            BubbleBox2D bubblebox = meins.getBubbleBox();
+            bubblebox.setBubble(pos.x,pos.y);
+            meins.setBubbleBox(bubblebox);
+
             
             write_data_plot_linewise(i ,pos.x, pos.y, "BubblePosPlot.dat");
             write_data_plot_linewise(i ,velo.x, velo.y, "BubbleVeloPlot.dat");
@@ -238,15 +243,22 @@ void initialSetUp(Lattice2D& meins, Preprocess& prepro, Boundaries& bound, int x
     //meins.bottomWall();
     //meins.closedBox();
     meins.setBoundaries(bound);
-    
+  
     meins.equilibriumIni();
 
-   for (int i = 1; i< 1001; i++){
+   for (int i = 1; i< 1001; i++)
+   {
        meins.collideAll(numOfCPUs,false,false);
        //meins.evaluateBoundaries();
        meins.streamAll(numOfCPUs);
        if(i%100 == 0) cout << i<<endl;
    }
+
+    BubbleBox2D bubblebox;
+    bubblebox.setBubble(xm1,ym1);
+    bubblebox.setW(5*prepro.getResolution());
+    bubblebox.setH(5*prepro.getResolution());
+    meins.setBubbleBox(bubblebox);
 
     cout<<"Initialisierung beendet\n\nSchwerkraft wird zugeschaltet\n"<<endl;
 }

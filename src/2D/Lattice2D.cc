@@ -10,6 +10,7 @@ xsize(x_size)
 ,data(new field2D(boost::extents[xsize][ysize]))
 ,param()
 ,bound()
+,bubblebox(0,0,xsize,ysize)
 {
     for (int x = 0; x<xsize; x++)
     {
@@ -26,6 +27,7 @@ xsize(other.getSize()[0])
 ,data(new field2D(boost::extents[xsize][ysize]))
 ,param(other.getParams())
 ,bound(other.getBoundaries())
+,bubblebox(other.getBubbleBox())
 {
     (*data) = other.getData();
 }
@@ -216,74 +218,94 @@ bool Lattice2D::collideAll(int threads, bool gravity, bool isLimitActive)
 
                     const ColSet rho_k = tmpCell.getRho();
                     const double rho = sum(rho_k);
-
-                    const Vector2D G(0 ,  g*(rho - rho_k[0]));
-
                     VeloSet2D u = tmpCell.getU();
 
-                    if(gravity == true)
-                    {
-                        u[0] = u[0] + G *  (dt/(2* rho)) ;
-                        u[1] = u[1] + G *  (dt/(2* rho)) ;
-                    }
-
-                    const DistributionSetType2D fEq = eqDistro(rho_k, u, phi);
-                    const DistributionSetType2D diff = distro_diff_2D(fCell, fEq);
-            
-                    const DistributionSetType2D second_forcing_term = forcing_relax * calculate_forcing_term(G,u);    // M^{-1} F'
-
-                    const DistributionSetType2D single_phase_col =  single_relax * diff;
-
-                          
-                   
-                    const Vector2D grad = getGradient(x,y);
-                    // const Vector2D grad = getGradientFun(dir, realData);
-                    const double av = grad.Abs();
-
-                    double scal;
                     double fges;
-                    double recolor;
 
-                    // q = 0
-                    for (int color=0;color<=1; color++)
+                    if(bubblebox.isInBox(x,y) == false)
                     {
-                        fTmp[color][0] =  fCell[color][0] - single_phase_col[color][0]; //single
-                        if (gravity == true) fTmp[color][0] +=  dt * second_forcing_term[color][0]; // forcing term
-                        fTmp[color][0] += A_k[color] * (- (av/2 * B_2D[0])); // perturbation
-                    }
-                    fges = fTmp[0][0]+fTmp[1][0];
-                    if (rho > 0)
-                    {
-                        fTmp[0][0] = rho_k[0]/rho  * fges;
-                        fTmp[1][0] = rho_k[1]/rho * fges;
-                    }
+                        const DistributionSetType2D fEq = eqDistro(rho_k, u, phi);
+                        const DistributionSetType2D diff = distro_diff_2D(fCell, fEq);
+                        const DistributionSetType2D single_phase_col =  single_relax * diff;                        
 
-                    for (int q=1; q<9; q++)
-                    {
-                        scal = grad*DIRECTION_2D[q];
-                        double gradient_collision(0);
-                        if (av > 0 ) gradient_collision = av/2 * (WEIGHTS_2D[q] * ( scal*scal )/(av*av) - B_2D[q]);
+                        for (int q=0; q<9; q++)
+                        {
+                            for (int color=0;color<=1; color++)
+                            {
 
+                                fTmp[color][q] =  fCell[color][q] - single_phase_col[color][q];
+                            }
+                            fges = fTmp[0][q]+fTmp[1][q];
+
+                            if (rho > 0)
+                            {
+                                fTmp[0][q] = rho_k[0]/rho  * fges;
+                                fTmp[1][q] = rho_k[1]/rho * fges;
+                            }
+                        } // end for
+                    } // end if
+                    else
+                    {
+                        const Vector2D G(0 ,  g*(rho - rho_k[0]));
+                        
+                        if(gravity == true)
+                        {
+                            u[0] = u[0] + G *  (dt/(2* rho)) ;
+                            u[1] = u[1] + G *  (dt/(2* rho)) ;
+                        }
+
+                        const DistributionSetType2D fEq = eqDistro(rho_k, u, phi);
+                        const DistributionSetType2D diff = distro_diff_2D(fCell, fEq);
+                        const DistributionSetType2D single_phase_col =  single_relax * diff;
+
+                        const DistributionSetType2D second_forcing_term = forcing_relax * calculate_forcing_term(G,u);    // M^{-1} F'
+                        const Vector2D grad = getGradient(x,y);
+                        const double av = grad.Abs();
+
+                        double scal;
+                        double recolor;
+
+                        // q = 0
                         for (int color=0;color<=1; color++)
                         {
-                            fTmp[color][q] =  fCell[color][q] - single_phase_col[color][q];
-                            if (gravity == true) fTmp[color][q] +=  dt * second_forcing_term[color][q];
-                            fTmp[color][q] += A_k[color] * gradient_collision;
+                            fTmp[color][0] =  fCell[color][0] - single_phase_col[color][0]; //single
+                            if (gravity == true) fTmp[color][0] +=  dt * second_forcing_term[color][0]; // forcing term
+                            fTmp[color][0] += A_k[color] * (- (av/2 * B_2D[0])); // perturbation
                         }
-
-                        fges = fTmp[0][q]+fTmp[1][q];
-
-                        // recoloring
-                        if (rho > 0 && av>0) recolor = beta * (rho_k[0] * rho_k[1])/(rho*rho) * (scal /(av * DIRECTION_ABS_2D[q])) * (rho_k[0] * phi.at(0).at(q) + rho_k[1] * phi.at(1).at(q)); 
-                        else recolor = 0;
-
+                        fges = fTmp[0][0]+fTmp[1][0];
                         if (rho > 0)
                         {
-                            fTmp[0][q] = rho_k[0]/rho  * fges + recolor;
-                            fTmp[1][q] = rho_k[1]/rho * fges - recolor;
+                            fTmp[0][0] = rho_k[0]/rho  * fges;
+                            fTmp[1][0] = rho_k[1]/rho * fges;
                         }
 
-                    } // end for
+                        for (int q=1; q<9; q++)
+                        {
+                            scal = grad*DIRECTION_2D[q];
+                            double gradient_collision(0);
+                            if (av > 0 ) gradient_collision = av/2 * (WEIGHTS_2D[q] * ( scal*scal )/(av*av) - B_2D[q]);
+
+                            for (int color=0;color<=1; color++)
+                            {
+                                fTmp[color][q] =  fCell[color][q] - single_phase_col[color][q];
+                                if (gravity == true) fTmp[color][q] +=  dt * second_forcing_term[color][q];
+                                fTmp[color][q] += A_k[color] * gradient_collision;
+                            }
+
+                            fges = fTmp[0][q]+fTmp[1][q];
+
+                            // recoloring
+                            if (rho > 0 && av>0) recolor = beta * (rho_k[0] * rho_k[1])/(rho*rho) * (scal /(av * DIRECTION_ABS_2D[q])) * (rho_k[0] * phi.at(0).at(q) + rho_k[1] * phi.at(1).at(q)); 
+                            else recolor = 0;
+
+                            if (rho > 0)
+                            {
+                                fTmp[0][q] = rho_k[0]/rho  * fges + recolor;
+                                fTmp[1][q] = rho_k[1]/rho * fges - recolor;
+                            }
+
+                        } // end for
+                    } // end else
 
                     tmpCell.setF(fTmp);
                 }
@@ -833,10 +855,12 @@ const boost::array<Vector2D,2> Lattice2D::getBubbleData()const
 
 //=========================== OPERATOR ===========================
 
-Lattice2D& Lattice2D::operator=(const Lattice2D& other){
+Lattice2D& Lattice2D::operator=(const Lattice2D& other)
+{
     this->setData(other.getData(), other.getSize()[0], other.getSize()[1]);
     this->setParams(other.getParams());
     this->setBoundaries(other.getBoundaries());
+    this->setBubbleBox(other.getBubbleBox());
 
     return *this;
 }
@@ -852,6 +876,8 @@ const bool Lattice2D::operator==(const Lattice2D& other)const
 
         Boundaries bOther = other.getBoundaries();
         if (!(bound == bOther)) exit = false;
+
+        if (!(bubblebox == other.getBubbleBox())) exit = false;
 
         field2D otherData = other.getData();
         for (int x = 0; x< xsize;x++)
