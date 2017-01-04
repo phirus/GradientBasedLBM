@@ -67,6 +67,21 @@ public:
     void copyCellsFromOther(const Lattice2D& other, const std::vector<int>& indices);
     const boost::array<Vector2D,2> getBubbleData()const;
     
+    /// boundary treatment
+    const bool isBoundary(int x, int y)const;
+    void buildWalls(); /// < and the Mexicans pay for it
+    
+    const Cell2D boundaryNorthPres(const Cell2D& tmp, ColSet rho)const;
+    const Cell2D boundarySouthPres(const Cell2D& tmp, ColSet rho)const;
+    const Cell2D boundaryWestPres(const Cell2D& tmp, ColSet rho)const;
+    const Cell2D boundaryEastPres(const Cell2D& tmp, ColSet rho)const;
+    
+    // corners
+    const Cell2D cornerNorthWest(const Cell2D& tmp, ColSet rho)const;
+    const Cell2D cornerNorthEast(const Cell2D& tmp, ColSet rho)const;
+    const Cell2D cornerSouthWest(const Cell2D& tmp, ColSet rho)const;
+    const Cell2D cornerSouthEast(const Cell2D& tmp, ColSet rho)const;
+
     /// operators
     Lattice2D& operator=(const Lattice2D& other);
     const bool operator==(const Lattice2D& other)const;
@@ -80,8 +95,6 @@ private:
 
     inline void linearIndex(int index, int& x, int& y)const;
     void streamAndBouncePull(Cell2D& tCell, const direction2D& dir)const; /// < internal streaming mechanism with bounce back
-    const bool isBoundary(int x, int y)const;
-    void buildWalls(); /// < and the Mexicans pay for it
 };
 
 /// calculates the equilibrium distribution based of a cell

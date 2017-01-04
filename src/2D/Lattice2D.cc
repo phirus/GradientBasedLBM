@@ -345,93 +345,22 @@ void Lattice2D::evaluateBoundaries(int threads)
             if (bound.west.getType() != periodic) lowerX++;
             if (bound.east.getType() != periodic) upperX--;
 
-            if(bound.west.getType() == pressure)
+            if(bound.west.getType() == pressure) // north west corner
             {
-                // north west corner
-                Cell2D tmpCell = (*data)[0][ysize-1];
-                DistributionSetType2D f = tmpCell.getF();
-
-                for(int color = 0; color <= 1; color++)
-                {
-                    if(rho[color]>0 )
-                    {
-                        f[color][1] = f[color][5];
-                        f[color][7] = f[color][3];
-                        f[color][8] = f[color][4];
-                        f[color][2] = 0.5 * (rho[color] - f[color][0] )  - f[color][3] - f[color][4] - f[color][5];
-                        f[color][6] = f[color][2];
-                    }
-                    else
-                    {
-                        f[color][1] = 0;
-                        f[color][2] = 0;
-                        f[color][6] = 0;
-                        f[color][7] = 0;
-                        f[color][8] = 0;
-                    }
-                }
-                tmpCell.setF(f);
-                (*data)[0][ysize-1] = tmpCell;
+                (*data)[0][ysize-1] = cornerNorthWest((*data)[0][ysize-1], rho);
             }
 
-            if(bound.east.getType() == pressure)
+            if(bound.east.getType() == pressure) // north east corner
             {
-                // north east corner
-                Cell2D tmpCell = (*data)[xsize-1][ysize-1];
-                DistributionSetType2D f = tmpCell.getF();
-
-                for(int color = 0; color <= 1; color++)
-                {
-                    if(rho[color]>0 )
-                    {
-                        f[color][5] = f[color][1];
-                        f[color][6] = f[color][2];
-                        f[color][7] = f[color][3];
-                        f[color][4] = 0.5 * (rho[color] - f[color][0] )  - f[color][1] - f[color][2] - f[color][3];
-                        f[color][8] = f[color][4];
-                    }
-                    else
-                    {
-                        f[color][4] = 0;
-                        f[color][5] = 0;
-                        f[color][6] = 0;
-                        f[color][7] = 0;
-                        f[color][8] = 0;
-                    }
-                }
-                tmpCell.setF(f);
-                (*data)[xsize-1][ysize-1] = tmpCell;
+                (*data)[xsize-1][ysize-1] = cornerNorthEast((*data)[xsize-1][ysize-1], rho);
             }
 
             #pragma omp for schedule(static,10) nowait
             for (int x=lowerX; x<upperX; x++)
             {
-                Cell2D tmpCell = (*data)[x][ysize-1] ;
-    
-                DistributionSetType2D f = tmpCell.getF();
-                ColSet u_y;
-    
-                for(int color = 0; color <= 1; color++)
-                {
-                    if(rho[color]>0)
-                    {
-                        u_y[color] = -1.0 + (f[color][0] + f[color][1] + f[color][5] + 2* (f[color][2] + f[color][3] + f[color][4])) / rho[color];
-                        f[color][7] = f[color][3] - 2.0/3.0 * rho[color]*u_y[color];
-                        f[color][6] = rho[color]*u_y[color]/6.0 + f[color][2] + (f[color][1] - f[color][5])/2.0;
-                        f[color][8] = rho[color]*u_y[color]/6.0 + f[color][4] + (f[color][5] - f[color][1])/2.0;
-                    }
-                    else
-                    {
-                        u_y[color] = 0;
-                        f[color][7] = 0;
-                        f[color][6] = 0;
-                        f[color][8] = 0;
-                    }
-                }
-                tmpCell.setF(f);
-                (*data)[x][ysize-1] = tmpCell;
+                (*data)[x][ysize-1] = boundaryNorthPres((*data)[x][ysize-1], rho);
             }
-        }
+        } // end north pressure
 
         // south boundary
         if(bound.south.getType() == pressure)
@@ -443,93 +372,22 @@ void Lattice2D::evaluateBoundaries(int threads)
             if (bound.west.getType() != periodic) lowerX++;
             if (bound.east.getType() != periodic) upperX--;
     
-            if(bound.west.getType() == pressure)
+            if(bound.west.getType() == pressure) // south west corner
             {
-                // south west corner
-                Cell2D tmpCell = (*data)[0][0];
-                DistributionSetType2D f = tmpCell.getF();
-    
-                for(int color = 0; color <= 1; color++)
-                {
-                    if(rho[color]>0 )
-                    {
-                        f[color][1] = f[color][5];
-                        f[color][2] = f[color][6];
-                        f[color][3] = f[color][7];
-                        f[color][4] = 0.5 * (rho[color] - f[color][0] )  - f[color][5] - f[color][6] - f[color][7];
-                        f[color][8] = f[color][4];
-                    }
-                    else
-                    {
-                        f[color][1] = 0;
-                        f[color][2] = 0;
-                        f[color][3] = 0;
-                        f[color][4] = 0;
-                        f[color][8] = 0;
-                    }
-                }
-                tmpCell.setF(f);
-                (*data)[0][0] = tmpCell;
+                (*data)[0][0] = cornerSouthWest((*data)[0][0], rho);
             }
     
-            if(bound.east.getType() == pressure)
+            if(bound.east.getType() == pressure) // south east corner
             {
-                // south east corner
-                Cell2D tmpCell = (*data)[xsize-1][0];
-                DistributionSetType2D f = tmpCell.getF();
-    
-                for(int color = 0; color <= 1; color++)
-                {
-                    if(rho[color]>0 )
-                    {
-                        f[color][3] = f[color][7];
-                        f[color][4] = f[color][8];
-                        f[color][5] = f[color][1];
-                        f[color][2] = 0.5 * (rho[color] - f[color][0] )  - f[color][1] - f[color][7] - f[color][8];
-                        f[color][6] = f[color][4];
-                    }
-                    else
-                    {
-                        f[color][3] = 0;
-                        f[color][4] = 0;
-                        f[color][5] = 0;
-                        f[color][2] = 0;
-                        f[color][6] = 0;
-                    }
-                }
-                tmpCell.setF(f);
-                (*data)[xsize-1][0] = tmpCell;
+                (*data)[xsize-1][0] = cornerSouthEast((*data)[xsize-1][0], rho);
             }
 
             #pragma omp for schedule(static,10) nowait
             for (int x=lowerX; x<upperX; x++)
             {
-                Cell2D tmpCell = (*data)[x][0] ;
-    
-                DistributionSetType2D f = tmpCell.getF();
-                ColSet u_y;
-    
-                for(int color = 0; color <= 1; color++)
-                {
-                    if(rho[color]>0 )
-                    {
-                        u_y[color] = 1.0 - (f[color][0] + f[color][1] + f[color][5] + 2* (f[color][6] + f[color][7] + f[color][8])) / rho[color];
-                        f[color][3] = f[color][7] + 2.0/3.0 * rho[color]*u_y[color];
-                        f[color][2] = - rho[color]*u_y[color]/6.0 + f[color][6] + (f[color][5] - f[color][1])/2.0;
-                        f[color][4] = - rho[color]*u_y[color]/6.0 + f[color][8] + (f[color][1] - f[color][5])/2.0;
-                    }
-                    else
-                    {
-                        u_y[color] = 0;
-                        f[color][3] = 0;
-                        f[color][2] = 0;
-                        f[color][4] = 0;
-                    }
-                }
-                tmpCell.setF(f);
-                (*data)[x][0] = tmpCell;
+                (*data)[x][0] = boundarySouthPres((*data)[x][0],rho);
             }
-        }
+        } // end south pressure
     
     
         // west boundary
@@ -545,32 +403,9 @@ void Lattice2D::evaluateBoundaries(int threads)
             #pragma omp for schedule(static,10) nowait
             for (int y=lowerY; y< upperY; y++)
             {
-                Cell2D tmpCell = (*data)[0][y] ;
-    
-                DistributionSetType2D f = tmpCell.getF();
-                ColSet u_x;
-    
-                for(int color = 0; color <= 1; color++)
-                {
-                    if(rho[color]>0)
-                    {
-                        u_x[color] = 1.0 - (f[color][0] + f[color][3] + f[color][7] + 2* (f[color][4] + f[color][5] + f[color][6])) / rho[color];
-                        f[color][1] = f[color][5] + 2.0/3.0 * rho[color]*u_x[color];
-                        f[color][2] = rho[color]*u_x[color]/6.0 + f[color][6] + (f[color][7] - f[color][3])/2.0;
-                        f[color][8] = rho[color]*u_x[color]/6.0 + f[color][4] + (f[color][3] - f[color][7])/2.0;
-                    }
-                    else
-                    {
-                        u_x[color] = 0;
-                        f[color][1] = 0;
-                        f[color][2] = 0;
-                        f[color][8] = 0;
-                    }
-                }
-                tmpCell.setF(f);
-                (*data)[0][y] = tmpCell;
+                (*data)[0][y] = boundaryWestPres((*data)[0][y], rho);
             }
-        }
+        } // end west pressure
     
         // east boundary
         if(bound.east.getType() == pressure)
@@ -586,31 +421,7 @@ void Lattice2D::evaluateBoundaries(int threads)
             #pragma omp for schedule(static,10) nowait
             for (int y=lowerY; y< upperY; y++)
             {
-                Cell2D tmpCell = (*data)[xsize-1][y] ;
-    
-                DistributionSetType2D f = tmpCell.getF();
-                ColSet u_x;
-    
-                for(int color = 0; color <= 1; color++)
-                {
-                    if(rho[color]>0)
-                    {
-                        u_x[color] = -1.0 + (f[color][0] + f[color][3] + f[color][7] + 2* (f[color][1] + f[color][2] + f[color][8])) / rho[color];
-                        f[color][5] = f[color][1] - 2.0/3.0 * rho[color]*u_x[color];
-                        f[color][6] = - rho[color]*u_x[color]/6.0 + f[color][2] + (f[color][3] - f[color][7])/2.0;
-                        f[color][4] = - rho[color]*u_x[color]/6.0 + f[color][8] + (f[color][7] - f[color][3])/2.0;
-                    }
-                    else
-                    {
-                        u_x[color] = 0;
-                        f[color][5] = 0;
-                        f[color][6] = 0;
-                        f[color][4] = 0;
-                    }
-                }
-    
-                tmpCell.setF(f);
-                (*data)[xsize-1][y] = tmpCell;
+                (*data)[xsize-1][y] = boundaryEastPres((*data)[xsize-1][y], rho);
             }
         }
     }
@@ -853,6 +664,268 @@ const boost::array<Vector2D,2> Lattice2D::getBubbleData()const
 
 }
 
+//====================== BOUNDARY TREATMENT ======================
+
+const bool Lattice2D::isBoundary(int x, int y)const
+{
+    return  (x == 0 && bound.west.getType()!= periodic) || (x == xsize-1 && bound.east.getType()!= periodic) || (y == ysize-1 && bound.north.getType()!= periodic) || (y == 0 && bound.south.getType()!= periodic);
+}
+
+void Lattice2D::buildWalls()
+{
+    Cell2D wall(0,0,true);
+
+    if(bound.north.getType() == bounceback)
+    {
+        Vector3D u3D = bound.north.getVelocity()[0];
+        Vector2D u_wall(u3D.x,u3D.y);
+        wall.setSolidVelocity(u_wall);
+
+        for (int x=0; x<xsize; x++)
+        {
+            (*data)[x][ysize-1] = wall;
+        }
+    }
+
+    if(bound.south.getType() == bounceback)
+    {
+        Vector3D u3D = bound.south.getVelocity()[0];
+        Vector2D u_wall(u3D.x,u3D.y);
+        wall.setSolidVelocity(u_wall);
+
+        for (int x=0; x<xsize; x++)
+        {
+            (*data)[x][0] = wall;
+        }
+    }
+
+    if(bound.west.getType() == bounceback)
+    {
+        Vector3D u3D = bound.west.getVelocity()[0];
+        Vector2D u_wall(u3D.x,u3D.y);
+        wall.setSolidVelocity(u_wall);
+
+        for (int y=0; y<ysize; y++)
+        {
+            (*data)[0][y] = wall;
+        }
+    }
+
+    if(bound.east.getType() == bounceback)
+    {
+        Vector3D u3D = bound.east.getVelocity()[0];
+        Vector2D u_wall(u3D.x,u3D.y);
+        wall.setSolidVelocity(u_wall);
+
+        for (int y=0; y<ysize; y++)
+        {
+            (*data)[xsize-1][y] = wall;
+        }
+    }    
+
+}
+
+const Cell2D Lattice2D::boundaryNorthPres(const Cell2D& tmp, ColSet rho)const
+{
+    DistributionSetType2D f = tmp.getF();
+    ColSet u_y;
+    
+    for(int color = 0; color <= 1; color++)
+    {
+        if(rho[color]>0)
+        {
+            u_y[color] = -1.0 + (f[color][0] + f[color][1] + f[color][5] + 2* (f[color][2] + f[color][3] + f[color][4])) / rho[color];
+            f[color][7] = f[color][3] - 2.0/3.0 * rho[color]*u_y[color];
+            f[color][6] = - rho[color]*u_y[color]/6.0 + f[color][2] + (f[color][1] - f[color][5])/2.0;
+            f[color][8] = - rho[color]*u_y[color]/6.0 + f[color][4] + (f[color][5] - f[color][1])/2.0;
+        }
+        else
+        {
+            u_y[color] = 0;
+            f[color][7] = 0;
+            f[color][6] = 0;
+            f[color][8] = 0;
+        }
+    }
+    return Cell2D(f);
+}
+
+const Cell2D Lattice2D::boundarySouthPres(const Cell2D& tmp, ColSet rho)const
+{        
+    DistributionSetType2D f = tmp.getF();
+    ColSet u_y;
+    for(int color = 0; color <= 1; color++)
+    {
+        if(rho[color]>0 )
+        {
+            u_y[color] = 1.0 - (f[color][0] + f[color][1] + f[color][5] + 2* (f[color][6] + f[color][7] + f[color][8])) / rho[color];
+            f[color][3] = f[color][7] + 2.0/3.0 * rho[color]*u_y[color];
+            f[color][2] = - rho[color]*u_y[color]/6.0 + f[color][6] + (f[color][5] - f[color][1])/2.0;
+            f[color][4] = - rho[color]*u_y[color]/6.0 + f[color][8] + (f[color][1] - f[color][5])/2.0;
+        }
+        else
+        {
+            u_y[color] = 0;
+            f[color][3] = 0;
+            f[color][2] = 0;
+            f[color][4] = 0;
+        }
+    }
+    return Cell2D(f);
+}
+
+const Cell2D Lattice2D::boundaryWestPres(const Cell2D& tmp, ColSet rho)const
+{
+    DistributionSetType2D f = tmp.getF();
+    ColSet u_x;    
+    for(int color = 0; color <= 1; color++)
+    {
+        if(rho[color]>0)
+        {
+            u_x[color] = 1.0 - (f[color][0] + f[color][3] + f[color][7] + 2* (f[color][4] + f[color][5] + f[color][6])) / rho[color];
+            f[color][1] = f[color][5] + 2.0/3.0 * rho[color]*u_x[color];
+            f[color][2] = rho[color]*u_x[color]/6.0 + f[color][6] + (f[color][7] - f[color][3])/2.0;
+            f[color][8] = rho[color]*u_x[color]/6.0 + f[color][4] + (f[color][3] - f[color][7])/2.0;
+        }
+        else
+        {
+            u_x[color] = 0;
+            f[color][1] = 0;
+            f[color][2] = 0;
+            f[color][8] = 0;
+        }
+    }
+    return Cell2D(f);
+}
+
+const Cell2D Lattice2D::boundaryEastPres(const Cell2D& tmp, ColSet rho)const
+{
+    DistributionSetType2D f = tmp.getF();
+    ColSet u_x;
+    for(int color = 0; color <= 1; color++)
+    {
+        if(rho[color]>0)
+        {
+            u_x[color] = -1.0 + (f[color][0] + f[color][3] + f[color][7] + 2* (f[color][1] + f[color][2] + f[color][8])) / rho[color];
+            f[color][5] = f[color][1] - 2.0/3.0 * rho[color]*u_x[color];
+            f[color][6] = - rho[color]*u_x[color]/6.0 + f[color][2] + (f[color][3] - f[color][7])/2.0;
+            f[color][4] = - rho[color]*u_x[color]/6.0 + f[color][8] + (f[color][7] - f[color][3])/2.0;
+        }
+        else
+        {
+            u_x[color] = 0;
+            f[color][5] = 0;
+            f[color][6] = 0;
+            f[color][4] = 0;
+        }
+    }
+    return Cell2D(f);
+}
+
+// corners
+const Cell2D Lattice2D::cornerNorthWest(const Cell2D& tmp, ColSet rho)const
+{
+    DistributionSetType2D f = tmp.getF();
+
+    for(int color = 0; color <= 1; color++)
+    {
+        if(rho[color]>0 )
+        {
+            f[color][1] = f[color][5];
+            f[color][7] = f[color][3];
+            f[color][8] = f[color][4];
+            f[color][2] = 0.5 * (rho[color] - f[color][0] )  - f[color][3] - f[color][4] - f[color][5];
+            f[color][6] = f[color][2];
+        }
+        else
+        {
+            f[color][1] = 0;
+            f[color][2] = 0;
+            f[color][6] = 0;
+            f[color][7] = 0;
+            f[color][8] = 0;
+        }
+    }
+    return Cell2D(f);
+}
+
+const Cell2D Lattice2D::cornerNorthEast(const Cell2D& tmp, ColSet rho)const
+{
+    DistributionSetType2D f = tmp.getF();
+    for(int color = 0; color <= 1; color++)
+    {
+        if(rho[color]>0 )
+        {
+            f[color][5] = f[color][1];
+            f[color][6] = f[color][2];
+            f[color][7] = f[color][3];
+            f[color][4] = 0.5 * (rho[color] - f[color][0] )  - f[color][1] - f[color][2] - f[color][3];
+            f[color][8] = f[color][4];
+        }
+        else
+        {
+            f[color][4] = 0;
+            f[color][5] = 0;
+            f[color][6] = 0;
+            f[color][7] = 0;
+            f[color][8] = 0;
+        }
+    }
+    return Cell2D(f);
+}
+
+const Cell2D Lattice2D::cornerSouthWest(const Cell2D& tmp, ColSet rho)const
+{
+    DistributionSetType2D f = tmp.getF();
+    
+    for(int color = 0; color <= 1; color++)
+    {
+        if(rho[color]>0 )
+        {
+            f[color][1] = f[color][5];
+            f[color][2] = f[color][6];
+            f[color][3] = f[color][7];
+            f[color][4] = 0.5 * (rho[color] - f[color][0] )  - f[color][5] - f[color][6] - f[color][7];
+            f[color][8] = f[color][4];
+        }
+        else
+        {
+            f[color][1] = 0;
+            f[color][2] = 0;
+            f[color][3] = 0;
+            f[color][4] = 0;
+            f[color][8] = 0;
+        }
+    }
+    return Cell2D(f);
+}
+
+const Cell2D Lattice2D::cornerSouthEast(const Cell2D& tmp, ColSet rho)const
+{
+    DistributionSetType2D f = tmp.getF();
+    for(int color = 0; color <= 1; color++)
+    {
+        if(rho[color]>0 )
+        {
+            f[color][3] = f[color][7];
+            f[color][4] = f[color][8];
+            f[color][5] = f[color][1];
+            f[color][2] = 0.5 * (rho[color] - f[color][0] )  - f[color][1] - f[color][7] - f[color][8];
+            f[color][6] = f[color][2];
+        }
+        else
+        {
+            f[color][3] = 0;
+            f[color][4] = 0;
+            f[color][5] = 0;
+            f[color][2] = 0;
+            f[color][6] = 0;
+        }
+    }
+    return Cell2D(f);
+}
+
+
 //=========================== OPERATOR ===========================
 
 Lattice2D& Lattice2D::operator=(const Lattice2D& other)
@@ -930,65 +1003,6 @@ void Lattice2D::streamAndBouncePull(Cell2D& tCell, const direction2D& dir)const
         } // end for i
     } // end for color
     tCell.setF(ftmp);
-}
-
-const bool Lattice2D::isBoundary(int x, int y)const
-{
-    return  (x == 0 && bound.west.getType()!= periodic) || (x == xsize-1 && bound.east.getType()!= periodic) || (y == ysize-1 && bound.north.getType()!= periodic) || (y == 0 && bound.south.getType()!= periodic);
-}
-
-void Lattice2D::buildWalls()
-{
-    Cell2D wall(0,0,true);
-
-    if(bound.north.getType() == bounceback)
-    {
-        Vector3D u3D = bound.north.getVelocity()[0];
-        Vector2D u_wall(u3D.x,u3D.y);
-        wall.setSolidVelocity(u_wall);
-
-        for (int x=0; x<xsize; x++)
-        {
-            (*data)[x][ysize-1] = wall;
-        }
-    }
-
-    if(bound.south.getType() == bounceback)
-    {
-        Vector3D u3D = bound.south.getVelocity()[0];
-        Vector2D u_wall(u3D.x,u3D.y);
-        wall.setSolidVelocity(u_wall);
-
-        for (int x=0; x<xsize; x++)
-        {
-            (*data)[x][0] = wall;
-        }
-    }
-
-    if(bound.west.getType() == bounceback)
-    {
-        Vector3D u3D = bound.west.getVelocity()[0];
-        Vector2D u_wall(u3D.x,u3D.y);
-        wall.setSolidVelocity(u_wall);
-
-        for (int y=0; y<ysize; y++)
-        {
-            (*data)[0][y] = wall;
-        }
-    }
-
-    if(bound.east.getType() == bounceback)
-    {
-        Vector3D u3D = bound.east.getVelocity()[0];
-        Vector2D u_wall(u3D.x,u3D.y);
-        wall.setSolidVelocity(u_wall);
-
-        for (int y=0; y<ysize; y++)
-        {
-            (*data)[xsize-1][y] = wall;
-        }
-    }    
-
 }
 
 ///////////////////////////// C-STYLE /////////////////////////////
