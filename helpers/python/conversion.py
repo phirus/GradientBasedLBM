@@ -1,4 +1,5 @@
 import sys
+import os
 from paraview.simple import *
 
 print 'Number of files to be converted:', len(sys.argv) - 1
@@ -12,4 +13,5 @@ for x in range(1, len(sys.argv)):
     w.FileName = outputFile
     w.UpdatePipeline()
     Delete(w)
-    Delete(r)    
+    Delete(r)
+    os.remove(inputFile)
