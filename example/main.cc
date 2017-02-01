@@ -192,7 +192,7 @@ int main(int argc, char** argv){
             end = std::chrono::high_resolution_clock::now();
             sequential +=  std::chrono::duration_cast<std::chrono::microseconds>( end - start).count();
 
-            if(pos.y > 0.96 * ymax)
+            if(pos.y > 0.95 * ymax)
             {
                 cout << "\nBubble reached the top";
                 break;
@@ -228,8 +228,8 @@ void initialSetUp(Lattice2D& meins, Preprocess& prepro, Boundaries& bound, int x
     const int R1 = prepro.getResolution()/2;
     // const int xm1 = xmax/2;
     const int xm1 = xmax * 0.5;
-    // const int ym1 = 2*R1;
-    const int ym1 = R1 + 20;
+    const int ym1 = 2*R1;
+    //const int ym1 = R1 + xm1;
 
     for(int j=0; j< ymax; j++)
     {
