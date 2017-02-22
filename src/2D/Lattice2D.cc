@@ -602,6 +602,12 @@ void Lattice2D::setBoundaries(const Boundaries& newBound)
     buildWalls();
 }
 
+void Lattice2D::linearIndex(int index, int& x, int& y)const
+{
+    x = (index)%xsize;
+    y = (index)/xsize;
+}
+
 //=========================== LATTICE CUTOUT ===========================
 
 const std::vector<int> Lattice2D::findBubbleCells()const
@@ -973,12 +979,6 @@ const bool Lattice2D::operator==(const Lattice2D& other)const
 ///////////////////////////// PRIVATE /////////////////////////////
 
 //=========================== OPERATIONS ===========================
-
-inline void Lattice2D::linearIndex(int index, int& x, int& y)const
-{
-    x = (index)%xsize;
-    y = (index)/xsize;
-}
 
 void Lattice2D::streamAndBouncePull(Cell2D& tCell, const direction2D& dir)const
 {

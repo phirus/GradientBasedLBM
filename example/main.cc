@@ -184,7 +184,7 @@ int main(int argc, char** argv){
             bubblebox.setBubble(pos.x,pos.y);
             meins.setBubbleBox(bubblebox);
 
-            
+            writeBubbleFitData(meins, createFilename("bubbleFit_", i, ".csv"));            
             write_data_plot_linewise(i ,pos.x, pos.y, "BubblePosPlot.dat");
             write_data_plot_linewise(i ,velo.x, velo.y, "BubbleVeloPlot.dat");
             write_csv_linewise(i, pos.x, pos.y, velo.x, velo.y, Re, "BubblePlot.csv");

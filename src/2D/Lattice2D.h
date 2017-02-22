@@ -62,6 +62,8 @@ public:
     void setBubbleBox(const BubbleBox2D& newBubble){bubblebox = newBubble;};
     inline void setParams(const ParamSet& newParam){param = newParam;}; /// < set a new parameter set
 
+    void linearIndex(int index, int& x, int& y)const;
+
     /// Lattice cutout
     const std::vector<int> findBubbleCells()const;
     void copyCellsFromOther(const Lattice2D& other, const std::vector<int>& indices);
@@ -93,7 +95,7 @@ private:
     Boundaries bound;
     BubbleBox2D bubblebox;
 
-    inline void linearIndex(int index, int& x, int& y)const;
+    
     void streamAndBouncePull(Cell2D& tCell, const direction2D& dir)const; /// < internal streaming mechanism with bounce back
 };
 

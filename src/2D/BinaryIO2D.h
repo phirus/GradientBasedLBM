@@ -24,5 +24,5 @@ void write_techplot_output_alternative2D(const Lattice2D& l, const string& filen
 void write_vtk_output2D(const Lattice2D& l, const string& filename = "test.vtk");
 inline void write_vtk_output2D(const Lattice2D& l, int iterNum){write_vtk_output2D(l, createFilename("output_", iterNum, ".vtk"));};
 
-
+void writeBubbleFitData(const Lattice2D& l, const string& filename = "bubbleFit.csv");
 #endif

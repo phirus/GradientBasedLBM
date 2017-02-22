@@ -491,3 +491,22 @@ void write_vtk_output2D(const Lattice2D& l, const string& filename)
 
     VTKFile.close();
 }
+
+void writeBubbleFitData(const Lattice2D& l, const string& filename)
+{
+    ofstream BubbleFit;
+    BubbleFit.open( filename.c_str() );
+    BubbleFit << "x;y;z;rho_b\n";
+
+    std::vector<int> indices = l.findBubbleCells();
+
+    for(int index : indices)
+    {
+        int x,y;
+        l.linearIndex(index, x, y);
+        Cell2D tmp = l.getCell(x, y);
+
+        BubbleFit << x << ";" << y << ";" << "1" << ";" << tmp.getRho()[1] << "\n";
+    }
+    BubbleFit.close();
+}
