@@ -6,13 +6,18 @@ using Optim
 
 include("functions.jl")
 
-r = 15
+r = 15.0
 
 # start values
-alpha = 0.0 
+alpha = 0.0
 a = 10.0
 
-input_file = ARGS[1]
+#for i = i : size(ARGS,1)
+
+
+
+#input_file = ARGS[1]
+input_file = "bubbleFit_10.csv"
 
 num = input_file[11:(end-4)]
 show(num)
