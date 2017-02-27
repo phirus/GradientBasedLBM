@@ -1,38 +1,40 @@
 #!/usr/bin/env julia
 
-#versioninfo()
+versioninfo()
 
 using Optim
 
 include("functions.jl")
 
-r = 15.0
 
-# start values
-alpha = 0.0
-a = 10.0
+out = zeros(size(ARGS,1),3)
+header = ["time" "alpha" "a"]
 
-#for i = i : size(ARGS,1)
+for i = 1 : size(ARGS,1)
+    input_file = ARGS[i]
+    num = input_file[11:(end-4)]
+    num = StringToInt(num)
+    println("\n",input_file)
 
+    alpha = 0.0
+    a = 15.0
+    initial = [alpha, a]
 
+    data = readdlm(input_file, ';')[2:end,:]
+    res = optimize(x -> targetF(x,centerData(data)), initial)
+    show(res)
+    x = Optim.minimizer(res)
 
-#input_file = ARGS[1]
-input_file = "bubbleFit_10.csv"
+    println("\n##################")
+    println("alpha = ", x[1], " -> ", x[1]/(2 * pi)*360,"°", "\na = ",x[2])
+    println("\n##################")
 
-num = input_file[11:(end-4)]
-show(num)
+    out[i,:] = [num x[1] x[2]]
+end
 
-# Open the output file for writing
-data = readdlm(input_file, ';')[2:end,:]
+out = sortrows(out, by= x -> (x[1]))# [lt=<comparison>,] [rev=false])
 
-res = optimize(x -> targetF(x,centerData(data)), [alpha, a])#, NelderMead())
-show(res)
-
-#x = res.minimum
-
-#alpha = x[1]
-#a = x[2]
+A = [header;out]
+writedlm("out.csv", A, ';')
 
 println("\n\n##################")
-
-#createPFile(Mo, Eo, c_s, gamma, sigma, g)
