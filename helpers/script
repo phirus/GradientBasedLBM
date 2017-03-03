@@ -1,0 +1,4 @@
+./BubbleTest -c 8 -p preprocessFile -b BoundaryInput 
+pvpython ../conversion.py *.vtk
+./ellipsoid_fit.jl *.bubbleFit*
+./merge.jl
