@@ -43,4 +43,11 @@ inline const DistributionSetType2D distro_times_2D(const DistributionSetType2D &
     return foo;
 };
 
+struct pressureTensor 
+{
+    double xx,xy,yx,yy;
+    pressureTensor() : xx(0),xy(0),yx(0),yy(0) {};
+    const double getTrace()const{return xx + yy;};
+};
+
 #endif

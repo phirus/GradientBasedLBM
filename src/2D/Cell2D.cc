@@ -118,3 +118,18 @@ const double Cell2D::calcPsi()const
     if(rhoSum > 0) return (rho[0] - rho[1])/( rhoSum ); // < prevent division by 0
     else return 0;
 }
+
+const pressureTensor Cell2D::getPressureTensor(int color) const
+{
+    pressureTensor p;
+    VeloSet2D u = getU();
+
+    for (int i=0; i<9; i++)
+    {
+        p.xx += f[color][i] * (DIRECTION_2D[i].x - u[color].x) * (DIRECTION_2D[i].x - u[color].x);
+        p.xy += f[color][i] * (DIRECTION_2D[i].x - u[color].x) * (DIRECTION_2D[i].y - u[color].y);
+        p.yx += f[color][i] * (DIRECTION_2D[i].y - u[color].y) * (DIRECTION_2D[i].x - u[color].x);
+        p.yy += f[color][i] * (DIRECTION_2D[i].y - u[color].y) * (DIRECTION_2D[i].y - u[color].y);           
+    }
+    return p;
+}
