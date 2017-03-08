@@ -134,9 +134,10 @@ int main(int argc, char** argv){
     const int outputInterval = timetrack.getOutputInt();
     const int restartInterval = timetrack.getRestartInt();
 
-    write_file_header("BubblePlot.csv", "time;PosX;PosY;v_x;v_y;Re");
+    write_file_header("BubblePlot.csv", "time;PosX;PosY;v_x;v_y;Re;Fx;Fy");
     write_file_header("BubblePosPlot.dat", "time \t PosX \t PosY");
     write_file_header("BubbleVeloPlot.dat", "time \t vx \t vy");
+    write_file_header("ForcePlot.dat", "time \t Fx \t Fy");
 
     int i;
 
@@ -175,9 +176,11 @@ int main(int argc, char** argv){
         
         if(i%10 == 0) 
         {
-            const boost::array<Vector2D,2> bubble_data = meins.getBubbleData();
+            const boost::array<Vector2D,3> bubble_data = meins.getBubbleData();
             const Vector2D pos = bubble_data[0];
             const Vector2D velo = bubble_data[1];           
+            const Vector2D force = bubble_data[2];
+
             const double Re = getReynolds(params, velo.y, prepro.getResolution());
 
             BubbleBox2D bubblebox = meins.getBubbleBox();
@@ -187,7 +190,9 @@ int main(int argc, char** argv){
             writeBubbleFitData(meins, createFilename("bubbleFit_", i, ".csv"));            
             write_data_plot_linewise(i ,pos.x, pos.y, "BubblePosPlot.dat");
             write_data_plot_linewise(i ,velo.x, velo.y, "BubbleVeloPlot.dat");
-            write_csv_linewise(i, pos.x, pos.y, velo.x, velo.y, Re, "BubblePlot.csv");
+            write_csv_linewise(i, pos.x, pos.y, velo.x, velo.y, Re, force.x, force.y, "BubblePlot.csv");
+
+            write_data_plot_linewise(i ,force.x, force.y, "ForcePlot.dat");
 
             end = std::chrono::high_resolution_clock::now();
             sequential +=  std::chrono::duration_cast<std::chrono::microseconds>( end - start).count();
@@ -246,7 +251,8 @@ void initialSetUp(Lattice2D& meins, Preprocess& prepro, Boundaries& bound, int x
   
     meins.equilibriumIni();
 
-   for (int i = 1; i< 1001; i++)
+//   for (int i = 1; i< 1001; i++)
+   for (int i = 1; i< 101; i++)
    {
        meins.collideAll(numOfCPUs,false,false);
        //meins.evaluateBoundaries();

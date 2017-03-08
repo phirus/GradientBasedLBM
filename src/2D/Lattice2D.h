@@ -31,7 +31,8 @@ public:
     void overallRho();
     direction2D directions(int x, int y)const; /// < calculates positions of neighboring sites (periodical)
     const Vector2D getGradient(int x, int y)const; /// < calculates the color gradient on the position (y,x)
-        
+    const Vector2D getSurfaceNormal(int x, int y) const;
+         
     /// LB steps
     void streamAll(int threads = 1); /// < streaming step
     bool collideAll(int threads = 1, bool gravity = false, bool isLimitActive = true); /// < collision step
@@ -67,7 +68,12 @@ public:
     /// Lattice cutout
     const std::vector<int> findBubbleCells()const;
     void copyCellsFromOther(const Lattice2D& other, const std::vector<int>& indices);
-    const boost::array<Vector2D,2> getBubbleData()const;
+    const boost::array<Vector2D,3> getBubbleData()const;
+
+    const Vector2D getPGesN(int x, int y)const;
+    const Vector2D getP1N(int x, int y)const;
+    const double getDivergence(int x, int y)const;
+    const Vector2D getResultingForce()const;
     
     /// boundary treatment
     const bool isBoundary(int x, int y)const;
@@ -94,8 +100,7 @@ private:
     ParamSet param;     /// < set of parameters used during the simulation
     Boundaries bound;
     BubbleBox2D bubblebox;
-
-    
+  
     void streamAndBouncePull(Cell2D& tCell, const direction2D& dir)const; /// < internal streaming mechanism with bounce back
 };
 

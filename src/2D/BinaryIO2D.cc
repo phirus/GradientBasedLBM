@@ -425,7 +425,7 @@ void write_vtk_output2D(const Lattice2D& l, const string& filename)
         }
     }
 
-    VTKFile << "\nSCALARS P_b DOUBLE\nLOOKUP_TABLE default"<<endl;
+    VTKFile << "\nSCALARS P_1 DOUBLE\nLOOKUP_TABLE default"<<endl;
     for (int j = 0; j < ysize; j++)
     {
         for (int i = 0; i < xsize; i++)
@@ -436,7 +436,7 @@ void write_vtk_output2D(const Lattice2D& l, const string& filename)
         }
     }
 
-    VTKFile << "\nSCALARS P_r DOUBLE\nLOOKUP_TABLE default"<<endl;
+    VTKFile << "\nSCALARS P_2 DOUBLE\nLOOKUP_TABLE default"<<endl;
     for (int j = 0; j < ysize; j++)
     {
         for (int i = 0; i < xsize; i++)
@@ -455,6 +455,15 @@ void write_vtk_output2D(const Lattice2D& l, const string& filename)
             tmp = l.getCell(i,j);
             tmp.calcRho();
             VTKFile << tmp.getPressureTensor(0).getTrace() + tmp.getPressureTensor(1).getTrace() << " ";
+        }
+    }
+
+    VTKFile << "\nSCALARS divP DOUBLE\nLOOKUP_TABLE default"<<endl;
+    for (int j = 0; j < ysize; j++)
+    {
+        for (int i = 0; i < xsize; i++)
+        {
+            VTKFile << l.getDivergence(i, j) << " ";
         }
     }
 

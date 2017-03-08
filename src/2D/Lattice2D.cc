@@ -145,6 +145,15 @@ const Vector2D Lattice2D::getGradient(int x, int y)const
     return grad;
 }
 
+const Vector2D Lattice2D::getSurfaceNormal(int x, int y) const
+{
+    const Vector2D grad = getGradient(x,y);
+    const double abs = grad.Abs();
+    Vector2D n(0,0);
+    if (abs > 1e-3) n = grad * (1.0 / abs);
+    return n;
+}
+
 void Lattice2D::streamAll(int threads)
 {
     field2D *newData = new field2D(boost::extents[xsize][ysize]);
@@ -640,11 +649,13 @@ void Lattice2D::copyCellsFromOther(const Lattice2D& other, const std::vector<int
     }
 }
 
-const boost::array<Vector2D,2> Lattice2D::getBubbleData()const
+const boost::array<Vector2D,3> Lattice2D::getBubbleData()const
 {
     Vector2D momentum(0,0);
     Vector2D tmp_position(0,0);
+    Vector2D force(0,0);
     double rho_sum(0);
+
 
     for (int x = 0; x<xsize;x++)
     {
@@ -657,6 +668,7 @@ const boost::array<Vector2D,2> Lattice2D::getBubbleData()const
             {
                 momentum = momentum + (tmp_velo[1] * tmp_rho[1]);
                 tmp_position = tmp_position + (Vector2D(x,y) * tmp_rho[1]);
+                force = force +  getSurfaceNormal(x, y) * getDivergence(x, y);
                 rho_sum += tmp_rho[1];
             }
         }
@@ -665,9 +677,59 @@ const boost::array<Vector2D,2> Lattice2D::getBubbleData()const
     const Vector2D velocity = momentum * (1.0/ rho_sum);
     const Vector2D position = tmp_position * (1.0/ rho_sum);
     
-    boost::array<Vector2D,2> result = {{position,velocity}};
+    boost::array<Vector2D,3> result = {{position,velocity,force}};
     return result;
 
+}
+
+const Vector2D Lattice2D::getPGesN(int x, int y)const
+{
+    const Cell2D tmp = (*data)[x][y];
+    const double p_ges = tmp.getPressureTensor(0).getTrace() + tmp.getPressureTensor(1).getTrace();
+    const Vector2D n = getSurfaceNormal(x, y) * (-1);
+
+    return n * p_ges;
+}
+
+const Vector2D Lattice2D::getP1N(int x, int y)const
+{
+    const Cell2D tmp = (*data)[x][y];
+    double p_ges = tmp.getPressureTensor(0).getTrace();
+    Vector2D n = getSurfaceNormal(x, y) * (-1);
+
+    return n * p_ges;
+}
+
+
+const double Lattice2D::getDivergence(int x, int y)const
+{
+    double div = 0;
+    double p_x,p_y;
+
+    const direction2D dir = directions(x,y);
+    for (int q=0;q<13;q++)
+    {
+        Vector2D tmpP = getP1N(dir[q].x, dir[q].y);
+        p_x = GRAD_WEIGHTS_2D[q] * tmpP.x;
+        p_y = GRAD_WEIGHTS_2D[q] * tmpP.y;
+        div += DIRECTION_2D[q].x * p_x + DIRECTION_2D[q].y * p_y;
+    }
+    return div;
+}
+
+const Vector2D Lattice2D::getResultingForce()const
+{
+    Vector2D force(0,0);
+    const std::vector<int> indices = findBubbleCells();
+
+    int x,y;
+
+    for(int index : indices)
+    {
+        linearIndex(index, x, y);
+        force = force +  getSurfaceNormal(x, y) * getDivergence(x, y) ;
+    }
+    return force;
 }
 
 //====================== BOUNDARY TREATMENT ======================

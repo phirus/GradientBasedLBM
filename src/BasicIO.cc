@@ -51,11 +51,11 @@ void write_csv(const nested_vector& data, const string& filename, const string& 
     Plot.close();
 }
 
-void write_csv_linewise(int i, double Posx, double PosY, double v_x, double v_y, double Re, const string& filename)
+void write_csv_linewise(int i, double Posx, double PosY, double v_x, double v_y, double Re, double F_x, double F_y, const string& filename)
 {
     ofstream Plot;
     Plot.open(filename.c_str(),ios::app);
-    Plot << i << ";" << Posx << ";" << PosY << ";" << v_x << ";" << v_y << ";" << Re << "\n";
+    Plot << i << ";" << Posx << ";" << PosY << ";" << v_x << ";" << v_y << ";" << Re << ";" << F_x << ";" << F_y << "\n";
     Plot.close();
 }
 
