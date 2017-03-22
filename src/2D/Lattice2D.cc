@@ -344,95 +344,204 @@ void Lattice2D::evaluateBoundaries(int threads)
     #pragma omp parallel
     {
         // north boundary
-        if(bound.north.getType() == pressure)
+        if(bound.north.getType() > 1)
         {
-            ColSet rho = bound.north.getRho();
-
             int lowerX = 0;
             int upperX = xsize;
 
-            if (bound.west.getType() != periodic) lowerX++;
-            if (bound.east.getType() != periodic) upperX--;
-
-            if(bound.west.getType() == pressure) // north west corner
+            if(bound.west.getType()  > 1) // north west corner
             {
-                (*data)[0][ysize-1] = cornerNorthWest((*data)[0][ysize-1], rho);
+                (*data)[0][ysize-1] = cornerNorthWest((*data)[0][ysize-1], bound.north.getRho());
+                lowerX = 1;
+            }
+            else if(bound.west.getType() == bounceback)
+            {
+                (*data)[1][ysize-1] = cornerNorthWest((*data)[1][ysize-1], bound.north.getRho());
+                lowerX = 2;
             }
 
-            if(bound.east.getType() == pressure) // north east corner
+            if(bound.east.getType() > 1)
             {
-                (*data)[xsize-1][ysize-1] = cornerNorthEast((*data)[xsize-1][ysize-1], rho);
+                (*data)[xsize-1][ysize-1] = cornerNorthEast((*data)[xsize-1][ysize-1], bound.north.getRho());
+                upperX = xsize - 1;
+            }
+            else if(bound.east.getType() == bounceback)
+            {
+                (*data)[xsize-2][ysize-1] = cornerNorthEast((*data)[xsize-2][ysize-1], bound.north.getRho());
+                upperX = xsize - 2;
             }
 
-            #pragma omp for schedule(static,10) nowait
-            for (int x=lowerX; x<upperX; x++)
+            if(bound.north.getType() == pressure)
             {
-                (*data)[x][ysize-1] = boundaryNorthPres((*data)[x][ysize-1], rho);
+                ColSet rho = bound.north.getRho();
+                #pragma omp for schedule(static,10) nowait
+                for (int x=lowerX; x<upperX; x++)
+                {
+                    (*data)[x][ysize-1] = boundaryNorthPres((*data)[x][ysize-1], rho);
+                }
             }
-        } // end north pressure
+            if(bound.north.getType() == velocity)
+            {
+                double u_y = bound.north.getVelocity()[0].y;
+                #pragma omp for schedule(static,10) nowait
+                for (int x=lowerX; x<upperX; x++)
+                {
+                    (*data)[x][ysize-1] = boundaryNorthVelo((*data)[x][ysize-1], u_y);
+                }
+            }
+            if(bound.north.getType() == shear)
+            {
+                double u_0 = bound.west.getVelocity()[0].y;
+                double u_1 = bound.east.getVelocity()[0].y;
+
+                #pragma omp for schedule(static,10) nowait
+                for (int x=lowerX; x<upperX; x++)
+                {
+                    double u_y = get_shearvelocity_x(x,u_0,u_1);
+                    (*data)[x][ysize-1] = boundaryNorthVelo((*data)[x][ysize-1], u_y);
+                }
+            }
+        } // end north
 
         // south boundary
-        if(bound.south.getType() == pressure)
+        if(bound.south.getType() > 1)
         {
-            ColSet rho = bound.south.getRho();
             int lowerX = 0;
             int upperX = xsize;
     
-            if (bound.west.getType() != periodic) lowerX++;
-            if (bound.east.getType() != periodic) upperX--;
-    
-            if(bound.west.getType() == pressure) // south west corner
+            if(bound.west.getType() > 1)
             {
-                (*data)[0][0] = cornerSouthWest((*data)[0][0], rho);
+                (*data)[0][0] = cornerSouthWest((*data)[0][0], bound.south.getRho());
+                lowerX = 1;
+            }
+            else if (bound.west.getType() == bounceback)
+            {
+                (*data)[1][0] = cornerSouthWest((*data)[1][0], bound.south.getRho());
+                lowerX = 2;
             }
     
-            if(bound.east.getType() == pressure) // south east corner
+            if(bound.east.getType() > 1)
             {
-                (*data)[xsize-1][0] = cornerSouthEast((*data)[xsize-1][0], rho);
+                (*data)[xsize-1][0] = cornerSouthEast((*data)[xsize-1][0], bound.south.getRho());
+                upperX = xsize - 1;
+            }
+            else if(bound.east.getType() == bounceback)
+            {
+                (*data)[xsize-2][0] = cornerSouthEast((*data)[xsize-2][0], bound.south.getRho());
+                upperX = xsize - 2;
             }
 
-            #pragma omp for schedule(static,10) nowait
-            for (int x=lowerX; x<upperX; x++)
+            if(bound.south.getType() == pressure)
             {
-                (*data)[x][0] = boundarySouthPres((*data)[x][0],rho);
+                ColSet rho = bound.south.getRho();
+                #pragma omp for schedule(static,10) nowait
+                for (int x=lowerX; x<upperX; x++)
+                {
+                    (*data)[x][0] = boundarySouthPres((*data)[x][0],rho);
+                }
             }
-        } // end south pressure
-    
-    
+
+            if(bound.south.getType() == velocity)
+            {
+                double u_y = bound.south.getVelocity()[0].y;
+                #pragma omp for schedule(static,10) nowait
+                for (int x=lowerX; x<upperX; x++)
+                {
+                    (*data)[x][0] = boundarySouthVelo((*data)[x][0],u_y);
+                }
+            }
+            if(bound.south.getType() == shear)
+            {
+                double u_0 = bound.west.getVelocity()[0].y;
+                double u_1 = bound.east.getVelocity()[0].y;
+                #pragma omp for schedule(static,10) nowait
+                for (int x=lowerX; x<upperX; x++)
+                {
+                    double u_y = get_shearvelocity_x(x,u_0,u_1);
+                    (*data)[x][0] = boundarySouthVelo((*data)[x][0],u_y);
+                }
+            }
+        } // end south 
+
         // west boundary
-        if(bound.west.getType() == pressure)
+        if(bound.west.getType() > 1)
         {
-            ColSet rho = bound.west.getRho();
-    
             int lowerY = 0;
             int upperY = ysize;
-            if (bound.south.getType() != periodic) lowerY++;
-            if (bound.north.getType() != periodic) upperY--;
-        
-            #pragma omp for schedule(static,10) nowait
-            for (int y=lowerY; y< upperY; y++)
+
+            if (bound.south.getType() > 1) lowerY = 1;
+            else if (bound.south.getType() == bounceback)
             {
-                (*data)[0][y] = boundaryWestPres((*data)[0][y], rho);
+                (*data)[0][1] = cornerSouthWest((*data)[0][1], bound.west.getRho());
+                lowerY = 2;
             }
-        } // end west pressure
+
+            if (bound.north.getType() > 1) upperY = ysize - 1;
+            else if (bound.north.getType() == bounceback)
+            {
+                (*data)[0][ysize-2] = cornerNorthWest((*data)[0][ysize-2], bound.west.getRho());
+                upperY = ysize - 2;
+            }
+
+            if(bound.west.getType() == pressure)
+            {
+                ColSet rho = bound.west.getRho();
+                #pragma omp for schedule(static,10) nowait
+                for (int y=lowerY; y< upperY; y++)
+                {
+                    (*data)[0][y] = boundaryWestPres((*data)[0][y],rho);
+                }
+            }
+            if(bound.west.getType() == velocity)
+            {
+                double u_x = bound.west.getVelocity()[0].x;
+                #pragma omp for schedule(static,10) nowait
+                for (int y=lowerY; y< upperY; y++)
+                {
+                    (*data)[0][y] = boundaryWestVelo((*data)[0][y], u_x);
+                }
+            }    
+        } // end west
     
         // east boundary
-        if(bound.east.getType() == pressure)
+        if(bound.east.getType() > 1)
         {
-            ColSet rho = bound.east.getRho();
-    
             int lowerY = 0;
             int upperY = ysize;
     
-            if (bound.south.getType() != periodic) lowerY++;
-            if (bound.north.getType() != periodic) upperY--;
-
-            #pragma omp for schedule(static,10) nowait
-            for (int y=lowerY; y< upperY; y++)
+            if (bound.south.getType() > 1) lowerY = 1;
+            else if (bound.south.getType() == bounceback)
             {
-                (*data)[xsize-1][y] = boundaryEastPres((*data)[xsize-1][y], rho);
+                (*data)[xsize-1][1] = cornerSouthEast((*data)[xsize-1][1], bound.east.getRho());
+                lowerY = 2;
             }
-        }
+
+            if (bound.north.getType() > 1) upperY = ysize - 1;
+            else if (bound.north.getType() == bounceback)
+            {
+                (*data)[xsize-1][ysize-2] = cornerNorthEast((*data)[xsize-1][ysize-2], bound.east.getRho());
+                upperY = ysize - 2;
+            }
+
+            if(bound.east.getType() == pressure)
+            {
+                #pragma omp for schedule(static,10) nowait
+                for (int y=lowerY; y< upperY; y++)
+                {
+                    ColSet rho = bound.east.getRho();
+                    (*data)[xsize-1][y] = boundaryEastPres((*data)[xsize-1][y], rho);
+                }
+            }
+            if(bound.east.getType() == velocity)
+            {
+                double u_x = bound.east.getVelocity()[0].x;
+                #pragma omp for schedule(static,10) nowait
+               for (int y=lowerY; y< upperY; y++)
+                {
+                    (*data)[xsize-1][y] = boundaryEastVelo((*data)[xsize-1][y], u_x) ;
+                }
+            }           
+        } //end east
     }
 }
 
@@ -551,7 +660,7 @@ void Lattice2D::setShearProfile(double gradient, double offset)
 {
     const int range = xsize * ysize;
     const double m = gradient;
-    const double n = offset - (m * ( xsize *  param.getDeltaX() ) );
+    const double n = offset; // - (m * ( xsize *  param.getDeltaX() ) );
     for (int index = 0;  index < range; index++)
         {
             int x,y;
@@ -818,6 +927,11 @@ const Cell2D Lattice2D::boundaryNorthPres(const Cell2D& tmp, ColSet rho)const
     return Cell2D(f);
 }
 
+const Cell2D Lattice2D::boundaryNorthVelo(const Cell2D& tmp, double uy)const
+{
+    return Cell2D(eqDistro({{1.0,0}}, {{Vector2D(0,uy),Vector2D(0,0)}}, param.getPhi2D()));
+}
+
 const Cell2D Lattice2D::boundarySouthPres(const Cell2D& tmp, ColSet rho)const
 {        
     DistributionSetType2D f = tmp.getF();
@@ -828,8 +942,8 @@ const Cell2D Lattice2D::boundarySouthPres(const Cell2D& tmp, ColSet rho)const
         {
             u_y[color] = 1.0 - (f[color][0] + f[color][1] + f[color][5] + 2* (f[color][6] + f[color][7] + f[color][8])) / rho[color];
             f[color][3] = f[color][7] + 2.0/3.0 * rho[color]*u_y[color];
-            f[color][2] = - rho[color]*u_y[color]/6.0 + f[color][6] + (f[color][5] - f[color][1])/2.0;
-            f[color][4] = - rho[color]*u_y[color]/6.0 + f[color][8] + (f[color][1] - f[color][5])/2.0;
+            f[color][2] = rho[color]*u_y[color]/6.0 + f[color][6] + (f[color][5] - f[color][1])/2.0;
+            f[color][4] = rho[color]*u_y[color]/6.0 + f[color][8] + (f[color][1] - f[color][5])/2.0;
         }
         else
         {
@@ -840,6 +954,11 @@ const Cell2D Lattice2D::boundarySouthPres(const Cell2D& tmp, ColSet rho)const
         }
     }
     return Cell2D(f);
+}
+
+const Cell2D Lattice2D::boundarySouthVelo(const Cell2D& tmp, double uy)const
+{
+    return Cell2D(eqDistro({{1.0,0}}, {{Vector2D(0,uy),Vector2D(0,0)}}, param.getPhi2D()));
 }
 
 const Cell2D Lattice2D::boundaryWestPres(const Cell2D& tmp, ColSet rho)const
@@ -866,6 +985,11 @@ const Cell2D Lattice2D::boundaryWestPres(const Cell2D& tmp, ColSet rho)const
     return Cell2D(f);
 }
 
+const Cell2D Lattice2D::boundaryWestVelo(const Cell2D& tmp, double ux)const
+{
+    return Cell2D(eqDistro({{1.0,0}}, {{Vector2D(ux,0),Vector2D(0,0)}}, param.getPhi2D()));
+}
+
 const Cell2D Lattice2D::boundaryEastPres(const Cell2D& tmp, ColSet rho)const
 {
     DistributionSetType2D f = tmp.getF();
@@ -888,6 +1012,11 @@ const Cell2D Lattice2D::boundaryEastPres(const Cell2D& tmp, ColSet rho)const
         }
     }
     return Cell2D(f);
+}
+
+const Cell2D Lattice2D::boundaryEastVelo(const Cell2D& tmp, double ux)const
+{
+    return Cell2D(eqDistro({{1.0,0}}, {{Vector2D(ux,0),Vector2D(0,0)}}, param.getPhi2D()));
 }
 
 // corners
@@ -1060,7 +1189,7 @@ void Lattice2D::streamAndBouncePull(Cell2D& tCell, const direction2D& dir)const
             else  // else -> bounce back
             {
                 const ColSet rho = tCell.getRho();
-                ftmp[color][i] = f[color][PULL_INDEX_2D[i]] - (2.0 * 3.0 * WEIGHTS_2D[i] * rho[color] * (DIRECTION_2D[i] * neighbor.getU()[0]) ) ;
+                ftmp[color][i] = f[color][PULL_INDEX_2D[i]] + (2.0 * 3.0 * WEIGHTS_2D[i] * rho[color] * (DIRECTION_2D[i] * neighbor.getU()[0]) ) ;
             } 
         } // end for i
     } // end for color

@@ -12,7 +12,7 @@ using namespace std;
 namespace po = boost::program_options;
 
 void initialSetUp(Lattice2D& meins, Preprocess& prepro, Boundaries& bound, int xmax, int ymax, ParamSet params, int numOfCPUs);
-void initializeShearfFlow(Lattice2D& meins, Preprocess& prepro, int xmax, int ymax, ParamSet params, int numOfCPUs);
+void initializeShearfFlow(Lattice2D& meins, Preprocess& prepro, Boundaries& bound, int xmax, int ymax, ParamSet params);
 
 int main(int argc, char** argv){
 
@@ -80,7 +80,7 @@ int main(int argc, char** argv){
     int ymax = prepro.getYCells();
     int xmax = prepro.getXCells();
     Lattice2D meins(xmax,ymax);
-    //Lattice2D bubble_only(xmax,ymax);
+    Lattice2D bubble_only(xmax,ymax);
 
     if (vm.count("restart")) 
     {
@@ -108,19 +108,16 @@ int main(int argc, char** argv){
         }
     }
     else {      // vm.count("restart"), if no restart file -> initialize
-       
-       initialSetUp(meins, prepro, boundaries, xmax, ymax, params,numOfCPUs);
-       write_vtk_output2D(meins, 0);
 
-        // initialSetUp(bubble_only, prepro, xmax, ymax, params);
+        //initialSetUp(meins, prepro, boundaries, xmax, ymax, params,numOfCPUs);
         
-        // initializeShearfFlow(meins, prepro, xmax, ymax, params);
-
-        // const string shear_file_name =  "shear.bin";
-        // write_restart_file2D(meins, prepro, timetrack, shear_file_name);
-
-        // meins.copyCellsFromOther(bubble_only, bubble_only.findBubbleCells());
-        // write_vtk_output2D(meins, 0);
+        initialSetUp(bubble_only, prepro, boundaries, xmax, ymax, params,numOfCPUs);
+        initializeShearfFlow(meins, prepro, boundaries, xmax, ymax, params);
+        write_vtk_output2D(meins, 0);
+        
+        meins.copyCellsFromOther(bubble_only, bubble_only.findBubbleCells());
+        meins.setBubbleBox(bubble_only.getBubbleBox());
+        write_vtk_output2D(meins, 0);
     }
 
     //time_t start,end;
@@ -128,8 +125,6 @@ int main(int argc, char** argv){
     //std::chrono::high_resolution_clock::duration parallel, sequential;
     auto parallel = std::chrono::duration_cast<std::chrono::microseconds>( end - end).count();
     auto sequential = std::chrono::duration_cast<std::chrono::microseconds>( end - end).count();
-
-//    time(&start);
 
     const int outputInterval = timetrack.getOutputInt();
     const int restartInterval = timetrack.getRestartInt();
@@ -245,14 +240,12 @@ void initialSetUp(Lattice2D& meins, Preprocess& prepro, Boundaries& bound, int x
         }
     }
 
-    //meins.bottomWall();
-    //meins.closedBox();
-    meins.setBoundaries(bound);
+    //meins.setBoundaries(bound);
   
     meins.equilibriumIni();
 
 //   for (int i = 1; i< 1001; i++)
-   for (int i = 1; i< 101; i++)
+   for (int i = 1; i< 1001; i++)
    {
        meins.collideAll(numOfCPUs,false,false);
        //meins.evaluateBoundaries();
@@ -270,7 +263,7 @@ void initialSetUp(Lattice2D& meins, Preprocess& prepro, Boundaries& bound, int x
 }
 
 
-void initializeShearfFlow(Lattice2D& meins, Preprocess& prepro, int xmax, int ymax, ParamSet params, int numOfCPUs)
+void initializeShearfFlow(Lattice2D& meins, Preprocess& prepro, Boundaries& bound, int xmax, int ymax, ParamSet params)
 {
     // set the parameters        
     meins.setParams(params);
@@ -287,50 +280,10 @@ void initializeShearfFlow(Lattice2D& meins, Preprocess& prepro, int xmax, int ym
         }
     }
 
-    const Vector2D u_wall(0,prepro.getShearRate());
-
-    meins.shearWall(u_wall);
+    meins.setBoundaries(bound);
+    double grad = - bound.west.getVelocity()[0].y / double(xmax);
+    meins.setShearProfile(grad , bound.west.getVelocity()[0].y);
     meins.equilibriumIni();
-
-
-   std::vector<double> shearSum_data;
-   shearSum_data.push_back(0);
-   std::vector<double> resi_data;
-   const int max_count = 1e6;
-    for(int count = 0; count < max_count; count++)
-    {
-        meins.collideAll(numOfCPUs,false,false);
-        meins.streamAll(numOfCPUs);
-        
-        if(count%1000 == 0) 
-        {
-            cout << count <<endl;
-        }
-        
-        if(count%100 == 0) 
-        {
-            const double veloSum_tmp = getLineShearSum(meins);
-
-            const double Resi_tmp = (veloSum_tmp - shearSum_data.back()) / veloSum_tmp;
-
-            shearSum_data.push_back(veloSum_tmp);
-            write_data_plot(shearSum_data, 100, "ShearSum.dat");
-            resi_data.push_back(Resi_tmp);
-            write_data_plot(resi_data,100,"Residual.dat");
-
-            if(Resi_tmp < 1e-3)
-            {
-                write_vtk_output2D(meins, createFilename("shearTest_", count, ".vtk"));
-                break;
-            }
-        }
-
-        if(count%200 == 0) 
-        {
-            write_vtk_output2D(meins, createFilename("shearTest_", count, ".vtk"));
-        } 
-        
-    }
 
     cout<<"Shear flow steadily initialized\n"<<endl;
 }

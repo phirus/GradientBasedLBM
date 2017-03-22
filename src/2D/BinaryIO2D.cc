@@ -458,14 +458,14 @@ void write_vtk_output2D(const Lattice2D& l, const string& filename)
         }
     }
 
-    VTKFile << "\nSCALARS divP DOUBLE\nLOOKUP_TABLE default"<<endl;
-    for (int j = 0; j < ysize; j++)
-    {
-        for (int i = 0; i < xsize; i++)
-        {
-            VTKFile << l.getDivergence(i, j) << " ";
-        }
-    }
+    // VTKFile << "\nSCALARS divP DOUBLE\nLOOKUP_TABLE default"<<endl;
+    // for (int j = 0; j < ysize; j++)
+    // {
+    //     for (int i = 0; i < xsize; i++)
+    //     {
+    //         VTKFile << l.getDivergence(i, j) << " ";
+    //     }
+    // }
 
     VTKFile << "\nVECTORS j1 DOUBLE"<<endl;
     for (int j = 0; j < ysize; j++)

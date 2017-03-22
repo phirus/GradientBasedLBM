@@ -7,7 +7,7 @@
 
 using namespace std;
 
-enum boundary_type {periodic, bounceback, pressure};
+enum boundary_type {periodic, bounceback, pressure, velocity, shear};
 
 class BoundaryInformation
 {

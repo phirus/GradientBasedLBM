@@ -77,12 +77,19 @@ public:
     
     /// boundary treatment
     const bool isBoundary(int x, int y)const;
-    void buildWalls(); /// < and the Mexicans pay for it
+    void buildWalls(); /// 
     
     const Cell2D boundaryNorthPres(const Cell2D& tmp, ColSet rho)const;
+    const Cell2D boundaryNorthVelo(const Cell2D& tmp, double uy)const;
+
     const Cell2D boundarySouthPres(const Cell2D& tmp, ColSet rho)const;
+    const Cell2D boundarySouthVelo(const Cell2D& tmp, double uy)const;
+
     const Cell2D boundaryWestPres(const Cell2D& tmp, ColSet rho)const;
+    const Cell2D boundaryWestVelo(const Cell2D& tmp, double ux)const;
+
     const Cell2D boundaryEastPres(const Cell2D& tmp, ColSet rho)const;
+    const Cell2D boundaryEastVelo(const Cell2D& tmp, double ux)const;
     
     // corners
     const Cell2D cornerNorthWest(const Cell2D& tmp, ColSet rho)const;
@@ -100,7 +107,9 @@ private:
     ParamSet param;     /// < set of parameters used during the simulation
     Boundaries bound;
     BubbleBox2D bubblebox;
-  
+
+    inline const double get_shearvelocity_x(int x, double u_0, double u_1)const{return (u_1 - u_0) / xsize * x + u_0;};
+    inline const double get_shearvelocity_y(int y, double u_0, double u_1)const{return (u_1 - u_0) / ysize * y + u_0;};
     void streamAndBouncePull(Cell2D& tCell, const direction2D& dir)const; /// < internal streaming mechanism with bounce back
 };
 
