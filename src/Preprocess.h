@@ -12,7 +12,7 @@ class Preprocess
 {
 public: 
 	/// Lifecycle
-	Preprocess(double Re = 10, double Mo = 100, double Eo = 10, double res = 30, double rhol = 1, double gamma_ini = 2, double mu_rate = 2, double s3 = 1, double s5 = 1, double s11 = 1, double s17 = 1, bool shear = false, double shear_rate = 0, int xCells_ini = 50, int yCells_ini = 50 ,int zCells_ini = 50);
+	Preprocess(double Re = 10, double Mo = 100, double Eo = 10, double res = 30, double rhol = 1, double gamma_ini = 2, double mu_rate = 1, double bulk_vi = 2, double s3 = 1, double s5 = 1, double s11 = 1, double s17 = 1, bool shear = false, double shear_rate = 0, int xCells_ini = 50, int yCells_ini = 50 ,int zCells_ini = 50);
 
 	/// operations
 
@@ -28,7 +28,8 @@ public:
 	inline const double getResolution()const{return resolution;};
 	inline const double getRhoL()const{return rho_l;};
 	inline const double getGamma()const{return gamma;};
-	inline const double getMuRatio()const{return muRatio;};
+	inline const double getMuRatio()const{return mu_ratio;};
+	inline const double getBulkVisco()const{return bulk_visco;};
 	inline const double getS_3()const{return s_3;};
 	inline const double getS_5()const{return s_5;};
 	inline const double getS_11()const{return s_11;};
@@ -64,7 +65,8 @@ private:
 	double resolution; 		/// < width of bubble in cells
 	double rho_l ;			/// < liquid density
   	double gamma; 			/// < density ratio
-  	double muRatio;		/// ratio of second to first viscosity mu'/mu
+  	double mu_ratio;		/// viscosity ratio l/g
+  	double bulk_visco;		/// ratio of second to first viscosity mu'/mu
 	double s_3, s_5, s_11, s_17;
 	bool isShearFlow; 		/// < switch that determines active shear flow
 	double shearRate;		/// < shear rate in (1/s)
@@ -93,7 +95,7 @@ private:
 	inline void calcTimestep(){timestep = 1;} 	//spacestep / (sqrt(3) * c_s);};
 	inline void calcSoundspeed(){c_s = 1.0/sqrt(3);};
 	inline void calcNu(){nu = c_s * c_s * timestep * (tau - 0.5);};
-	inline void calcS2(){s_2 = 1.0/( (nu * muRatio) / (c_s*c_s * timestep) + 0.5);};
+	inline void calcS2(){s_2 = 1.0/( (nu * bulk_visco) / (c_s*c_s * timestep) + 0.5);};
 	inline void calcSigma(){sigma = sqrt( ( Eotvos * pow((tau - 0.5),4) ) / (81 * resolution * resolution * Morton)) * rho_l;};
 	inline void calcG(){g = (Eotvos * sigma) / ( rho_l * (1 - 1/gamma) * resolution * resolution );};
 

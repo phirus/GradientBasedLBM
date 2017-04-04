@@ -125,9 +125,9 @@ void write_preprocess_csv(const Preprocess& p)
     name <<"prepro.csv";
     preproCSV.open( name.str().c_str() );
 
-    preproCSV << "ReynoldsMax;Morton;Eotvos;resolution;muRatio;isShearFlow;shearRate;xCells;yCells;zCells"<<endl;
+    preproCSV << "ReynoldsMax;Morton;Eotvos;resolution;muRatio;bulk_visco;isShearFlow;shearRate;xCells;yCells;zCells"<<endl;
     preproCSV << p.getReynoldsMax() << ";" << p.getMorton() << ";" << p.getEotvos() << ";" << p.getResolution() << ";" ;
-    preproCSV << p.getMuRatio() << ";" << p.getIsShearFlow() << ";" << p.getShearRate() << ";" ;
+    preproCSV << p.getMuRatio() << ";" << p.getBulkVisco() << ";" << p.getIsShearFlow() << ";" << p.getShearRate() << ";" ;
     preproCSV << p.getXCells() << ";" << p.getYCells() << ";" << p.getZCells() << endl;
     preproCSV.close();
 }
@@ -179,7 +179,8 @@ const Preprocess read_preprocess_file(const string& filename)
     mm.insert(pair<string,double>("resolution",30));
     mm.insert(pair<string,double>("rho_l",1));
     mm.insert(pair<string,double>("gamma",2));
-    mm.insert(pair<string,double>("mu_ratio",2));
+    mm.insert(pair<string,double>("mu_ratio",1));
+    mm.insert(pair<string,double>("bulk_visco",2));
     mm.insert(pair<string,double>("s_3",1));
     mm.insert(pair<string,double>("s_5",1));
     mm.insert(pair<string,double>("s_11",1));
@@ -192,7 +193,7 @@ const Preprocess read_preprocess_file(const string& filename)
 
     mm = assign_map_via_file(mm, filename);
 
-    Preprocess prepro(mm.at("Reynolds"),mm.at("Morton"),mm.at("Eotvos"),mm.at("resolution"),mm.at("rho_l"),mm.at("gamma"), mm.at("mu_ratio"), mm.at("s_3"), mm.at("s_5"), mm.at("s_11"), mm.at("s_17"), mm.at("isShearFlow"), mm.at("shearRate"), mm.at("xCells"), mm.at("yCells"), mm.at("zCells"));
+    Preprocess prepro(mm.at("Reynolds"),mm.at("Morton"),mm.at("Eotvos"),mm.at("resolution"),mm.at("rho_l"),mm.at("gamma"), mm.at("mu_ratio"), mm.at("bulk_visco"), mm.at("s_3"), mm.at("s_5"), mm.at("s_11"), mm.at("s_17"), mm.at("isShearFlow"), mm.at("shearRate"), mm.at("xCells"), mm.at("yCells"), mm.at("zCells"));
     return prepro;
 }
 

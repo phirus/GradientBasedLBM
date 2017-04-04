@@ -1560,7 +1560,8 @@ TEST(Preprocess,constr){
     EXPECT_EQ(30,newProcess.getResolution());
     EXPECT_DOUBLE_EQ(1,newProcess.getRhoL());
     EXPECT_DOUBLE_EQ(2,newProcess.getGamma());
-    EXPECT_DOUBLE_EQ(2,newProcess.getMuRatio());
+    EXPECT_DOUBLE_EQ(1,newProcess.getMuRatio());
+    EXPECT_DOUBLE_EQ(2,newProcess.getBulkVisco());
 
     // test the deduced parameters
     EXPECT_DOUBLE_EQ(1,newProcess.getSpacestep());
@@ -1588,7 +1589,8 @@ TEST(Preprocess,FileInput){
     EXPECT_EQ(35,newProcess.getResolution());
     EXPECT_DOUBLE_EQ(1,newProcess.getRhoL());
     EXPECT_DOUBLE_EQ(3,newProcess.getGamma());
-    EXPECT_DOUBLE_EQ(1.8,newProcess.getMuRatio());
+    EXPECT_DOUBLE_EQ(10,newProcess.getMuRatio());
+    EXPECT_DOUBLE_EQ(1.8,newProcess.getBulkVisco());
     EXPECT_TRUE(newProcess.getIsShearFlow());
     EXPECT_DOUBLE_EQ(0.4, newProcess.getShearRate());
 

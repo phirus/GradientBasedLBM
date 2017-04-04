@@ -134,6 +134,7 @@ void write_restart_file3D(const Lattice3D& l, const Preprocess& p, const Timetra
     double rho_l = p.getRhoL();
     double gamma = p.getGamma();
     double mu_ratio = p.getMuRatio();
+    double bulk_visco = p.getBulkVisco();
     double s_3 = p.getS_3();
     double s_5 = p.getS_5();
     double s_11 = p.getS_11();
@@ -150,7 +151,8 @@ void write_restart_file3D(const Lattice3D& l, const Preprocess& p, const Timetra
     file.write(reinterpret_cast<char*> (&resolution), sizeof(double));
     file.write(reinterpret_cast<char*> (&rho_l), sizeof(double));
     file.write(reinterpret_cast<char*> (&gamma), sizeof(double));
-    file.write(reinterpret_cast<char*> (&mu_ratio), sizeof(double));    
+    file.write(reinterpret_cast<char*> (&mu_ratio), sizeof(double));
+    file.write(reinterpret_cast<char*> (&bulk_visco), sizeof(double));    
     file.write(reinterpret_cast<char*> (&s_3), sizeof(double));
     file.write(reinterpret_cast<char*> (&s_5), sizeof(double));
     file.write(reinterpret_cast<char*> (&s_11), sizeof(double));
@@ -212,8 +214,8 @@ const bool read_restart_file3D(Lattice3D& outL, Preprocess& p, Timetrack& t, con
         time.setCount(count);
 
         double ReynoldsMax, Morton, Eotvos;
-        double resolution, rho_l, gamma;
-        double mu_ratio, s_3, s_5, s_11, s_17;
+        double resolution, rho_l, gamma, mu_ratio;
+        double bulk_visco, s_3, s_5, s_11, s_17;
         bool isShearFlow;
         double shearRate; 
         int xCells, yCells, zCells;
@@ -225,6 +227,7 @@ const bool read_restart_file3D(Lattice3D& outL, Preprocess& p, Timetrack& t, con
         file.read((char*) &rho_l, sizeof(double));
         file.read((char*) &gamma, sizeof(double));
         file.read((char*) &mu_ratio, sizeof(double));
+        file.read((char*) &bulk_visco, sizeof(double));
         file.read((char*) &s_3, sizeof(double));
         file.read((char*) &s_5, sizeof(double));
         file.read((char*) &s_11, sizeof(double));
@@ -235,7 +238,7 @@ const bool read_restart_file3D(Lattice3D& outL, Preprocess& p, Timetrack& t, con
         file.read((char*) &yCells, sizeof(int));
         file.read((char*) &zCells, sizeof(int));
 
-        Preprocess prepro(ReynoldsMax, Morton, Eotvos, resolution, rho_l, gamma, mu_ratio, s_3, s_5, s_11, s_17, isShearFlow, shearRate, xCells, yCells, zCells);
+        Preprocess prepro(ReynoldsMax, Morton, Eotvos, resolution, rho_l, gamma, mu_ratio, bulk_visco, s_3, s_5, s_11, s_17, isShearFlow, shearRate, xCells, yCells, zCells);
         
         file.close();
         outL.setParams(param);

@@ -31,10 +31,13 @@ rho_l = 1
 # density ratio, default [2]
 gamma = 3
 
+# viscosity ratio mu_l/mu_g  , default [1]
+mu_ratio = 10
+
 ####### PARAMETERS FOR RELAXATION-MATRIX #######
 
 # bulk viscosity ratio mu'/mu  , default [2]
-mu_ratio = 1.8
+bulk_visco = 1.8
 
 # s_3 , default [1]
 s_3 = 1.2
