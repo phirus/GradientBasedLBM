@@ -138,7 +138,8 @@ const Vector2D Lattice2D::getGradient(int x, int y)const
     const direction2D dir = directions(x,y);
     for (int q=0;q<13;q++)
     {
-        tmpDelta = GRAD_WEIGHTS_2D[q] * (*data)[ dir[q].x ][ dir[q].y ].getDeltaRho();
+//        tmpDelta = GRAD_WEIGHTS_2D[q] * (*data)[ dir[q].x ][ dir[q].y ].getDeltaRho();
+        tmpDelta = GRAD_WEIGHTS_2D[q] * (*data)[ dir[q].x ][ dir[q].y ].calcPsi();
         grad.x += DIRECTION_2D[q].x * tmpDelta;
         grad.y += DIRECTION_2D[q].y * tmpDelta;
     }
