@@ -253,7 +253,7 @@ bool Lattice3D::collideAll(int threads, bool gravity, bool isLimitActive)
                 const DistributionSetType3D diff = distro_diff_3D(fCell, fEq);
             
                 const double omega = param.getOmega(tmpCell.calcPsi());
-                const Matrix3D relaxation_matrix(relax,omega);
+                const Matrix3D relaxation_matrix(relax);
                 
                 const Matrix3D forcing_factor = Matrix3D(true) - (relaxation_matrix*0.5);    // (I - 0.5 S) -> ( 1 - 0.5 omega)
                 const DistributionSetType3D first_forcing_term = forcing_factor * (TRAFO_MATRIX3D * calculate_forcing_term(G,u)); // F' = (I - 0.5 S) M F

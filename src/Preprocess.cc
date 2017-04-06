@@ -7,9 +7,9 @@
 Preprocess::Preprocess(double Re, double Mo, double Eo, double res, double rhol, double gamma_ini, double mu_rate, double bulk_vi, double s3, double s5, double s11, double s17, bool shear, double shear_rate, int xCells_ini, int yCells_ini ,int zCells_ini):
 ReynoldsMax(Re), Morton(Mo), Eotvos(Eo),
 resolution(res), rho_l(rhol), gamma(gamma_ini), mu_ratio(mu_rate), 
-bulk_visco(bulk_vi), s_3(s3), s_5(s5), s_11(s11), s_17(s17),
+s_3(s3), s_5(s5), s_11(s11), s_17(s17),
 isShearFlow(shear), shearRate(shear_rate),
-xCells(xCells_ini), yCells(yCells_ini), zCells(zCells_ini)
+xCells(xCells_ini), yCells(yCells_ini), zCells(zCells_ini),bulk_visco(bulk_vi)
 {
     deduceAll();
 }
@@ -17,10 +17,11 @@ xCells(xCells_ini), yCells(yCells_ini), zCells(zCells_ini)
 //=========================== OPERATIONS ===========================
 
 const ParamSet Preprocess::getParamSet()const{
-    const double omega = 1/tau;
+    const double omega_l = 1/tau_l;
+    const double omega_g = 1/tau_g;
     const double rho_r = 1;  // normalized
-    const RelaxationPar3D relax(s_2,s_3,s_5,s_11,s_17);
-    ParamSet param(omega, omega, rho_r, gamma, convertSigma(), g, timestep, spacestep, relax);
+    const RelaxationPar3D relax(1,1,s_3,s_5,s_11,s_17);
+    ParamSet param(omega_l, omega_g, rho_r, gamma, convertSigma(), g, timestep, spacestep, relax, bulk_visco);
     return param;
 }
 
@@ -45,11 +46,11 @@ const bool Preprocess::operator==(const Preprocess& other)const
     if(shearRate != other.getShearRate()) exit = false;
     if(spacestep != other.getSpacestep()) exit = false;
     if(timestep != other.getTimestep()) exit = false;   
-    if(tau != other.getTau()) exit = false;
-    if(delRho != other.getDelRho()) exit = false;
     if(c_s != other.getSoundspeed()) exit = false;
+    if(tau_l != other.getTauL()) exit = false;
+    if(tau_g != other.getTauG()) exit = false;
+    if(delRho != other.getDelRho()) exit = false;
     if(nu != other.getNu()) exit = false;
-    if(s_2 != other.getS2()) exit = false;
 
     if(sigma != other.getSigma()) exit = false;
     if(g != other.getG()) exit = false;
@@ -72,8 +73,8 @@ void Preprocess::deduceAll(){
     calcSpacestep();
     calcTimestep();
     calcSoundspeed();
+    calcTauG();
 	calcNu();
-    calcS2();
     calcSigma();
     calcG();
 }

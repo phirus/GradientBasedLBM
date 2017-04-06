@@ -4,7 +4,7 @@
 
 //=========================== LIFECYCLE ===========================
 
-ParamSet::ParamSet(double omR, double omB, double rhoR ,double gammaIni, double sigmaIni, double g, double t_step, double s_step,RelaxationPar3D rel, double alB, double deltaIni, double betaIni):
+ParamSet::ParamSet(double omR, double omB, double rhoR ,double gammaIni, double sigmaIni, double g, double t_step, double s_step,RelaxationPar3D rel, double b_visc, double alB, double deltaIni, double betaIni):
 omegaRed(omR),
 omegaBlue(omB),
 rhoRed(rhoR),
@@ -13,7 +13,8 @@ alphaBlue(alB),
 delta(deltaIni),
 beta(betaIni), 
 sigma(sigmaIni), 
-gravity(g), 
+gravity(g),
+bulk_visco(b_visc), 
 timestep(t_step),
 spacestep(s_step),
 relax(rel)
@@ -99,14 +100,23 @@ const ColSet ParamSet::getAk(double omega)const
     return Ak;
 }
 
-const RelaxationPar2D ParamSet::getRelaxation2D()const
+const RelaxationPar2D ParamSet::getRelaxation2D(double psi)const
 {
-    const RelaxationPar2D rel = RelaxationPar2D(relax.s_2, relax.s_3, relax.s_5);
+    const double omega = getOmega(psi);
+    const RelaxationPar2D rel = RelaxationPar2D(omega, getS2(omega), relax.s_3, relax.s_5);
     return rel;
 }
 
-const boost::array<double,12> ParamSet::getEverything()const{
-    boost::array<double,12> pinkie;
+const RelaxationPar3D ParamSet::getRelaxation3D(double psi)const
+{
+    const double omega = getOmega(psi);
+    const RelaxationPar3D rel = RelaxationPar3D(omega, getS2(omega), relax.s_3, relax.s_5, relax.s_11, relax.s_17);
+    return rel;
+}
+
+
+const boost::array<double,13> ParamSet::getEverything()const{
+    boost::array<double,13> pinkie;
     pinkie[0] = omegaRed;
     pinkie[1] = omegaBlue;
     pinkie[2] = rhoRed;
@@ -117,8 +127,9 @@ const boost::array<double,12> ParamSet::getEverything()const{
     pinkie[7] = beta;
     pinkie[8] = sigma;
     pinkie[9] = gravity;
-    pinkie[10] = timestep;
-    pinkie[11] = spacestep;
+    pinkie[10] = bulk_visco;
+    pinkie[11] = timestep;
+    pinkie[12] = spacestep;
     
 
     return pinkie;
@@ -156,7 +167,7 @@ void ParamSet::setRelaxation(double s_2, double s_3, double s_5)
 const bool ParamSet::operator==(const ParamSet& other)const{
     bool control = true;
     {
-        boost::array<double,12> foo, bar;
+        boost::array<double,13> foo, bar;
         foo = getEverything();
         bar = other.getEverything();
 

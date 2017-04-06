@@ -17,14 +17,14 @@ typedef boost::array<array3D,2> DistributionSetType3D;         /// < merge two d
 
 struct RelaxationPar2D
 {
-    double s_2,s_3,s_5;
-    RelaxationPar2D(double s2=1, double s3=1, double s5=1):s_2(s2),s_3(s3),s_5(s5){};
+    double omega,s_2,s_3,s_5;
+    RelaxationPar2D(double om=1, double s2=1, double s3=1, double s5=1):omega(om),s_2(s2),s_3(s3),s_5(s5){};
 };
 
 struct RelaxationPar3D
 {
-    double s_2,s_3,s_5,s_11,s_17;
-    RelaxationPar3D(double s2=1, double s3=1, double s5=1, double s11=1, double s17=1):s_2(s2),s_3(s3),s_5(s5),s_11(s11),s_17(s17){};
+    double omega,s_2,s_3,s_5,s_11,s_17;
+    RelaxationPar3D(double om=1, double s2=1, double s3=1, double s5=1, double s11=1, double s17=1):omega(om),s_2(s2),s_3(s3),s_5(s5),s_11(s11),s_17(s17){};
 };
 
 #endif

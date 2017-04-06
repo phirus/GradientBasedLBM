@@ -25,7 +25,7 @@ sigma = 0.08200127608644246
 g = 11.414455417470887
 
 # bulk viscosity ratio mu'/mu  , default [2]
-mu_ratio = 2
+bulk_visco = 2
 
 # s_3 , default [1]
 s_3 = 1

@@ -32,7 +32,7 @@ Matrix3D::Matrix3D(const boost::multi_array<double,2> &m):matrix(boost::extents[
 }
 
 
-Matrix3D::Matrix3D(const RelaxationPar3D &relax, double omega):matrix(boost::extents[19][19])
+Matrix3D::Matrix3D(const RelaxationPar3D &relax):matrix(boost::extents[19][19])
 {
     for(int i = 0;i<19;i++){
         for(int j=0;j<19;j++){
@@ -49,13 +49,13 @@ Matrix3D::Matrix3D(const RelaxationPar3D &relax, double omega):matrix(boost::ext
     matrix[7][7] = 1;
     matrix[8][8] = relax.s_5;
 
-    matrix[9][9] = omega;
+    matrix[9][9] = relax.omega;
     matrix[10][10] = relax.s_11;
-    matrix[11][11] = omega;
+    matrix[11][11] = relax.omega;
     matrix[12][12] = relax.s_11;
-    matrix[13][13] = omega;
-    matrix[14][14] = omega;
-    matrix[15][15] = omega;
+    matrix[13][13] = relax.omega;
+    matrix[14][14] = relax.omega;
+    matrix[15][15] = relax.omega;
     matrix[16][16] = relax.s_17;
     matrix[17][17] = relax.s_17;
     matrix[18][18] = relax.s_17;

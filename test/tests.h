@@ -1205,7 +1205,7 @@ TEST(Matrix2D,backtrafo){
 }
 
 TEST(Matrix2D,multiply){
-    const Matrix2D S(RelaxationPar2D(1,10,100),false);
+    const Matrix2D S(RelaxationPar2D(1,1,10,100),false);
     const array2D f = {{1,2,3,4,5,6,7,8,9}};
     const array2D vergleich = {{ 1, 2, 30, 4, 500, 6, 700, 8, 9}};
 
@@ -1284,38 +1284,6 @@ TEST(Matrix2D,multiply_matrix_left_right_alright){
     }
 }
 
-// TEST(Matrix2D,multiply_linewise){
-//     const Matrix2D S(RelaxationPar2D(1,10,100));
-//     const array2D f = {{1,2,3,4,5,6,7,8,9}};
-//     // const array2D vergleich = {{ -48, -382, 194, 18, -206, 418, -206, 18, 194}};
-//     const array2D vergleich = {{ 1, 2, 30, 4, 500, 6, 700, 8, 9}};
-
-//     array2D test;
-
-//     for(int i = 0; i<9;i++)
-//     {
-//         test[i] = S.linewise(f,i);
-//         EXPECT_DOUBLE_EQ(vergleich[i],test[i])<<"i = "<<i ;
-//     }
-// }
-
-// TEST(Matrix2D,identity){
-//     const array2D f = {{1,2,3,4,5,6,7,8,9}};
-//     const array2D f0 = {{0,0,0,0,0,0,0,0,0}};
-
-//     const Matrix2D Identity = Matrix2D(true);
-//     const Matrix2D Zeros = Matrix2D();
-//     array2D test;
-
-//     EXPECT_EQ(f, Identity * f);
-//     EXPECT_EQ(f0, Zeros * f);
-//     for(int i = 0; i<9;i++)
-//     {
-//         test[i] = Identity.linewise(f,i);
-//     }
-//     EXPECT_EQ(f, test);
-// }
-
 TEST(Matrix2D,plus_times){
     const Matrix2D Identity = Matrix2D(1.0);
     
@@ -1347,7 +1315,7 @@ TEST(Matrix3D,backtrafo){
 }
 
 TEST(Matrix3D,multiply){
-    const Matrix3D S(RelaxationPar3D(1,10,100,200,500));
+    const Matrix3D S(RelaxationPar3D(1,1,10,100,200,500));
     const array3D f = {{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19}};
     const array3D vergleich = {{ 1, 2, 30, 4, 500, 6, 700, 8, 900, 10, 2200, 12, 2600, 14,15,16,8500,9000,9500}};
 
@@ -1360,7 +1328,7 @@ TEST(Matrix3D,multiply){
 }
 
 TEST(Matrix3D,multiply_linewise){
-    const Matrix3D S(RelaxationPar3D(1,10,100,200,500));
+    const Matrix3D S(RelaxationPar3D(1,1,10,100,200,500));
     const array3D f = {{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19}};
     // const array2D vergleich = {{ -48, -382, 194, 18, -206, 418, -206, 18, 194}};
     const array3D vergleich = {{ 1, 2, 30, 4, 500, 6, 700, 8, 900, 10, 2200, 12, 2600, 14,15,16,8500,9000,9500}};
@@ -1541,8 +1509,8 @@ TEST(ParamSet, equal){
 }
 
 TEST(ParamSet,IO){
-    const RelaxationPar3D rel = RelaxationPar3D(0.8,1.2,1.2,1.1,1.3);
-    const ParamSet params(1.1, 0.9, 1.1, 5, 2e-4, 2e-4, 1e-4, 1e-3,rel, 0.21, 0.11, 0.98);   
+    const RelaxationPar3D rel = RelaxationPar3D(1,0.8,1.2,1.2,1.1,1.3);
+    const ParamSet params(1.1, 0.9, 1.1, 5, 2e-4, 2e-4, 1e-4, 1e-3,rel, 1.8, 0.21, 0.11, 0.98);   
     EXPECT_NO_THROW(write_param_log(params));
     EXPECT_NO_THROW(write_param_log_csv(params));
 
@@ -1567,7 +1535,7 @@ TEST(Preprocess,constr){
     EXPECT_DOUBLE_EQ(1,newProcess.getSpacestep());
     EXPECT_DOUBLE_EQ(1,newProcess.getTimestep());
 
-    EXPECT_DOUBLE_EQ(1.0196152422706632,newProcess.getTau());
+    EXPECT_DOUBLE_EQ(1.0196152422706632,newProcess.getTauL());
     EXPECT_DOUBLE_EQ(0.5,newProcess.getDelRho());
     EXPECT_DOUBLE_EQ(0.5773502691896258,newProcess.getSoundspeed());
     EXPECT_DOUBLE_EQ(0.17320508075688779,newProcess.getNu());
@@ -1602,7 +1570,7 @@ TEST(Preprocess,FileInput){
     EXPECT_EQ(90,newProcess.getZCells());
 
     // test the deduced parameters
-    EXPECT_DOUBLE_EQ(0.9041451884327381,newProcess.getTau());
+    EXPECT_DOUBLE_EQ(0.9041451884327381,newProcess.getTauL());
     EXPECT_DOUBLE_EQ(0.6666666666666667,newProcess.getDelRho());
     EXPECT_DOUBLE_EQ(0.5773502691896258,newProcess.getSoundspeed());
     EXPECT_DOUBLE_EQ(0.13471506281091272,newProcess.getNu());

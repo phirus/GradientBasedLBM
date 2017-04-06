@@ -85,6 +85,7 @@ void write_param_log(const ParamSet& p)
     paramLog << "dt = "         << p.getDeltaT()             << endl;
     paramLog << "dx = "         << p.getDeltaX()             << endl;
     paramLog << "gravity = "    << p.getG()                  << endl;
+    paramLog << "bulk_visco = " << p.getBulkVisco()          << endl;
 
     RelaxationPar3D relax = p.getRelaxation3D();
     paramLog << "\n# MRT parameters [-]" << endl;
@@ -93,7 +94,6 @@ void write_param_log(const ParamSet& p)
     paramLog << "s_5 = " << relax.s_5 << endl;
     paramLog << "s_11 = " << relax.s_11 << endl;
     paramLog << "s_17 = " << relax.s_17 << endl;
-
 
     paramLog.close();
 }
@@ -107,11 +107,11 @@ void write_param_log_csv(const ParamSet& p)
     //paramLog.precision(std::numeric_limits< double >::max_digits10);
     paramLog.open( name.str().c_str() );
 
-    paramLog << "omega_red;omega_blue;rho_red;gamma;alpha_blue;delta;beta;sigma;dt;dx;gravity;s_2;s_3;s_5;s_11;s_17" << endl;
+    paramLog << "omega_red;omega_blue;rho_red;gamma;alpha_blue;delta;beta;sigma;dt;dx;gravity;bulk_visco;s_2;s_3;s_5;s_11;s_17" << endl;
     RelaxationPar3D relax = p.getRelaxation3D();
     paramLog <<  p.getOmegaRed() << ";" << p.getOmegaBlue()  << ";" << p.getRhoR() << ";" << p.getGamma() << ";" ;
     paramLog << p.getAlpha() << ";" << p.getInterfaceThickness() << ";" << p.getBeta() << ";" << p.getSigma() << ";" ; 
-    paramLog << p.getDeltaT() << ";" << p.getDeltaX() << ";" << p.getG() << ";";
+    paramLog << p.getDeltaT() << ";" << p.getDeltaX() << ";" << p.getG() << ";" << p.getBulkVisco() << ";";
     paramLog << relax.s_2 << ";" << relax.s_3 << ";" << relax.s_5 << ";" << relax.s_11 << ";" << relax.s_17 << endl;
 
     paramLog.close();
@@ -222,6 +222,7 @@ const ParamSet read_paramset_file(const string& filename)
     mm.insert(pair<string,double>("gamma",2));
     mm.insert(pair<string,double>("sigma",1e-4));
     mm.insert(pair<string,double>("gravity",1e-4));
+    mm.insert(pair<string,double>("bulk_visco",2));
     mm.insert(pair<string,double>("dt",1e-3));
     mm.insert(pair<string,double>("dx",1e-3));
     mm.insert(pair<string,double>("s_2",1));
@@ -235,9 +236,9 @@ const ParamSet read_paramset_file(const string& filename)
      
     mm = assign_map_via_file(mm, filename);
 
-    const RelaxationPar3D rel(mm.at("s_2"),mm.at("s_3"),mm.at("s_5"),mm.at("s_11"),mm.at("s_17"));
+    const RelaxationPar3D rel(mm.at("omega_red"),mm.at("s_2"),mm.at("s_3"),mm.at("s_5"),mm.at("s_11"),mm.at("s_17"));
 
-    ParamSet params(mm.at("omega_red"), mm.at("omega_blue"), mm.at("rho_red"), mm.at("gamma"), mm.at("sigma"), mm.at("gravity"), mm.at("dt"), mm.at("dx"), rel, mm.at("alpha_blue"), mm.at("delta"), mm.at("beta")); /// < consructor
+    ParamSet params(mm.at("omega_red"), mm.at("omega_blue"), mm.at("rho_red"), mm.at("gamma"), mm.at("sigma"), mm.at("gravity"), mm.at("dt"), mm.at("dx"), rel, mm.at("bulk_visco"), mm.at("alpha_blue"), mm.at("delta"), mm.at("beta")); /// < consructor
     return params;
 }
 

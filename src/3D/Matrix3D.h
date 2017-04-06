@@ -12,7 +12,7 @@ class Matrix3D
         /// Lifecylce
         Matrix3D(bool identity = false);
         Matrix3D(const boost::multi_array<double,2> &m);
-        Matrix3D(const RelaxationPar3D &relax, double omega = 1);
+        Matrix3D(const RelaxationPar3D &relax);
         Matrix3D(const Matrix3D &other);
 
          /// operators

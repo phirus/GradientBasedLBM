@@ -12,31 +12,30 @@ class ParamSet
 {
 public:
     /// Lifecycle
-    ParamSet(double omR = 1, double omB = 1,double rhoR = 1, double gammaIni = 2,double sigmaIni = 1e-4, double g = 1e-4, double t_step = 1e-3, double s_step = 1e-3, RelaxationPar3D rel = RelaxationPar3D(1,1,1,1,1), double alB = 0.2, double deltaIni = 0.1, double betaIni = 0.99); /// < consructor
+    ParamSet(double omR = 1, double omB = 1,double rhoR = 1, double gammaIni = 2,double sigmaIni = 1e-4, double g = 1e-4, double t_step = 1e-3, double s_step = 1e-3, RelaxationPar3D rel = RelaxationPar3D(), double b_visc = 1, double alB = 0.2, double deltaIni = 0.1, double betaIni = 0.99); /// < consructor
 
     /// get-methods, including calculations if necessary
     const DistributionSetType2D getPhi2D()const;                   /// < calculates phi, based on alpha_b and rho (density ratio)
     const DistributionSetType3D getPhi3D()const;                   /// < calculates phi, based on alpha_b and rho (density ratio)
     const double getOmega(double psi)const;          /// < return omega, based on inter and the color field
     const ColSet getAk(double omega)const;
-    const RelaxationPar2D getRelaxation2D()const;
-    const boost::array<double,12> getEverything()const;
+    const RelaxationPar2D getRelaxation2D(double psi = 1)const;
+    const RelaxationPar3D getRelaxation3D(double psi = 1)const;
 
-    const double getBeta()const{return beta;};
-    const double getG()const{return gravity;};
-    const double getRhoR()const{return rhoRed;};
-    const Interpol getInter()const{return inter;};    
-    const double getDeltaT()const{return timestep;};
-    const double getDeltaX()const{return spacestep;};
-    const RelaxationPar3D getRelaxation3D()const{return relax;};
-
-    // needed only for output
     const double getOmegaRed()const{return omegaRed;};
     const double getOmegaBlue()const{return omegaBlue;};
-    const double getInterfaceThickness()const{return delta;};
+    const double getRhoR()const{return rhoRed;};
     const double getGamma()const{return gamma;};
     const double getAlpha()const{return alphaBlue;};
+    const double getInterfaceThickness()const{return delta;};
+    const double getBeta()const{return beta;};
     const double getSigma()const{return sigma;};
+    const double getG()const{return gravity;};
+    const double getBulkVisco()const{return bulk_visco;};
+    const double getDeltaT()const{return timestep;};
+    const double getDeltaX()const{return spacestep;};
+    const Interpol getInter()const{return inter;};    
+    const boost::array<double,13> getEverything()const;
 
     /// set-methods, including calculations if necessary
     void setOmega(double omR, double omB, double d);
@@ -57,6 +56,8 @@ private:
     double beta;                /// < beta, relevant for recoloring operator    
     double sigma;               /// < dimensionless surface tension
     double gravity;             /// < dimensionless gravity 
+    double bulk_visco;          /// ratio of second to first viscosity mu'/mu
+
     // drive through
     double timestep;            /// < LB timestep
     double spacestep;            /// < LB timestep
@@ -68,6 +69,7 @@ private:
     /// operations
     void calcInter();           /// < calculate the interpolation paramters based on omega and delta
     void calcAlR();
+    inline const double getS2(double omega)const{return 1.0 / (bulk_visco * ((1.0 / omega) - 0.5) + 0.5 );};
 };
 
 #endif

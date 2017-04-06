@@ -188,28 +188,19 @@ bool Lattice2D::collideAll(int threads, bool gravity, bool isLimitActive)
     bool success(true);
     field2D *newData = new field2D(boost::extents[xsize][ysize]);
 
-    // const field2D realData = *data;
-
     omp_set_num_threads (threads);
 
     const double beta = param.getBeta();
     const DistributionSetType2D phi = param.getPhi2D();
-    const RelaxationPar2D relax = param.getRelaxation2D();
     const double dt = param.getDeltaT();
-
-    const double omega = param.getOmega(1);
-    const ColSet A_k = param.getAk(omega);
-
-    const Matrix2D relaxation_matrix(relax,false,omega);
-    const Matrix2D forcing_factor(relax,true,omega);    // (I - 0.5 S) -> ( 1 - 0.5 omega)
-    const Matrix2D forcing_relax = INV_TRAFO_MATRIX2D * forcing_factor * TRAFO_MATRIX2D;     
-    const Matrix2D single_relax = INV_TRAFO_MATRIX2D * relaxation_matrix * TRAFO_MATRIX2D;
-
 
     double g(0);
     if(gravity == true) g = param.getG();
 
-    #pragma omp parallel firstprivate(forcing_relax, single_relax)
+    const Matrix2D relaxation_matrix_outside(param.getRelaxation2D(1),false);
+    const Matrix2D single_relax_outside = INV_TRAFO_MATRIX2D * relaxation_matrix_outside * TRAFO_MATRIX2D;
+
+    #pragma omp parallel firstprivate(single_relax_outside)
     {
         #pragma omp for collapse(2) schedule(dynamic, 100)
         for (int x=0; x<xsize; x++)
@@ -217,7 +208,6 @@ bool Lattice2D::collideAll(int threads, bool gravity, bool isLimitActive)
             for (int y = 0; y < ysize; y++)
             {
                 Cell2D tmpCell = (*data)[x][y];
-                // Cell2D tmpCell = realData[x][y];
 
                 if (tmpCell.getIsSolid() == false && isBoundary(x, y) == false)
                 {
@@ -231,12 +221,12 @@ bool Lattice2D::collideAll(int threads, bool gravity, bool isLimitActive)
                     VeloSet2D u = tmpCell.getU();
 
                     double fges;
-
+ 
                     if(bubblebox.isInBox(x,y) == false)
                     {
                         const DistributionSetType2D fEq = eqDistro(rho_k, u, phi);
                         const DistributionSetType2D diff = distro_diff_2D(fCell, fEq);
-                        const DistributionSetType2D single_phase_col =  single_relax * diff;                        
+                        const DistributionSetType2D single_phase_col =  single_relax_outside * diff;                        
 
                         for (int q=0; q<9; q++)
                         {
@@ -256,6 +246,17 @@ bool Lattice2D::collideAll(int threads, bool gravity, bool isLimitActive)
                     } // end if
                     else
                     {
+                        const double psi = tmpCell.calcPsi();
+                        const RelaxationPar2D relax = param.getRelaxation2D(psi);
+                        const double omega = param.getOmega(psi);
+                        
+                        const Matrix2D relaxation_matrix(relax,false);
+                        const Matrix2D single_relax = INV_TRAFO_MATRIX2D * relaxation_matrix * TRAFO_MATRIX2D;
+                        const Matrix2D forcing_factor(relax,true);    // (I - 0.5 S) -> ( 1 - 0.5 omega)
+                        const Matrix2D forcing_relax = INV_TRAFO_MATRIX2D * forcing_factor * TRAFO_MATRIX2D; 
+                        
+                        const ColSet A_k = param.getAk(omega);
+
                         const Vector2D G(0 ,  g*(rho - rho_k[0]));
                         
                         if(gravity == true)

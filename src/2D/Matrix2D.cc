@@ -44,7 +44,7 @@ Matrix2D::Matrix2D(const boost::multi_array<double,2> &m):matrix(boost::extents[
 }
 
 
-Matrix2D::Matrix2D(const RelaxationPar2D &relax, bool forcingterm, double omega):matrix(boost::extents[9][9])
+Matrix2D::Matrix2D(const RelaxationPar2D &relax, bool forcingterm):matrix(boost::extents[9][9])
 {
     for(int i = 0;i<9;i++){
         for(int j=0;j<9;j++){
@@ -61,8 +61,8 @@ Matrix2D::Matrix2D(const RelaxationPar2D &relax, bool forcingterm, double omega)
         matrix[4][4] = relax.s_5;
         matrix[5][5] = 1;
         matrix[6][6] = relax.s_5;
-        matrix[7][7] = omega;
-        matrix[8][8] = omega;
+        matrix[7][7] = relax.omega;
+        matrix[8][8] = relax.omega;
 
     }
     else
@@ -74,8 +74,8 @@ Matrix2D::Matrix2D(const RelaxationPar2D &relax, bool forcingterm, double omega)
         matrix[4][4] = 1 - 0.5 * relax.s_5;
         matrix[5][5] = 0.5;
         matrix[6][6] = 1 - 0.5 * relax.s_5;
-        matrix[7][7] = 1 - 0.5 * omega;
-        matrix[8][8] = 1 - 0.5 * omega;
+        matrix[7][7] = 1 - 0.5 * relax.omega;
+        matrix[8][8] = 1 - 0.5 * relax.omega;
 
     }
 }
