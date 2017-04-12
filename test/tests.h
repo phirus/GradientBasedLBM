@@ -7,6 +7,8 @@
 #include"../src/Boundaries.h"
 //#include"../src/2D/Matrix2D_alter.h"
 
+#include"../src/Preprocess_Drop.h"
+
 using namespace std;
 
 TEST(BasicIO,queryTest){

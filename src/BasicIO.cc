@@ -132,6 +132,21 @@ void write_preprocess_csv(const Preprocess& p)
     preproCSV.close();
 }
 
+void write_preprocess_drop_csv(const Preprocess_Drop& p)
+{
+    ofstream preproCSV;
+
+    stringstream name;
+    name <<"prepro.csv";
+    preproCSV.open( name.str().c_str() );
+
+    preproCSV << "VeloFrac;Ohnesorge;Weber;resolution;muRatio;bulk_visco;xCells;yCells;zCells"<<endl;
+    preproCSV << p.getVeloFrac() << ";" << p.getOhnesorge() << ";" << p.getWeber() << ";" << p.getResolution() << ";" ;
+    preproCSV << p.getMuRatio() << ";" << p.getBulkVisco() << ";" ;
+    preproCSV << p.getXCells() << ";" << p.getYCells() << ";" << p.getZCells() << endl;
+    preproCSV.close();
+}
+
 //=========================== READ INPUT ===========================
 
 const bool input_query(const string& filename, const string& query, double& value)
@@ -194,6 +209,33 @@ const Preprocess read_preprocess_file(const string& filename)
     mm = assign_map_via_file(mm, filename);
 
     Preprocess prepro(mm.at("Reynolds"),mm.at("Morton"),mm.at("Eotvos"),mm.at("resolution"),mm.at("rho_l"),mm.at("gamma"), mm.at("mu_ratio"), mm.at("bulk_visco"), mm.at("s_3"), mm.at("s_5"), mm.at("s_11"), mm.at("s_17"), mm.at("isShearFlow"), mm.at("shearRate"), mm.at("xCells"), mm.at("yCells"), mm.at("zCells"));
+    return prepro;
+}
+
+const Preprocess_Drop read_preprocess_drop_file(const string& filename)
+{
+
+    // initialzing strings and fallback values
+    map<string,double> mm;
+    mm.insert(pair<string,double>("VeloFrac",10));
+    mm.insert(pair<string,double>("Ohnesorge",100));
+    mm.insert(pair<string,double>("Weber",10));
+    mm.insert(pair<string,double>("resolution",30));
+    mm.insert(pair<string,double>("rho_l",1));
+    mm.insert(pair<string,double>("gamma",2));
+    mm.insert(pair<string,double>("mu_ratio",1));
+    mm.insert(pair<string,double>("bulk_visco",2));
+    mm.insert(pair<string,double>("s_3",1));
+    mm.insert(pair<string,double>("s_5",1));
+    mm.insert(pair<string,double>("s_11",1));
+    mm.insert(pair<string,double>("s_17",1));
+    mm.insert(pair<string,double>("xCells",50));
+    mm.insert(pair<string,double>("yCells",50));
+    mm.insert(pair<string,double>("zCells",50));
+
+    mm = assign_map_via_file(mm, filename);
+
+    Preprocess_Drop prepro(mm.at("VeloFrac"),mm.at("Ohnesorge"),mm.at("Weber"),mm.at("resolution"),mm.at("rho_l"),mm.at("gamma"), mm.at("mu_ratio"), mm.at("bulk_visco"), mm.at("s_3"), mm.at("s_5"), mm.at("s_11"), mm.at("s_17"), mm.at("xCells"), mm.at("yCells"), mm.at("zCells"));
     return prepro;
 }
 
