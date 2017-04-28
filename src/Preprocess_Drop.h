@@ -91,7 +91,8 @@ private:
 	inline void calcDelRho(){delRho = rho_l * (1.0 - 1.0/gamma);};
 	
 	inline void calcUD(){u_d = 0.1 * VeloFrac * c_s;};
-	inline void calcSigma(){sigma = (rho_l * resolution * 4 * u_d * u_d) / Weber ;};
+	inline const double u_max()const{return 0.1 * c_s;};
+	inline void calcSigma(){sigma = (rho_l * resolution * 4 * u_max() * u_max()) / Weber ;};
 	inline void calcNu(){nu = Ohnesorge * sqrt(rho_l * sigma * resolution) / rho_l;};
 	inline void calcTau(){tau_l = (nu / (c_s * c_s) ) + 0.5;};
 	inline void calcTauG(){tau_g = (tau_l-0.5)/nu_ratio + 0.5;};
