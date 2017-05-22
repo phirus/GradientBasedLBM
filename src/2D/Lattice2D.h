@@ -49,10 +49,12 @@ public:
     /// accessors
     const DimSet2D getSize()const; /// < get the extend of the Lattice2D
     inline const field2D getData()const{return *data;}; /// < get the data field2D
+    const field2D getData(int cutoff)const; 
     inline const Cell2D getCell(int x, int y)const{return (*data)[x][y];};  /// < get a Cell
     inline const ParamSet getParams()const{return param;}; /// < get the paramter set
     inline const Boundaries getBoundaries()const{return bound;};
     inline const BubbleBox2D getBubbleBox()const{return bubblebox;};
+    inline const int getOffset()const{return offset;};
     inline const DistributionSetType2D getF(int x, int y)const{return (*data)[x][y].getF();};          /// < get F
 
     void setData(const field2D& ndata, int x, int y); /// < set the data field2D (and size)
@@ -61,11 +63,14 @@ public:
     void setF(int x, int y, int color, int index, double value);
     void setBoundaries(const Boundaries& newBound);
     void setBubbleBox(const BubbleBox2D& newBubble){bubblebox = newBubble;};
+    void setOffset(int o){offset = o;};
     inline void setParams(const ParamSet& newParam){param = newParam;}; /// < set a new parameter set
 
     void linearIndex(int index, int& x, int& y)const;
 
     /// Lattice cutout
+    const Lattice2D latticeCutOff(int cutoff)const;
+    const Lattice2D latticeAppend(int append, double rho_red, double rho_blue)const;
     const std::vector<int> findBubbleCells()const;
     void copyCellsFromOther(const Lattice2D& other, const std::vector<int>& indices);
     const boost::array<Vector2D,3> getBubbleData()const;
@@ -107,6 +112,7 @@ private:
     ParamSet param;     /// < set of parameters used during the simulation
     Boundaries bound;
     BubbleBox2D bubblebox;
+    int offset;
 
     inline const double get_shearvelocity_x(int x, double u_0, double u_1)const{return (u_1 - u_0) / xsize * x + u_0;};
     inline const double get_shearvelocity_y(int y, double u_0, double u_1)const{return (u_1 - u_0) / ysize * y + u_0;};

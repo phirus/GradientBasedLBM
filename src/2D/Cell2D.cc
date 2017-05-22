@@ -21,7 +21,6 @@ Cell2D::Cell2D(double fzero_dense, double fzero_dilute, bool solid):isSolid(soli
     u[0].y = 0;
     u[1].x = 0;
     u[1].y = 0;
-
 }
 
 // like a copy constructor for the bulk phase
@@ -51,7 +50,6 @@ Cell2D::Cell2D(const DistributionSetType2D& newF):isSolid(false),delta(0)
     u[0].y = 0;
     u[1].x = 0;
     u[1].y = 0;
-
 }
 
 //=========================== OPERATORS ===========================

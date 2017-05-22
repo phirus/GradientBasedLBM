@@ -11,6 +11,7 @@ xsize(x_size)
 ,param()
 ,bound()
 ,bubblebox(0,0,xsize,ysize)
+,offset(0)
 {
     for (int x = 0; x<xsize; x++)
     {
@@ -28,6 +29,7 @@ xsize(other.getSize()[0])
 ,param(other.getParams())
 ,bound(other.getBoundaries())
 ,bubblebox(other.getBubbleBox())
+,offset(other.getOffset())
 {
     (*data) = other.getData();
 }
@@ -690,6 +692,21 @@ const DimSet2D Lattice2D::getSize()const
     return pony;
 }
 
+const field2D Lattice2D::getData(int cutoff)const
+{
+    field2D newData(boost::extents[xsize][ysize - cutoff]);
+
+    for (int y=0; y<ysize - cutoff; y++)
+    {
+        for (int x=0; x<xsize; x++)
+        {
+            newData[x][y] = (*data)[x][y + cutoff];
+        }
+    }
+
+    return newData;
+}
+
 void Lattice2D::setData(const field2D& ndata, int x, int y){
     data->resize(boost::extents[x][y]);
     *data = ndata;
@@ -729,6 +746,50 @@ void Lattice2D::linearIndex(int index, int& x, int& y)const
 }
 
 //=========================== LATTICE CUTOUT ===========================
+
+const Lattice2D Lattice2D::latticeCutOff(int cutoff)const
+{
+    const field2D nd = getData(cutoff);
+    BubbleBox2D newBB = bubblebox;
+    newBB.setY(bubblebox.getY() - cutoff);
+
+    Lattice2D newLattice;
+    newLattice.setData(nd,xsize,ysize - cutoff);
+    newLattice.setParams(param);
+    newLattice.setBoundaries(bound);
+    newLattice.setBubbleBox(newBB);
+    newLattice.setOffset(offset + cutoff);
+
+    return newLattice;
+}
+
+const Lattice2D Lattice2D::latticeAppend(int append, double rho_red, double rho_blue)const
+{
+
+    field2D nd(boost::extents[xsize][ysize + append]);
+
+    Cell2D newCell(eqDistro({{rho_red,rho_blue}}, VeloSet2D(), param.getPhi2D()));
+    newCell.calcRho();
+
+    for (int y=0; y<ysize + append; y++)
+    {
+        for (int x=0; x<xsize; x++)
+        {
+            if(y < ysize) nd[x][y] = (*data)[x][y];
+            else nd[x][y] = newCell;;
+        }
+    }
+
+    Lattice2D newLattice;
+    newLattice.setData(nd,xsize,ysize + append);
+    newLattice.setParams(param);
+    newLattice.setBoundaries(bound);
+    newLattice.setBubbleBox(bubblebox);
+    newLattice.setOffset(offset);
+
+    return newLattice;
+}
+
 
 const std::vector<int> Lattice2D::findBubbleCells()const
 {
@@ -1133,6 +1194,7 @@ Lattice2D& Lattice2D::operator=(const Lattice2D& other)
     this->setParams(other.getParams());
     this->setBoundaries(other.getBoundaries());
     this->setBubbleBox(other.getBubbleBox());
+    this->setOffset(other.getOffset());
 
     return *this;
 }
@@ -1150,6 +1212,8 @@ const bool Lattice2D::operator==(const Lattice2D& other)const
         if (!(bound == bOther)) exit = false;
 
         if (!(bubblebox == other.getBubbleBox())) exit = false;
+
+        if (!(offset == other.getOffset())) exit = false;
 
         field2D otherData = other.getData();
         for (int x = 0; x< xsize;x++)

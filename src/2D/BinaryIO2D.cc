@@ -428,6 +428,35 @@ void write_vtk_output2D(const Lattice2D& l, const string& filename)
         }
     }
 
+
+
+    VTKFile << "\nSCALARS Rho1 DOUBLE\nLOOKUP_TABLE default"<<endl;
+    for (int j = 0; j < ysize; j++)
+    {
+        for (int i = 0; i < xsize; i++)
+        {
+            tmp = l.getCell(i,j);
+            tmp.calcRho();
+            VTKFile << tmp.getRho()[0] << " ";
+        }
+    }
+
+
+    VTKFile << "\nSCALARS Rho2 DOUBLE\nLOOKUP_TABLE default"<<endl;
+    for (int j = 0; j < ysize; j++)
+    {
+        for (int i = 0; i < xsize; i++)
+        {
+            tmp = l.getCell(i,j);
+            tmp.calcRho();
+            VTKFile << tmp.getRho()[1] << " ";
+        }
+    }
+
+
+
+
+
     VTKFile << "\nSCALARS P_1 DOUBLE\nLOOKUP_TABLE default"<<endl;
     for (int j = 0; j < ysize; j++)
     {

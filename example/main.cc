@@ -77,7 +77,8 @@ int main(int argc, char** argv){
     }
 
     // create a Lattice   
-    int ymax = prepro.getYCells();
+    //int ymax = prepro.getYCells();
+    int ymax = 1000;
     int xmax = prepro.getXCells();
     Lattice2D meins(xmax,ymax);
     Lattice2D bubble_only(xmax,ymax);
@@ -136,6 +137,9 @@ int main(int argc, char** argv){
 
     int i;
 
+//    bool isCutoffOkay = true;
+    bool isAppendOkay = true;
+
     while (timetrack.proceed() == true)
     {
         start = std::chrono::high_resolution_clock::now();
@@ -158,10 +162,10 @@ int main(int argc, char** argv){
             cout << i <<endl;
         }
 
-        if(i%outputInterval == 0) 
-        {
-            write_vtk_output2D(meins, i);
-        } 
+        // if(i%outputInterval == 0) 
+        // {
+        //     write_vtk_output2D(meins, i);
+        // } 
         
         if(i%restartInterval == 0)
         {
@@ -183,20 +187,40 @@ int main(int argc, char** argv){
             meins.setBubbleBox(bubblebox);
 
             writeBubbleFitData(meins, createFilename("bubbleFit_", i, ".csv"));            
-            write_data_plot_linewise(i ,pos.x, pos.y, "BubblePosPlot.dat");
+            write_data_plot_linewise(i ,pos.x, pos.y + meins.getOffset(), "BubblePosPlot.dat");
             write_data_plot_linewise(i ,velo.x, velo.y, "BubbleVeloPlot.dat");
-            write_csv_linewise(i, pos.x, pos.y, velo.x, velo.y, Re, force.x, force.y, "BubblePlot.csv");
+            write_csv_linewise(i, pos.x, pos.y + meins.getOffset(), velo.x, velo.y, Re, force.x, force.y, "BubblePlot.csv");
 
             write_data_plot_linewise(i ,force.x, force.y, "ForcePlot.dat");
 
             end = std::chrono::high_resolution_clock::now();
             sequential +=  std::chrono::duration_cast<std::chrono::microseconds>( end - start).count();
 
-            if(pos.y > 0.95 * ymax)
+            // if (pos.y > 0.5 * ymax && isCutoffOkay == true)
+            // {
+            //     isCutoffOkay = false;
+            //     meins = meins.latticeCutOff(ymax / 10);
+            // }
+
+            if (i == 100)
+            {
+                write_vtk_output2D(meins, i);
+                isAppendOkay = false;
+                meins = meins.latticeAppend(1000,prepro.getRhoL(),0);
+                write_vtk_output2D(meins, i+1);
+            }
+
+            if(pos.y  > 0.95 * 2000)
             {
                 cout << "\nBubble reached the top";
                 break;
             }
+
+            // if(pos.y + meins.getOffset() > 0.95 * ymax)
+            // {
+            //     cout << "\nBubble reached the top";
+            //     break;
+            // }
         }         
     }
 
@@ -245,7 +269,7 @@ void initialSetUp(Lattice2D& meins, Preprocess& prepro, Boundaries& bound, int x
     meins.equilibriumIni();
 
 //   for (int i = 1; i< 1001; i++)
-   for (int i = 1; i< 1001; i++)
+   for (int i = 1; i< 101; i++)
    {
        meins.collideAll(numOfCPUs,false,false);
        //meins.evaluateBoundaries();
