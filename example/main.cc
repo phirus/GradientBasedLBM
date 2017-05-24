@@ -202,12 +202,10 @@ int main(int argc, char** argv){
             //     meins = meins.latticeCutOff(ymax / 10);
             // }
 
-            if (i == 100)
+            if (pos.y > 600 && isAppendOkay == true)
             {
-                write_vtk_output2D(meins, i);
-                isAppendOkay = false;
                 meins = meins.latticeAppend(1000,prepro.getRhoL(),0);
-                write_vtk_output2D(meins, i+1);
+                isAppendOkay = false;
             }
 
             if(pos.y  > 0.95 * 2000)
