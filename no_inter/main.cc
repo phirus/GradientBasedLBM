@@ -11,8 +11,11 @@
 using namespace std;
 namespace po = boost::program_options;
 
-void initialSetUp(Lattice2D& meins, Preprocess& prepro, Boundaries& bound, int xmax, int ymax, ParamSet params, int numOfCPUs);
-void initializeShearfFlow(Lattice2D& meins, Preprocess& prepro, Boundaries& bound, int xmax, int ymax, ParamSet params);
+void initialSetUp(Lattice2D_no_inter& meins, Preprocess& prepro, Boundaries& bound, int xmax, int ymax, ParamSet params);
+void initialSetUp_Diffusion(Lattice2D_no_inter& meins, Preprocess& prepro, Boundaries& bound, int xmax, int ymax, ParamSet params);
+void initialSetUp_Membrane(Lattice2D_no_inter& meins, Preprocess& prepro, Boundaries& bound, int xmax, int ymax, ParamSet params);
+void initialSetUp_Chamber(Lattice2D_no_inter& meins, Preprocess& prepro, Boundaries& bound, int xmax, int ymax, ParamSet params);
+void initializeShearfFlow(Lattice2D_no_inter& meins, Preprocess& prepro, Boundaries& bound, int xmax, int ymax, ParamSet params);
 
 int main(int argc, char** argv){
 
@@ -22,6 +25,7 @@ int main(int argc, char** argv){
         ("boundary,b", boost::program_options::value<string> (), "specify boundary input file")
         ("cpu,c", boost::program_options::value<int> (), "takes the number of CPUs")
         ("preprocess,p", boost::program_options::value<string> (), "specify preprocess parameter file")
+        ("override,o", boost::program_options::value<string> (), "specify parameter file to bypass preprocess routine")
         ;
     boost::program_options::variables_map vm;
     boost::program_options::store(boost::program_options::parse_command_line(argc,argv,desc),vm);
@@ -67,28 +71,31 @@ int main(int argc, char** argv){
         boundaries = read_boundaries_file(vm["boundary"].as<string>());
     }
 
+    if (vm.count("override")) 
+    {
+        cout << "override preprocess file with: " << vm["override"].as<string>() << ".\n" << endl ;
+        params_input = read_paramset_file(vm["override"].as<string>());
+        params = params_input;
+    }
 
     // create a Lattice   
     int ymax = prepro.getYCells();
     int xmax = prepro.getXCells();
-    
-    Lattice2D meins(xmax,ymax);
-    initialSetUp(meins, prepro, boundaries, xmax, ymax, params, numOfCPUs);
-    
+    Lattice2D_no_inter meins(xmax,ymax);
+
+//    initialSetUp(meins, prepro, boundaries, xmax, ymax, params);
+    initialSetUp_Membrane(meins, prepro, boundaries, xmax, ymax, params);
     write_vtk_output2D(meins, 0);
     
+
     const int outputInterval = timetrack.getOutputInt();
-
-    write_file_header("BubblePosPlot.dat", "time \t PosX \t PosY");
-
-    bool isAppendOkay = true;
 
 
     int i;
 
     while (timetrack.proceed() == true)
     {
-        meins.collideAll(numOfCPUs,true,true);
+        meins.collideAll(numOfCPUs);
         meins.evaluateBoundaries(numOfCPUs);
         meins.streamAll(numOfCPUs);
 
@@ -96,90 +103,160 @@ int main(int argc, char** argv){
 
         // Output if necessary
         i = timetrack.getCount();
-        cout << i << endl;
         
+        if(i%10 == 0) 
+        {
+            cout << i <<endl;
+        }
+
         if(i%outputInterval == 0) 
         {
             write_vtk_output2D(meins, i);
-        } 
-        
-       
-        if(i%5 == 0) 
-        {
-            const boost::array<Vector2D,3> bubble_data = meins.getBubbleData();
-            const Vector2D pos = bubble_data[0];
-
-            BubbleBox2D bubblebox = meins.getBubbleBox();
-            bubblebox.setBubble(pos.x,pos.y);
-            meins.setBubbleBox(bubblebox);
-
-            write_data_plot_linewise(i ,pos.x, pos.y + meins.getOffset(), "BubblePosPlot.dat");
-
-            // if (pos.y > 0.5 * ymax && isCutoffOkay == true)
-            // {
-            //     isCutoffOkay = false;
-            //     meins = meins.latticeCutOff(ymax / 10);
-            // }
-
-            if (pos.y > 600 && isAppendOkay == true)
-            {
-//                write_vtk_output2D(meins, i);
-                meins = meins.latticeAppend(1000,prepro.getRhoL(),0);
-  //              write_vtk_output2D(meins, i+1);
-                isAppendOkay = false;
-            }
-
-        }         
+        }        
     }
+
 
     return 0;
 }
 
-void initialSetUp(Lattice2D& meins, Preprocess& prepro, Boundaries& bound, int xmax, int ymax, ParamSet params, int numOfCPUs)
+
+void initialSetUp(Lattice2D_no_inter& meins, Preprocess& prepro, Boundaries& bound, int xmax, int ymax, ParamSet params)
 {
     // set the parameters        
     meins.setParams(params);
 
-    // get densities
-    const double rho_liquid = prepro.getRhoL();
-    const double rho_gas = rho_liquid / prepro.getGamma();
+    const Cell2D air(0,1.0,false);
+    const Cell2D liquid(1.0,0,false);
 
-    const Cell2D air(0,rho_gas,false);
-    const Cell2D liquid(rho_liquid,0,false);
+    // const Cell2D wall(0,0,true);
 
     // setup geometry (bubble at the bottom, x-centered)
     const int R1 = prepro.getResolution()/2;
     const int xm1 = xmax * 0.5;
-    const int ym1 = 2*R1;
-    
+    const int ym1 = ymax * 0.5;
+
     for(int j=0; j< ymax; j++)
     {
         for(int i=0; i< xmax; i++){
-            // if( (i-xm1)*(i-xm1) + (j-ym1)*(j-ym1) < R1*R1 ) meins.setCell(i,j,air);
-            // // if( j > ym1) meins.setCell(i,j,air);
-            // else meins.setCell(i,j,liquid);
-            meins.setCell(i,j,liquid);
+            if( (i-xm1)*(i-xm1) + (j-ym1)*(j-ym1) < R1*R1 ) meins.setCell(i,j,air);
+            // if( j > ym1) meins.setCell(i,j,air);
+            else meins.setCell(i,j,liquid);
         }
     }
 
     meins.setBoundaries(bound);
+    meins.buildWalls();
+    meins.overallRho();
   
-    meins.equilibriumIni();
-
-   for (int i = 1; i< 11; i++)
-   {
-       meins.collideAll(numOfCPUs,false,false);
-       meins.evaluateBoundaries();
-       meins.streamAll(numOfCPUs);
-   }
-
-    BubbleBox2D bubblebox;
-    bubblebox.setBubble(xm1,ym1);
-    bubblebox.setW(5*prepro.getResolution());
-    bubblebox.setH(5*prepro.getResolution());
-    meins.setBubbleBox(bubblebox);
-
-    cout<<"Initialisierung beendet\n\nSchwerkraft wird zugeschaltet\n"<<endl;
+    //meins.equilibriumIni();
+    cout<<"Initialisierung beendet\n\n"<<endl;
 }
 
+void initialSetUp_Diffusion(Lattice2D_no_inter& meins, Preprocess& prepro, Boundaries& bound, int xmax, int ymax, ParamSet params)
+{
+    // set the parameters        
+    meins.setParams(params);
 
+    const Cell2D air(0,1.0,false);
+    const Cell2D liquid(1.0,0,false);
+    const Cell2D wall(0,0,true);
+
+    // const Cell2D wall(0,0,true);
+
+    // setup geometry (bubble at the bottom, x-centered)
+    const int R1 = prepro.getResolution()/2;
+    const int xm1 = xmax * 0.5;
+    const int ym1 = ymax / 4;
+
+    for(int j=0; j< ymax; j++)
+    {
+        for(int i=0; i< xmax; i++){
+            if( (i-xm1)*(i-xm1) + (j-ym1)*(j-ym1) < R1*R1 ) meins.setCell(i,j,air);
+            // if( j > ym1) meins.setCell(i,j,air);
+            else meins.setCell(i,j,liquid);
+
+            if (j == ymax/2 && i%3 != 0) meins.setCell(i,j,wall);
+
+        }
+    }
+
+    meins.setBoundaries(bound);
+    meins.buildWalls();
+    meins.overallRho();
+  
+    //meins.equilibriumIni();
+    cout<<"Initialisierung beendet\n\n"<<endl;
+}
+
+void initialSetUp_Membrane(Lattice2D_no_inter& meins, Preprocess& prepro, Boundaries& bound, int xmax, int ymax, ParamSet params)
+{
+    // set the parameters        
+    meins.setParams(params);
+
+    const Cell2D air(0,1.01,false);
+    const Cell2D liquid(1.0,0,false);
+    const Cell2D wall(0,0,true);
+
+    // const Cell2D wall(0,0,true);
+
+    // setup geometry (bubble at the bottom, x-centered)
+    const int R1 = prepro.getResolution()/2;
+    const int xm1 = xmax / 2;
+    const int ym1 = ymax / 2;
+
+    for(int j=0; j< ymax; j++)
+    {
+        for(int i=0; i< xmax; i++){
+            // if( (i-xm1)*(i-xm1) + (j-ym1)*(j-ym1) < R1*R1 ) meins.setCell(i,j,air);
+            if( j > ym1) meins.setCell(i,j,air);
+            else meins.setCell(i,j,liquid);
+
+            // if (j == ymax/2 && i%4 != 0) meins.setCell(i,j,wall);
+            // if (j == ymax/2 && i!= xmax/2) meins.setCell(i,j,wall);
+
+        }
+    }
+
+    meins.setBoundaries(bound);
+    meins.buildWalls();
+    meins.overallRho();
+  
+    //meins.equilibriumIni();
+    cout<<"Initialisierung beendet\n\n"<<endl;
+}
+
+void initialSetUp_Chamber(Lattice2D_no_inter& meins, Preprocess& prepro, Boundaries& bound, int xmax, int ymax, ParamSet params)
+{
+    // set the parameters        
+    meins.setParams(params);
+
+    const Cell2D air(0,1.0,false);
+    const Cell2D liquid(1.0,0,false);
+    const Cell2D wall(0,0,true);
+
+    // const Cell2D wall(0,0,true);
+
+    // setup geometry (bubble at the bottom, x-centered)
+    const int R1 = prepro.getResolution()/2;
+    const int xm1 = xmax / 2;
+    const int ym1 = ymax / 2;
+
+    for(int j=0; j< ymax; j++)
+    {
+        for(int i=0; i< xmax; i++)
+        {
+            meins.setCell(i,j,liquid);
+            if(i == xmax / 5 && j < ymax/5 * 4) meins.setCell(i,j,wall);
+            if(i == xmax / 5 * 4 && j < ymax/5 * 4) meins.setCell(i,j,wall);
+            if(j == 0 && i < xmax / 5) meins.setCell(i,j,wall);
+            if(j == 0 && i > xmax / 5 * 4) meins.setCell(i,j,wall);
+        }
+    }
+
+    meins.setBoundaries(bound);
+    meins.buildWalls();
+    meins.overallRho();
+  
+    //meins.equilibriumIni();
+    cout<<"Initialisierung beendet\n\n"<<endl;
+}

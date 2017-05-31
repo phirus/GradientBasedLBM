@@ -18,7 +18,6 @@ public:
 
     /// operations
     /// calculations
-    void equilibriumIni(); /// < replace all distribution functions with the equilibrium distribution
     void balance(double& mass, double& momentum)const; /// < monitor overall mass and momentum
     void mass_balance(double& liquid_mass, double& gas_mass)const;
     void overallRho();
@@ -26,7 +25,7 @@ public:
              
     /// LB steps
     void streamAll(int threads = 1); /// < streaming step
-    bool collideAll(int threads = 1, bool gravity = false, bool isLimitActive = true); /// < collision step
+    bool collideAll(int threads = 1); /// < collision step
     void evaluateBoundaries(int threads = 1);
 
     /// walls
@@ -46,6 +45,7 @@ public:
     inline const Boundaries getBoundaries()const{return bound;};
     inline const int getOffset()const{return offset;};
     inline const DistributionSetType2D getF(int x, int y)const{return (*data)[x][y].getF();};          /// < get F
+    const Lattice2D getLattice2D()const;
 
     void setData(const field2D& ndata, int x, int y); /// < set the data field2D (and size)
     void setCell(int y, int x, const Cell2D& ncell);    /// < set a Cell

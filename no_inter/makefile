@@ -13,7 +13,7 @@ LDFLAGS = -lboost_program_options -lgomp -lpthread
 SRC = ../src
 OBJ_DIR = obj
 BIN_DIR = bin
-OUTPUT = $(BIN_DIR)/Appendix
+OUTPUT = $(BIN_DIR)/NoInter
 
 # creating OBJs
 OBJ_DEBUG = $(OBJ_DIR)/Analyze_basic.o  $(OBJ_DIR)/Analyze2D.o $(OBJ_DIR)/BasicIO.o $(OBJ_DIR)/BinaryIO2D.o $(OBJ_DIR)/BubbleBox2D.o $(OBJ_DIR)/Constants2D.o $(OBJ_DIR)/Cell2D.o $(OBJ_DIR)/Definitions2D.o $(OBJ_DIR)/Lattice2D.o $(OBJ_DIR)/Lattice2D_no_inter.o $(OBJ_DIR)/main.o $(OBJ_DIR)/Matrix2D.o $(OBJ_DIR)/ParamSet.o $(OBJ_DIR)/Preprocess.o $(OBJ_DIR)/Preprocess_Drop.o $(OBJ_DIR)/Timetrack.o

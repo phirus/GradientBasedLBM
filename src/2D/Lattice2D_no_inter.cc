@@ -40,26 +40,6 @@ Lattice2D_no_inter::~Lattice2D_no_inter(){
 
 // //=========================== OPERATIONS ===========================
 
-void Lattice2D_no_inter::equilibriumIni()
-{
-    Cell2D tmp;
-    DistributionSetType2D eqDis;
-
-    for (int j=0; j<ysize; j++)
-    {
-        for (int i=0; i<xsize; i++)
-        {
-            tmp = (*data)[i][j];
-            tmp.calcRho();
-            ColSet rho = tmp.getRho();
-            VeloSet2D u = tmp.getU();
-            eqDis = eqDistro(rho,u,param.getPhi2D());
-            tmp.setF(eqDis);
-            (*data)[i][j] = tmp;
-        }
-    }
-}
-
 void Lattice2D_no_inter::balance(double& mass, double& momentum)const
 {
     VeloSet2D u;
@@ -158,19 +138,17 @@ void Lattice2D_no_inter::streamAll(int threads)
     data = newData;
 }
 
-bool Lattice2D_no_inter::collideAll(int threads, bool gravity, bool isLimitActive)
+bool Lattice2D_no_inter::collideAll(int threads)
 {
     bool success(true);
     field2D *newData = new field2D(boost::extents[xsize][ysize]);
 
     omp_set_num_threads (threads);
 
-    const double dt = param.getDeltaT();
+//    const Matrix2D relaxation_matrix(param.getRelaxation2D(1),false);
+//    const Matrix2D single_relax = INV_TRAFO_MATRIX2D * relaxation_matrix * TRAFO_MATRIX2D;
 
-    const Matrix2D relaxation_matrix(param.getRelaxation2D(1),false);
-    const Matrix2D single_relax = INV_TRAFO_MATRIX2D * relaxation_matrix * TRAFO_MATRIX2D;
-
-    #pragma omp parallel firstprivate(single_relax)
+    #pragma omp parallel // firstprivate(single_relax)
     {
         #pragma omp for collapse(2) schedule(dynamic, 100)
         for (int x=0; x<xsize; x++)
@@ -181,25 +159,24 @@ bool Lattice2D_no_inter::collideAll(int threads, bool gravity, bool isLimitActiv
 
                 if (tmpCell.getIsSolid() == false && isBoundary(x, y) == false)
                 {
-                    //const direction2D dir = directions(x,y);
-
-                    const DistributionSetType2D fCell = tmpCell.getF();
+                    //const DistributionSetType2D fCell = tmpCell.getF();
 
                     const ColSet rho_k = tmpCell.getRho();
                     const double rho = sum(rho_k);
                     VeloSet2D u_k = tmpCell.getU();
-                    Vector2D u = (u_k[0] * rho_k[0] + u_k[1] * rho_k[1]) * (1.0/rho);
- 
-                    const array2D fEq = eqDistro_no_inter(rho, u);
-                    const array2D fGes = array_add_2D(fCell[0],fCell[1]);
-                    const array2D diff = array_diff_2D(fGes, fEq);
-                    const array2D single_phase_col =  single_relax * diff;
-                    const array2D  fTmp = array_diff_2D(fTmp, single_phase_col);
 
                     DistributionSetType2D fNew;
-                    fNew[0] = array_times_2D(fTmp, rho_k[0]/rho);
-                    fNew[1] = array_times_2D(fTmp, rho_k[1]/rho);
-
+                    if(rho>0)
+                    {
+                        Vector2D u = (u_k[0] * rho_k[0] + u_k[1] * rho_k[1]) * (1.0/rho);
+                        const array2D fEq = eqDistro_no_inter(rho, u);
+                        // const array2D fGes = array_add_2D(fCell[0],fCell[1]);
+                        // const array2D diff = array_diff_2D(fGes, fEq);
+                        // const array2D single_phase_col =  single_relax * diff;
+                        // const array2D  fTmp = array_diff_2D(fTmp, single_phase_col);
+                        fNew[0] = array_times_2D(fEq, rho_k[0]/rho);
+                        fNew[1] = array_times_2D(fEq, rho_k[1]/rho);
+                    }
                     tmpCell.setF(fNew);
                 }
                 (*newData)[x][y] = tmpCell;
@@ -585,6 +562,16 @@ const field2D Lattice2D_no_inter::getData(int cutoff)const
     }
 
     return newData;
+}
+
+const Lattice2D Lattice2D_no_inter::getLattice2D()const
+{
+    Lattice2D l(xsize,ysize);
+    l.setData(getData(),xsize, ysize);
+    l.setParams(getParams());
+    l.setBoundaries(getBoundaries());
+
+    return l;
 }
 
 void Lattice2D_no_inter::setData(const field2D& ndata, int x, int y){

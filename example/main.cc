@@ -162,10 +162,10 @@ int main(int argc, char** argv){
             cout << i <<endl;
         }
 
-        // if(i%outputInterval == 0) 
-        // {
-        //     write_vtk_output2D(meins, i);
-        // } 
+        if(i%outputInterval == 0) 
+        {
+            write_vtk_output2D(meins, i);
+        } 
         
         if(i%restartInterval == 0)
         {

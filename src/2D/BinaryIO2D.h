@@ -6,6 +6,7 @@
 #include<map>
 
 #include"Lattice2D.h"
+#include"Lattice2D_no_inter.h"
 //#include"Analyze2D.h"
 
 #include"../BasicIO.h"
@@ -23,7 +24,9 @@ void write_techplot_output2D(const Lattice2D& l, int iterNum);
 void write_techplot_output_alternative2D(const Lattice2D& l, const string& filename = "alternative.dat");
 
 void write_vtk_output2D(const Lattice2D& l, const string& filename = "test.vtk");
+void write_vtk_output2D(const Lattice2D_no_inter& l, const string& filename = "test.vtk");
 inline void write_vtk_output2D(const Lattice2D& l, int iterNum){write_vtk_output2D(l, createFilename("output_", iterNum, ".vtk"));};
+inline void write_vtk_output2D(const Lattice2D_no_inter& l, int iterNum){write_vtk_output2D(l, createFilename("output_", iterNum, ".vtk"));};
 
 void writeBubbleFitData(const Lattice2D& l, const string& filename = "bubbleFit.csv");
 #endif
