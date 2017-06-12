@@ -23,6 +23,7 @@ public:
     /// operations
     void calcRho();                                         /// < calculates both densities, the velocity and delta rho
     const double calcPsi()const;                            /// < calculates the color field based on the densities
+    const pressureTensor3D getPressureTensor(int color=0) const;
  
     /// acsessors
     inline void setF(const DistributionSetType3D& newF){f = newF;};

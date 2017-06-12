@@ -109,9 +109,11 @@ const array2D Matrix2D::operator*(const array2D &other)const
 {
     array2D a;
 
-    for (int i= 0; i<9;i++){
+    for (int i= 0; i<9;i++)
+    {
         double sum = 0;
-        for(int j = 0; j<9;j++){
+        for(int j = 0; j<9;j++)
+        {
             sum += other[j] * matrix[i][j];
         }
         a[i] = sum;
@@ -129,42 +131,52 @@ const DistributionSetType2D Matrix2D::operator*(const DistributionSetType2D &oth
     return a;
 }
 
-const Matrix2D Matrix2D::operator*(double other)const{
+const Matrix2D Matrix2D::operator*(double other)const
+{
     boost::multi_array<double,2> m(boost::extents[9][9]);
 
-    for(int i = 0;i<9;i++){
-        for(int j=0;j<9;j++){
+    for(int i = 0;i<9;i++)
+    {
+        for(int j=0;j<9;j++)
+        {
             m[i][j] = matrix[i][j] * other;
         }
     }
     return Matrix2D(m);
 }
 
-const Matrix2D Matrix2D::operator+(const Matrix2D &other)const{
+const Matrix2D Matrix2D::operator+(const Matrix2D &other)const
+{
     boost::multi_array<double,2> m(boost::extents[9][9]); 
     boost::multi_array<double,2> mother = other.getData();
 
-    for(int i = 0;i<9;i++){
-        for(int j=0;j<9;j++){
+    for(int i = 0;i<9;i++)
+    {
+        for(int j=0;j<9;j++)
+        {
             m[i][j] = matrix[i][j] + mother[i][j];
         }
     }
     return Matrix2D(m);
 }
 
-const Matrix2D Matrix2D::operator-(const Matrix2D &other)const{
+const Matrix2D Matrix2D::operator-(const Matrix2D &other)const
+{
     boost::multi_array<double,2> m(boost::extents[9][9]); 
     boost::multi_array<double,2> mother = other.getData();
 
-    for(int i = 0;i<9;i++){
-        for(int j=0;j<9;j++){
+    for(int i = 0;i<9;i++)
+    {
+        for(int j=0;j<9;j++)
+        {
             m[i][j] = matrix[i][j] - mother[i][j];
         }
     }
     return Matrix2D(m);
 }
 
-const bool Matrix2D::operator==(const Matrix2D &other)const{
+const bool Matrix2D::operator==(const Matrix2D &other)const
+{
     boost::multi_array<double,2> mother = other.getData();
     bool equal = false;
     if (matrix == mother) equal = true;
@@ -177,7 +189,8 @@ const bool Matrix2D::operator==(const Matrix2D &other)const{
 const array2D Matrix2D::diagMult(const array2D &other) const
 {
     array2D a;
-    for (int i= 0; i<9;i++){
+    for (int i= 0; i<9;i++)
+    {
         a[i] = other[i] * matrix[i][i];
     }
     return a;
@@ -204,7 +217,8 @@ const DistributionSetType2D Matrix2D::diagMult(const DistributionSetType2D &othe
 
 //=========================== ACCESSORS ===========================
 
-void Matrix2D::resetOmega(double omega){
+void Matrix2D::resetOmega(double omega)
+{
     matrix[7][7] = omega;
     matrix[8][8] = omega;
 }

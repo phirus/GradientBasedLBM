@@ -13,7 +13,6 @@ class Matrix2D
         Matrix2D(bool identity = false);
         Matrix2D(double diag);
         Matrix2D(const boost::multi_array<double,2> &m);
-        // Matrix2D(const RelaxationPar2D &relax, double omega = 1);
         Matrix2D(const RelaxationPar2D &relax, bool forcingterm);
         Matrix2D(const Matrix2D &other);
 

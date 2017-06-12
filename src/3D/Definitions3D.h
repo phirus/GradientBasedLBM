@@ -9,6 +9,7 @@
 
 typedef boost::array<Vector3D,33> direction3D ; /// < collection of 33 direction vectors (D2Q33)
 typedef boost::array<Vector3D,2> VeloSet3D;
+typedef boost::array<int,3> SizeSet3D;
 
 //=========================== FUNCTIONS ===========================
 
@@ -42,4 +43,10 @@ inline const DistributionSetType3D distro_times_3D(const DistributionSetType3D &
     return foo;
 };
 
+struct pressureTensor3D 
+{
+    double xx,xy,xz,yx,yy,yz,zx,zy,zz;
+    pressureTensor3D() : xx(0), xy(0), xz(0), yx(0), yy(0), yz(0), zx(0), zy(0), zz(0) {};
+    const double getTrace()const{return xx + yy + zz;};
+};
 #endif

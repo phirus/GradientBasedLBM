@@ -2,7 +2,6 @@
 #define CONSTANTS2D_H
 
 #include"Matrix2D.h"
-//#include"Matrix2D_alter.h"
 #include"Definitions2D.h"
 
 /// contains constants
@@ -30,12 +29,5 @@ const boost::multi_array<double,2> define_inverse_trafo_matrix_2D();
 
 const Matrix2D TRAFO_MATRIX2D(define_trafo_matrix_2D());
 const Matrix2D INV_TRAFO_MATRIX2D(define_inverse_trafo_matrix_2D());
-
-/// Transformation-Matrix2D_alter
-// const Eigen::Matrix<double,9,9> define_trafo_matrix_2D_alter();
-// const Eigen::Matrix<double,9,9> define_inverse_trafo_matrix_2D_alter();
-
-// const Matrix2D_alter TRAFO_MATRIX2D_alter_alter(define_trafo_matrix_2D_alter());
-// const Matrix2D_alter INV_TRAFO_MATRIX2D_alter(define_inverse_trafo_matrix_2D_alter());
 
 #endif

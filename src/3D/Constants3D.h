@@ -22,6 +22,7 @@ const Vector3D d19(1,1,1), d20(-1,1,1), d21(-1,-1,1), d22(1,-1,1), d23(1,1,-1), 
 const Vector3D d27(2,0,0), d28(-2,0,0), d29(0,2,0), d30(0,-2,0), d31(0,0,2), d32(0,0,-2);
 
 const boost::array<Vector3D,33> DIRECTION_3D = {{d0,d1,d2,d3,d4,d5,d6,d7,d8,d9,d10,d11,d12,d13,d14,d15,d16,d17,d18,d19,d20,d21,d22,d23,d24,d25,d26,d27,d28,d29,d30,d31,d32}};
+const boost::array<double,33> DIRECTION_ABS_3D = {{d0.Abs(),d1.Abs(),d2.Abs(),d3.Abs(),d4.Abs(),d5.Abs(),d6.Abs(),d7.Abs(),d8.Abs(),d9.Abs(),d10.Abs(),d11.Abs(),d12.Abs(),d13.Abs(),d14.Abs(),d15.Abs(),d16.Abs(),d17.Abs(),d18.Abs(),d19.Abs(),d20.Abs(),d21.Abs(),d22.Abs(),d23.Abs(),d24.Abs(),d25.Abs(),d26.Abs(),d27.Abs(),d28.Abs(),d29.Abs(),d30.Abs(),d31.Abs(),d32.Abs()}};
 
 /// D3Q19 streaming indices
 const boost::array<int,19> PULL_INDEX_3D = {{0,5,6,7,8,1,2,3,4,14,17,18,15,16,9,12,13,10,11}};

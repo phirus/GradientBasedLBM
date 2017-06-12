@@ -6,7 +6,6 @@
 #include<map>
 
 #include"Lattice2D.h"
-//#include"Analyze2D.h"
 
 #include"../BasicIO.h"
 

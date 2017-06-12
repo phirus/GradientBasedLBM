@@ -130,3 +130,27 @@ const double Cell3D::calcPsi()const
     if(rhoSum > 0) return (rho[0] - rho[1])/( rhoSum ); // < prevent division by 0
     else return 0;
 }
+
+const pressureTensor3D Cell3D::getPressureTensor(int color) const
+{
+    pressureTensor3D p;
+    VeloSet3D u = getU();
+    if (isSolid == false)
+    {
+        for (int i=0; i<19; i++)
+        {
+            p.xx += f[color][i] * (DIRECTION_3D[i].x - u[color].x) * (DIRECTION_3D[i].x - u[color].x);
+            p.xy += f[color][i] * (DIRECTION_3D[i].x - u[color].x) * (DIRECTION_3D[i].y - u[color].y);
+            p.xz += f[color][i] * (DIRECTION_3D[i].x - u[color].x) * (DIRECTION_3D[i].z - u[color].z);
+            
+            p.yx += f[color][i] * (DIRECTION_3D[i].y - u[color].y) * (DIRECTION_3D[i].x - u[color].x);
+            p.yy += f[color][i] * (DIRECTION_3D[i].y - u[color].y) * (DIRECTION_3D[i].y - u[color].y);
+            p.yz += f[color][i] * (DIRECTION_3D[i].y - u[color].y) * (DIRECTION_3D[i].z - u[color].z);
+
+            p.zx += f[color][i] * (DIRECTION_3D[i].z - u[color].z) * (DIRECTION_3D[i].x - u[color].x);
+            p.zy += f[color][i] * (DIRECTION_3D[i].z - u[color].z) * (DIRECTION_3D[i].y - u[color].y);
+            p.zz += f[color][i] * (DIRECTION_3D[i].z - u[color].z) * (DIRECTION_3D[i].z - u[color].z);           
+        }
+    }
+     return p;
+}
