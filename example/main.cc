@@ -78,7 +78,7 @@ int main(int argc, char** argv){
 
     // create a Lattice   
     //int ymax = prepro.getYCells();
-    int ymax = 1000;
+    int ymax = prepro.getXCells();
     int xmax = prepro.getXCells();
     Lattice2D meins(xmax,ymax);
     Lattice2D bubble_only(xmax,ymax);
@@ -114,16 +114,14 @@ int main(int argc, char** argv){
         
         initialSetUp(bubble_only, prepro, boundaries, xmax, ymax, params,numOfCPUs);
         initializeShearfFlow(meins, prepro, boundaries, xmax, ymax, params);
-        write_vtk_output2D(meins, 0);
         
         meins.copyCellsFromOther(bubble_only, bubble_only.findBubbleCells());
-        meins.setBubbleBox(bubble_only.getBubbleBox());
+        // meins.setBubbleBox(bubble_only.getBubbleBox());
         write_vtk_output2D(meins, 0);
     }
 
     //time_t start,end;
     std::chrono::high_resolution_clock::time_point start,end;
-    //std::chrono::high_resolution_clock::duration parallel, sequential;
     auto parallel = std::chrono::duration_cast<std::chrono::microseconds>( end - end).count();
     auto sequential = std::chrono::duration_cast<std::chrono::microseconds>( end - end).count();
 
@@ -138,13 +136,13 @@ int main(int argc, char** argv){
     int i;
 
 //    bool isCutoffOkay = true;
-    bool isAppendOkay = true;
+    // bool isAppendOkay = true;
 
     while (timetrack.proceed() == true)
     {
         start = std::chrono::high_resolution_clock::now();
 
-        meins.collideAll(numOfCPUs,true,true);
+        meins.collideAll(numOfCPUs);
         meins.evaluateBoundaries(numOfCPUs);
         meins.streamAll(numOfCPUs);
 
@@ -157,7 +155,7 @@ int main(int argc, char** argv){
         // Output if necessary
         i = timetrack.getCount();
         
-        if(i%10000 == 0) 
+        if(i%100 == 0) 
         {
             cout << i <<endl;
         }
@@ -202,17 +200,17 @@ int main(int argc, char** argv){
             //     meins = meins.latticeCutOff(ymax / 10);
             // }
 
-            if (pos.y > 600 && isAppendOkay == true)
-            {
-                meins = meins.latticeAppend(1000,prepro.getRhoL(),0);
-                isAppendOkay = false;
-            }
+            // if (pos.y > 600 && isAppendOkay == true)
+            // {
+            //     meins = meins.latticeAppend(1000,prepro.getRhoL(),0);
+            //     isAppendOkay = false;
+            // }
 
-            if(pos.y  > 0.95 * 2000)
-            {
-                cout << "\nBubble reached the top";
-                break;
-            }
+            // if(pos.y  > 0.95 * 2000)
+            // {
+            //     cout << "\nBubble reached the top";
+            //     break;
+            // }
 
             // if(pos.y + meins.getOffset() > 0.95 * ymax)
             // {
@@ -248,9 +246,9 @@ void initialSetUp(Lattice2D& meins, Preprocess& prepro, Boundaries& bound, int x
 
     // setup geometry (bubble at the bottom, x-centered)
     const int R1 = prepro.getResolution()/2;
-    // const int xm1 = xmax/2;
-    const int xm1 = xmax * 0.5;
-    const int ym1 = 2*R1;
+    const int xm1 = xmax/2;
+    const int ym1 = ymax/2;
+    // const int ym1 = 2*R1;
     //const int ym1 = R1 + xm1;
 
     for(int j=0; j< ymax; j++)
@@ -262,17 +260,17 @@ void initialSetUp(Lattice2D& meins, Preprocess& prepro, Boundaries& bound, int x
         }
     }
 
-    //meins.setBoundaries(bound);
+    // meins.setBoundaries(bound);
   
     meins.equilibriumIni();
 
 //   for (int i = 1; i< 1001; i++)
    for (int i = 1; i< 101; i++)
    {
-       meins.collideAll(numOfCPUs,false,false);
-       //meins.evaluateBoundaries();
-       meins.streamAll(numOfCPUs);
-       if(i%100 == 0) cout << i<<endl;
+        meins.collideAll(numOfCPUs,false,false);
+        meins.evaluateBoundaries();
+        meins.streamAll(numOfCPUs);
+        //if(i%100 == 0) cout << i<<endl;
    }
 
     BubbleBox2D bubblebox;
@@ -303,7 +301,8 @@ void initializeShearfFlow(Lattice2D& meins, Preprocess& prepro, Boundaries& boun
     }
 
     meins.setBoundaries(bound);
-    double grad = - bound.west.getVelocity()[0].y / double(xmax);
+    //double grad = - bound.west.getVelocity()[0].y / double(xmax);
+    double grad = (bound.east.getVelocity()[0].y - bound.west.getVelocity()[0].y) / double(xmax);
     meins.setShearProfile(grad , bound.west.getVelocity()[0].y);
     meins.equilibriumIni();
 
