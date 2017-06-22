@@ -59,6 +59,14 @@ void write_csv_linewise(int i, double Posx, double PosY, double v_x, double v_y,
     Plot.close();
 }
 
+void write_csv_linewise(int i, double Posx, double PosY, double PosZ, double v_x, double v_y, double v_z, const string& filename)
+{
+    ofstream Plot;
+    Plot.open(filename.c_str(),ios::app);
+    Plot << i << ";" << Posx << ";" << PosY << ";" << PosZ << ";" << v_x << ";" << v_y << ";" << v_z << ";" << "\n";
+    Plot.close();
+}
+
 void write_param_log(const ParamSet& p)
 {
     ofstream paramLog;

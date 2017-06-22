@@ -22,6 +22,9 @@ void write_binary3D(const Lattice3D& l, const string& filename){
     Boundaries bound = l.getBoundaries();
     file.write(reinterpret_cast<char*> (&bound), sizeof bound);
 
+    BubbleBox3D bubble = l.getBubbleBox();
+    file.write(reinterpret_cast<char*> (&bubble), sizeof bubble);
+
     field3D data = l.getData();
 
     for (int x = 0; x<extent[0];x++)
@@ -56,6 +59,9 @@ const bool read_binary3D(Lattice3D& outL, const string& filename){
         Boundaries bound;
         file.read((char*) &bound, sizeof bound);
 
+        BubbleBox3D bubble;
+        file.read((char*) &bubble, sizeof bubble);
+
         Cell3D tmpCell;
         field3D data(boost::extents[extent[0]][extent[1]][extent[2]]);
         for(int x = 0; x<extent[0];x++)
@@ -72,6 +78,7 @@ const bool read_binary3D(Lattice3D& outL, const string& filename){
         file.close();
         outL.setParams(param);
         outL.setBoundaries(bound);
+        outL.setBubbleBox(bubble);
         outL.setData(data, extent[0], extent[1], extent[2]);
     }
     else success = false;
@@ -100,6 +107,9 @@ void write_restart_file3D(const Lattice3D& l, const Preprocess& p, const Timetra
 
     Boundaries bound = l.getBoundaries();
     file.write(reinterpret_cast<char*> (&bound), sizeof bound);
+
+    BubbleBox3D bubble = l.getBubbleBox();
+    file.write(reinterpret_cast<char*> (&bubble), sizeof bubble);
 
     // write the velocity distributions
     field3D data = l.getData();
@@ -186,6 +196,9 @@ const bool read_restart_file3D(Lattice3D& outL, Preprocess& p, Timetrack& t, con
         Boundaries bound;
         file.read((char*) &bound, sizeof bound);
 
+        BubbleBox3D bubble;
+        file.read((char*) &bubble, sizeof bubble);
+
         Cell3D tmpCell;
         field3D data(boost::extents[extent[0]][extent[1]][extent[2]]);
         for(int x = 0; x<extent[0];x++)
@@ -243,6 +256,7 @@ const bool read_restart_file3D(Lattice3D& outL, Preprocess& p, Timetrack& t, con
         file.close();
         outL.setParams(param);
         outL.setBoundaries(bound);
+        outL.setBubbleBox(bubble);
         outL.setData(data, extent[0], extent[1], extent[2]);
         t = time;
         p = prepro;
@@ -510,4 +524,23 @@ void write_vtk_output3D(const Lattice3D& l, const string& filename)
     }
 
     VTKFile.close();
+}
+
+void writeBubbleFitData(const Lattice3D& l, const string& filename)
+{
+    ofstream BubbleFit;
+    BubbleFit.open( filename.c_str() );
+    BubbleFit << "x;y;z;rho_b\n";
+
+    std::vector<int> indices = l.findBubbleCells();
+
+    for(int index : indices)
+    {
+        int x,y,z;
+        l.linearIndex(index, x, y, z);
+        Cell3D tmp = l.getCell(x, y, z);
+
+        BubbleFit << x << ";" << y << ";" << z << ";" << tmp.getRho()[1] << "\n";
+    }
+    BubbleFit.close();
 }

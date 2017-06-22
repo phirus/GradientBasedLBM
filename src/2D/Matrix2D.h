@@ -28,11 +28,10 @@ class Matrix2D
         /// operations
         const array2D diagMult(const array2D &other) const;
         const DistributionSetType2D diagMult(const DistributionSetType2D &other) const;
-        //const double linewise(const array2D &other, int line) const;
         
         /// accessors
         inline const boost::multi_array<double,2> getData()const{return matrix;};
-        void resetOmega(double omega);
+        // void resetOmega(double omega);
 
     private:
         boost::multi_array<double,2> matrix;

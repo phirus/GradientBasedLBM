@@ -9,7 +9,6 @@
 #include"../ParamSet.h"
 #include"../Boundaries.h"
 #include"BubbleBox2D.h"
-// #include"Timetrack.h"
 
 /// custom typedef for the whole field of cells
 typedef boost::multi_array<Cell2D,2> field2D;
@@ -62,8 +61,8 @@ public:
     void setF(int x, int y, int color, const array2D& nf);
     void setF(int x, int y, int color, int index, double value);
     void setBoundaries(const Boundaries& newBound);
-    void setBubbleBox(const BubbleBox2D& newBubble){bubblebox = newBubble;};
-    void setOffset(int o){offset = o;};
+    inline void setBubbleBox(const BubbleBox2D& newBubble){bubblebox = newBubble;};
+    inline void setOffset(int o){offset = o;};
     inline void setParams(const ParamSet& newParam){param = newParam;}; /// < set a new parameter set
 
     void linearIndex(int index, int& x, int& y)const;

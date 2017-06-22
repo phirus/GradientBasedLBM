@@ -22,6 +22,7 @@ void write_data_plot(const std::vector<double> y, double del_x, const string& fi
 void write_data_plot_linewise(int time ,double y1, double y2, const string& filename = "BubbleVeloPlot.dat");
 void write_csv(const nested_vector& data, const string& filename = "BubbleVeloPlot.csv", const string& header= "time , Posx , PosY , v_x , v_y , Re");
 void write_csv_linewise(int i, double Posx, double PosY, double v_x, double v_y, double Re, double F_x, double F_y, const string& filename = "BubbleVeloPlot.csv");
+void write_csv_linewise(int i, double Posx, double PosY, double PosZ, double v_x, double v_y, double v_z, const string& filename = "BubbleVeloPlot.csv");
 void write_param_log(const ParamSet& p);
 void write_param_log_csv(const ParamSet& p);
 void write_preprocess_csv(const Preprocess& p);

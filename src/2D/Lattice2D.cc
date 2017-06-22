@@ -162,8 +162,6 @@ void Lattice2D::streamAll(int threads)
     field2D *newData = new field2D(boost::extents[xsize][ysize]);
 
     omp_set_num_threads (threads);
-    //const int range = xsize * ysize;
-
     #pragma omp parallel
     {
         #pragma omp for collapse(2) schedule(dynamic, 100)

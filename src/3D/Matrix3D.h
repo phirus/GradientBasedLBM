@@ -14,7 +14,6 @@ class Matrix3D
         Matrix3D(double diag);
         Matrix3D(const boost::multi_array<double,2> &m);
         Matrix3D(const RelaxationPar3D &relax, bool forcingterm);
-        Matrix3D(const RelaxationPar3D &relax);
         Matrix3D(const Matrix3D &other);
 
          /// operators
@@ -29,12 +28,11 @@ class Matrix3D
         /// operations
         const array3D diagMult(const array3D &other) const;
         const DistributionSetType3D diagMult(const DistributionSetType3D &other) const;
-        const double linewise(const array3D &other, int line) const;
-        
+                
         /// accessors
 
         inline const boost::multi_array<double,2> getData()const{return matrix;};
-        void resetOmega(double omega);
+        //void resetOmega(double omega);
 
     private:
         boost::multi_array<double,2> matrix;

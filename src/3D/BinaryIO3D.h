@@ -24,5 +24,5 @@ void write_techplot_output_alternative3D(const Lattice3D& l, const string& filen
 void write_vtk_output3D(const Lattice3D& l, const string& filename = "test.vtk");
 inline void write_vtk_output3D(const Lattice3D& l, int iterNum){write_vtk_output3D(l, createFilename("output_", iterNum, ".vtk"));};
 
-// void writeBubbleFitData(const Lattice3D& l, const string& filename = "bubbleFit.csv");
+void writeBubbleFitData(const Lattice3D& l, const string& filename = "bubbleFit.csv");
 #endif

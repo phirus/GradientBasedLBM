@@ -1317,7 +1317,7 @@ TEST(Matrix3D,backtrafo){
 }
 
 TEST(Matrix3D,multiply){
-    const Matrix3D S(RelaxationPar3D(1,1,10,100,200,500));
+    const Matrix3D S(RelaxationPar3D(1,1,10,100,200,500),false);
     const array3D f = {{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19}};
     const array3D vergleich = {{ 1, 2, 30, 4, 500, 6, 700, 8, 900, 10, 2200, 12, 2600, 14,15,16,8500,9000,9500}};
 
@@ -1329,20 +1329,20 @@ TEST(Matrix3D,multiply){
     }
 }
 
-TEST(Matrix3D,multiply_linewise){
-    const Matrix3D S(RelaxationPar3D(1,1,10,100,200,500));
-    const array3D f = {{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19}};
-    // const array2D vergleich = {{ -48, -382, 194, 18, -206, 418, -206, 18, 194}};
-    const array3D vergleich = {{ 1, 2, 30, 4, 500, 6, 700, 8, 900, 10, 2200, 12, 2600, 14,15,16,8500,9000,9500}};
+// TEST(Matrix3D,multiply_linewise){
+//     const Matrix3D S(RelaxationPar3D(1,1,10,100,200,500),false);
+//     const array3D f = {{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19}};
+//     // const array2D vergleich = {{ -48, -382, 194, 18, -206, 418, -206, 18, 194}};
+//     const array3D vergleich = {{ 1, 2, 30, 4, 500, 6, 700, 8, 900, 10, 2200, 12, 2600, 14,15,16,8500,9000,9500}};
 
-    array3D test;
+//     array3D test;
 
-    for(int i = 0; i<9;i++)
-    {
-        test[i] = S.linewise(f,i);
-        EXPECT_DOUBLE_EQ(vergleich[i],test[i])<<"i = "<<i ;
-    }
-}
+//     for(int i = 0; i<9;i++)
+//     {
+//         test[i] = S.linewise(f,i);
+//         EXPECT_DOUBLE_EQ(vergleich[i],test[i])<<"i = "<<i ;
+//     }
+// }
 
 TEST(Matrix3D,identity){
     const array3D f = {{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19}};
@@ -1354,11 +1354,6 @@ TEST(Matrix3D,identity){
 
     EXPECT_EQ(f, Identity * f);
     EXPECT_EQ(f0, Zeros * f);
-    for(int i = 0; i<19;i++)
-    {
-        test[i] = Identity.linewise(f,i);
-    }
-    EXPECT_EQ(f, test);
 }
 
 TEST(Matrix3D,plus_times){
@@ -1640,25 +1635,6 @@ TEST(Vector3D,scalar){
     EXPECT_DOUBLE_EQ(32, v2*v1);
     EXPECT_DOUBLE_EQ(259, v1*v3);
 }
-
-TEST(Vector3D,angle){
-    const Vector3D g(1,1,0);
-
-    EXPECT_DOUBLE_EQ(0, g.Angle(DIRECTION_3D[0]));
-    EXPECT_DOUBLE_EQ(cos(PI/4), g.Angle(DIRECTION_3D[1]));
-    EXPECT_DOUBLE_EQ(1, g.Angle(DIRECTION_3D[2]));
-    EXPECT_DOUBLE_EQ(cos(PI/4), g.Angle(DIRECTION_3D[3]));
-    EXPECT_DOUBLE_EQ(0, g.Angle(DIRECTION_3D[4]));
-    EXPECT_DOUBLE_EQ(-cos(PI/4), g.Angle(DIRECTION_3D[5]));
-    EXPECT_DOUBLE_EQ(-1, g.Angle(DIRECTION_3D[6]));
-    EXPECT_DOUBLE_EQ(-cos(PI/4), g.Angle(DIRECTION_3D[7]));
-    EXPECT_DOUBLE_EQ(0, g.Angle(DIRECTION_3D[8]));
-
-    const Vector3D g1(1e-10, -1e-10, -1e-10), g2(1e-6, -1e-6, -1e-6);
-    EXPECT_DOUBLE_EQ(1,g1.Angle(g2));
-    EXPECT_DOUBLE_EQ(0,g1.Angle(DIRECTION_3D[0]));
-}
-
 
 
 

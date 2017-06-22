@@ -25,7 +25,6 @@ class Vector3D
     /// operations
     inline const double Abs()const{return sqrt(x*x+y*y+z*z);};   /// < absolute value
     inline const double Sum()const{return x+y+z;};             /// < sum over all components
-    const double Angle(const Vector3D& other)const;
 };
 
 #endif

@@ -217,8 +217,8 @@ const DistributionSetType2D Matrix2D::diagMult(const DistributionSetType2D &othe
 
 //=========================== ACCESSORS ===========================
 
-void Matrix2D::resetOmega(double omega)
-{
-    matrix[7][7] = omega;
-    matrix[8][8] = omega;
-}
+// void Matrix2D::resetOmega(double omega)
+// {
+//     matrix[7][7] = omega;
+//     matrix[8][8] = omega;
+// }
