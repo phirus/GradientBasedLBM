@@ -63,7 +63,7 @@ int main(int argc, char** argv){
         params = params_input;
     }
 
-        if (vm.count("boundary")) 
+    if (vm.count("boundary")) 
     {
         cout << "boundary file is: " << vm["boundary"].as<string>() << ".\n" << endl ;
         boundaries = read_boundaries_file(vm["boundary"].as<string>());

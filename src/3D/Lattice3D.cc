@@ -373,20 +373,20 @@ void Lattice3D::evaluateBoundaries(int threads)
             int lowerY = 0;
             int upperY = ysize;
 
-            if(bound.west.getType()  > 1) // north west corner
+            if(bound.west.getType()  > 0) // north west corner
             {
                 lowerY = 1;
             }
-            if(bound.east.getType() > 1)
+            if(bound.east.getType() > 0)
             {
                 upperY = ysize - 1;
             }
 
-            if(bound.back.getType()  > 1) // north west corner
+            if(bound.back.getType()  > 0) // north west corner
             {
                 lowerX = 1;
             }
-            if(bound.front.getType() > 1)
+            if(bound.front.getType() > 0)
             {
                 upperX = xsize - 1;
             }
@@ -411,7 +411,7 @@ void Lattice3D::evaluateBoundaries(int threads)
                 #pragma omp for schedule(static,10) nowait
                 for (int y=lowerY; y<upperY; y++)
                 {
-                    double u_z = get_shearvelocity_x(y,u_0,u_1);
+                    double u_z = get_shearvelocity_y(y,u_0,u_1);
                     for (int x=lowerX; x<upperX; x++)
                     {
                         (*data)[x][y][zsize-1] = boundaryVeloNS((*data)[x][y][zsize-1], u_z);
@@ -430,27 +430,27 @@ void Lattice3D::evaluateBoundaries(int threads)
             int upperY = ysize;
 
     
-            if(bound.west.getType()  > 1) // north west corner
+            if(bound.west.getType()  > 0) // north west corner
             {
                 lowerY = 1;
             }
-            if(bound.east.getType() > 1)
+            if(bound.east.getType() > 0)
             {
                 upperY = ysize - 1;
             }
 
-            if(bound.back.getType()  > 1) // north west corner
+            if(bound.back.getType()  > 0) // north west corner
             {
                 lowerX = 1;
             }
-            if(bound.front.getType() > 1)
+            if(bound.front.getType() > 0)
             {
                 upperX = xsize - 1;
             }
 
-            if(bound.north.getType() == velocity)
+            if(bound.south.getType() == velocity)
             {
-                double u_z = bound.north.getVelocity()[0].z;
+                double u_z = bound.south.getVelocity()[0].z;
                 #pragma omp for schedule(static,10) nowait
                 for (int x=lowerX; x<upperX; x++)
                 {
@@ -460,7 +460,7 @@ void Lattice3D::evaluateBoundaries(int threads)
                     }
                 }
             }
-            if(bound.north.getType() == shear)
+            if(bound.south.getType() == shear)
             {
                 double u_0 = bound.west.getVelocity()[0].z;
                 double u_1 = bound.east.getVelocity()[0].z;
@@ -468,7 +468,7 @@ void Lattice3D::evaluateBoundaries(int threads)
                 #pragma omp for schedule(static,10) nowait
                 for (int y=lowerY; y<upperY; y++)
                 {
-                    double u_z = get_shearvelocity_x(y,u_0,u_1);
+                    double u_z = get_shearvelocity_y(y,u_0,u_1);
                     for (int x=lowerX; x<upperX; x++)
                     {
                         (*data)[x][y][0] = boundaryVeloNS((*data)[x][y][zsize-1], u_z);
@@ -529,21 +529,22 @@ void Lattice3D::setShearProfile(double gradient, double offset)
 {
     const double m = gradient;
     const double n = offset; // - (m * ( xsize *  param.getDeltaX() ) );
-    for (int x = 0; x < xsize; x++)
+    const DistributionSetType3D phi = param.getPhi3D();
+    
+    for (int y = 0; y < ysize; y++)
     {
         VeloSet3D u;
-        u[0] = Vector3D(0,m*x + n);
-        u[1] = Vector3D(0,0);
+        u[0] = Vector3D(0,0,m*y + n);
+        u[1] = Vector3D(0,0,0);
 
-        for (int y = 0; y < ysize; y++)
+        for (int x = 0; x < xsize; x++)
         {
             for (int z = 0; z < zsize; z++)
             {
                 Cell3D tmpCell = (*data)[x][y][z];
                 tmpCell.calcRho();
                 const ColSet rho = tmpCell.getRho();
-                const DistributionSetType3D phi = param.getPhi3D();
-
+                
                 tmpCell.setF(eqDistro(rho,u, phi));
                 (*data)[x][y][z] = tmpCell;
             }
@@ -724,6 +725,40 @@ void Lattice3D::buildWalls()
         }
     }
 
+    if(bound.back.getType() == shearwall)
+    {
+        double u_0 = bound.west.getVelocity()[0].z;
+        double u_1 = bound.east.getVelocity()[0].z;
+
+        for (int y=0; y<ysize; y++)
+        {
+            double u_z = get_shearvelocity_y(y,u_0,u_1);
+            Vector3D u_wall(0,0,u_z);
+            wall.setSolidVelocity(u_wall);
+            for (int z = 0; z < zsize; z++)
+            {
+                (*data)[0][y][z] = wall;
+            }
+        }
+    }
+
+    if(bound.front.getType() == shearwall)
+    {
+        double u_0 = bound.west.getVelocity()[0].z;
+        double u_1 = bound.east.getVelocity()[0].z;
+
+        for (int y=0; y<ysize; y++)
+        {
+            double u_z = get_shearvelocity_y(y,u_0,u_1);
+            Vector3D u_wall(0,0,u_z);
+            wall.setSolidVelocity(u_wall);
+            for (int z = 0; z < zsize; z++)
+            {
+                (*data)[xsize-1][y][z] = wall;
+            }
+        }
+    }
+
     if(bound.east.getType() == bounceback)
     {
         Vector3D u3D = bound.east.getVelocity()[0];
@@ -854,7 +889,7 @@ void Lattice3D::streamAndBouncePull(Cell3D& tCell, const direction3D& dir)const
             else // else -> bounce back
             {
                 const ColSet rho = tCell.getRho();
-                ftmp[color][i] = f[color][PULL_INDEX_3D[i]] - (2.0 * WEIGHTS_3D[i] * rho[color] * (DIRECTION_3D[i] * neighbor.getU()[0]) ) ; 
+                ftmp[color][i] = f[color][PULL_INDEX_3D[i]] + (2.0 * 3.0 * WEIGHTS_3D[i] * rho[color] * (DIRECTION_3D[i] * neighbor.getU()[0]) ) ; 
             } 
         } // end for i
     } // end for color 

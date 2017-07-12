@@ -17,7 +17,7 @@ BIN_DIR = bin
 OUTPUT = $(BIN_DIR)/GradientBasedLBM
 
 # creating OBJs
-OBJ_DEBUG = $(OBJ_DIR)/Analyze_basic.o  $(OBJ_DIR)/Analyze3D.o $(OBJ_DIR)/BasicIO.o $(OBJ_DIR)/BinaryIO3D.o $(OBJ_DIR)/Constants3D.o $(OBJ_DIR)/Cell3D.o $(OBJ_DIR)/Definitions3D.o $(OBJ_DIR)/Lattice3D.o $(OBJ_DIR)/main.o $(OBJ_DIR)/Matrix3D.o $(OBJ_DIR)/ParamSet.o $(OBJ_DIR)/Preprocess.o $(OBJ_DIR)/Timetrack.o $(OBJ_DIR)/Vector3D.o
+OBJ_DEBUG = $(OBJ_DIR)/Analyze_basic.o  $(OBJ_DIR)/Analyze3D.o $(OBJ_DIR)/BasicIO.o $(OBJ_DIR)/BinaryIO3D.o $(OBJ_DIR)/BubbleBox3D.o $(OBJ_DIR)/Constants3D.o $(OBJ_DIR)/Cell3D.o $(OBJ_DIR)/Definitions3D.o $(OBJ_DIR)/Lattice3D.o $(OBJ_DIR)/main.o $(OBJ_DIR)/Matrix3D.o $(OBJ_DIR)/ParamSet.o $(OBJ_DIR)/Preprocess.o $(OBJ_DIR)/Preprocess_Drop.o $(OBJ_DIR)/Timetrack.o
 
 all: clean build
 
@@ -46,6 +46,9 @@ $(OBJ_DIR)/BasicIO.o: $(SRC)/BasicIO.cc
 $(OBJ_DIR)/BinaryIO3D.o: $(SRC)/3D/BinaryIO3D.cc
 	$(CXX) $(CFLAGS) $(INC) -c $(SRC)/3D/BinaryIO3D.cc -o $(OBJ_DIR)/BinaryIO3D.o
 
+$(OBJ_DIR)/BubbleBox3D.o: $(SRC)/3D/BubbleBox3D.cc
+	$(CXX) $(CFLAGS) $(INC) -c $(SRC)/3D/BubbleBox3D.cc -o $(OBJ_DIR)/BubbleBox3D.o
+
 $(OBJ_DIR)/Constants3D.o: $(SRC)/3D/Constants3D.cc
 	$(CXX) $(CFLAGS) $(INC) -c $(SRC)/3D/Constants3D.cc -o $(OBJ_DIR)/Constants3D.o
 
@@ -70,11 +73,11 @@ $(OBJ_DIR)/ParamSet.o: $(SRC)/ParamSet.cc
 $(OBJ_DIR)/Preprocess.o: $(SRC)/Preprocess.cc
 	$(CXX) $(CFLAGS) $(INC) -c $(SRC)/Preprocess.cc -o $(OBJ_DIR)/Preprocess.o
 
+$(OBJ_DIR)/Preprocess_Drop.o: $(SRC)/Preprocess_Drop.cc
+	$(CXX) $(CFLAGS) $(INC) -c $(SRC)/Preprocess_Drop.cc -o $(OBJ_DIR)/Preprocess_Drop.o
+
 $(OBJ_DIR)/Timetrack.o: $(SRC)/Timetrack.cc
 	$(CXX) $(CFLAGS) $(INC) -c $(SRC)/Timetrack.cc -o $(OBJ_DIR)/Timetrack.o
-
-$(OBJ_DIR)/Vector3D.o: $(SRC)/3D/Vector3D.cc
-	$(CXX) $(CFLAGS) $(INC) -c $(SRC)/3D/Vector3D.cc -o $(OBJ_DIR)/Vector3D.o
 
 clean: 
 	rm -f $(OBJ_DEBUG) $(OUTPUT)
