@@ -120,12 +120,41 @@ function getFileNameFromNum(num)
     return string("bubbleFit_",num,".csv")
 end
 
+function checkBeta(x,r)
+    beta = x[2]
+    if (beta > pi/4 || beta < -pi/4) 
+        x[4] = getC(x[4],x[5],r) # a <-> c
+        if (beta < -pi/4)
+            x[2] = beta + pi/2
+        elseif (beta > pi/4)
+            x[2] = beta - pi/2
+        end
+    end
+    return x
+end
+
+function checkGamma(x)
+    gamma = x[3]
+    if (gamma > pi/4 || gamma < -pi/4) 
+        tmp = x[4]
+        x[4] = x[5] # a = b
+        x[5] = tmp  # b = a
+
+        if (gamma < -pi/4)
+            x[3] = gamma + pi/2
+        elseif (gamma > pi/4)
+            x[3] = gamma - pi/2
+        end
+    end
+    return x
+end
+
 ############################ SCRIPT ##################################
 
 nums = getNumsFromFiles(ARGS)
 
 out = zeros(size(ARGS,1),7)
-header = ["time" "alpha_x" "alpha_y" "alpha_z" "a" "b" "c"]
+header = ["time" "alpha" "beta" "gamma" "a" "b" "c"]
 
 println("num \t conv \t calls \t alpha \t beta \t gamma \t a \t b \t c")
 
@@ -149,6 +178,9 @@ for i = 1 : size(nums,1)
     result = optimize(x -> objectiveFunction(x,data,r), initial)
     #show(result)
     x = Optim.minimizer(result)
+
+    x = checkBeta(x,r)
+    x = checkGamma(x)
 
     alpha = x[1]
     beta = x[2]
