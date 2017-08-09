@@ -18,6 +18,8 @@ helpers/translate/translate_params
 helpers/Postprocess/postprocess
 helpers/julia/preprocessFile
 helpers/julia/constants.jl
+helpers/julia/Ellipsoid/Ellipsoid.csv
+helpers/julia/Ellipsoid/bubbleFit_5000.csv
 
 *.sublime-workspace
 *.coatidb
