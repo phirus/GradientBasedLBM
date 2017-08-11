@@ -22,7 +22,10 @@ void write_techplot_output3D(const Lattice3D& l, int iterNum);
 void write_techplot_output_alternative3D(const Lattice3D& l, const string& filename = "alternative.dat");
 
 void write_vtk_output3D(const Lattice3D& l, const string& filename = "test.vtk");
+void write_vtk_output3D_verboose(const Lattice3D& l, const string& filename = "test.vtk");
+
 inline void write_vtk_output3D(const Lattice3D& l, int iterNum){write_vtk_output3D(l, createFilename("output_", iterNum, ".vtk"));};
+inline void write_vtk_output3D_verboose(const Lattice3D& l, int iterNum){write_vtk_output3D_verboose(l, createFilename("output_", iterNum, ".vtk"));};
 
 void writeBubbleFitData(const Lattice3D& l, const string& filename = "bubbleFit.csv");
 #endif

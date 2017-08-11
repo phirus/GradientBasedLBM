@@ -1,0 +1,51 @@
+### North Boundary
+
+# type -> 0 periodic - 1 bounceback - 2 pressure, default [0]
+n_type = 2
+
+# density, only relevant for pressure boundary -> default [(0,0)]
+n_rho_dense = 1
+n_rho_dilute = 0
+
+
+### South Boundary
+
+# type -> 0 periodic - 1 bounceback - 2 pressure, default [0]
+s_type = 2
+
+# density, only relevant for pressure boundary -> default [(0,0)]
+s_rho_dense = 1
+s_rho_dilute = 0
+
+
+### East Boundary
+
+# type -> 1 periodic - 1 bounceback - 2 pressure, default [0]
+e_type = 2
+
+e_rho_dense = 1
+e_rho_dilute = 0
+
+### West Boundary
+
+# type -> 0 periodic - 1 bounceback - 2 pressure, default [0]
+w_type = 2
+
+w_rho_dense = 1
+w_rho_dilute = 0
+
+### Front Boundary
+
+# type -> 0 periodic - 1 bounceback - 2 pressure, default [0]
+f_type = 2
+
+f_rho_dense = 1
+f_rho_dilute = 0
+
+### Back Boundary
+
+# type -> 0 periodic - 1 bounceback - 2 pressure, default [0]
+b_type = 2
+
+b_rho_dense = 1
+b_rho_dilute = 0
