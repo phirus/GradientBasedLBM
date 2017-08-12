@@ -32,7 +32,7 @@ function penalty(rho,rho_fix)
 end
 
 function objectiveFunction(x,data,rho_fix)
-    A = r^(-2) * eye(3)
+    A = x[1]^(-2) * eye(3)
     sum = 0
     for i = 1 : size(data,1)
         sum += (transpose(data[i,1:3]) * A * data[i,1:3])[1]^2 * penalty(data[i,4],rho_fix)
@@ -79,7 +79,7 @@ function getNumsFromFiles(args)
     for i = 1 : size(args,1)
     input_file = args[i]
     num = StringToInt(input_file[11:(end-4)])
-    nums[i] = num 
+    nums[i] = num
     end
 
     nums = sort(nums)
@@ -94,9 +94,9 @@ end
 nums = getNumsFromFiles(ARGS)
 
 out = zeros(size(ARGS,1),7)
-header = ["time" "r"]
+header = ["time"  "rho_max" "rho_min" "rho_90" "r_90" "rho_10" "r_10" "rho_50" "r_50" "r_50_"]
 
-println("num \t conv \t calls \t rho_max \t rho_min \t rho_90 \t rho_10 \t r_90 \t r_10")
+println("num \t conv \t calls \t rho_max \t rho_min \t rho_90 \t r_90 \t rho_10 \t r_10 \t rho_50 \t r_50 \t r_50_")
 
 r_90 = 12.0
 r_10 = 12.0
@@ -104,27 +104,34 @@ r_10 = 12.0
 for i = 1 : size(nums,1)
     num = nums[i]
     input_file = getFileNameFromNum(num)
-    
-    initial = [alpha, beta, gamma, a, b]    
+
+    initial = [alpha, beta, gamma, a, b]
 
     data = centerData(readdlm(input_file, ';')[2:end,:])
+    rho_min = minimum(data[:,4])
+    rho_max = maximum(data[:,4])
 
-    result = optimize(x -> objectiveFunction(x,data,r), initial)
-    #show(result)
+    rho_50 = (rho_min + rho_max) / 2
+    rho_90 = (rho_max - rho_min) * 0.9 + rho_min
+    rho_10 = (rho_max - rho_min) * 0.1 + rho_min
+
+    result = optimize(x -> objectiveFunction(x,data,rho_90), initial)
     x = Optim.minimizer(result)
+    r_90 = x[1]
 
-    x = checkBeta(x,r)
-    x = checkGamma(x)
+    result = optimize(x -> objectiveFunction(x,data,rho_10), initial)
+    x = Optim.minimizer(result)
+    r_10 = x[1]
 
-    alpha = x[1]
-    beta = x[2]
-    gamma = x[3]
-    a = x[4]
-    b = x[5]
+    result = optimize(x -> objectiveFunction(x,data,rho_50), initial)
+    x = Optim.minimizer(result)
+    r_50 = x[1]
 
-    println(num," \t ",Optim.converged(result)," \t ",Optim.f_calls(result)," \t ", round(x[1]/(2 * pi)*360,2), "° \t ",round(x[2]/(2 * pi)*360,2),"° \t ",round(x[3]/(2 * pi)*360,2),"° \t ",round(x[4],2)," \t ",round(x[5],2)," \t ",round(r^3/(x[4]*x[5]),2))
-    
-    out[i,:] = [num alpha beta gamma a b r^3/(a*b)]
+    r_50_ = (r_90 + r_10) / 2
+
+    println(num," \t ",Optim.converged(result)," \t ",Optim.f_calls(result)," \t ", rho_max ," \t ", rho_min ," \t ", rho_90 ," \t ", r_90 ," \t ", rho_10 ," \t ", r_10 ," \t ", rho_50 ," \t ", r_50 ," \t ", r_50_)
+
+    out[i,:] = [num rho_max rho_min rho_90 r_90 rho_10 r_10 rho_50 r_50 r_50_]
 end
 
 #out = sortrows(out, by= x -> (x[1]))# [lt=<comparison>,] [rev=false])
