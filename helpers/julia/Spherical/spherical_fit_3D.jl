@@ -26,18 +26,52 @@ function centerData(data)
     return data_new
 end
 
-function penalty(rho,rho_fix)
-    p = (rho - rho_fix)^2
-    return p
+function getRadius(data)
+    data_new = zeros(size(data,1),5)
+    
+    for i = 1 : size(data,1)
+        data_new[i,1:4] = data[i,1:4] # copy
+        data_new[i,5] = sqrt(data[i,1]^2 + data[i,2]^2 + data[i,3]^2) 
+    end
+    return data_new
+end
+
+function myFilter(data,r)
+    data_new = zeros(size(data))
+    j = 0
+    delta = 0.5
+
+    for i = 1 : size(data,1)
+        r_tmp = data[i,5] 
+        if(r_tmp > r-delta && r_tmp <= r+delta )
+            j +=1
+            data_new[j,:] = data[i,:]
+        end
+    end
+    return data_new[1:j,:]
+end
+
+function averadeRho(data)
+    rho = 0
+    for i = 1 : size(data,1)
+        rho += data[i,4]
+    end
+    return rho/size(data,1)
+end
+
+function averadeRho2(data,rho_fix)
+    rho = 0
+    for i = 1 : size(data,1)
+        rho += (data[i,4] - rho_fix)^2
+    end
+    return rho
 end
 
 function objectiveFunction(x,data,rho_fix)
-    A = x[1]^(-2) * eye(3)
-    sum = 0
-    for i = 1 : size(data,1)
-        sum += (transpose(data[i,1:3]) * A * data[i,1:3])[1]^2 * penalty(data[i,4],rho_fix)
-    end
-    return sum
+    data = myFilter(data,x[1])
+#    rho = averadeRho(data)
+#    return (rho - rho_fix)^2
+    return averadeRho2(data,rho_fix)
 end
 
 function CharToInt(c)::Int64
@@ -93,21 +127,17 @@ end
 
 nums = getNumsFromFiles(ARGS)
 
-out = zeros(size(ARGS,1),7)
+out = zeros(size(ARGS,1),10)
 header = ["time"  "rho_max" "rho_min" "rho_90" "r_90" "rho_10" "r_10" "rho_50" "r_50" "r_50_"]
 
 println("num \t conv \t calls \t rho_max \t rho_min \t rho_90 \t r_90 \t rho_10 \t r_10 \t rho_50 \t r_50 \t r_50_")
 
-r_90 = 12.0
-r_10 = 12.0
-
 for i = 1 : size(nums,1)
     num = nums[i]
     input_file = getFileNameFromNum(num)
-
-    initial = [alpha, beta, gamma, a, b]
-
+    
     data = centerData(readdlm(input_file, ';')[2:end,:])
+    data = getRadius(data)
     rho_min = minimum(data[:,4])
     rho_max = maximum(data[:,4])
 
@@ -115,17 +145,17 @@ for i = 1 : size(nums,1)
     rho_90 = (rho_max - rho_min) * 0.9 + rho_min
     rho_10 = (rho_max - rho_min) * 0.1 + rho_min
 
-    result = optimize(x -> objectiveFunction(x,data,rho_90), initial)
+    result = optimize(r -> objectiveFunction(r,data,rho_90), 8, 14)
     x = Optim.minimizer(result)
-    r_90 = x[1]
+    r_90 = x
 
-    result = optimize(x -> objectiveFunction(x,data,rho_10), initial)
+    result = optimize(x -> objectiveFunction(x,data,rho_10), 8,14)
     x = Optim.minimizer(result)
-    r_10 = x[1]
+    r_10 = x
 
-    result = optimize(x -> objectiveFunction(x,data,rho_50), initial)
+    result = optimize(x -> objectiveFunction(x,data,rho_50), 8,14)
     x = Optim.minimizer(result)
-    r_50 = x[1]
+    r_50 = x
 
     r_50_ = (r_90 + r_10) / 2
 
