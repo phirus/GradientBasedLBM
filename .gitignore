@@ -20,6 +20,8 @@ helpers/julia/preprocessFile
 helpers/julia/constants.jl
 helpers/julia/Ellipsoid/Ellipsoid.csv
 helpers/julia/Ellipsoid/bubbleFit_5000.csv
+helpers/julia/Spherical/Spherical.csv
+
 
 *.sublime-workspace
 *.coatidb

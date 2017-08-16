@@ -59,19 +59,9 @@ function averadeRho(data)
     return rho/size(data,1)
 end
 
-function averadeRho2(data,rho_fix)
-    rho = 0
-    for i = 1 : size(data,1)
-        rho += (data[i,4] - rho_fix)^2
-    end
-    return rho
-end
-
 function objectiveFunction(x,data,rho_fix)
     data = myFilter(data,x[1])
-#    rho = averadeRho(data)
-#    return (rho - rho_fix)^2
-    return averadeRho2(data,rho_fix)
+    return (averadeRho(data) - rho_fix)^2
 end
 
 function CharToInt(c)::Int64
@@ -130,7 +120,7 @@ nums = getNumsFromFiles(ARGS)
 out = zeros(size(ARGS,1),10)
 header = ["time"  "rho_max" "rho_min" "rho_90" "r_90" "rho_10" "r_10" "rho_50" "r_50" "r_50_"]
 
-println("num \t conv \t calls \t rho_max \t rho_min \t rho_90 \t r_90 \t rho_10 \t r_10 \t rho_50 \t r_50 \t r_50_")
+println("num \t rho_max \t rho_min \t rho_90 \t r_90 \t rho_10 \t r_10 \t rho_50 \t r_50 \t r_50_")
 
 for i = 1 : size(nums,1)
     num = nums[i]
@@ -145,28 +135,26 @@ for i = 1 : size(nums,1)
     rho_90 = (rho_max - rho_min) * 0.9 + rho_min
     rho_10 = (rho_max - rho_min) * 0.1 + rho_min
 
-    result = optimize(r -> objectiveFunction(r,data,rho_90), 8, 14)
+    result = optimize(r -> objectiveFunction(r,data,rho_90), 8, 14,Brent())
     x = Optim.minimizer(result)
     r_90 = x
 
-    result = optimize(x -> objectiveFunction(x,data,rho_10), 8,14)
+    result = optimize(x -> objectiveFunction(x,data,rho_10), 8,14,Brent())
     x = Optim.minimizer(result)
     r_10 = x
 
-    result = optimize(x -> objectiveFunction(x,data,rho_50), 8,14)
+    result = optimize(x -> objectiveFunction(x,data,rho_50), 8,14,Brent())
     x = Optim.minimizer(result)
     r_50 = x
 
     r_50_ = (r_90 + r_10) / 2
 
-    println(num," \t ",Optim.converged(result)," \t ",Optim.f_calls(result)," \t ", rho_max ," \t ", rho_min ," \t ", rho_90 ," \t ", r_90 ," \t ", rho_10 ," \t ", r_10 ," \t ", rho_50 ," \t ", r_50 ," \t ", r_50_)
+    println(num," \t ", rho_max ," \t ", rho_min ," \t ", rho_90 ," \t ", r_90 ," \t ", rho_10 ," \t ", r_10 ," \t ", rho_50 ," \t ", r_50 ," \t ", r_50_)
 
     out[i,:] = [num rho_max rho_min rho_90 r_90 rho_10 r_10 rho_50 r_50 r_50_]
 end
 
-#out = sortrows(out, by= x -> (x[1]))# [lt=<comparison>,] [rev=false])
-
 A = [header;out]
-writedlm("Ellipsoid.csv", A, ';')
+writedlm("Spherical.csv", A, ';')
 
 println("\n\n##################")
