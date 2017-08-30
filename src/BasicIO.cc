@@ -27,7 +27,7 @@ void write_data_plot_linewise(int time ,double y1, double y2, const string& file
 {
     ofstream Plot;
     Plot.open( filename.c_str(), ios::app);
-    Plot << time << "\t" << y1 << "\t" << y2 << "\n"; 
+    Plot << time << ";" << y1 << ";" << y2 << "\n"; 
     Plot.close();
 }
 

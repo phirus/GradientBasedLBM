@@ -21,6 +21,7 @@ helpers/julia/constants.jl
 helpers/julia/Ellipsoid/Ellipsoid.csv
 helpers/julia/Ellipsoid/bubbleFit_5000.csv
 helpers/julia/Spherical/Spherical.csv
+helpers/julia/BubbleMass/BubbleMass.csv
 
 
 *.sublime-workspace

@@ -93,6 +93,7 @@ int main(int argc, char** argv){
     const int outputInterval = timetrack.getOutputInt();
 
     write_file_header("BubblePlot.csv", "time;PosX;PosY;PosZ;v_x;v_y;v_z");
+    write_file_header("Massbalance.csv", "time;liquid;gas");
 
     int i;
 
@@ -118,11 +119,15 @@ int main(int argc, char** argv){
             cout << i <<endl;
         }
         
-        if(i%50 == 0) 
+        if(i%10 == 0) 
         {
             const boost::array<Vector3D,2> bubble_data = meins.getBubbleData();
             const Vector3D pos = bubble_data[0];
             const Vector3D velo = bubble_data[1];
+
+            double liquid_mass, gas_mass;
+            meins.mass_balance(liquid_mass, gas_mass);
+            write_data_plot_linewise(i , liquid_mass, gas_mass,"Massbalance.csv");
 
             BubbleBox3D bubblebox = meins.getBubbleBox();
             bubblebox.setBubble(pos.x,pos.y,pos.z);

@@ -1350,7 +1350,6 @@ TEST(Matrix3D,identity){
 
     const Matrix3D Identity = Matrix3D(true);
     const Matrix3D Zeros = Matrix3D();
-    array3D test;
 
     EXPECT_EQ(f, Identity * f);
     EXPECT_EQ(f0, Zeros * f);
