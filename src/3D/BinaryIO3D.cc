@@ -780,7 +780,7 @@ void writeBubbleFitData(const Lattice3D& l, const string& filename)
 {
     ofstream BubbleFit;
     BubbleFit.open( filename.c_str() );
-    BubbleFit << "x;y;z;rho_b\n";
+    BubbleFit << "x;y;z;rho_r;rho_b;psi\n";
 
     std::vector<int> indices = l.findBubbleCells();
 
@@ -790,7 +790,7 @@ void writeBubbleFitData(const Lattice3D& l, const string& filename)
         l.linearIndex(index, x, y, z);
         Cell3D tmp = l.getCell(x, y, z);
 
-        BubbleFit << x << ";" << y << ";" << z << ";" << tmp.getRho()[1] << "\n";
+        BubbleFit << x << ";" << y << ";" << z << ";" << tmp.getRho()[0] << ";" << tmp.getRho()[1] << ";" << tmp.calcPsi() << "\n";
     }
     BubbleFit.close();
 }
