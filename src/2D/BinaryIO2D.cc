@@ -428,8 +428,6 @@ void write_vtk_output2D(const Lattice2D& l, const string& filename)
         }
     }
 
-
-
     VTKFile << "\nSCALARS Rho1 DOUBLE\nLOOKUP_TABLE default"<<endl;
     for (int j = 0; j < ysize; j++)
     {
@@ -440,7 +438,6 @@ void write_vtk_output2D(const Lattice2D& l, const string& filename)
             VTKFile << tmp.getRho()[0] << " ";
         }
     }
-
 
     VTKFile << "\nSCALARS Rho2 DOUBLE\nLOOKUP_TABLE default"<<endl;
     for (int j = 0; j < ysize; j++)
@@ -453,51 +450,94 @@ void write_vtk_output2D(const Lattice2D& l, const string& filename)
         }
     }
 
-
-
-
-
-    VTKFile << "\nSCALARS P_1 DOUBLE\nLOOKUP_TABLE default"<<endl;
+    VTKFile << "\nSCALARS p_trace1 DOUBLE\nLOOKUP_TABLE default"<<endl;
     for (int j = 0; j < ysize; j++)
     {
         for (int i = 0; i < xsize; i++)
         {
             tmp = l.getCell(i,j);
-            tmp.calcRho();
-            VTKFile << tmp.getPressureTensor(0).getTrace() << " ";
+            const pressureTensor2D p = tmp.getPressureTensor(0);
+
+            VTKFile << p.getTrace()/2.0 << " ";
         }
     }
 
-    VTKFile << "\nSCALARS P_2 DOUBLE\nLOOKUP_TABLE default"<<endl;
+    VTKFile << "\nSCALARS p_trace2 DOUBLE\nLOOKUP_TABLE default"<<endl;
     for (int j = 0; j < ysize; j++)
     {
         for (int i = 0; i < xsize; i++)
         {
             tmp = l.getCell(i,j);
-            tmp.calcRho();
-            VTKFile << tmp.getPressureTensor(1).getTrace() << " ";
+            const pressureTensor2D p = tmp.getPressureTensor(1);
+            VTKFile << p.getTrace()/2.0 << " ";
         }
     }
 
-    VTKFile << "\nSCALARS P_ges DOUBLE\nLOOKUP_TABLE default"<<endl;
+    VTKFile << "\nSCALARS p_1_correction DOUBLE\nLOOKUP_TABLE default"<<endl;
     for (int j = 0; j < ysize; j++)
     {
         for (int i = 0; i < xsize; i++)
         {
             tmp = l.getCell(i,j);
-            tmp.calcRho();
-            VTKFile << tmp.getPressureTensor(0).getTrace() + tmp.getPressureTensor(1).getTrace() << " ";
+            double rho = tmp.getRho()[0];
+            Vector2D u = tmp.getU()[0];
+            VTKFile << rho*(u*u) << " ";
         }
     }
 
-    // VTKFile << "\nSCALARS divP DOUBLE\nLOOKUP_TABLE default"<<endl;
-    // for (int j = 0; j < ysize; j++)
-    // {
-    //     for (int i = 0; i < xsize; i++)
-    //     {
-    //         VTKFile << l.getDivergence(i, j) << " ";
-    //     }
-    // }
+    VTKFile << "\nSCALARS p_2_correction DOUBLE\nLOOKUP_TABLE default"<<endl;
+    for (int j = 0; j < ysize; j++)
+    {
+        for (int i = 0; i < xsize; i++)
+        {
+            tmp = l.getCell(i,j);
+            double rho = tmp.getRho()[1];
+            Vector2D u = tmp.getU()[1];
+            VTKFile << rho*(u*u) << " ";
+        }
+    }
+
+    VTKFile << "\nSCALARS p_1 DOUBLE\nLOOKUP_TABLE default"<<endl;
+    for (int j = 0; j < ysize; j++)
+    {
+        for (int i = 0; i < xsize; i++)
+        {
+            tmp = l.getCell(i,j);
+            double rho = tmp.getRho()[0];
+            Vector2D u = tmp.getU()[0];
+            const pressureTensor2D p = tmp.getPressureTensor(0);
+            VTKFile << (p.getTrace()/2.0) - rho*(u*u) << " ";
+        }
+    }
+
+    VTKFile << "\nSCALARS p_2 DOUBLE\nLOOKUP_TABLE default"<<endl;
+    for (int j = 0; j < ysize; j++)
+    {
+        for (int i = 0; i < xsize; i++)
+        {
+            tmp = l.getCell(i,j);
+            double rho = tmp.getRho()[1];
+            Vector2D u = tmp.getU()[1];
+            const pressureTensor2D p = tmp.getPressureTensor(1);
+            VTKFile << (p.getTrace()/2.0) - rho*(u*u) << " ";
+        }
+    }
+
+    VTKFile << "\nSCALARS p_total DOUBLE\nLOOKUP_TABLE default"<<endl;
+    for (int j = 0; j < ysize; j++)
+    {
+        for (int i = 0; i < xsize; i++)
+        {
+            tmp = l.getCell(i,j);
+            double rho1 = tmp.getRho()[0];
+            double rho2 = tmp.getRho()[1];
+            Vector2D u1 = tmp.getU()[0];
+            Vector2D u2 = tmp.getU()[1];
+            const pressureTensor2D p1 = tmp.getPressureTensor(0);
+            const pressureTensor2D p2 = tmp.getPressureTensor(1);
+            VTKFile << (p1.getTrace()/2.0) - rho1*(u1*u1) +  (p2.getTrace()/2.0) - rho2*(u2*u2) << " ";
+        }
+    }
 
     VTKFile << "\nVECTORS j1 DOUBLE"<<endl;
     for (int j = 0; j < ysize; j++)
@@ -571,7 +611,7 @@ void writeBubbleFitData(const Lattice2D& l, const string& filename)
 {
     ofstream BubbleFit;
     BubbleFit.open( filename.c_str() );
-    BubbleFit << "x;y;z;rho_b\n";
+    BubbleFit << "x;y;z;rho_r;rho_b;psi\n";
 
     std::vector<int> indices = l.findBubbleCells();
 
@@ -581,7 +621,7 @@ void writeBubbleFitData(const Lattice2D& l, const string& filename)
         l.linearIndex(index, x, y);
         Cell2D tmp = l.getCell(x, y);
 
-        BubbleFit << x << ";" << y << ";" << "1" << ";" << tmp.getRho()[1] << "\n";
+        BubbleFit << x << ";" << y << ";" << "1" << ";" << tmp.getRho()[0] << ";" << tmp.getRho()[1] << ";" << tmp.calcPsi() << "\n";
     }
     BubbleFit.close();
 }

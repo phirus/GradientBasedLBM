@@ -117,9 +117,9 @@ const double Cell2D::calcPsi()const
     else return 0;
 }
 
-const pressureTensor Cell2D::getPressureTensor(int color) const
+const pressureTensor2D Cell2D::getPressureTensor(int color) const
 {
-    pressureTensor p;
+    pressureTensor2D p;
     VeloSet2D u = getU();
     if (isSolid == false)
     {
