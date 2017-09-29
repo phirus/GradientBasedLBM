@@ -21,6 +21,8 @@ public:
     inline const ColSet getRho()const{return rho;};
     inline const VeloSet3D getVelocity()const{return u;};
 
+    inline void setVelocity(const VeloSet3D& v){u = v;};
+
     /// operators
     const bool operator==(const BoundaryInformation& other)const{return (type == other.getType())&& (rho == other.getRho())&&(u == other.getVelocity());};
 
